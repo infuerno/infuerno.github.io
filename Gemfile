@@ -26,3 +26,8 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
+# Adding gems for thor for creating posts on the command line
+# http://jonas.brusman.se/2012/12/28/create-jekyll-posts-from-the-command-line/
+gem 'thor'
+gem 'stringex'
+

@@ -40,6 +40,8 @@ GEM
     rouge (1.11.1)
     safe_yaml (1.0.4)
     sass (3.4.24)
+    stringex (2.5.2)
+    thor (0.19.4)
 
 PLATFORMS
   ruby
@@ -48,6 +50,8 @@ DEPENDENCIES
   jekyll (= 3.4.3)
   jekyll-feed (~> 0.6)
   minima (~> 2.0)
+  stringex
+  thor
   tzinfo-data
 
 RUBY VERSION
