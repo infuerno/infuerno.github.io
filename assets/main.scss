@@ -1,0 +1,14 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+
+@import "minima";
+
+.post-link {
+    display: inline;
+    font-size: 18px;
+}
+
+.post-list > li {
+    margin-bottom: 5px;
+}

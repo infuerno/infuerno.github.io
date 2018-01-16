@@ -1,0 +1,16 @@
+---
+layout: post
+title: "Identity Server 3"
+---
+## Overview
+
+Packaged as middleware, uses the Options pattern for configuration via the `IdentityServerOptions` class. Contains:
+* simple properties e.g. site title, issue name
+* service factor i.e. a registry
+
+## Service Factory
+
+There are 3 mandatory features which must be supplied at start up via the `IdentityServerOptions`.
+
+1. UserService - user authentication against local store, association of external users (can we associate MABO users here so that they can push to the central store?) There are standard implementation for ASP.NET Identity and MembershipReboot
+2. 
