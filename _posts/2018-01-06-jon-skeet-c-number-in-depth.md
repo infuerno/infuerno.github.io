@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Skeet - C# In Depth"
+title: "Jon Skeet: C# In Depth"
 ---
 ### References
 

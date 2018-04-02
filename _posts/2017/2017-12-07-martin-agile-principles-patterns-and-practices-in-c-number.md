@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Martin - Agile Principles, Patterns, and Practices in C#"
+title: "Martin: Agile Principles, Patterns, and Practices in C#"
 ---
 # Section I: Agile Development
 

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "InfoQ - Domain Driven Design Quickly"
+title: "InfoQ: Domain Driven Design Quickly"
 ---
 ## Why?
 

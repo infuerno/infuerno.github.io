@@ -1,4 +1,8 @@
-# Seemann: Dependency Injection in .NET
+---
+layout: post
+title: "Seemann: Dependency Injection in .NET"
+---
+
 Source code: http://manning.com/DependencyInjectionin.NET
 
 * Learn what Dependency Injection is
