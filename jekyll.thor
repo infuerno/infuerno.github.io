@@ -7,7 +7,7 @@ class Jekyll < Thor
   def new(*title)
     title = title.join(" ")
     date = Time.now.strftime('%Y-%m-%d')
-    filename = "_posts/#{date}-#{title.to_url}.md"
+    filename = "_posts/drafts/#{date}-#{title.to_url}.md"
 
     if File.exist?(filename)
       abort("#{filename} already exists!")

@@ -462,6 +462,7 @@ There are 3 ways to identify a user in ASP.NET:
 * log4net
 * elmah
 * P&P Application Logging Block
+
 ## Unit Testing with ASP.NET MVC
 
 ## Deployment and Configuration

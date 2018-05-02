@@ -21,12 +21,12 @@ title: "Bertocci: Modern Authentication with Azure AD"
 
 First 4 chapters are an overview, last 6 more in depth
 
-* Chapter 1: walkthrough
-* Chapter 2: history of identity mgmt
-* Chapter 3: intro to Azure AD and ADFS
-* Chapter 4: intro to developer libraries (1-4 online at: https://ptgmedia.pearsoncmg.com/images/9780735696945/samplepages/9780735696945.pdf)
-* Chapter 5: in-depth walkthrough
-* Chapter 6: in-depth Open ID and OAuth2
+* Chapter 1: Walkthrough
+* Chapter 2: History of identity mgmt
+* Chapter 3: Intro to Azure AD and ADFS
+* Chapter 4: Intro to developer libraries (1-4 online at: https://ptgmedia.pearsoncmg.com/images/9780735696945/samplepages/9780735696945.pdf)
+* Chapter 5: In-depth walkthrough
+* Chapter 6: In-depth Open ID and OAuth2
 * Chapter 7: OWIN middleware; (online at: https://www.microsoftpressstore.com/articles/article.aspx?p=2473126)
 * Chapter 8: Azure AD application model (online at: https://www.microsoftpressstore.com/articles/article.aspx?p=2473127)
 * Chapter 9: Web APIs
@@ -556,15 +556,433 @@ Disable chatty browserlink using `<add key="vs:EnableBrowserLink" value="false" 
 
 #### Authentication middleware
 
-The cookie middleware is added to the pipeline in front of any protocol middlewares. By default, protocol middlewares are **Active** by default i.e. its options `AuthenticationMode` property is set to `Active`. If multiple protocol middlewares are included, this behaviour may have to be tailored to ensure the correct middleware is trigger in the right situation.
+Protocol middlewares and cookie middlewares collaborate to determine authentication. Communication between the two middlewares is via the `AuthenticationManager` instance in the `Context`.
 
+The cookie middleware is added to the pipeline in front of any protocol middlewares. By default, protocol middlewares are **Active** by default i.e. its option's `AuthenticationMode` property is set to `Active`. If multiple protocol middlewares are included, this behaviour may have to be tailored to ensure the correct middleware is triggered in the right situation.
+
+A protocol middleware, having validated a request successfully will set `Context.Authentication` properties `AuthenticationResponseGrant`, `SignInEntry` and `User` to communicate to the cookie middleware. The cookie middleware specifically uses `AuthenticationResponseGrant`'s content to generate a session. 
+
+The `AuthenticationResponseGrant.AuthenticationType` property can be set to `Cookies` by the protocol middleware if this was set as the default in the configuration e.g. `app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefault.AuthenticationType)` (and not overriden by local overrides).
+
+In further requests, the cookie middleware validates the cookie and rehydrates the corresponding `ClaimsPrincipal` to `Authentication.User`. This passes unchanged through the protocol middlewares.
+
+`Challenge` works by setting the `Authentication.AuthenticationResponseChallenge` property to a value signifying the protocol middleware to use for signing in e.g. "OpenIdConnect" - this ensures this middleware is triggered even if set to the `AuthenticationMode` property is set to `Passive`.
+
+Similarily `SignOut` works by setting the `Authencation.AuthenticationResponseRevoke` property - this time containing a collection of authentication types e.g. "Cookies" and "OpenIdConnect".
+
+#### Diagnostic middleware
+
+Katana provides diagnostics via NuGet package Microsoft.Owin.Diagnostics. Add the following to enable and configure right at the beginning of the main configuration routine (i.e. at the beginning of the pipeline):
+
+```
+app.UseErrorPage(new ErrorPageOptions() {
+    ShowCookies = true,
+    ShowEnvironment = true,
+    ShowQuery = true,
+    ShowExceptionDetails = true,
+    ShowHeaders = true,
+    ShowSourceCode = true,
+    SourceCodeLineCount = 10
+});
+```
+
+### OpenID Connect middleware
+
+#### OpenIdConnectAuthenticationOptions
+
+Out of the box, the defaults work well. However many options can be changed via the `OpenIdConnectAuthenticationOptions` class. Parameter names in the options class match protocol names, but with .NET consistent casing.
+
+##### Application coords and request options
+
+* `RedirectUri` by default is null, controls the value of the `redirect_uri` in the parameter. If multiple are registered the Azure AD will pick one slightly randomly.
+* `PostLogoutRedirectUri` where to redirect the application following logout
+* `ClientSecret` required to redeem an authorization code
+* `ResponseType` e.g. "id_token", "code id_token" support automatics user sign in; "code" requires custom code
+* `Resource` specific to Azure AD
+* `Scope` the OAuth2 / OpenID Connect scope parameter
+
+##### Authority coords and validation
+
+By default middlewares obtain (most) validation coords by reference, via the metadata endpoint. There are configuration options for suppliers which supply metdata differently as well as the option to SUPPLY EVERYTHING MANUALLY for providers which don't provide metadata. 
+
+The `ConfigurationManager` class retrieves, caches and refreshes validation settings retrieved via discovery.
+* `Authority` - used by Azure AD, metadata URL is generated from this
+* `Metadata` - for other providers, the URL of the metadata endpoint
+* `BackchannelCertificateValidator`, `BackchannelHttpHandler`, `BackchannelTimeout` - for overriding default validation behaviour
+* `OpenIdConfiguration` can be manually populated with coords if received out of band e.g. authZ endpoint, issuer value, signing keys
+* `IConfigurationManager` can be overriden to completely customise logic
+
+* `SecurityTokenHandlers` by default includes JWT handler
+* `RefreshOnIssuerKeyNotFound` flag to refresh from metadata if cached keys don't match
+* `CallbackPath` configure only one url to receive tokens (not necessarily recommended)
+* `ProtocolValidator` by default contains an instance of `OpenIdConnectProtocolValidator` - static validations e.g. complying with current format as well as ensuring certain claims are present
+
+##### Middleware mechanics
+
+Other options for driving the general behaviour of the middleware;
+
+* `SignInAsAuthenticationType` determines the value of `AuthenticationType` of the `ClaimsPrincipal` generated from the incoming token e.g. "Cookies"
+* `AuthentcationType` identifies this middleware e.g. `OpenIdConnect`
+* `AuthenticationMode` e.g. "Active" or "Passive"
+* `UseTokenLifetime` will default a cookie middleware's session timeout to the length of validity of the `id_token` (defaults to 1 hour on Azure AD) - IMPORTANT - set this to FALSE if you want the use the session-duration settings on the `CookieMiddleware` instead
+* `Caption` - use for the text for a button to show the user if there are mutliple possible middlewares for this user to sign on with
+
+#### Notifications
+
+### TokenValidationParameters
+
+The last level to which things can be configured, the `OpenIdConnectAuthenticationOptions` property `TokenValidationParameters`. This is usually populated with metadata by the protocol middlewares in discovery, but properties can alternatively be specified manually.
+
+Main validity checks include issuer, audience, signing key and validity interval. The `TokenValidationParameters` hold options to check the token against (validity interval is compared against the clock):
+
+* `ValidIssuer` - was it issued by the authority you were expecting?
+* `ValidAudience` - was it issued to you?
+* `IssuerSigningKey` - the key with which the token as been signed
+
+Both String and IEnumberable types exist of the latter two.
+
+Validation flags allow the turning on and off of validation checks.
+
+* `ValidateAudience` - compare the audience in the incoming token with the declared audience (the `clientId` for OpenIdConnect)
+* `ValidateIssuer`
+* `ValidateSigningKey` - is the key used for signing in the list of trusted keys?
+* `ValidateLifetime` - enforce the validity interval declared in the token or ignore it (an intranet with an expired token which can't get access to the Azure AD on the internet to refresh it?)
+* `RequireExpirationTime` - whether the application accepts tokens without expiration times..
+* `RequireSignedTokens` - may be useful in development
+
+Validators allow you to implement custom validation code e.g. managing a valid issues list in a more flexible way that allowed by the built in functionality.
+
+### Sessions
+
+Cookie middleware stores the full `ClaimsPrincipal` crafted from an incoming token. If additionally wanting to persist the actual token, a custom implementation of `IAuthenticationSessionStore` may be more appropriate so as not to bust the size of the cookie (i.e. store info server side and a reference to this in the cookie - wouldn't this be what they do anyway??). Be aware that this will be used everytime an authenticated request is received, so a 2-level cache where most data is in memory and look ups to a persistence layer used only where necessary.
+
+## Chapter 8. Azure AD application model
+
+Azure AD provides functionality to model users, organisations and applications. This chapter covers applications, specifically:
+
+* how Azure AD represents applications and the constructs used
+* mechanisms to provision applications beyond one's own organisation
+* the consent framework
+* roles, groups etc to control access
+
+There is A LOT more in Azure AD than in ADFS, but the complication has been abstracted away.
+
+### Application and Service Principal
+
+Azure AD emerged from ADFS. Applications were initially based on the same model used there and used Service Principals. These were great for representing an appliation "instance", but not for the application itself.
+
+* Applications are abstract, the Service Principal is a concrete instance in a specific directory. Each customer will need to have a seperate instance; Development, Staging and Production will also need to have seperate instances. However, all stem from the same abstract Application. 
+* From the directory viewpoint, an application is just a client, also requiring access to certain resources under the directory's control. 
+
+#### Application
+
+Azure AD therefore defines a new entity: `Application`. This is the blueprint. A `ServicePrincipal` is created at runtime via **consent**. This involves a provisioning flow driven by consent.
+
+NOTE: provision of an `Application` in its home tenant creates both an the `Application` AND the `ServicePrincipal`, so the experience between using an application as a home user will be different from using the application as a user in a different tenant.
+
+https://graphexplorer.azurewebsites.net/ - easy interface to perform REST calls on Azure AD Graph API. Login to the tenant you wish to query.
+
+* https://graph.windows.net/agdio.onmicrosoft.com/ for a list of objects
+* https://graph.windows.net/agdio.onmicrosoft.com/applications for a list of application
+* https://graph.windows.net/agdio.onmicrosoft.com/applications?$filter=appId+eq+'37741a71-4a76-4e63-a167-77e4a22fbba7' to filter to just one application
+
+##### Protocol and authentication settings
+
+* `appId` the client_id of the application
+* `replyURLs` the multivalue property of possible allowed redirect URLs the client application is able to request
+* `identifierURLs` various identification URLs you may want to assign to your application to override the directory assigned `appId`. Corresponds to the **realm** in SAML and WS-Federation. Corresponds to **audience** in OAuth2 when used by web APIs
+* `publicClient` boolean value - security implications for each type
+* `passwordCredentials`, `keyCredentials` for when the application is itself acting as a client
+* `displayName` shown in e.g. consent prompts
+* `homepage` landing page when e.g. listed in an app store - common to use an authenticated page in the app for this to ensure authentication flows through
+* `samlMetadataUrl` for SAML implemenations - the metadata url
+* `oauth2AllowImplicitFlow` false by default
+* `oauth2AllowUrlPathMatching` deviate from the standard functionality that ALL redirect URLs must exist verbatim in the `replyURLs` collection
+* `oauth2RequirePostResponse` by default all requests are expected via GET, setting this value to true relaxes this constraint
+* `groupMembershipClaims` receive group membership for the user as claims - either `SecurityGroup` or `All`, default is null
+* `appRoles` roles associated with the application
+* `availableToOtherTenants` defaults to false, switch to true for multitenant apps. These applications have extra constraints - `identifierURLs` must now contain proper URLs with the hostname matching a domain registered in the tenant (coding changes also required if changing from line of business app to multitenant app)
+* `knownClientApplications` in the case your "application" actually comprises of e.g. a client application AND a web API application (where the client application is used to access the web API application) then by storing the client_id of the web API application within the client's `knownClientApplications`, the user can be asked to consent to both applications having access at the same time and thus provision a ServicePrincipal for both at the get go.
+
+##### Things you can do with the Application (besides signing in)
+
+* `oauth2Permissions` a Application representing a web API must define at least one scope, otherwise and access token would be meaningless. Hence the default entry here for the scope `user_impersonation`
+    - `id` unique identifier of the scope
+    - `..Description` and `..Name` used in consent prompts
+    - `type` if permission can by granted by any user (`User`), or only an admistrator (`Admin`)
+    - `value` the name of the scope
+
+##### Resources and permissions the Application needs to operate
+
+* `requiredResourceAccess` - very powerful entry - define what resources an application may want to access - an access type of `Scope` defines that the application will access in a delegated way i.e. on behalf of a user (and the consent may have to be obtained either by an admin user or the user itself, as determined by the `type` entry on the corresponding `oauth2Permissions` entry). `Role` on the other hand means the application requires that access for its own identity (always requires admin consent).
+
+NOTE in v1 of Azure AD, consent is only granted once for all permissions declared. If an extra permission is added, then the intial consent must be revoked and consent reacquired (v2 may change this).
+
+#### Service Principal
+
+https://graph.windows.net/agdio.onmicrosoft.com/servicePrincipals?$filter=publisherName+eq+'Agilisys Ltd'
+
+The service principal entry looks similar to the application entry but is actually fairly different. 
+* MISSING: flags defining protocol behaviour at runtime as well as `knownClientApplication` and `requiredResourceAccess`
+* TRANSFERRED: `appId`; various optional URLs e.g. `errorUrl`, `logoutUrl`, `samlMetadataUrl`; `appRoles`, `oauth2Permissions` and credentials
+* ADDITIONAL: `appOwnerTenantId`, `publisherName`; `servicePrincipalNames` = `identifierUrls` + `appId`; `appRoleAssignmentRequired` gate token issuance for specific users only; `tags` mainly used by the Azure portal
+
+### Consent and delegated permissions
+
+https://graph.windows.net/agdio.onmicrosoft.com/oauth2PermissionGrants
+
+In order to keep track of which clients / users have access to which resources and with what permissions, Azure AD uses the `oauth2PermissionGrants` collection.
+
+```
+{
+    "clientId": "b7a5bb5e-fb87-440c-bc97-c196d6f657a9",         /* Ag.MA.Users.ApiClient.Demo */
+    "consentType": "AllPrincipals",
+    "expiryTime": "2018-09-25T17:43:58.6786004",
+    "objectId": "Xrult4f7DES8l8GW1vZXqac0-E01j1lBrS4WN9yfJ7g",
+    "principalId": null,
+    "resourceId": "4df834a7-8f35-4159-ad2e-1637dc9f27b8",      /* Windows Azure Active Directory */
+    "scope": "User.Read",
+    "startTime": "0001-01-01T00:00:00"
+},
+```
+
+An example entry contains the following attributes:
+
+* `clientId` the `objectId` from the `ServicePrincipal` representing the client
+* `con`
+* `principalId` the `objectId` from the `User`
+* `resourceId` the `objectId` from the `ServicePrincipal` representing the source
+
+appId | name
+---|---
+00000001-0000-0000-c000-000000000000 | Azure ESTS Service
+00000002-0000-0000-c000-000000000000 | Windows Azure Active Directory
+00000003-0000-0000-c000-000000000000 | Microsoft Graph 
+
+https://msdn.microsoft.com/Library/Azure/Ad/Graph/howto/azure-ad-graph-api-permission-scopes
+https://msdn.microsoft.com/Library/Azure/Ad/Graph/api/api-catalog
+
+
+Revoke individual user consent by logging into https://myapps.microsoft.com/, choose the application you wish to revoke consent for and click "Remove".
+
+If any of the resources your application requires admin access, then either this application cannot be accessed by regular users (they won't be able to obtain the requisite consent) OR an admin will initially be required to approve this on behalf of all users using the `promt=admin_consent` on the first request. 
+
+* This will add a consent for `AllPrincipals` to the `oauth2PermissionGrants` collection
+* Individual users will then not be shown consent prompts.
+* If an administrator creates this application in the azure portal, then by default this consent is already provisioned (TO TEST - would this then save having to do the consent screen for client credential applications?)
+
+### App user assignment
+
+By default every user can request access to every application (and may or may not be granted access). An application can be configured to allow access to an explicit set of users only via the "User assignment required to access app" flag on the application configuration options on the Service Principal i.e. under Enterprise Applications. If the flag is turned on after provisioning, any user already given consent will automatically be in the list. 
+
+Each time a user is explicity given access, an entry will be added to the `AppRoleAssignment` list of the `ServicePrincipal`. If the application employs specific roles, this will be recorded in this list. Possible values for `principalType` in this entry are `User`, `Group` and `ServicePrincipal` where this is assigned to a client application.
+
+https://graph.windows.net/agd.io/servicePrincipals/42097f55-8474-4a07-b319-9b05715e7b55/appRoleAssignedTo
+
+### App roles
+
+Roles traditionally represent permissions grouping. These will be sent as claims in the token (in the id_token under the `roles` claim). Following the creation of roles, these can then be assigned to individual users. The `appRoles` section of the `Application` manifest is used to specifiy roles. The `allowMemberTypes` attribute can be set to one of `User` (can be assigned to users and groups).
+
+In ASP.NET this claim can be utilised as the source for role information for `[Authorize]` etc functionality by adding the following to the identity pipeline. i.e. add the following to the OpenIDConnect initialization options: `TokenValidationParameters = new TokenValidationParameters { RoleClaimType = "roles" }`
+
+### App permissions
+
+When wanting to confer access rights to an application itself, app permissions are used. e.g. client credential flow. Whereas delegated permissions are represented via the `oauth2Permission` and `oauth2PermissionGrants`, application permissions are represented by the `appRoles` and the `appRoleAssignedTo`. In `appRoles` the type is set to `Application` in this use case. 
+
+A client application declares in advance what permissions it requires - configurable via the azure portal which will explicity list any `appRoles` with the type `Application`. Once selected this is added to the application's `requiredResourceAccess` collection with a type of `Role` instead of `Scope`.
+
+Consent is required as usual, but only admins can give this consent - via the `prompt=admin_consent` flag.
+
+### Groups
+
+Groups can be configured for users. Azure AD can also be configured to send group information for a user in the token via the `groupMembershipClaims` property in the `Application` object. Valid values are `SecurityGroup` or `All`. The groups are sent in the token as the `objectId`. Use the graph API to query information about the group.
+
+https://www.youtube.com/watch?time_continue=633&v=cdoY_pnqPiA
 
 ## Chapter 9. Consuming and exposing a web API protected by Azure AD
 
 ### Consuming a web API protected by Azure AD
 
-Token for accessing APIs can be extremely powerful, allowing the token holder to do any number of operations. Gaining a token in hybrid or authorization code flows requires the authorisation code to be redeemed for the access and refresh tokens (and indeed the id token if using authorisation code flow) via a server to server call.
+Tokens for accessing APIs can be extremely powerful, allowing the token holder to do any number of operations. 
 
-For Azure AD, reading or writing to the user's profile via the Graph API requires explicit consent from the user. TODO more on this.
+#### Redeeming a code for an access token
 
-The application asking to read or write on the user's behalf also needs credentials. This is either via a `passwordCredential` - a string passed in the `client_secret` property of the request or via a `keyCredential` - the public key of an X.509 certificate, with the application holding the private key and signing a JWT assertion
+Gaining a token in hybrid or authorization code flows requires the authorisation code to be redeemed for the access and refresh tokens (and indeed the id token if using authorisation code flow) via a server to server call. For Azure AD, this is via an authenticated POST to the authn server's token endpoint (authentication here uses the calling application's credentials e.g. client secret). In order for this call to be authorised, the application needs to have previously been setup to declare which permissions it needs and the user needs to have consented to them. In Azure AD, all applications are automatically given the authentication permission - "Sign in and access the user's profile". In Azure AD this also gives the application the right to query the graph API for the user's profile (writing to the user's profile via the Graph API requires application permissions to be previous configured and explicit consent from the user).
+
+The application asking to read on the user's behalf also needs credentials. This is either via a `passwordCredential` - a string passed in the `client_secret` property of the request or via a `keyCredential` - the public key of an X.509 certificate, with the application holding the private key and signing a JWT assertion attached to the request to the token endpoint.
+
+The `AuthenticationCodeReceived` notification is handled when configuring the OpenIdConnect middleware. The ADAL client libraries can be used to redeem the code. NOTE don't use the default cache settings for web applications - more later. ADAL will automatically take care of redeeming any refresh token for a new access token when they run out (by default issued for an hour). The `AuthenticationResult` holds the tokens as well as several other bits of metadata pertaining to the authentication e.g. `TenantId` - the id of the tenant where authentication was ultimately performed.
+
+```
+var context = new AuthenticationContext(_authority);
+var credential = new ClientCredential(_clientId, _appKey);
+var url = new Uri(HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Path));
+
+AuthenticationResult result = context.AcquireTokenByAuthorizationCode(_code, url, credential, _resourceId);
+```
+
+#### Using an access token
+
+The most common way to use the access token is to attach it to the request in the Authorization HTTP header. If the bearer token is not attached or is not valid, the server will return a 401 Unauthorised (rather than the 302 that a web app may normally return).
+
+Using cookies for protecting a web API is an anti-pattern. In this scenario, the whole application could be protected using OpenID or WS-Fed and once authenticated, the browser has the requisite cookie to make authenticated requests. The AJAX calls will then succeed if issued from the same browser. However, this doesn't work very well, since when the cookie expires, the middleware will issue a 302 which can't be exploited directly. 
+
+As long access tokens for making API calls are retrieved via one of the `AuthenticationContext`s `AcquireToken*` methods, the ADAL library will take care of retrieving access tokens from the cache and getting fresh ones using the refresh tokens when required. 
+
+```
+var context = new AuthenticationContext(_authority);
+var credential = new ClientCredential(_clientId, _appKey);
+
+AuthenticationResult result = context.AcquireTokenSilent(_resourceId, credential, UserIdentifier.AnyUser);
+
+// use result.AccessToken ... e.g. 
+
+var client = new HttpClient();
+client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", result.AccessToken);
+var response = client.GetAsync(_apiUrl).Result;
+if (response.IsSuccessStatusCode) {
+    _log.Debug(response.Content.ReadAsStringAsync().Result);
+}
+```
+
+`AcquireTokenSilent`'s parameters are similar to conditions which must hold true for the requested token, which the framework will check prior to calling the API: for the specified resource, for the specified client_id (passed in via the credential object) and for any user. The call to the token endpoint must be authenticated in the case of web apps, but will be unauthenticated in the case of native / public apps. There are overloads for both situations.
+
+The "refresh token grant" OAuth2 flow is handled silently by ADAL whenever the access token has expired. 
+
+* Generally Azure AD refresh tokens are valid for 14 days and new refresh tokens can be obtained up to 90 days from first issuance.
+* Refresh tokens for Microsoft accounts last only 12 hours.
+* Refresh tokens can be invalidated at any time e.g. when a user changes his / her password
+
+To test access token expiry behaviour, debug and after instantiating the context, alter the value of `context.TokenCache["ExpiresOn"]` to a date in the past.
+
+Multiresource Refresh Tokens
+: The access token will be tied down to the actual resource requested, but the refresh token will be issued for all resources the user has permission to use / has granted consent for. This means that using `AcquireTokenSilent` to request access to a different resource after the first request, will also work fine. This is known as multiresource refresh tokens or MRRTs.
+
+#### ADAL cache considerations for web applications
+
+Originally designed to work for native clients e.g. running in isolation on a user's desktop or phone. The default ADAL cache is in-memory, relies on a static store available process wide. Therefore every AuthenticationContext instantiated will read and write against the same token cache. 
+
+This can be an issue for web applications:
+* Accessed by many users, isolation issues by using the same store, high volume of storage required, lookup times become slow
+* Could be deployed on multiple noes where the cache needs to be shared
+* Caches must survive process recycles
+
+Recommendation is therefore to implement a custom cache to suit the architecture of the specific web application. To do this, create a custom cache derived from `TokenCache` with implementations for the 3 notifications it provides: `BeforeAccess`, `BeforeWrite` and `AfterAccess`. Pass an instance of this into the initialisation of the `AuthenticationContext` ensuring to always pass the same instance for the same user / same store.
+
+Sample naive cache implementation given in the book. Samples online contain more complete solutions using EF. VS new project wizards also creates a custom cache class based on EF IF you tick the box to have Read Directory functionality.
+
+#### When `AcquireTokenSilent` fails
+
+Because:
+* no tokens in the cache yet
+* multiple cached tokens available - fails with `AdalException` of multiple_matching_tokens_detected - in this instance need to be more specific in the application code
+    - may happen e.g. in on behalf of scenarios
+    - may also happen due to cache being implemented incorrectly e.g. still using default cache with `UserIdentifier.AnyUser` and containing tokens for all concurrent users - instead use e.g. `new UserIdentifier(_email, UserIdentifierType.OptionalDisplayableId)`
+* all tokes expired
+    - in this case the tokens may have expired, but the session the user has with the app is still alive and the user can still use functionality on the app which doesn't require calling the API. https://klout.com is an example of how to handle this well (aggregatino of social media site)
+
+### Accessing an API as an application: Client credentials
+
+Configure your client app to list the API as a required resource, and trigger the minting of the consent by using `promt=admin_consent`. Requesting a token is now simply: `result = context.AcquireToken(resourceId, clientcredential)`. ADAL will automatically cache the access token and use it for all further requests to the API, as well as caching the client credential and using them to request a new access token when the current one expires.
+
+### Accessing an API on behalf of another user: Raw OAuth2 Authorization Grant
+
+Allowing an application to acquire and use an access token on behalf of another user requires the implementation of OAuth2 authorization grant flow. With ADAL currently you have to write code to:
+
+1. receive the authorization code
+2. validate messages
+
+Detailed code at: https://github.com/Azure-Samples/active-directory-dotnet-webapp-webapi-oauth2-useridentity
+
+### Exposing a protected web API
+
+Web APIs are registered in Azure in exactly the same way as web apps. Additionally, they have to declare the permissions a client can request at consent time in terms of either:
+
+* delegated permissions
+* application permissions
+
+In order to validate tokens, the `UseWindowsActiveDirectoryBearerAuthentication` middleware is added to the pipeline and configured with the token validation coords: `Tenant`, `Audience` in a corresponding options object. If `Tenant` is specified as e.g. abctenant.onmicrosoft.com, then this is automatically assumed to be associated with the Azure AD instance https://login.microsoftonline.com. Connect to a different instance by omitting the `Tenant` property and manually specifing the `MetadataAddress` property instead - NOTE: this needs to be the WS-Fed metadata URL. e.g. for the default Azure AD instance this translates to https://login.microsoftonline.com/abctenant.onmicrosoft.com/federationmetadata/2006/federationmetadata.xml.
+
+Aside: Microsoft chose JWT as the format for access tokens simply because it is not only Microsoft which will be the receiver of those access tokens for their own APIs (as it would be for e.g. Facebook) but since developers can write their own APIs to be protected by Azure AD. The libraries to validate id_tokens can be repurposesed to also validate access tokens.
+
+Aside 2: `UseWindowsActiveDirectoryBearerAuthentication` is simply an Azure AD specific wrapper around `UseOAuthBearerAuthentication` with specific ways to calculate the authority metadata. The latter class ultimately instantiates middleware which implements a generic JWT-based OAuth2 bearer interceptor and validator.
+
+The `oAuth2Permissions` section in the `Application` object should contain an entry for each delegated permission or `scope` the web API should support. If an admin user hasn't already configured consent for `AllPrincipals` or this web API will be consumed across multiple tenants, then the user will need to additionally grant consent for the web API at the consent prompt.
+
+#### Handling web API calls
+
+In this example a web app will be the client calling the web API. In the web app registration in Azure, add permissions to call the web API in the "Permissions to other Applications" section (any app which has a Service Principal and some scopes or roles specified should appear). If you are signed in as an admin, the new permissions should be reflected in the Service Principal entry and consent entry straight away. If not, the current consent may need to be revoked and reobtained. Check the `oauth2PermissionGrants` to make sure.
+
+    NOTE using fiddler with http://localhost sometimes doesn't work. Instead use http://localhost.fiddler
+
+#### Exposing both a web UX and a web API from the same project
+
+The web UX needs the `Cookie` and `OpenIdConnect` authentication middlewares; the web API needs the `BearerAuthentication` middleware. The solution is to add all three to the pipeline and configure the BearerAuthentication with a different `AuthenticationType` e.g. `OAuth2Bearer`.
+
+Then decorate all API action methods with an additional attribute `[HostAuthentication("OAuth2Bearer")]`
+
+#### A web API calling another API: Flowing the identity of the caller and using "on behalf of"
+
+This requires "on-behalf-of" flow as defined by OAuth2 Token Exchange extensions. The first API needs to send the authority the access_token it received from the caller, sending its credentials and the second API as the resource it wants to call. It should then receive an access_token for the second API in return. 
+
+This requires the first API to save the access_token it receives. Within the `TokenValidationParameters` the `SaveSigninToken` property can be set to true. For web APIs using `BearerAuthentication` this makes no difference, but the web UX projects, the token would be the id_token and would (by default) increase the session cookie size, so only turn on when required.
+
+```
+var bootstrapContext = ClaimsPrincipal.Current.Identities.First().BootstrapContext as System.IdentityModel.Tokens.BootstrapContext;
+var accessTokenFromUser = bootstrapContext.Token;
+
+// wrap the the original token augmented with token type and username of the original user
+var userAssertion = new UserAssertion(accessTokenFromUser, "urn:ietf:params:oauth:grant-type:jwt-bearer", username);
+
+var authContext = new AuthenticationContext(_authority);
+var result = authContext.AcquireToken(_resource, _clientCredentials, userAssertion);
+```
+
+#### Protecting a web API with ADFS "3"
+
+ADFS uses JWT format for access tokens too, so the ADAL bearer middleware can be almost repurposed as is. A new class `ActiveDirectoryFederatedServicesBearerAuthentication` is used instead, typically initialised with `Audience` and `MetaAddress` (WS-Fed metadata of the ADFS instance).
+
+Applications need to be completely pre registered with ADFS by an administrator, potentially using PowerShell e.g. using `Add-ADFSRelyingPartyTrust` command.
+
+ADFS "3" OAuth2 support is limited to public clients i.e. clients that do not have their own credentials. ADFS in Windows Server 2016, on the other hand, supports both types of clients.
+
+## Chapter 10. ADFS in Windows Server 2016 Technical Preview 3
+
+* Spin up a Windows 2016 server
+* Add Roles and Features > Active Directory
+* Promote server to Domain Controller
+    - New forest e.g. `pasta.local`
+    - DNS not necessary, but leaving it ticked is fine
+* Create new self signed cert
+* Add Roles and Features > ADFS
+    - New federation service
+    - Choose cert and name the service appropriately e.g. `bertocci.pasta.local`
+    - Choose user to run the service (e.g. admininstrator - DEV only)
+* Create test user
+* Ensure port 443 is open on the NSG
+* Add local hosts entry to public IP
+* Check the equivalent url can be hit externally e.g. https://bertocci.pasta.local/
+
+## Further reading
+
+### Other platforms
+
+* https://github.com/azuread/ ADAL libraries for other Java, Ruby, Python etc 
+* https://github.com/azure-samples?query=active-directory comprehensive list of samples
+
+
+### SPAs
+
+AzureAD offers comprehensive support. As well as the source code and the samples
+* http://www.cloudidentity.com/blog/tag/adaljs/
+* Office API samples - SPAs are a popular way to consume Azure AD and the Office API
+
+### Azure B2C
+
+* http://aka.ms/b2c
+
+### Azure AD vNext and convergence with Microsoft accounts
+
+Next version of Azure AD will have several missing features especially the ability to get tokens from either Azure AD or Microsoft accounts using the same libraries. Static permissions and consent rules will also be overhauled.
+
+* http://aka.ms/aadconvergence
