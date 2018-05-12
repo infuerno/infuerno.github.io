@@ -90,7 +90,7 @@ Authorize | Restrict an action to authorized users or roles
 ValidateAntiForgeryToken | Helps prevent cross site request forgeries
 HandleError | Can specify a view to render in the event of an unhandled exception
 
-Action filters can be applied at the method level, the class level OR the global level via FilterConfig.RegisterGlobalFilters e.g. the HandleError attribute. This uses the Error.cshtml view by default (when CustomErrors are on)
+Action filters can be applied at the method level, the class level OR the global level via FilterConfig.RegisterGlobalFilters e.g. the HandleError attribute. This uses the Error.cshtml view by default (when CustomErrors are on) - configured to use this by default.
 
 Custom action filters can be created by creating a class which inherits from `ActionFilterAttribute`. There are 4 main methods availble to override:
 1. `OnActionExecuting` - look at the request before an action executes
@@ -102,9 +102,9 @@ These action filters are very powerful - change the environment, change results,
 
 ## Razor Views
 
-* There are 2 view engines registered by default in the MVC runtime: web forms engine and razor view engine.
-* Right click inside an action and select "Add View"
-* Razor will automatically html encode any output sent through the `@` sign (`@Html.Raw` will override this)
+* There are 2 view engines registered by default in the MVC runtime: web forms engine and razor view engine
+* Razor will automatically html encode any output sent through the `@` sign
+    - `@Html.Raw` will override this
 
 ### Code Expressions
 
@@ -119,8 +119,8 @@ These action filters are very powerful - change the environment, change results,
 
 * Two special methods: `@RenderBody()` and `@RenderSection()` - allows normal views to plug in their content to specific locations in the layout.
 * `_Layout.cshtml` - conventionally starts with an underscore to denote not a primary content view
-* `_ViewStart.cshtml` - sets a layout property - convention with the razor view engine - if you have this file, it will be execute before the view is rendered. Can have multiple `_ViewStart.cshtml` files which work in a hierarchy e.g. one in the root of the Views folder, then one inside a subfolder for to be used for a subset of Views
-* `Layout = null` if you don't want to use a layout view
+* `_ViewStart.cshtml` - sets which layout to use via a `Layout` property - convention with the razor view engine - if you have this file, it will be executed before the view is rendered. Can have multiple `_ViewStart.cshtml` files which work in a hierarchy e.g. one in the root of the Views folder, then one inside a subfolder for to be used for a subset of Views
+* Set `Layout = null` in your `_ViewStart.cshtml` if you don't want to use a layout view
 * `@RenderSection("featured", required: false)` can be included in a layout view and then specified within regular views using `@section featured{ .... }`
 
 ### HTML Helpers
@@ -128,7 +128,7 @@ These action filters are very powerful - change the environment, change results,
 * Makes it easy to create small blocks of HTML. There are helpers to create inputs, links, validation messages, labels and more. 
 * Mainly intelligent e.g. `@Html.EditorFor()` will emit an `<input type="text"/>` for strings and `<input type="checkbox"/>` for booleans
 * All methods are available from the `Html` property that a view inherits
-* `Html.ActionLink("Edit", "Edit", new { id = item.ID }"` will render a link with text "Edit" pointing to the Edit action, and will pass an anoymous object along to the routing engine, which will contruct the URL intelligently working out where to put the id value into the URL e.g. `/Reviews/Edit/3`
+* `Html.ActionLink("Edit", "Edit", new { id = item.ID }"` will render a link with text "Edit" pointing to the Edit action, and will pass an anoymous object along to the routing engine, which will construct the URL intelligently, working out where to put the id value into the URL e.g. `/Reviews/Edit/3`
 * `Html.BeginForm()` will emit a form tag. With no additional params, the action will be the same URL we came from, with method POST.
 * `Html.HiddenFor(model => model.Id)` emits a hidden input field
 * `Html.LabelFor(model + model.Name)` emits a label field with a `for` attribute, useful for accessibility
@@ -141,8 +141,9 @@ These action filters are very powerful - change the environment, change results,
 ### Partial Views
 
 * Partial views allow:
-   - reusing code across multiple views
-   - delegate work to another controller
+    - simplifing a view by splitting up the functionality among a view and one or more partial views
+    - reusing code across multiple views
+    - delegating work to another controller
 * Name usually starts with an `_` e.g. `_Review.cshtml`
 * Rendered using `Html.Partial("_Review", item)` where item is the model - this method can only be passed the current model, or part of the current model
 * The location of the partial view file will determine which pages are allowed to use it
@@ -213,8 +214,7 @@ var model = _db.Restaurants.Where(r => r.Country == "USA").OrderBy(r => r.Name)
     .Select(r => new { r.Id, r.Name, r.City, r.Country, NumberOfReviews = r.Reviews.Count() });
 ```
 
-To filter using a parameter which may be null use: `.Where(searchTerm == null || r.Country.StartsWith(searchTerm)`
-
+To filter using a parameter which may be null use: `.Where(searchTerm == null || r.Country.StartsWith(searchTerm))`
 
 ## Working with Data (Part 2)
 
@@ -226,7 +226,7 @@ To filter using a parameter which may be null use: `.Where(searchTerm == null ||
     - `Html.ActionLink("LinkText", "ActionName", new { id=item.Id })`
     - `Html.ActionLine("LinkText", "ActionName", "ControllerName", new { id=item.Id }, null)` to specify a different controller (if you forget the last parameter, the override with `htmlAttributes` for the last parameter, not `routeValues` will be chosen)
     - the `htmlAttributes` parameter allows you to specify extra attributes e.g. `target="_blank"` i.e. `new { target="_blank" }`
-* By default in a controller you would expect any `id` paramter to relate to the entity for this controller. `public ActionResult Index([Bind(Prefix="id")] int restaurantId)` will allow the parameter to be bound called `id` and keep this simple in views and routes, but also make it explicit that this is not the id of a review, but the id of a restaurant in the actual controller.
+* By default in a controller you would expect any `id` parameter to relate to the entity for this controller. `public ActionResult Index([Bind(Prefix="id")] int restaurantId)` will allow the parameter to be bound called `id` and keep this simple in views and routes, but also make it explicit that this is not the id of a review, but the id of a restaurant in the actual controller.
 * EF doesn't load up associated child collections automatically
 * Adding the keyword `virtual` to the model definition of the child collection e.g. `public virtual ICollection<RestaurantReview> Reviews { get; set; }`. A wrapper will now be created to intercept calls to the Reviews property to ensure these are now loaded via a second call to the database. Two queries instead of one may be a worry - if so read this on eager loading: http://msdn.microsoft.com/en-US/data/jj574232
 
@@ -277,8 +277,8 @@ To filter using a parameter which may be null use: `.Where(searchTerm == null ||
 
 * `_references.js`, `xxx.intellisense.js` - for intellisense
 * `xxx.unobtrusive...js` - authored by the MVC team, serve as a bridge between ASP.NET MVC and jQuery. Need the `unobtrusive` scripts for some of the client side validation to work - it takes metadata which is emitted by HTML helpers (e.g. EditorFor) and feeds the data into the jQuery validations
-* `@Scripts.Render("~/bundles/modernizr"` will emit the correct HTML to include the modernizr libraries (need to be at the top of the page)
-* `@Scripts.Render("~/bundles/jquery"` included at the bottom of the page (as most script files should be)
+* `@Scripts.Render("~/bundles/modernizr")` will emit the correct HTML to include the modernizr libraries (need to be at the top of the page)
+* `@Scripts.Render("~/bundles/jquery")` included at the bottom of the page (as most script files should be)
 * `@Scripts.Render()` and `@Styles.Render()` give minified bundles of JS and CSS respectively - the ASP.NET bundling feature can bundle scripts together at runtime
 * `BundleConfig.RegisterBundles(BundleCollection bundles)` is called from the `Application_Start()` in `Global.asax.cs`
     - the `{version}` tag will substitute for a version number so you can update js libraries without changing C# code
@@ -286,7 +286,8 @@ To filter using a parameter which may be null use: `.Where(searchTerm == null ||
 
 ### AJAX Helpers
 
-* Where `Html.BeginForm()` makes a synchronous request to the server, `Ajax.BeginForm()` makes an asynchronous request to the server to redraw just a portion of the screen. The `AjaxOptions` object passed in, tells the helper which part of the page to update
+* Where `Html.BeginForm()` makes a synchronous request to the server, `Ajax.BeginForm()` makes an asynchronous request to the server to redraw just a portion of the screen. The `AjaxOptions` object passed in, tells the helper which part of the page to update.
+* `Install-Package Microsoft.jQuery.Unobtrusive.Ajax` to install the ajax JavaScript files and add it to an appropriate bundle.
 
 ```
 @using(Ajax.BeginForm(new AjaxOptions(HttpMethod="get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "restaurantList")) {
@@ -314,7 +315,7 @@ return View(model);
 
 ### Autocomplete
 
-* New action on the controller e.g. `public ActionResult Autocomplete(string term)` (documentation for jQuery uses the name `term` for the parameter) which queries the database, get any restaurants starting with `term` and projects each one into a new object with property called `label` containing the name of the restaurant.
+* New action on the controller e.g. `public ActionResult Autocomplete(string term)` (documentation for jQuery uses the name `term` for the parameter) which queries the database, get any restaurants starting with `term` and projects each one into a new anonymous llobject with property called `label` containing the name of the restaurant.
 * Then `return Json(model, JsonRequestBehaviour.AllowGet);` to return results in JSON
 * Wire this up on the element needing autocomplete, e.g. the searchTerm `<input />` tag using a data-* attribute e.g. `data-otf-autocomplete="@Url.Action("Autocomplete")"`
 * Then write the JavaScript to implement this:
@@ -466,4 +467,37 @@ There are 3 ways to identify a user in ASP.NET:
 ## Unit Testing with ASP.NET MVC
 
 ## Deployment and Configuration
+
+### Configuration Files
+
+* XML files control environment settings: Authentication, Compilation, Connections, Cryptography, Custom Errors
+* Hierarchical - lower level settings can (if not locked down) override higher level settings
+  - `machine.config` (settings for all .NET applications)
+  - Machine level `web.config` (settings for all ASP.NET applications)
+  - Parent's `web.config` - if the application is deployed underneath another application
+  - `web.config` - inside the root of the application and optionally inside subfolders e.g. the `Views` folder
+
+The `machine.config` and machine level `web.config` are in C:\Windows\Microsoft.NET\Framework\v4.0.30319\Config.
+The `Views`'s folders `web.config` contains a FileNotFound handler which returns a 404 if anyone tries to request a view file directly in the URL (rather than going via a controller).
+
+### Hosting
+
+MVC compiles to a DLL and requires a host process to execute, to deliver HTTP requests to the logic inside the dll.
+w3wp.exe - per app pool
+
+### Preparation for Deployment
+
+* Turn automatic migrations off again `AutomaticMigrationsEnabled = "false"`
+* Delete the original migration script
+* Delete the database
+* Get rid of any test data seed creations
+* `Add-Migration InitialCreate`
+* Set the migrations to run automatically on deployment - can either do via code or configuration, example code below:
+
+```
+using System.Data.Entity.Migrations;
+
+var migrator = new DbMigrator(new Configuration()); // Configuration is in the Migrations folder
+migrator.Update();
+```
 
