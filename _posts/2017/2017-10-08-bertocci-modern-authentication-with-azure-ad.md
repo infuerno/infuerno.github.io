@@ -622,7 +622,7 @@ The `ConfigurationManager` class retrieves, caches and refreshes validation sett
 Other options for driving the general behaviour of the middleware;
 
 * `SignInAsAuthenticationType` determines the value of `AuthenticationType` of the `ClaimsPrincipal` generated from the incoming token e.g. "Cookies"
-* `AuthentcationType` identifies this middleware e.g. `OpenIdConnect`
+* `AuthenticationType` identifies this middleware e.g. `OpenIdConnect`
 * `AuthenticationMode` e.g. "Active" or "Passive"
 * `UseTokenLifetime` will default a cookie middleware's session timeout to the length of validity of the `id_token` (defaults to 1 hour on Azure AD) - IMPORTANT - set this to FALSE if you want the use the session-duration settings on the `CookieMiddleware` instead
 * `Caption` - use for the text for a button to show the user if there are mutliple possible middlewares for this user to sign on with
