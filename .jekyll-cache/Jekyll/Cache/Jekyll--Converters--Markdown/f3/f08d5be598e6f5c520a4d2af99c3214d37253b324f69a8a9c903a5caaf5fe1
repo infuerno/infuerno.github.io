@@ -1,0 +1,46 @@
+I"$<h2 id="install-and-run">Install and Run</h2>
+
+<ol>
+  <li>Install ASP.NET Core</li>
+  <li>Install yo generator either globally or locally: <code class="highlighter-rouge">npm install generator-aspnet</code></li>
+  <li>Create a folder for the project and run the generator <code class="highlighter-rouge">yo aspnet</code></li>
+  <li><code class="highlighter-rouge">cd</code> into the project folder, <code class="highlighter-rouge">dnu restore</code> to restore the nuget packages and <code class="highlighter-rouge">dnu web</code> to run the project</li>
+</ol>
+
+<h2 id="webapi-controller">WebApi Controller</h2>
+
+<ol>
+  <li>Create a new controller using the yo generator: <code class="highlighter-rouge">yo aspnet:WebApiController RunnersController</code></li>
+  <li>Create a new model using the yo generator: <code class="highlighter-rouge">yo aspnet:Class Runners</code></li>
+  <li>Write the Runners model</li>
+  <li>Implement the Get() and Get(id) controller methods</li>
+  <li>Remove the 451 reference in the project.json (or build with mono)</li>
+  <li><code class="highlighter-rouge">dnu build</code></li>
+  <li><code class="highlighter-rouge">dnx web</code></li>
+  <li>Test with http://localhost/api/runners and http://localhost/api/runners/1</li>
+  <li>Customise the JSON serialisation to be ProperCase on the server and camelCase on the client (in ConfigureServices, add the following onto the end of the <code class="highlighter-rouge">services.AddMvc()</code>: <code class="highlighter-rouge">.AddJsonOptions( options =&gt; options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());</code></li>
+</ol>
+
+<h2 id="angular-application-take-one">Angular Application (take one)</h2>
+
+<ol>
+  <li><code class="highlighter-rouge">bower install angular</code></li>
+  <li>Add script tags for angular.js to _Layout.cshtml</li>
+  <li>Add app.js and add script tag to _Layout.cshtml</li>
+  <li>Add angular js code to app.js and mark up to Index.cshtml</li>
+</ol>
+
+<h2 id="angular-application-take-two">Angular Application (take two)</h2>
+
+<ol>
+  <li><code class="highlighter-rouge">bower install angular</code>, <code class="highlighter-rouge">bower install angular-ui-router</code></li>
+  <li>Add script tags for each to _Layout.cshtml
+Add <code class="highlighter-rouge">app.module.js</code>, <code class="highlighter-rouge">app.config.js</code> files and implement including $locationProvider to use html5Mode, $urlRouterProvider to set a default route and $stateProvider to define the routes to the SPA html pages (e.g. / goes to app/home.html and /runners goes to app/runners.html)</li>
+  <li>Add a home.controller.js which does nothing</li>
+  <li>Add a runners.controller.js which calls the /api/runners endpoint and adds to the view model</li>
+  <li>Add a home.html page</li>
+  <li>Add a runners.html page which iterates around the runners to display them</li>
+  <li>Add the angular mark up to Index.cshtml to render the angular app (i.e. <code class="highlighter-rouge">&lt;div ng-app="app"&gt;&lt;ui-view&gt;&lt;/ui-viewv&gt;&lt;/div&gt;</code>)</li>
+  <li></li>
+</ol>
+:ET

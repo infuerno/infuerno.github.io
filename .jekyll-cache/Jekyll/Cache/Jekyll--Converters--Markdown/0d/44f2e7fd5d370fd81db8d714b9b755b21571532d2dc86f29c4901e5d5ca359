@@ -1,0 +1,122 @@
+I"�"<h2 id="history">History</h2>
+
+<ul>
+  <li>1st Generation - single file</li>
+  <li>2nd Generation - multiple file - centralized e.g. SVN, TFS</li>
+  <li>3rd Generation - works on change sets - distributed e.g. Git, Hg, Bazaar, BitKeeper</li>
+</ul>
+
+<h2 id="configuring-git">Configuring Git</h2>
+
+<ul>
+  <li>System configuration using <code class="highlighter-rouge">git config --system</code> stored in /etc/gitconfig</li>
+  <li>User configuration using <code class="highlighter-rouge">git config --global</code> stored in ~/.gitconfig</li>
+  <li>Repo configuration using <code class="highlighter-rouge">git config</code> stored in .git/config in each repo</li>
+</ul>
+
+<p><code class="highlighter-rouge">git config --global --list</code> - see global configurations
+<code class="highlighter-rouge">git config --global user.name "Claire Furney"</code> to configure the user name
+<code class="highlighter-rouge">git config --global core.editor vim</code>
+<code class="highlighter-rouge">git config --global help.autocorrect 1</code> to configure fuzzy matching on git commands
+<code class="highlighter-rouge">git config --global color.ui auto</code>
+<code class="highlighter-rouge">git config --global core.autocrlf input</code> can be one of <code class="highlighter-rouge">true|false|input</code> (generally set to <code class="highlighter-rouge">true</code> on Win and <code class="highlighter-rouge">input</code> on Mac OSX)
+<code class="highlighter-rouge">git config --global alias.lga "log --graph --oneline --all --decorate"</code></p>
+
+<p>More specific override more general, so you can override certain settings just for a particular repo.</p>
+
+<h2 id="working-locally-with-git">Working Locally with Git</h2>
+
+<p><code class="highlighter-rouge">git init</code> - initialise a new repo
+<code class="highlighter-rouge">git add README.txt</code> - add a new file to be staged for commit
+<code class="highlighter-rouge">git add -u</code> - stage any updated files (will notice updates or deletes, any files it already knows about)
+<code class="highlighter-rouge">git add -A</code> - add all files including any untracked ones (careful not to add anything you don’t want tracked)
+<code class="highlighter-rouge">git log</code> - to show commit history
+<code class="highlighter-rouge">git diff dd6819a..a15ec6b</code> - to diff two commits
+<code class="highlighter-rouge">git diff HEAD~1..HEAD</code> to diff the penultimate commit (HEAD~1) and the latest commit (HEAD)</p>
+
+<p>By staging and commiting in two parts, you can stage and commit different unrelated changes separately.</p>
+
+<p>Use <code class="highlighter-rouge">rm</code> or <code class="highlighter-rouge">mv</code> as normal to delete or rename files, stage any changes and commit them, Git will recognise renames as such.</p>
+
+<p><code class="highlighter-rouge">git checkout README.txt</code> will by default checkout the HEAD version of a file and overwrite any local changes
+<code class="highlighter-rouge">git reset --head</code> will checkout all changes from HEAD, overwriting any local changes
+<code class="highlighter-rouge">git reset --soft HEAD~1</code> will checkout the HEAD~1 commit with the latest changes previously committed staged
+<code class="highlighter-rouge">git reset --hard HEAD</code> will checkout the HEAD~1 commit and lose all previously committed changes</p>
+
+<p><code class="highlighter-rouge">git clean</code> cleans up a working copy and removes any unstaged files
+<code class="highlighter-rouge">git clean -n</code> shows what if information
+<code class="highlighter-rouge">git clean -f</code> forces the clean</p>
+
+<h2 id="working-remotely-with-git">Working Remotely with Git</h2>
+
+<p><code class="highlighter-rouge">git log --oneline</code> shows commit messages on one line
+<code class="highlighter-rouge">git log --oneline | wc -l</code> pipes this into <code class="highlighter-rouge">wc</code> to count the number of commit messages (<code class="highlighter-rouge">-l</code> = number of lines)
+<code class="highlighter-rouge">git log --oneline --graph</code> to show a simple graph of branches
+<code class="highlighter-rouge">git log --oneline --all --decorate</code> to show any tags, labels
+<code class="highlighter-rouge">git log origin/master</code> to show the logs 
+<code class="highlighter-rouge">git shortlog</code> shows commits by author
+<code class="highlighter-rouge">git shortlog -sne</code> shows summary (no commit msgs), numerically by number of commits, emails included
+<code class="highlighter-rouge">git show HEAD</code> to show details of the last commit, use HEAD~1 or HEAD~10 or just the sha hash to show other commits</p>
+
+<p><code class="highlighter-rouge">git remote</code> to show your remotes
+<code class="highlighter-rouge">git remote -v </code> to show the details of the remotes</p>
+
+<p><code class="highlighter-rouge">git reflog</code> to show the log of where HEAD has been pointing</p>
+
+<h3 id="git-protocols">Git Protocols</h3>
+
+<p>http(s) on ports 80 and 443 e.g. https://github.com/jquery/jquery.git - read/write; password for auth
+git protocol on port 9418 e.g. git://github.com/jquery/jquery.git - read only; anonymous only
+ssh on port 22 e.g. git@github.com:jquery/jquery.git - read/write; ssh keys for auth
+file e.g. /Users/claire/repos/jquery - read/write; local only</p>
+
+<h3 id="branches">Branches</h3>
+
+<p>Branches are simply labels on the sha1 commits, but following along with more recent commits.</p>
+
+<p><code class="highlighter-rouge">git branch</code> shows the local branches
+<code class="highlighter-rouge">git branch -r</code> shows the remote branches
+<code class="highlighter-rouge">git branch -v</code>
+<code class="highlighter-rouge">git remote add [remote-alias] [remote-url]</code> if you use the ssh version it will be able to push without creds if ssh keys have been set up
+<code class="highlighter-rouge">git fetch</code>
+<code class="highlighter-rouge">git merge origin/master</code> merge from origin/master in to current local branch - get a message fast-forward, then no merging / commiting needed to be done and git was able to just move the HEAD pointer to the latest commit
+<code class="highlighter-rouge">git pull</code> will only work if you have already specified an upstream remote tracking branch
+<code class="highlighter-rouge">git pull origin master</code> if you haven’t specified the upstream branch - same as git fetch &amp;&amp; git merge origin/master
+<code class="highlighter-rouge">git remote rm origin</code> to remove a configured remote
+<code class="highlighter-rouge">git branch feature1</code> to create a new feature1 branch
+<code class="highlighter-rouge">git checkout feature1</code> to switch to it
+<code class="highlighter-rouge">git checkout -b feature2</code> to create a new branch and switch to it
+<code class="highlighter-rouge">git branch fix1 a15ec6b</code> to create a branch of a particular commit, and then <code class="highlighter-rouge">git checkout fix1</code>
+<code class="highlighter-rouge">git branch -m fix1 bug1234</code> to rename a branch</p>
+
+<h3 id="tags">Tags</h3>
+
+<p>Tags are labels on the sha1 commits which never change (unlike branches).</p>
+
+<p><code class="highlighter-rouge">git tag v1.0</code>
+<code class="highlighter-rouge">git tag -a v1.0</code> to add a message
+<code class="highlighter-rouge">git tag -s v1.0</code> to sign a tag</p>
+
+<h3 id="stash">Stash</h3>
+
+<p>Useful way as a temporary holding area for changes you don’t want to commit to a branch, but you don’t want to lose.</p>
+
+<p><code class="highlighter-rouge">git stash</code> to rollback any uncommitted changes on the current branch and stash those changes
+<code class="highlighter-rouge">git stash list</code> to list current stashes
+<code class="highlighter-rouge">git stash apply</code> to reapply the uncommitted changes from the stash, stash stays in stash list
+<code class="highlighter-rouge">git stash pop</code> to reapply the uncommitted changes from the stash, stash is removed from stash list
+<code class="highlighter-rouge">git stash drop</code> to drop things from the stash list
+<code class="highlighter-rouge">git stash branch feature3</code> to create a branch from a stash, stash is popped</p>
+
+<h3 id="merging">Merging</h3>
+
+<p><code class="highlighter-rouge">git merge feature1</code> will merge the feature1 branch in the the current local branch
+<code class="highlighter-rouge">git mergetool</code> to resolve any merge conflicts
+<code class="highlighter-rouge">git diff --cached</code> compare the repo to the staging area</p>
+
+<h3 id="rebasing">Rebasing</h3>
+
+<p><code class="highlighter-rouge">git rebase master</code> rebase your changes on top of master - useful after pulling in any recent repo changes to master. If there are any conflicts with this, then run <code class="highlighter-rouge">git mergetool</code> to resolve these
+<code class="highlighter-rouge">git rebase --continue</code> to retry the rebase</p>
+
+:ET

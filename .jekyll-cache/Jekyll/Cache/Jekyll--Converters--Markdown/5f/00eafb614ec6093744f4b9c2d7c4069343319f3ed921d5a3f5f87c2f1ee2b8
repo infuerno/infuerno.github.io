@@ -1,0 +1,9 @@
+I"¤<h1 id="introduction">Introduction</h1>
+<p>Made up of various NuGet package libraries in the <code class="highlighter-rouge">Microsoft.EntityFrameworkCore.*</code> packages.</p>
+<h2 id="versions">Versions</h2>
+<ul>
+  <li>EF Core 1.0 June 2016</li>
+  <li>EF Core 2.0 August 2017 - lots of changes, first solid version</li>
+  <li>EF Core 2.1 May 2018 (Minor update) - important update with lots of new features</li>
+</ul>
+:ET

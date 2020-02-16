@@ -1,0 +1,32 @@
+I"{<h2 id="javascript">JavaScript</h2>
+
+<h3 id="references">References</h3>
+
+<p>https://developer.mozilla.org/en-US/docs/JavaScript/Guide</p>
+
+<p>Method - a function which is inside of a variable</p>
+
+<p>Nameless / anonymous / lambda functions - functions which don’t have a name but can be called.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>document.getElementById('registration').onsubmit = function() {
+    // do stuff;
+    // return true to continue submission, false to stop
+};
+</code></pre></div></div>
+
+<h3 id="jquery">jQuery</h3>
+
+<p><code class="highlighter-rouge">$("#map-canvas")</code> returns a jQuery object (with lots of functionality built in)
+<code class="highlighter-rouge">$("#map-canvas").get(0)</code> returns the actual underlying DOM node which jQuery is wrapping</p>
+
+<h3 id="ajax-example">Ajax example</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function quote() {
+    var url = "quote.php?symbol="  + $('#symbol').val();
+    $.getJSON(url, function(data) {
+        $('#price').html(data.price);
+    });
+}
+</code></pre></div></div>
+
+:ET

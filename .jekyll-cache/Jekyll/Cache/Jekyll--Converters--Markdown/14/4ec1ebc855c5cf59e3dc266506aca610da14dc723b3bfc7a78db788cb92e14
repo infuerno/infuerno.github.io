@@ -1,0 +1,271 @@
+I"�L<h2 id="software-containers">Software Containers</h2>
+
+<h3 id="why-containers">Why Containers?</h3>
+
+<p>VMs require memory to host both the OS and the Apps, time is required to boot the machine, space to hold the OS files. With multiple VMs on the same hardware this is all duplicated. Containers try to solve this problem. Instead of virtualizing the hardware, a container virtualizes the operating system.</p>
+
+<h3 id="understanding-docker">Understanding Docker</h3>
+
+<p>https://docs.docker.com/engine/docker-overview/</p>
+
+<p>Docker Host provides a REST API for managing containers. The API can be used by a CLI client e.g. <code class="highlighter-rouge">docker build</code>, <code class="highlighter-rouge">docker pull</code>, <code class="highlighter-rouge">docker run</code>. (Tools in VS can run these commands behind the scene.) Containers change how you develop, test and deploy an application. No longer deploy exes, zip files etc, but container images instead. The image will hold the application files as well as any dependencies. Docker uses the image to create the container which will run and host the application. Docker instantiates one or more containers using an image. A docker registery allows you to search and download images e.g. the base image your image relies upon.</p>
+
+<h3 id="installing-docker-for-windows">Installing Docker for Windows</h3>
+
+<ul>
+  <li>Docker for Windows can run either windows OR linux containers.</li>
+  <li>Swapping between the two gives different configuration options, a lot fewer for Windows (since this is simpler)</li>
+  <li>To run linux containers, a running instance of a linux operating system is required. This is specified under Settings &gt; Advanced (with linux containers configured).</li>
+  <li><code class="highlighter-rouge">docker version</code> - display version information as well as details of server and client.</li>
+</ul>
+
+<h3 id="using-the-docker-command-line">Using the Docker command line</h3>
+
+<ul>
+  <li>https://hub.docker.com</li>
+  <li>https://hub.docker.com/_/microsoft-dotnet-core</li>
+</ul>
+
+<h3 id="creating-images-from-containers">Creating Images from Containers</h3>
+
+<p><code class="highlighter-rouge">docker pull microsoft/dotnet/core/sdk</code> - pull the latest image containing the sdk
+<code class="highlighter-rouge">docker run -it --name firstapp [image-id]</code> - create a container and jump into an interactive prompt
+<code class="highlighter-rouge">docker ps -a</code> - list all containers (running or stopped)
+<code class="highlighter-rouge">docker commit d5 pluralsight:firstapp</code> - create an image FROM a container
+<code class="highlighter-rouge">docker run 22 hello.cmd</code> (where <code class="highlighter-rouge">hello.cmd</code> is a simple batch script to run a console app)</p>
+
+<h3 id="dockerfile">Dockerfile</h3>
+
+<p>A Dockerfile specifies an image to create from another base image, similar to above, but rather more polished! Uses <code class="highlighter-rouge">docker build</code>. From Visual Studio select “Add Docker Support” to generate a default DockerFile for an application. Following that RUN using Docker (rather than e.g. IIS Express) and VS will issue the requisite <code class="highlighter-rouge">docker build</code> command.</p>
+
+<p><code class="highlighter-rouge">docker build -f "amarula.api\Dockerfile" -t amarulaapi:dev --target base --label "com.microsoft.created-by=visual-studio" .</code><br />
+<code class="highlighter-rouge">docker run -dt -v "C:\Users\Claire\vsdbg\vs2017u5:/remote_debugger:rw" -v "C:\Users\Claire\Projects\GitLab\pluralsight-azure-dotnet-developers\amarula.api:/app" -v "C:\Users\Claire\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro" -v "C:\Users\Claire\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro" -v "C:\Users\Claire\.nuget\packages\:/root/.nuget/fallbackpackages2" -v "C:\Program Files\dotnet\sdk\NuGetFallbackFolder:/root/.nuget/fallbackpackages" -e "DOTNET_USE_POLLING_FILE_WATCHER=1" -e "ASPNETCORE_ENVIRONMENT=Development" -e "ASPNETCORE_URLS=https://+:443;http://+:80" -e "ASPNETCORE_HTTPS_PORT=44311" -e "NUGET_PACKAGES=/root/.nuget/fallbackpackages2" -e "NUGET_FALLBACK_PACKAGES=/root/.nuget/fallbackpackages;/root/.nuget/fallbackpackages2" -p 9019:80 -p 44311:443 --entrypoint tail amarulaapi:dev -f /dev/null</code></p>
+
+<p>where:</p>
+<ul>
+  <li>-d = detached mode</li>
+  <li>-t = allocate a psuedo tty</li>
+</ul>
+
+<p>Permissions window may pop up “Docker wants to share C:\ - allow?”. Click allow. Then a firewall request to allow vpnkit.exe. Finally select to trust the ASP.NET core development certificate.</p>
+
+<h3 id="pushing-images-to-docker">Pushing Images to Docker</h3>
+
+<ul>
+  <li>Create a new repository on docker hub</li>
+  <li>The name of the image being pushed needs to be username/repo-name. Either update the build process to ensure this is the name user OR create a tag for an existing image e.g. <code class="highlighter-rouge">docker tag dd7 infuerno/amarula</code></li>
+  <li>Push the image using <code class="highlighter-rouge">docker push infuerno/amarula</code></li>
+</ul>
+
+<h3 id="evaluating-container-options">Evaluating Container Options</h3>
+
+<p>Many different approaches for running containers in Azure e.g. create VM running Windows Server with the Containers feature enabled. The “Container Instances” platform is the easiest way to get a container running in Azure - specify a few parameters in terms of memory etc and go. The “Container Service” handles more sophisticated options.</p>
+
+<p>Alternatively you can run a container inside an App Service using the “bring my own container” option.</p>
+
+<h3 id="running-a-container-in-app-services">Running a Container in App Services</h3>
+
+<p>Create a web app as usual, but choosing docker configuration options as per the image. NOTE: the service will be running behind a proxy server running in the App Service itself. The App Service can take care of TLS communication. In order to have a certificate installed in the container, the code to force HTTPS redirection (and HSTS) can therefore be removed.</p>
+
+<h3 id="setting-up-continuous-deployment">Setting up Continuous Deployment</h3>
+
+<ul>
+  <li>Restart the web app to force it to fetch the latest image from docker hub. Alternatively, set up a web hook to detect changes in docker hub and automatically update - copy the webhook detailed in the app service to docker hub.</li>
+</ul>
+
+<h2 id="cloud-automation">Cloud Automation</h2>
+
+<ul>
+  <li>One account -&gt; one or more subscriptions (e.g. to segregate different business functions)</li>
+  <li>Subscription -&gt; one or more resource groups -&gt; one or more resources</li>
+  <li>Resource groups are powerful: a logical container, a security boundary, a unit of deployment - generally group things which have the same lifecycle</li>
+</ul>
+
+<p>Azure Resource Manager (ARM) is the service responsible for provisioning resources. Provides an HTTP based API which is used by the portal, powershell, VS etc. ARM templates can be used to create resources. ARM also supports policies and auditing. Can also enforce naming conventions.</p>
+
+<p>Resource Manager communicates via Resource Providers to create the actual resources. Each resource has a resource provider which know all the low level detail. e.g. <code class="highlighter-rouge">Microsoft.Compute</code> is the resource provider for VMs and Availability Sets.</p>
+
+<h3 id="tags">Tags</h3>
+
+<p>Key-value pairs. Can be applied to resource groups as well as resources. e.g. assign <code class="highlighter-rouge">department : engineering</code> OR <code class="highlighter-rouge">contact : james@abc.com</code>. Useful on large subscriptions especially for billing purposes. Possible to search for resources by tags. Policies can be applied to enforce tagging.</p>
+
+<h3 id="enforcing-policies">Enforcing Policies</h3>
+
+<p>Policy is about governing the resources in an Azure Subscription. When resources are created or updated, they are compliant with organisational policy e.g. all resouces must be created in UK South.</p>
+
+<p>There are lots of built in policies: Policy -&gt; Authoring -&gt; Definitions. Strange JSON to define the policy (which can also be custom authored). Policies can take paramters</p>
+
+<ul>
+  <li>Audit policies - check resources for invalid states and report</li>
+  <li>Enforce policies - ensure resources cannot be created / updated unless they meet the required policy</li>
+</ul>
+
+<p>Need to “assign” a policy for it to have an effect. Can be set at a subscription OR resource group level (or “Management Group” level - Management Groups are used to group subscriptions).</p>
+
+<p>Policies apply despite the user. To restrict users, use RBAC.</p>
+
+<h3 id="managing-access-and-locks">Managing Access and Locks</h3>
+
+<p>Each resource has an “IAM” blade to assign access. Access permissions flow down from subscriptions to resource groups and then to resources. Access is assigned using “Roles” which have a set of “Permissions” which are grouped by Resource Provider and define Read, Write, Delete, Other Actions on individual objects.</p>
+
+<p>Locks prevent accidents. Useful for automated deployments. Locks are of type Read-only (no updates) or Delete. In order to e.g. delete a resource group that has a Delete lock on it, the Lock first needs to be deleted (only “owners” have permission to do this).</p>
+
+<h3 id="using-automation-and-scripts">Using Automation and Scripts</h3>
+
+<p>Each resource has a further blade common across all: Export template (was Automation script). This displays the ARM template which can be used to recreate the resource. The template automatically parameterises certain attributes e.g. name, but anything can be parameterised e.g. location. Values can use operation e.g. <code class="highlighter-rouge">concat</code>. A <code class="highlighter-rouge">dependsOn</code> section for a resource shows dependencies. Script files are also provided to deploy the template via a script.</p>
+
+<p>Note: The generated parameters file uses strange names e.g. <code class="highlighter-rouge">sites_amarula_name</code> containing the original VALUE instead of e.g. <code class="highlighter-rouge">site_name</code>. Best to update.</p>
+
+<h3 id="using-azure-resource-explorer">Using Azure Resource Explorer</h3>
+
+<p>https://resources.azure.com</p>
+
+<h3 id="creating-resource-groups">Creating Resource Groups</h3>
+
+<p>Use VS to create a new project of type “Azure Resource Group”. Then select a template e.g. Blank Template OR Web app; The collection of files generated mimic the template exported for a resource from the portal. Various things are included out of the box. Remove things not required by deleting in the explorer, add extra things by using the wizard.</p>
+
+<p>The project can be checked into source control and deployed automatically via Azure Devops.</p>
+
+<p>For a web app, configuration settings would need to be specified in the resource templates. However, we need to avoid checking these into source control and store them in Azure Key Vault instead.</p>
+
+<h3 id="storing-secrets-in-azure-key-vault">Storing secrets in Azure Key Vault</h3>
+
+<p>When creating a key vault, by default only the user creating the key vault is given access via an “Access Policy”. Applications “service principals” can be added here. Under “Advanced access policies”, tick the box to allow ARM to access the key vault. ARM can then access the key vault to grab a secret at resource deployment time (rather than directly putting the secret into the template).</p>
+
+<p>Alternatively, instead of the ARM template populating a config setting on the app service and the app service reading from config, the application itself could be given access to the key vault and read the secret directly from there.</p>
+
+<h3 id="using-secrets-in-templates">Using Secrets in Templates</h3>
+
+<ol>
+  <li>In the ARM template, add a new parameter: <code class="highlighter-rouge">"secretValue": {"type": "securestring"}</code></li>
+  <li>Again in the ARM template, update the value of the application setting to use the parameter e.g. <code class="highlighter-rouge">[parameters('secretValue')]</code></li>
+  <li>In the parameters.json, add a new section to set a reference to the key vault and secret containing the actual value:</li>
+</ol>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"secretValue": { 
+    "reference": { 
+        "keyVault": { 
+            "id": "/long/resource/string/from/properties/pane"
+        }
+        "secretName": "Secret"
+    }
+}
+</code></pre></div></div>
+
+<h2 id="cloud-microservices">Cloud Microservices</h2>
+
+<h3 id="using-httpclient-to-call-a-web-api">Using HttpClient to call a Web API</h3>
+
+<p>In .NET Core 2.1 and above the <code class="highlighter-rouge">HttpClientFactory</code> was introduced (to solve issues with misuse of <code class="highlighter-rouge">HttpClient</code>. The factory can be registered with the DI container on startup for different endpoints, and then injected into classes as required.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// define a "named" client withih Startup.ConfigureServices()
+services.AddHttpClient("pricing", client =&gt; {
+    client.BaseAddress = new Uri(Configuration["PricingApi"]);
+});
+
+// within the controller
+private HttpClient _client;
+public HomeController(IHttpClientFactory factory)
+{
+    _client = factory.CreateClient("pricing");
+}
+
+public async Task&lt;IActionResult&gt; Index()
+{
+    var response = await _client.GetAsync("/api/values");
+    var content = await response.Content.ReadAsStringAsync();
+    var model = JsonConvert.DeserializeObject&lt;string[]&gt;(content);
+    return View(model);
+}
+</code></pre></div></div>
+
+<h3 id="making-httpclient-more-resilient">Making HttpClient More Resilient</h3>
+
+<p>Possible to use a “typed” version rather than a “named” version. See https://www.c-sharpcorner.com/article/create-a-typed-httpclient-with-httpclientfactory-in-asp-net-core/</p>
+
+<p>Polly is a useful library which can add e.g. circuit breaker patterns to provide more resiliency. The NuGet package <code class="highlighter-rouge">Microsoft.Extensions.Http.Polly</code> provides extensions that work with the <code class="highlighter-rouge">HttpClientFactory</code> to easily provide transient fault handling.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// define a "named" client withih Startup.ConfigureServices()
+services.AddHttpClient("pricing", client =&gt; {
+    client.BaseAddress = new Uri(Configuration["PricingApi"]);
+})
+// need to worry about network blips with microservices
+.AddTransientHttpErrorPolicy(builder =&gt; {
+    builder.RetryAsync(retryCount: 3);
+});
+</code></pre></div></div>
+
+<h3 id="understanding-container-orchestration">Understanding Container Orchestration</h3>
+
+<p>Containers and a container orchestration can make a microservices based system easy to create, deploy and operate. Popular orchestrators include Docker Compose and Kubernetes. Either of these can be used in Azure. Docker Compose is a little easier and simpler to use.</p>
+
+<ol>
+  <li>Right click on project and select “Container Orchestrator Support”. This will add a DockerFile to the project, but will additionally a new project will be added called <code class="highlighter-rouge">docker-compose</code></li>
+  <li>Repeat this for all projects.</li>
+</ol>
+
+<p>The new <code class="highlighter-rouge">docker-compose</code> project will be selected as the Startup Project.</p>
+
+<h3 id="taking-advantage-of-container-networking">Taking Advantage of Container Networking</h3>
+
+<p>Orchestrators allow you to configure the networking between containers. Without further configuration, Docker Compose will create a default network with hostnames set to the name of the container.</p>
+
+<p>List ports which containers are using using <code class="highlighter-rouge">ps</code>. <code class="highlighter-rouge">0.0.0.0:44311-&gt;443/tcp</code> indicates that 443 inside the host is mapped to 44311 outside the host.</p>
+
+<h3 id="microservices-in-azure">Microservices in Azure</h3>
+
+<ul>
+  <li>VMs with Kubernetes etc installed</li>
+  <li>Azure Kubernetes Service - platform for creating clusters where you can manage, deploy and operate containers</li>
+  <li>App Services for containers - not as flexible and configurable as Kubernets, but straightforward and can use Docker Compose configuration</li>
+  <li>Microsoft Service Fabric - runtime technology allowing distribution of microservices across nodes in a cluster; ALSO a programming model with its own SDK; ALSO understands how to run containers</li>
+  <li>Azure Container instances</li>
+</ul>
+
+<h3 id="creating-an-azure-container-registry">Creating an Azure Container Registry</h3>
+
+<ul>
+  <li>Private registery which is fast since geographically close to App Service</li>
+  <li>Container registeries &gt; Add &gt; Disable Admin User &gt; Standard (determines storage space, replication etc = 100GB)
+    <ul>
+      <li>Check login server under “Access Keys”</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="pushing-images-to-azure-container-registry">Pushing images to Azure Container Registry</h3>
+
+<p>Want to be able to <code class="highlighter-rouge">docker push</code> our own images to the an Azure Container Registry we have created.</p>
+
+<ul>
+  <li>Images need to be prefixed with the login server name</li>
+  <li>Instead of “tagging” images to get the correct name, Docker Compose can be configured to build the image with the correct name</li>
+  <li>Update the <code class="highlighter-rouge">image</code> name inside the Docker Compose file and build in release mode</li>
+  <li><code class="highlighter-rouge">az login</code> to login to Azure</li>
+  <li><code class="highlighter-rouge">az acr login --name amarula-registry</code> to login to the Azure Container Registry</li>
+  <li><code class="highlighter-rouge">docker push amarua-registry.azurecr.io/amarula-pricing-api</code></li>
+</ul>
+
+<h3 id="orchestrating">Orchestrating</h3>
+
+<ul>
+  <li>Enable the admin user on the ACR. Currently, a linux based app service needs a username and password to authenticate and pull images from the ACR (will probably be resolved when Managed Service Identities are available for Linux based app services)</li>
+  <li>Create a new app service, choose to publish a Docker Image, select Docker Compose, select Azure Container Registry (this will add Application Settings to the Web App to point to the ACR along with a username and password)</li>
+  <li>Add <code class="highlighter-rouge">depends_on</code> information to the Docker Compose to define any dependencies e.g. <code class="highlighter-rouge">depends_on - "amarula-pricing-api"</code></li>
+  <li>Add <code class="highlighter-rouge">ports</code> - in App Services only one container can be bound to the public IP (no such restriction with Kubernetes) - by default App Services will check containers to see which one exposes port 80 or 8080 to the host e.g. <code class="highlighter-rouge">ports: - "80:80"</code></li>
+  <li>Upload the Docker Compose YAML file (be aware that not all features are supported by App Services)</li>
+</ul>
+
+<h3 id="troubleshooting-web-apps-for-containers">Troubleshooting Web Apps for Containers</h3>
+
+<ul>
+  <li>Turn on App Service Logging, use the live Log Stream, update configuration under Container Settings</li>
+</ul>
+
+<h2 id="cloud-identity">Cloud Identity</h2>
+
+<ul>
+  <li>Azure AD</li>
+</ul>
+
+:ET

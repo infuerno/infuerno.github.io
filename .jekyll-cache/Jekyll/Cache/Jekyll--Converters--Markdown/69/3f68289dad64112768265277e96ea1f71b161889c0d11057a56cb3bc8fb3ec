@@ -1,0 +1,135 @@
+I"�)<p>https://google.qwiklabs.com/quests/40</p>
+
+<h1 id="iam-custom-roles">IAM Custom Roles</h1>
+
+<p>Roles bundle one or more permissions. <strong>Predefined roles</strong> are created and maintained by Google. <strong>Custom roles</strong> are user-defined.</p>
+
+<p>Custom roles can be created at the organization level and at the project level, but not at the folder level.</p>
+
+<p>Permissions are represented in the form <code class="highlighter-rouge">&lt;service&gt;.&lt;resource&gt;.&lt;verb&gt;</code> e.g. <code class="highlighter-rouge">compute.instances.list</code>.</p>
+
+<p>Custom roles can only be used to grant permissions in policies for the same project or organization that owns the roles or resources under them. You cannot grant custom roles from one project or organization on a resource owned by a different project or organization.</p>
+
+<ul>
+  <li>Create a custom role from a yaml file: <code class="highlighter-rouge">gcloud iam roles create editor --project $DEVSHELL_PROJECT_ID --file role-definition.yaml</code></li>
+  <li>List custom roles: <code class="highlighter-rouge">gcloud iam roles list --project $DEVSHELL_PROJECT_ID</code></li>
+</ul>
+
+<h2 id="general-approach-to-updating">General approach to updating</h2>
+
+<p>Common approach for updating is to read data, update locally, then send modified data for update. However, this pattern could conflict if more than one process is trying to udpate at the same time.</p>
+
+<p>Cloud IAM solves this problem using an <code class="highlighter-rouge">etag</code> property in custom roles. This property is used to verify if the custom role has changed since the last request. When making a request to Cloud IAM with an <code class="highlighter-rouge">etag</code> value, Cloud IAM compares the etag value in the request with the existing etag value associated with the custom role. It writes the change only if the <code class="highlighter-rouge">etag</code> values match.</p>
+
+<ul>
+  <li>View the current <code class="highlighter-rouge">etag</code> value using <code class="highlighter-rouge">gcloud iam roles describe editor --project $DEVSHELL_PROJECT_ID</code></li>
+  <li>Create a yaml file with current output</li>
+  <li>Update yaml</li>
+  <li>Update permissions: <code class="highlighter-rouge">gcloud iam roles update editor --project $DEVSHELL_PROJECT_ID --file new-role-definition.yaml</code></li>
+  <li>To disable, simply update the “stage” to DISABLED</li>
+  <li>To deprecate, set the stage to DEPRECATED (and additionally set the <code class="highlighter-rouge">deprecation_message</code>)</li>
+  <li>To delete use the <code class="highlighter-rouge">delete</code> command: <code class="highlighter-rouge">gcloud iam roles delete editor --project $DEVSHELL_PROJECT_ID</code> (<code class="highlighter-rouge">undelete</code>able for 7 days)</li>
+</ul>
+
+<h1 id="service-accounts-and-roles-fundamentals">Service Accounts and Roles: Fundamentals</h1>
+
+<p>Service accounts are a special type of Google account that grant permissions to virtual machines instead of end users. An application can use the service account to call Google APIs (instead of a user). e.g. VM may run under a service account and access the resources / APIs its needs.</p>
+
+<ul>
+  <li>User-managed service accounts: A Compute Engine Service account is created by default when creating a new project (if Compute Engine API is enabled). It is <code class="highlighter-rouge">PROJECT_NUMBER-compute@developer.gserviceaccount.com</code>. Similarily for App Engines (if a project has one) - <code class="highlighter-rouge">PROJECT_ID@appspot.gserviceaccount.com</code></li>
+  <li>Google-managed service accounts. Additional accounts created and managed by google. e.g. the Google API service account: <code class="highlighter-rouge">PROJECT_NUMBER@cloudservices.gserviceaccount.com</code>. DO NOT REMOVE THIS ACCOUNT.</li>
+</ul>
+
+<h2 id="creating-a-service-account">Creating a service account</h2>
+
+<ul>
+  <li>Following the 2 automatically created service accounts, 98 service accounts can additionally be created.</li>
+  <li>Create a service account: <code class="highlighter-rouge">gcloud iam service-accounts create my-sa-123 --display-name "my service account"</code></li>
+  <li>Service accounts can be treated as resources in their own right (and other users can be given permissions based on them). For example: if a VM is run under a service account, another user can be given the <code class="highlighter-rouge">serviceAccountUser</code> role to be grated permissions to start the VM (sounds strange! Why not just give permissions based on the VM instead?)</li>
+</ul>
+
+<h2 id="granting-roles-to-service-accounts">Granting Roles to Service Accounts</h2>
+
+<p><code class="highlighter-rouge">gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID --member serviceAccount:my-sa-123@$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com --role roles/editor</code></p>
+
+<h1 id="vpc-network-peering">VPC Network Peering</h1>
+
+<p>Allows private connectivity across two VPC networks regardless of whether or not they belong to the same project or the same organization.</p>
+
+<p>Advantages:</p>
+
+<ul>
+  <li>lower network latency</li>
+  <li>services not exposed to public internet (regular VPN wouldn’t be though?)</li>
+  <li>GCP costs lower since use internal IP addressing not external</li>
+</ul>
+
+<p>Setting up a network and VM in one project:</p>
+
+<ul>
+  <li>Set project in shell: <code class="highlighter-rouge">gcloud config set project &lt;PROJECT_ID&gt;</code></li>
+  <li>Create custom network: <code class="highlighter-rouge">gcloud compute networks create network-a --subnet-mode custom</code></li>
+  <li>Create a subnet: <code class="highlighter-rouge">gcloud compute networks subnets create network-a-central --network network-a --range 10.0.0.0/16 --region us-central1</code></li>
+  <li>Create a vm in the subnet: <code class="highlighter-rouge">gcloud compute instances create vm-a --zone us-central1-a --network network-a --subnet network-a-central</code></li>
+  <li>Enable SSH and ping: <code class="highlighter-rouge">gcloud compute firewall-rules create network-a-fw --network network-a --allow tcp:22,icmp</code></li>
+</ul>
+
+<h1 id="user-authentication-identity-aware-proxy">User Authentication: Identity-Aware Proxy</h1>
+
+<p>Authenticating users of your web app is often necessary, and usually requires special programming in your app. For Google Cloud Platform apps you can hand those responsibilities off to the Identity-Aware Proxy service.</p>
+
+<p>Identity-Aware Proxy (IAP) is a Google Cloud Platform service that intercepts web requests sent to your application, authenticates the user making the request using the Google Identity Service, and only lets the requests through if they come from a user you authorize. In addition, it can modify the request headers to include information about the authenticated user.</p>
+
+<ul>
+  <li>Deploy the app - <code class="highlighter-rouge">gcloud app deploy</code> - with no authorization</li>
+  <li>Test access - <code class="highlighter-rouge">gcloud app browse</code></li>
+  <li>Configure IAP consent screen: host url, homepage url, privacy url etc</li>
+  <li>Turn on IAP</li>
+  <li>Test access - not authorized</li>
+  <li>Allow email (tick checkbox - add email, role Cloud IAP/IAP-Secured Web App Use)</li>
+  <li>Test access - only email given access is now authorized</li>
+  <li>Clear the login cookie by appending: <code class="highlighter-rouge">/_gcp_iap/clear_login_cookie</code> - should be requested to reauthenticate</li>
+  <li>Now the IAP will provider two extra headers when forwarding requests to your application: <code class="highlighter-rouge">X-Goog-Authenticated-User-Email</code> and <code class="highlighter-rouge">X-Goog-Authenticated-User-ID</code></li>
+</ul>
+
+<h1 id="getting-started-with-cloud-kms">Getting Started with Cloud KMS</h1>
+
+<p>Cloud KMS is a cryptographic key management service on GCP. Ensure the API is enabled e.g. <code class="highlighter-rouge">gcloud services enable cloudkms.googleapis.com</code></p>
+
+<h2 id="create-a-keyring-and-cryptokey">Create a Keyring and Cryptokey</h2>
+
+<p>In order to encrypt the data, you need to create a KeyRing and a CryptoKey. KeyRings are useful for grouping keys. Keys can be grouped by any conceptual grouping e.g. <code class="highlighter-rouge">test</code>, <code class="highlighter-rouge">staging</code>, <code class="highlighter-rouge">prod</code>.</p>
+
+<p>These examples will use the KeyRing <code class="highlighter-rouge">test</code> and the CryptoKey <code class="highlighter-rouge">qwiklab</code>.</p>
+
+<ul>
+  <li>Create the KeyRing: <code class="highlighter-rouge">gcloud kms keyrings create test --location global</code></li>
+  <li>Create the CryptoKey: <code class="highlighter-rouge">gcloud kms keys create qwiklab --location global --keyring test --purpose encryption</code>
+    <ul>
+      <li>Note: CryptoKeys and KeyRings cannot be deleted in Cloud KMS!</li>
+    </ul>
+  </li>
+  <li>Encode text file using base64: <code class="highlighter-rouge">cat file.txt | base64 -w0</code> (base64 encoding allows binary data to be encoded as plain text)</li>
+  <li>Send this to the API to encrypt:
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -v "https://cloudkms.googleapis.com/v1/projects/$DEVSHELL_PROJECT_ID/locations/global/keyRings/$KEYRING_NAME/cryptoKeys/$CRYPTOKEY_NAME:encrypt" \
+-d "{\"plaintext\":\"$PLAINTEXT\"}" \
+-H "Authorization:Bearer $(gcloud auth application-default print-access-token)"\
+-H "Content-Type: application/json"
+</code></pre></div>    </div>
+  </li>
+  <li>Save the <code class="highlighter-rouge">ciphertext</code> field of the resulting JSON to a file using the <code class="highlighter-rouge">jq</code> tool: <code class="highlighter-rouge">jq .ciphertext -r &gt; 1.encrypted</code></li>
+  <li>Test by sending the the API to decrypt:
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -v "https://cloudkms.googleapis.com/v1/projects/$DEVSHELL_PROJECT_ID/locations/global/keyRings/$KEYRING_NAME/cryptoKeys/$CRYPTOKEY_NAME:decrypt" \
+-d "{\"ciphertext\":\"$(cat 1.encrypted)\"}" \
+-H "Authorization:Bearer $(gcloud auth application-default print-access-token)"\
+-H "Content-Type:application/json" \
+| jq .plaintext -r | base64 -d
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h2 id="configure-iam-permissions">Configure IAM Permissions</h2>
+
+<p>Two major sets of permissions: permissions to manage KMS resources i.e. keys, keyrings: <code class="highlighter-rouge">cloudkms.admin</code>; permissions to access KMS resources to encrypt and decrypt data: <code class="highlighter-rouge">cloudkms.cryptoKeyEncrypterDecrypter</code></p>
+
+:ET

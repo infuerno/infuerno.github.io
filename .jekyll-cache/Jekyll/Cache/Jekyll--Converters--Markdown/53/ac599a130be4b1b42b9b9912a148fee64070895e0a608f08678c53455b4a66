@@ -1,0 +1,48 @@
+I"�<h2 id="chapter-2-meaningful-names">Chapter 2 Meaningful Names</h2>
+
+<ul>
+  <li>Noise words are a meaningless distinction - the word <code class="highlighter-rouge">variable</code> should never appear in a variable name. The word <code class="highlighter-rouge">table</code> should never appear in a table name.</li>
+  <li>Distinguish names in such a way that the reader knows what the differences offer e.g. don’t use <code class="highlighter-rouge">account</code> and <code class="highlighter-rouge">accountInfo</code></li>
+  <li>Class names should use nouns and avoid verbs - especially avoid words like <code class="highlighter-rouge">Manager</code>, <code class="highlighter-rouge">Processor</code>, <code class="highlighter-rouge">Data</code> or <code class="highlighter-rouge">Info</code></li>
+  <li>Method names should have verbs or verb phrases in them</li>
+  <li>Use a consistent lexicon, but don’t use the same word when the concepts are different</li>
+  <li>Use solution domain i.e. technical terms e.g. <code class="highlighter-rouge">AccountVisitor</code> when using the VISITOR pattern</li>
+  <li>Use problem domain terms too</li>
+</ul>
+
+<h2 id="chapter-3-functions">Chapter 3 Functions</h2>
+
+<ul>
+  <li>The first rule of functions is that they should be small. The second rule of functions is that they should be smaller than that.</li>
+  <li>This implies that blocks within <code class="highlighter-rouge">if</code>, <code class="highlighter-rouge">else</code> and <code class="highlighter-rouge">while</code> statements should be one line long. Probably that line should be a function call.</li>
+  <li>Functions should do one thing. They should do it well. They should do it ONLY.</li>
+  <li>Use one level of abstraction within one function - mixing levels of abstraction is always confusing (it turns out to be very difficult for programmers to learn to follow this rule and write functions that stay at a single level of abstraction)</li>
+  <li>Switch statements should only be tolerated if they appear once to create polymorphic objects <em>G23</em></li>
+  <li>Functions should have none, one, two or three arguments - not more</li>
+  <li>Common monadic functions (one argument):
+    <ul>
+      <li>Ask a question - return the answer as the output of the function</li>
+      <li>Transform - return the transformation as the output of the function</li>
+      <li>Event - void return</li>
+    </ul>
+  </li>
+  <li>Don’t use flag arguments i.e. a function which takes a <code class="highlighter-rouge">bool</code> argument - create two functions, one for the positive case and one for the negative case</li>
+  <li>Dyadic functions are HARDER to understand and should be reduced to monadic functions where possible e.g. <code class="highlighter-rouge">WriteField(outputStream, value)</code> becomes <code class="highlighter-rouge">outputStream.WriteField(value)</code> or make <code class="highlighter-rouge">outputStream</code> a member of the current class so it doesn’t have to be passed</li>
+  <li>Multiple function arguments may indicate they need to be wrapped in a class</li>
+  <li>Consider encoding argument names into function names e.g. <code class="highlighter-rouge">AssertExpectedEqualsActual</code> (the keyword form of a function)</li>
+  <li>Ensure functions don’t have side effects e.g. a function which check a valid password and then ADDITIONALLY initializes session</li>
+  <li>Don’t use arguments for output</li>
+  <li>Seperate commands from queries - don’t have a function which does both</li>
+  <li>Use exceptions, not return codes</li>
+  <li>Extract the bodies of try/catch blocks to their own functions</li>
+  <li>Duplication MAY be the root of all evil in software. D.R.Y.</li>
+</ul>
+
+<blockquote>
+  <p>When I write functions, they come out long and complicated. They have lots of indenting and nested loops. They have long argument lists. The names are arbitrary and there is duplicated code. But I also have a set of unit tests which cover every one of those clumsy lines of code.
+In the end I wind up with functions that follow the rules I’ve laid down. I don’t write them that way to start. I don’t think anyone could.</p>
+</blockquote>
+
+<h2 id="chapter-4-comments">Chapter 4 Comments</h2>
+
+:ET

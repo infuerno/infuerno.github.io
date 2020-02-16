@@ -1,0 +1,67 @@
+I"�<h2 id="recommended-learning-journey">Recommended learning journey</h2>
+
+<p>https://lp.google-mkto.com/rs/248-TPC-286/images/Google-Cloud-Certification-Challenge.pdf</p>
+
+<ul>
+  <li>Month 1
+    <ul>
+      <li>Review exam guide (Recommended)</li>
+      <li>‘Cloud Architecture’ Quest* (Required)</li>
+      <li>‘Challenge GCP Architecture’ Quest* (Required)</li>
+      <li>Book your exam (Required)</li>
+    </ul>
+  </li>
+  <li>Month 2
+    <ul>
+      <li>‘Architecting with GCP’ Coursera specialization’* (Recommended)</li>
+      <li>‘Preparing for Professional Cloud Architect Exam’ on Coursera (Recommended)</li>
+      <li>Review sample solutions and case studies (Recommended)</li>
+      <li>Fill in the gaps with documentation (Recommended)</li>
+    </ul>
+  </li>
+  <li>Month 3
+    <ul>
+      <li>Take the practice exam (Recommended)</li>
+      <li>Take your certification exam (Required)</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="month-1">Month 1</h2>
+
+<h3 id="exam-guide">Exam guide</h3>
+
+<p>https://cloud.google.com/certification/guides/professional-cloud-architect/</p>
+
+<h3 id="cloud-architecture-quest">Cloud Architecture Quest</h3>
+
+<p>https://google-run.qwiklabs.com/quests/24 (Fundamental 5 Steps 7 hours 43 Credits)</p>
+
+<p>This Quest expects familiarity with GCP Services, particularly those in computing and networking. It is recommended that the student have earned a Badge by completing the hands-on labs in the Baseline: Infrastructure and/or the GCP Essentials Quests before beginning. Additional lab experience with the Security and Identity Fundamentals and the Kubernetes In the Google Cloud Quests will be useful.</p>
+
+<ul>
+  <li>GCP Essentials: https://google.qwiklabs.com/quests/23 (Introductory 5 Steps 3 hours 8 Credits)</li>
+  <li>Baseline: Infrastructure: https://google.qwiklabs.com/quests/33 (Introductory 5 Steps 4 hours 4 Credits)</li>
+  <li>Security and Identity Fundamentals: https://google.qwiklabs.com/quests/40 (Fundamental 7 Steps 7 hours 35 Credits)</li>
+  <li>Kubernetes in the Cloud: https://google.qwiklabs.com/quests/29 (Advanced 5 Steps 5 hours 27 Credits)</li>
+</ul>
+
+<h3 id="challenge-gcp-architecture">Challenge: GCP Architecture</h3>
+
+<p>https://google-run.qwiklabs.com/quests/47 (Advanced 7 Steps 8 hours 49 Credits)</p>
+
+<ul>
+  <li>Kubernetes Solutions: https://google.qwiklabs.com/quests/45 (Expert 10 Steps 1 day 72 Credits)</li>
+  <li>Networking in the Google Cloud: https://google.qwiklabs.com/quests/31 (Fundamental 5 Steps 6 hours 33 Credits)</li>
+  <li>Google Cloud Solutions I: Scaling Your Infrastructure https://google.qwiklabs.com/quests/36 (Expert 9 Steps 1 day 67 Credits)</li>
+  <li>Baseline: Data, ML, AI https://google.qwiklabs.com/quests/34 (Introductory 5 Steps 4 hours 5 Credits)</li>
+  <li>Scientific Data Processing https://google.qwiklabs.com/quests/28 (Advanced 8 Steps 8 hours 46 Credits)</li>
+  <li>Machine Learning APIs: https://google.qwiklabs.com/quests/32 (Advanced 9 Steps 8 hours 53 Credits)</li>
+  <li>Data Engineering: https://google.qwiklabs.com/quests/25 (Advanced 5 Steps 5 hours 37 Credits)</li>
+  <li>Google Cloud Solutions II: https://google.qwiklabs.com/quests/38 (Expert 9 Steps 1 day 61 Credits)</li>
+</ul>
+
+<h2 id="month-2">Month 2</h2>
+
+<p>https://www.coursera.org/specializations/gcp-architecture</p>
+:ET

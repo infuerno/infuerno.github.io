@@ -1,0 +1,57 @@
+I"�<h2 id="understanding-the-azure-service-bus">Understanding the Azure Service Bus</h2>
+
+<h3 id="microsoft-azure-service-bus">Microsoft Azure Service Bus</h3>
+
+<ul>
+  <li>Relay Service - allows clients to expose endpoints in the cloud - service hosts behind a firewall make a secure connection to the relay which exposes an endpoint accessible to clients over the internet - calls to the endpoint are relayed to the service behind the firewall - cost effective way to expose services</li>
+  <li>Brokered Messaging - durable entities such as queues and topics to be created an hosted in Azure - THIS COURSE</li>
+  <li>Notification Hubs - allow messages to be broadcast to a number of devices</li>
+  <li>Event Hubs - provide telemetry services on a massive scale</li>
+</ul>
+
+<h3 id="asynchronous-messaging-scenarios">Asynchronous Messaging Scenarios</h3>
+
+<p>Various challenges with asynchronous processing, handling varying loads and also connectivity between hybrid systems.</p>
+
+<ul>
+  <li>Enterprise Service Bus - interaction and communication in SOA - “Enterprise Silver Bullet” - focussed on request / response service opersations</li>
+  <li>Message Bus - common data model, common command set and messaging infrastructure - focussed on asynchronous processing</li>
+  <li>Internet Service Bus - many capabilities of previous two, but hosted in the cloud</li>
+</ul>
+
+<p>Capabilities include:</p>
+<ul>
+  <li>Communication</li>
+  <li>Load levelling - bus acts as a buffer - if average load exceeds capacity of one service, can have multiple services to service</li>
+  <li>High availability - bus acts as storage if some applications are unavailable</li>
+  <li>Temporal decoupling - messages can be sent and processed at different times</li>
+</ul>
+
+<h3 id="azure-service-bus-brokered-messaging">Azure Service Bus Brokered Messaging</h3>
+
+<p>Service Bus Namespace holds the queues, topics etc</p>
+<ul>
+  <li>Queues - provide a point to point messaging channels for FIFO processing pattern</li>
+  <li>
+    <p>Topics and Subscriptions - pub sub - a single message can be broadcast to many subscribers, often more versatile - subscriptions can additionally use filters</p>
+  </li>
+  <li>2 protocols are supported</li>
+  <li>AMQP - open messaging protocol, default used by SDK, supported by many applications and libraries</li>
+  <li>HTTP - where firewalls may limit connectivity</li>
+</ul>
+
+<h3 id="azure-service-bus-sdk">Azure Service Bus SDK</h3>
+
+<p><code class="highlighter-rouge">Install-Package WindowsAzure.ServiceBus</code></p>
+
+<p>Common classes:</p>
+<ul>
+  <li><code class="highlighter-rouge">NamespaceManager</code> - manage entities within a namespace - create update and delete queues, topics etc</li>
+  <li><code class="highlighter-rouge">MessagingFactory</code> - factory class to create clients</li>
+  <li><code class="highlighter-rouge">QueueClient</code> - send and receive from queues</li>
+  <li><code class="highlighter-rouge">TopicClient</code> - send to a topic</li>
+  <li><code class="highlighter-rouge">SubscriptionClient</code> - receive from a subscription, manager filter rules</li>
+  <li><code class="highlighter-rouge">BrokeredMessage</code> - represents a message transmitted</li>
+</ul>
+
+:ET

@@ -1,0 +1,354 @@
+I"@T<h2 id="what-is-owin">What is OWIN?</h2>
+
+<p>Open Web Interface for .NET</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>OWIN defines a standard interface between .NET web servers and web applications - www.owin.org
+</code></pre></div></div>
+
+<p>Abstract away the web server in a well defined way, so that web applications can be built to the abstraction and don’t care which web server they are running on. .NET web applications were nearly always hosted on IIS (except e.g. ASP.NET Web API or Nancy FX).</p>
+
+<p>In OWIN, the web server has been abstracted away to simply a dictionary and a delegate. Usually called the environment dictionary, or <code class="highlighter-rouge">AppFunc</code> and defined:</p>
+
+<p><code class="highlighter-rouge">using AppFunc = Func&lt;IDictionary&lt;string, object&gt;, Task&gt;</code></p>
+
+<p>Referencing it as <code class="highlighter-rouge">AppFunc</code> makes it easier throughout the code. The dictionary passed to the delegate includes all the information from the HttpRequest. Additionally the web server may expose functionality to the web application by inserting a delegate into the dictionary. The return <code class="highlighter-rouge">Task</code> is used to tell the server when the application has finished processing the request (so everything is asynchronous).</p>
+
+<p><code class="highlighter-rouge">var f = new AppFunc(environment =&gt; { return Task.FromResult(null); })</code></p>
+
+<h3 id="the-parts-of-owin">The Parts of OWIN</h3>
+
+<dl>
+  <dt>Host</dt>
+  <dd>A process of some sort, SomeProcess.exe, which hosts all the other parts - a console app, windows server or even IIS - an is responsible for starting everything up.</dd>
+  <dt>Server</dt>
+  <dd>Accepts incoming HTTP requests and returns HTTP responses (in IIS the host and server are in effect the same thing). Passes the request to the application using the AppFunc.</dd>
+  <dt>Pipeline of Middlewares</dt>
+  <dd>A piece of middleware is code through which the request passes to and from the application. Can inspect and modify the incoming request and outgoing response (similar to HTTP module idea)</dd>
+  <dt>Application</dt>
+  <dd>Responsible for generating the response (similar to HTTP handler idea)</dd>
+  <dt>Web Framework</dt>
+  <dd>Often used to abstract away the pipeline of middlewares and application. In OWIN, a set of self-contained OWIN middlewares, plugging into the OWIN pipleline which expose a set of APIs for a developer to work with.</dd>
+</dl>
+
+<h3 id="the-flow">The Flow</h3>
+
+<p>The HTTP request is sent from the client, translated to the environment dictionary (along with a stream to hold the response, and another dictionary for the response headers), passed through the middleware to the application. The application generates a response, sets any response headers and THEN starts writing the response to the response stream.</p>
+
+<p>The server is set up to be notified of the first write to the response stream. When it notices this, it crafts an HTTP response with the headers specified and sends it back to the client. The connection is kept open while the rest of the response is written to the stream and sent to the client.</p>
+
+<p>The last middleware in the pipleline is passed the environment dictionary by the application, and the dictionary is returned back up the pipeline. The middlewares at this point CANNOT modify the response headers and can only append to the response stream. Finally the server receives the Task from the AppFunc, finalises the response to the client and closes the connection.</p>
+
+<h3 id="environment-dictionary-keys">Environment Dictionary Keys</h3>
+
+<p>All prefixed with <code class="highlighter-rouge">owin.</code> to help avoid being overwritten by any custom keys e.g. <code class="highlighter-rouge">owin.RequestPath</code>, <code class="highlighter-rouge">owin.RequestBody</code>, <code class="highlighter-rouge">owin.ResponseStatusCode</code>. An <code class="highlighter-rouge">owin.Version</code> field defines the version supported by the server in case the application needs to check feature availability. The <code class="highlighter-rouge">server.OnSendingHeaders</code> key allows registering a callback just before the server sends the response headers back to the client to allow modifying the headers.</p>
+
+<p>(See http://owin.org/html/spec/owin-1.0.html for full list)</p>
+
+<h3 id="katana">Katana</h3>
+
+<p>Katana is an implementation of OWIN including other useful functionality. Developer friendly APIs.</p>
+
+<h2 id="building-a-simple-owin-pipeline">Building a simple OWIN pipeline</h2>
+
+<ol>
+  <li>Create empty MVC web application</li>
+  <li><code class="highlighter-rouge">Install-Package Microsoft.Owin.Host.SystemWeb</code> - required to host an OWIN pipeline inside ASP.NET (also installs <code class="highlighter-rouge">Microsoft.Owin</code> - the Katana OWIN implementation as well as a package called <code class="highlighter-rouge">Owin</code>)</li>
+  <li>Create an entry point using <code class="highlighter-rouge">Startup.cs</code> and a method with signature <code class="highlighter-rouge">public static void Configuration(IAppBuilder app)</code> (if called anything else, need to be marked up with attributes / app settings).</li>
+  <li><code class="highlighter-rouge">IAppBuilder</code> is used to add middlewares to the OWIN pipeline using the <code class="highlighter-rouge">app.Use()</code> method.</li>
+</ol>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public static void Configuration(IAppBuilder app)
+{
+    // ctx is an IOwinContext (wrapper around the environment dict), next is another delegate Func&lt;Task&gt;, a Task should be returned
+    app.Use(async (ctx, next) =&gt; {
+        await ctx.Response.WriteAsync("HelloWorld");
+    });
+}
+</code></pre></div></div>
+
+<p>Note: In VS 2015 add the <code class="highlighter-rouge">async</code> keyword, or the <code class="highlighter-rouge">return Task</code> statement to get intellisense. <code class="highlighter-rouge">ctx.Response</code> is a shortcut</p>
+
+<h2 id="creating-middleware-with-owin">Creating middleware with OWIN</h2>
+
+<p>Delegate based middleware (such as above) can be packaged up for reuse by encapsulating in their own classes. One way is to create a class inheriting from a base class called <code class="highlighter-rouge">Microsoft.Owin.OwinMiddleware</code> - however this is Katana specific. Instead simply use the <code class="highlighter-rouge">AppFunc</code> pattern thus:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>using AppFunc = Func&lt;IDictionary&lt;string, object&gt;, Task&gt;;
+public class MyMiddleware
+{
+    AppFunc _next;
+    public MyMiddleware(AppFunc next)
+    {
+        _next = next;
+    }
+
+    // create a way for this middleware to be invoked
+    // mark with the async keyword, so we don't need to manually take care of returning a task
+    public async Task Invoke(IDictionary&lt;string, object&gt; environment)
+    {
+        // ctx not supplied by default - could alternatively just use (string)environemnt["owin.RequestPath"]
+        var ctx = new OwinContext(environment); 
+
+        Debug.WriteLine("Incoming request: " + ctx.Request.Path);
+        await _next(environment);
+        Debug.WriteLine("Outgoing response: " + ctx.Request.Path);
+    }
+}
+</code></pre></div></div>
+
+<p>In Startup.cs just use <code class="highlighter-rouge">app.Use&lt;MyMiddleware&gt;();</code> to add to pipeline. Add an options class with properties for anything that can be configured e.g. <code class="highlighter-rouge">MyMiddlewareOptions</code>..</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public class MyMiddlewareOptions
+{
+    public Action&lt;IOwinContext&gt; OnIncomingRequest { get; set; }
+    public Action&lt;IOwinContext&gt; OnOutgoingResponse { get; set; }
+}
+</code></pre></div></div>
+
+<p>Add to middleware by adding a second parameter to the middleware’s constructor e.g. <code class="highlighter-rouge">public MyMiddleware(AppFunc next, MyMiddlewareOptions options)</code>. Store this globally and set a default behaviour (if required) in the case any options are null.</p>
+
+<p>In the <code class="highlighter-rouge">Startup</code> class, update <code class="highlighter-rouge">app.Use&lt;MyMiddleware&gt;()</code> to include the options required e.g.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>app.Use&lt;MyMiddleware&gt;(new MyMiddlewareOptions()
+{
+    OnIncomingRequest = (ctx) =&gt;
+    {
+        var watch = new Stopwatch();
+        watch.Start();
+        ctx.Environment["DebugStopwatch"] = watch;
+    },
+    OnOutgoingResponse = (ctx) =&gt;
+    {
+        var watch = (Stopwatch)ctx.Environment["DebugStopwatch"];
+        watch.Stop();
+        Debug.WriteLine("Time elapsed: " + watch.ElapsedMilliseconds + " ms");
+    }
+});
+</code></pre></div></div>
+
+<p>Create an extensions method for an app.UseXXX experience which in turn calls the <code class="highlighter-rouge">app.Use&lt;T&gt;()</code> method. Potentially use the namespace of the original class being overloaded to aid intellisense.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>namespace Owin
+{
+    public static class MyMiddlewareExtensions
+    {
+        public static void UseMyMiddleware(this IAppBuilder app, MyMiddlewareOptions options)
+        {
+            if (options == null)
+                options = new MyMiddlewareOptions();
+            app.Use&lt;MyMiddleware&gt;(options);
+        }
+    }
+}
+</code></pre></div></div>
+
+<h2 id="integrating-frameworks">Integrating Frameworks</h2>
+
+<p>Only certain frameworks will be able to integrate as an OWIN middleware e.g. Nancy FX or ASP.NET Web API. MVC is not available as OWIN middleware due to its dependency on IIS (although ASP.NET, MVC and Katana work well together and is a very common way to deploy Katana).</p>
+
+<h3 id="nancy-fx">Nancy FX</h3>
+
+<p><code class="highlighter-rouge">Install-Package Nancy.Owin</code> to install the Nancy FX framework.</p>
+
+<p>Create a new module which inherits from <code class="highlighter-rouge">NancyModule</code>. The <code class="highlighter-rouge">NancyModule</code> base class contains a dictionary for each of the HTTP verbs. Register routes to the dictionary along with the delegate which will handle the request e.g. <code class="highlighter-rouge">Get["/nancy"] = x =&gt; { return "Hello world!";}</code></p>
+
+<p>By default Nancy will now process all requests and any middleware after it in the pipeline will not get a chance to execute. Using the <code class="highlighter-rouge">app.Map()</code> method isn’t helpful since Nancy bases its routing on the OWIN environment variable <code class="highlighter-rouge">owin.RequestPath</code> and ignores the <code class="highlighter-rouge">owin.RequestPathBase</code> value (populated by the Map method). Instead use the <code class="highlighter-rouge">NancyOptions</code> to provide a delegate to the PerformPassThrough action to route all requests on through the pipeline in the case of a NotFound from Nancy.</p>
+
+<h3 id="aspnet-web-api">ASP.NET Web API</h3>
+
+<p><code class="highlighter-rouge">Install-Package Microsoft.AspNet.WebApi.Owin</code> to install ASP.NET web API.</p>
+
+<ol>
+  <li>Create a new controller, inheriting from <code class="highlighter-rouge">ApiController</code></li>
+  <li>Add a method returning <code class="highlighter-rouge">IHttpActionResult</code></li>
+  <li>Mark up the method with the <code class="highlighter-rouge">[HttpGet]</code> attribute if the method is not called <code class="highlighter-rouge">Get</code>, markup the class and / or methods with <code class="highlighter-rouge">[Route]</code> or <code class="highlighter-rouge">[RoutePrefix]</code> attributes if the class name doesn’t correspond to the URL.</li>
+  <li>Add the WebApi to the middleware pipeline having called the <code class="highlighter-rouge">MapHttpAttributeRoutes</code> on the configuration to the middleware to ensure all routes specified will be delivered by this middleware.</li>
+</ol>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var config = new HttpConfiguration();
+config.MapHttpAttributeRoutes();
+app.UseWebApi(config);
+</code></pre></div></div>
+
+<h3 id="aspnet-mvc">ASP.NET MVC</h3>
+
+<p>MVC acts as the application at the end of the middleware pipeline.</p>
+
+<p><code class="highlighter-rouge">Install-Package Microsoft.AspNet.Mvc</code></p>
+
+<ol>
+  <li>Create a new controller, inheriting from System.Web.Mvc.Controller</li>
+  <li>Add an action method with return type <code class="highlighter-rouge">ActionResult</code> with body <code class="highlighter-rouge">return View();</code></li>
+  <li>Create a corresponding view</li>
+  <li>Add <code class="highlighter-rouge">@inherits System.Web.Mvc.WebViewPage</code> at the top of the view due to the usual wire up code missing from the web.config having added the NuGet packages manually</li>
+  <li>In Application_Start within Global.asax.cs, add a default route:</li>
+</ol>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>RouteTable.Routes.MapRoute(name: "Default", 
+   url: "{controller}/{action}", 
+   defaults: new {controller = "Home", action = "Index"} );
+</code></pre></div></div>
+
+<ol>
+  <li>Ensure that requests which are handled can pass through the middleware pipeline to be handed off to ASP.NET MVC.</li>
+</ol>
+
+<h2 id="securing-owin-pipelines">Securing OWIN Pipelines</h2>
+
+<p>Katana is most commonly used to integrate authentication into web applications. Most Microsoft written authentication is currently being implemented as Katana middleware.</p>
+
+<h3 id="securing-aspnet-mvc">Securing ASPNET MVC</h3>
+
+<p>Add cookie authentication middleware to the pipeline.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>app.UseCookieAuthentication(new CookieAuthenticationOptions()
+{
+    AuthenticationType = "ApplicationCookie",
+    LoginPath = new Microsoft.Owin.PathString("/Auth/Login")
+});
+</code></pre></div></div>
+
+<p>Authenticate the user with whatever method is required, create an identify for the user and then sign in the user using the new identity.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// create a new object which represents the user who just logged in
+// lots of overloads for ClaimsIdentity, but will use the overload which takes a
+// string AuthenticationType needs to match the authentication we have chosen to use
+var identity = new ClaimsIdentity("ApplicationCookie");
+identity.AddClaims(new List&lt;Claim&gt;{
+    new Claim(ClaimTypes.NameIdentifier, model.UserName),
+    new Claim(ClaimTypes.Name, model.UserName)
+});
+// sign in the user
+HttpContext.GetOwinContext().Authentication.SignIn(identity);
+</code></pre></div></div>
+
+<p>Add logout using <code class="highlighter-rouge">HttpContext.GetOwinContext().Authentication.SignOut()</code></p>
+
+<h3 id="securing-nancy">Securing Nancy</h3>
+
+<ol>
+  <li>First <code class="highlighter-rouge">Install-Package Nancy.MSOwinSecurity</code></li>
+  <li>Add the following line to the module constructor: <code class="highlighter-rouge">this.RequiresMSOwinAuthentication()</code></li>
+  <li>To write out e.g. the user’s name, use <code class="highlighter-rouge">Context.GetMSOwinUser().Identity.Name</code></li>
+</ol>
+
+<h3 id="accessing-the-logged-in-user-details-from-middleware">Accessing the logged in user details from middleware</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>app.Use(async (ctx, next) =&gt; {
+    if (ctx.Authentication.User.Identity.IsAuthenticated)
+        Debug.WriteLine("User" + ctx.Authentication.User.Identity.Name);
+    else
+        Debug.WriteLine("User not authenticated");
+    await next();
+});
+</code></pre></div></div>
+
+<h2 id="integrating-social-media-authentication">Integrating Social Media Authentication</h2>
+
+<h3 id="setup">Setup</h3>
+<p>Twitter doesn’t accept localhost logins, so modify the hosts file to add a dummy host entry pointing to 127.0.0.1 and configure the application to run in IIS to utilise the host name.</p>
+
+<h3 id="adding-facebook-authentication">Adding Facebook Authentication</h3>
+
+<p>https://developers.facebook.com/apps</p>
+
+<ol>
+  <li><code class="highlighter-rouge">Install-Package Microsoft.Owin.Security.Facebook</code></li>
+  <li>Add middleware including AppId, AppSecret and SignInAsAuthenticationType as “ApplicationCookie” to ensure that by signing in to facebook, they are in effect signed into the app. It would be more usual to use a seperate cookie to log the user in and then in a seperate step transfer the user from being a socially logged in user to be a proper web application user.</li>
+  <li>Add a <code class="highlighter-rouge">LoginFacebook</code> action on the <code class="highlighter-rouge">Auth</code> controller:</li>
+</ol>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties()
+    {
+        RedirectUri = "/secret",
+    }, "Facebook");
+
+    // this HttpUnauthorizedResult will be picked up by the cookie authentication middleware
+    // which will create the challenge and send it to the browser
+    return new HttpUnauthorizedResult();
+</code></pre></div></div>
+<ol>
+  <li>Set up application in Facebook, setting redirect url to https://air-2013.local:4433/signin-facebook</li>
+  <li>Add “Login to facebook” link to redirect to the LoginFacebook action method</li>
+</ol>
+
+<h3 id="adding-twitter-authentication">Adding Twitter Authentication</h3>
+
+<p>Add in as for facebook.</p>
+
+<p>To ease the adding of multiple links to the login page, add a <code class="highlighter-rouge">List&lt;AuthenticationDescription&gt; AuthProviders</code> property to the <code class="highlighter-rouge">LoginModel</code> and set it using:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>model.AuthProviders = HttpContext.GetOwinContext()
+    .Authentication.GetAuthenticationTypes(x =&gt; !String.IsNullOrWhiteSpace(x.Caption))
+    .ToList();
+</code></pre></div></div>
+
+<p>Then on the view, iterate around these to write out links for each:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    @foreach(var provider in Model.Providers)
+    {
+        &lt;div&gt;
+            @Html.ActionLink("Login with " + provider.Caption, "SocialLogin", new {id = provider.AuthenticationType})
+        &lt;/div&gt;
+    }
+</code></pre></div></div>
+
+<h2 id="hosting-an-owin-pipeline">Hosting an OWIN Pipeline</h2>
+
+<h3 id="hosting-in-a-console-application">Hosting in a console application</h3>
+
+<p>Note MVC can’t be self hosted, since it is not OWIN compatible.</p>
+
+<ol>
+  <li>Create a console app</li>
+  <li><code class="highlighter-rouge">Install-Package Microsoft.Owin.Selfhost</code></li>
+  <li>Add a <code class="highlighter-rouge">Starup</code> class with a <code class="highlighter-rouge">Configuration</code> method and add required middleware</li>
+  <li>Use instructions from readme.txt to add server start up to the <code class="highlighter-rouge">Main</code> method</li>
+</ol>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>using (WebApp.Start&lt;Startup&gt;("http://localhost:12345"))
+{
+    Console.WriteLine("Listening to 12345");
+    Console.WriteLine("Press any key to end ...");
+    Console.ReadLine();
+}
+</code></pre></div></div>
+
+<ol>
+  <li>Serve static files using <code class="highlighter-rouge">Install-Package Microsoft.Owin.StaticFiles</code> and add it to the pipeline: <code class="highlighter-rouge">app.UseStaticFiles()</code> (need to ensure files are where the server expects to find them e.g. set the Build Action to Copy to Output)</li>
+</ol>
+
+<h3 id="hosting-in-memory-for-unit-testing">Hosting in memory for Unit Testing</h3>
+
+<ol>
+  <li>Create a unit test project, update a test method signature to return <code class="highlighter-rouge">async Task</code> rathern than void</li>
+  <li>Reference the project you want to test</li>
+  <li><code class="highlighter-rouge">Install-Package Microsoft.Owin.Testing</code></li>
+  <li>Copy in the boilerplate code from the readme.txt, replacing the inline pipeline implementation with the type of the Startup class in the other project e.g. <code class="highlighter-rouge">Startup</code> and adding an appropriate assert statement</li>
+  <li>(optional) Refactor the creation of the server to a helper method:</li>
+</ol>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>private async Task&lt;T&gt; CallServer&lt;T&gt;(Func&lt;HttpClient, Task&lt;T&gt;&gt; callback)
+{
+    using (var server = TestServer.Create&lt;Startup&gt;())
+    {
+        return await callback(server.HttpClient);
+    }
+}
+</code></pre></div></div>
+
+<p>with example usage:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[Test]
+public async Task OwinReturnsCorrectContentTypeOnRequestToJpg()
+{
+    var contentType = await CallServer(async client =&gt;
+    {
+        var response = await client.GetAsync("/xhost-a-very-dangerous-program.png");
+        return response.Content.Headers.ContentType.MediaType;
+
+    });
+    Assert.AreEqual("image/png", contentType);
+}
+</code></pre></div></div>
+
+:ET

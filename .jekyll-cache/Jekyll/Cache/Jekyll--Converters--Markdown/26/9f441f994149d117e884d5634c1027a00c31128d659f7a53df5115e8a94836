@@ -1,0 +1,133 @@
+I"2!<p>https://google.qwiklabs.com/quests/23</p>
+
+<h1 id="a-tour-of-qwiklabs-and-the-google-cloud-platform">A Tour of Qwiklabs and the Google Cloud Platform</h1>
+
+<p>A <strong>GCP Project</strong> is an organizing entity for your Google Cloud resources. It often contains resources and services e.g. a pool of virtual machines, a set of databases, and a network that connects them with one another. Projects also contain settings and permissions, which specify security rules and who has access to what resources.</p>
+
+<ul>
+  <li>More information on all GCP services: https://cloud.google.com/docs/overview/cloud-platform-services#top_of_page</li>
+  <li>API Design Guide: https://cloud.google.com/apis/design/ - used internally by Google and published to help everyone</li>
+  <li>APIs Explorer: https://developers.google.com/apis-explorer/#p/ - browse all APIs easily</li>
+</ul>
+
+<h1 id="creating-a-virtual-machine">Creating a Virtual Machine</h1>
+
+<h3 id="activate-google-cloud-shell">Activate Google Cloud Shell</h3>
+
+<p><strong>Google Cloud Shell</strong> is a virtual machine that is loaded with development tools. It offers a persistent 5GB home directory and runs on the Google Cloud. Google Cloud Shell provides command-line access to your GCP resources. See: https://cloud.google.com/sdk/gcloud</p>
+
+<h3 id="understanding-regions-and-zones">Understanding Regions and Zones</h3>
+
+<p>A region is a specific geographical location where you can run your resources. Each region has one or more zones. Resources that live in a zone are referred to as <strong>zonal</strong> resources. Virtual machine instances and persistent disks live in a zone. To attach a persistent disk to a virtual machine instance, both resources must be in the same zone. Similarly, if you want to assign a static IP address to an instance, the instance must be in the same region as the static IP. See: https://cloud.google.com/compute/docs/regions-zones/</p>
+
+<h3 id="ssh">SSH</h3>
+
+<p>See: https://cloud.google.com/compute/docs/instances/connecting-to-instance</p>
+
+<ol>
+  <li>Create new configuration for authentication: <code class="highlighter-rouge">gcloud config configurations create qwiklabs-gcp-8fa25fcdb0d890b7</code></li>
+  <li>Initialise configuration: <code class="highlighter-rouge">gcloud init</code> and choose 1 to reinitialize</li>
+  <li>SSH using <code class="highlighter-rouge">gcloud compute ssh gcelab2 --zone us-central1-c</code></li>
+</ol>
+
+<h3 id="create-a-vm">Create a VM</h3>
+
+<ul>
+  <li><code class="highlighter-rouge">gcloud compute instances create gcelab2 --machine-type n1-standard-2 --zone us-central1-c</code></li>
+  <li><code class="highlighter-rouge">gcloud compute instances create --help</code></li>
+  <li><code class="highlighter-rouge">gcloud config set compute/zone</code> - set default zone to save entering each time</li>
+  <li><code class="highlighter-rouge">gcloud config set compute/region</code> - set default region</li>
+</ul>
+
+<h1 id="getting-started-with-cloud-shell--gcloud">Getting Started with Cloud Shell &amp; gcloud</h1>
+
+<ul>
+  <li>List configurations: <code class="highlighter-rouge">gcloud config list</code></li>
+  <li>List of all possible configurations: <code class="highlighter-rouge">gcloud config list --all</code></li>
+  <li>Make a bucket: <code class="highlighter-rouge">gsutil mb gs://unique-name-hippo</code></li>
+  <li>List buckets (etc): <code class="highlighter-rouge">gsutil ls</code></li>
+  <li>Copy a file to a bucket: <code class="highlighter-rouge">gsutil cp test.dat gs://unique-name-hippo</code></li>
+</ul>
+
+<h1 id="kubernetes-engine-qwik-start">Kubernetes Engine: Qwik Start</h1>
+
+<p>The Google Kubernetes Engine (GKE) environment consists of multiple machines (specifically Google Compute Engine instances) grouped together to form a container cluster.</p>
+
+<ul>
+  <li>https://cloud.google.com/container-registry/ - google container registry</li>
+  <li>https://console.cloud.google.com/gcr/images/google-samples/GLOBAL - samples inc hello-app</li>
+</ul>
+
+<p>A cluster consists of at least one cluster master machine and multiple worker machines called nodes.</p>
+<ul>
+  <li>Create a cluster: <code class="highlighter-rouge">gcloud container clusters create [CLUSTER-NAME]</code></li>
+  <li>Get credentials for the cluster: <code class="highlighter-rouge">gcloud container clusters get-credentials [CLUSTER-NAME]</code></li>
+</ul>
+
+<p>The <strong>Deployment</strong> object is used for deploying stateless applications like web servers.</p>
+<ul>
+  <li>Creates a new Deployment <code class="highlighter-rouge">hello-server</code> from the <code class="highlighter-rouge">hello-app</code> container image: <code class="highlighter-rouge">kubectl run hello-server --image=gcr.io/google-samples/hello-app:1.0 --port 8080</code></li>
+  <li>Inspect a deployment: <code class="highlighter-rouge">kubectl get deployment hello-server</code></li>
+</ul>
+
+<p>The <strong>Service</strong> object define rules and load balancing for accessing your application from the Internet</p>
+<ul>
+  <li>creates a Service to expose the application to external traffic: <code class="highlighter-rouge">kubectl expose deployment hello-server --type="LoadBalancer"</code> (creates a Compute Engine load balancer for the container)</li>
+  <li>Inspect a service: <code class="highlighter-rouge">kubectl get service hello-server</code></li>
+  <li>Clean up: <code class="highlighter-rouge">gcloud container clusters delete [CLUSTER-NAME]</code></li>
+</ul>
+
+<h1 id="set-up-network-and-http-load-balancers">Set Up Network and HTTP Load Balancers</h1>
+
+<ul>
+  <li>Network load balancer (L3) see: https://cloud.google.com/compute/docs/load-balancing/network/</li>
+  <li>HTTP load balancer (L7) see: https://cloud.google.com/compute/docs/load-balancing/http/</li>
+</ul>
+
+<p>First need to create a cluster of machines. This can be achieve using <strong>instance templates</strong>.</p>
+
+<ul>
+  <li>Create a <code class="highlighter-rouge">startup.sh</code> script to install nginx and alter the default index.html to display the hostname</li>
+  <li>Create an instance template: <code class="highlighter-rouge">gcloud compute instance-templates create nginx-template --metadata-from-file startup-script=startup.sh</code></li>
+  <li>Create a <strong>target pool</strong>: <code class="highlighter-rouge">gcloud compute target-pools create nginx-pool</code></li>
+  <li>Create a managed instance group using the instance template:
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcloud compute instance-groups managed create nginx-group \
+       --base-instance-name nginx \
+       --size 2 \
+       --template nginx-template \
+       --target-pool nginx-pool
+</code></pre></div>    </div>
+  </li>
+  <li>Configure a firewall to access the machines on port 80:</li>
+</ul>
+
+<h3 id="network-load-balancer">Network Load Balancer</h3>
+
+<p>Allows load balancing based on IP protocol data e.g. address, port, protocol type. Additional options at packet level available which isn’t available for HTTP load balancing.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcloud compute forwarding-rules create nginx-lb \
+         --region us-central1 \
+         --ports=80 \
+         --target-pool nginx-pool
+</code></pre></div></div>
+
+<ul>
+  <li>List the forwarding rules to see the LB IP address: <code class="highlighter-rouge">gcloud compute forwarding-rules list</code></li>
+</ul>
+
+<h3 id="http-load-balancer">HTTP Load Balancer</h3>
+
+<p><img src="https://cloud.google.com/load-balancing/images/basic-http-load-balancer.svg" alt="Basic HTTP Load Balancer" /></p>
+
+<p>Allows load balancing based on URL routes. Requests are always routed the the instance closest to the user.</p>
+
+<ul>
+  <li>Create a health check: <code class="highlighter-rouge">gcloud compute http-health-checks create http-basic-check</code> to verify instances are responding to HTTP traffic</li>
+  <li>Define an HTTP service and map a port name to the correct port for the instance group: <code class="highlighter-rouge">gcloud compute instance-groups managed set-named-ports nginx-group --named-ports http:80</code></li>
+  <li>Create a backend service and add the instance group to the backend service</li>
+  <li>Create a URL map to map all incoming requests to all the instances</li>
+  <li>Create an HTTP proxy to route requests to the URL map</li>
+  <li>Create a global forwarding rule to route incoming requests to the proxy</li>
+</ul>
+
+:ET

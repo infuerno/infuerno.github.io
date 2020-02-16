@@ -1,0 +1,56 @@
+I"W<h2 id="securing-an-application">Securing An Application</h2>
+
+<h3 id="redirect-from-http-to-https-and-hsts">Redirect from HTTP to HTTPS and HSTS</h3>
+
+<ul>
+  <li>If you type an address into the browser and you don’t specify the scheme, the browser defaults to HTTP</li>
+  <li>A simple 301 redirect from the HTTP scheme to the HTTPS scheme is problematic - this initial request can be compromised in an MitM attack</li>
+  <li>Solution is HTTP Strict Transport Security or HSTS
+    <ul>
+      <li>When HSTS is enabled, a response header is sent <code class="highlighter-rouge">strict-transport-security</code> which has a <code class="highlighter-rouge">max-age</code> attribute with a value in seconds which indicates how long the browser should always use HTTPS for requests to this domain rather than HTTP</li>
+      <li>Requests to HTTP are now indicated as 307 Internal Redirect (rather than 301) which are internally redirected by the browser</li>
+    </ul>
+  </li>
+  <li>The first request is the problem since this will still be vulnerable to attack until the browser received the STS response header. This can be resolved by including two extra directives <code class="highlighter-rouge">includeSubDomains</code> and <code class="highlighter-rouge">preload</code> and registering the website to https://hstspreload.org - these sites are then hardcoded into the browser to be preloaded</li>
+</ul>
+
+<h3 id="content-security-policy">Content Security Policy</h3>
+
+<p>Can often be implented as either HTTP headers or meta tags e.g. <code class="highlighter-rouge">&lt;meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"&gt;</code></p>
+
+<ul>
+  <li><code class="highlighter-rouge">upgrade-insecure-requests</code> - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/upgrade-insecure-requests - will cause any active or passive content loaded in the markup using the HTTP scheme to instead be upgraded to use the HTTPS scheme - useful when transitioning a site from HTTP to HTTPS when some assets may still be referenced using HTTP</li>
+  <li><code class="highlighter-rouge">block-all-mixed-content</code> - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/block-all-mixed-content - ensures any passive or active content referenced over HTTP is blocked from loading - useful when a site has fully transitioned to HTTPS to ensure the browser does not report an error by trying to load mixed content</li>
+  <li><code class="highlighter-rouge">Referrer-Policy</code> - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy - when redirecting from an HTTPS site to an HTTP site, it is important to ensure there is no sensitive information included in the redirect URL. This header helps enforce this.</li>
+</ul>
+
+<h2 id="beyond-the-basics">Beyond the Basics</h2>
+
+<dl>
+  <dt>SNI</dt>
+  <dd>Server Name Indication - allows multiple certs on the same IP address</dd>
+  <dt>SAN</dt>
+  <dd>Subject Alternative Name - multiple domain names on one certificate a la Cloudflare</dd>
+  <dt>PFS</dt>
+  <dd>Perfect Forward Secrecy - ??</dd>
+  <dt>DNSSEC</dt>
+  <dd>DNS Security Extensions - protecting against the forgergy of DNS records - v. important</dd>
+  <dt>DANE</dt>
+  <dd>DNS Based Authentication of Named Entities - specify certificate keys at the DNS level - helps with the compromised of a CA a la Diginotar which also requires DNSSEC</dd>
+  <dt>CAA</dt>
+  <dd>Certificate Authority Authorisation - DNS record to help ensure a certificate is issued by the correct site. Example set up for Gandi: https://wiki.gandi.net/en/ssl/caa</dd>
+  <dt>CRL</dt>
+  <dd>Certificate Revocation List - maintained by the CA - has all the certs they’ve had to revoke.</dd>
+  <dt>OCSP</dt>
+  <dd>Online Certificate Status Protocol - alternative to CRL - allows real time querying of revocation lists. Instead of a client browser doing the query - the site itself can do the query and include the results with the TLS handshake - aka OCSP stapling</dd>
+  <dt>PKP</dt>
+  <dd>Public Key Pinning - a client has a list of public keys it can accept</dd>
+</dl>
+
+<h3 id="other-reasons-to-adopt-https">Other reasons to adopt HTTPS</h3>
+
+<ul>
+  <li>Bump in SEO: https://webmasters.googleblog.com/2014/08/https-as-ranking-signal.html</li>
+  <li>Brottli compression: https://opensource.googleblog.com/2015/09/introducing-brotli-new-compression.html</li>
+</ul>
+:ET

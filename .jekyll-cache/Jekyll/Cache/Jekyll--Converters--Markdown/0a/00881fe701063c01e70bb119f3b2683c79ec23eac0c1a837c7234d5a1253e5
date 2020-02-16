@@ -1,0 +1,423 @@
+I"�M<p>Reference: <a href="http://railsforzombies.org/">http://railsforzombies.org/</a></p>
+
+<h2 id="level-1-deep-in-the-crud">Level 1: Deep in the CRUD</h2>
+
+<p>Hash Recipe: <code class="highlighter-rouge">variable = { key: value }</code> 
+(this is new ruby syntax where <code class="highlighter-rouge">key: value</code> is short for <code class="highlighter-rouge">:key =&gt; value</code>)</p>
+
+<p>Read Recipe:  <code class="highlighter-rouge">variable[:key] =&gt; value</code></p>
+
+<p>Rails uses an ORM system to persist objects to a database and allow CRUD operations on this objects.
+If a class is called e.g. <code class="highlighter-rouge">Tweet</code>, then the corresponding database table will be called <code class="highlighter-rouge">tweets</code>. Ids will be taken care of by the rails framework.
+Class methods allow you</p>
+
+<h3 id="create">Create</h3>
+
+<p>Create a new object and call <code class="highlighter-rouge">save</code> to persist it to the database.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>t = Tweet.new
+t.status = "I &lt;3 brains"
+t.zombie = "Jim"
+t.save
+</code></pre></div></div>
+
+<p>Alternatively, create the new object using a hash:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>t = Tweet.new(:status =&gt; "I &lt;3 brains", :zombie =&gt; "Jim")
+t.save
+</code></pre></div></div>
+
+<p>Or all in one line using create</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Tweet.create(:status =&gt; "I &lt;3 brains", :zombie =&gt; "Jim")
+</code></pre></div></div>
+
+<h3 id="read">Read</h3>
+
+<p>There are lots of ways to read information from the database:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Tweet.find(2)		# find by id
+Tweet.find(3,4,5)	# return multiple objects
+Tweet.first			# returns the first tweet
+Tweet.last
+Tweet.all
+Tweet.count			# returns the result of a select count(*) on the database
+Tweet.order(:zombie)	# return the tweets ordered by :zombie
+Tweet.limit(10)		# just 10 tweets
+Tweet.where(:zombie == "Ash")
+Tweet.where(zombie: "Ash")
+Tweet.where(:zombie == "Ash").order(:status).limit(10)
+Tweet.where(zombie: "Ash").order(:status).limit(10)
+</code></pre></div></div>
+
+<h3 id="update">Update</h3>
+
+<p>Update an attribute and resave, or use <code class="highlighter-rouge">t.attributes</code> to assign a hash with the updates and then save.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>t = Tweet.find(3)
+t.attributes = {:status =&gt; "I really &lt;3 brains", :zombie =&gt; "EyeballChomper"}
+t.save
+</code></pre></div></div>
+
+<p>Finally the <code class="highlighter-rouge">t.update(hash)</code> method to automatically update and save the entity back to the database.</p>
+
+<h3 id="delete">Delete</h3>
+
+<p>Delete objects using the method <code class="highlighter-rouge">destroy</code> on individual objects, or <code class="highlighter-rouge">destroy_all</code> to obliterate all at once.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Tweet.find(2).destroy
+Tweet.destroy_all
+</code></pre></div></div>
+
+<h2 id="level-2-models-taste-like-chicken">Level 2: Models taste like chicken</h2>
+
+<p>In a rails application stack there are 4 components:</p>
+<ul>
+  <li>Views</li>
+  <li>Models</li>
+  <li>XX</li>
+  <li>XX</li>
+</ul>
+
+<h3 id="models">Models</h3>
+
+<p>Before using the model Tweet the class needs to be defined. This is saved in <code class="highlighter-rouge">app/models/tweet.rb</code> and defines a class which inherits from <code class="highlighter-rouge">ActiveRecord::Base</code> which maps the record to the table.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class Tweet &lt; ActiveRecord::Base
+	validates_presence_of :status
+end
+</code></pre></div></div>
+
+<h3 id="validation">Validation</h3>
+
+<p>To make fields mandatory use <code class="highlighter-rouge">validates_presence_of</code>.<br />
+Lots of other validators are availble to validate the model before allowing persistence to the database.</p>
+
+<p>Alternative syntax for Rails 3 allows validations to be combined on a single line:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>validates :status, :presence =&gt; true
+validates :status, :length =&gt; { :minimum =&gt; 3}
+validates :status, :presence =&gt; true, :length =&gt; { :minimum =&gt; 3}
+</code></pre></div></div>
+
+<h3 id="associations">Associations</h3>
+
+<p>To express associations between objects e.g. between <code class="highlighter-rouge">Tweet</code>s and <code class="highlighter-rouge">Zombie</code>s there are the keywords <code class="highlighter-rouge">belongs_to</code> and <code class="highlighter-rouge">has_many</code> :</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class Tweet &lt; ActiveRecord::Base
+	belongs_to :zombie # note - this is singular
+end
+
+class Zombie &lt; ActiveRecord::Base
+	has_many :tweets
+end
+</code></pre></div></div>
+
+<p>This relationship may be specified in one direction only (either way), or both.</p>
+
+<p>To save a new tweet, retrieve the required zombie and then use create, passing in this zombie.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>z = Zombie.find(3)
+t = Tweet.create(:status =&gt; "Your eyelids taste like bacon", :zombie =&gt; z)
+</code></pre></div></div>
+
+<h2 id="level-3-the-views-aint-always-pretty">Level 3: The views ain’t always pretty</h2>
+
+<p>The Ruby application stack has 4 components, Models on the bottom and Views second from the top.
+Rails applications are organised by folder:</p>
+
+<ul>
+  <li>app
+    <ul>
+      <li>views
+        <ul>
+          <li>layouts
+            <ul>
+              <li>application.html.erb # main layout boilerplate html code (headers etc)</li>
+            </ul>
+          </li>
+          <li>zombies</li>
+          <li>tweets
+            <ul>
+              <li>index.html.erb # lists all tweets</li>
+              <li>show.html.erb # views one tweet</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>models</li>
+    </ul>
+  </li>
+  <li>public
+    <ul>
+      <li>stylesheets</li>
+      <li>javascripts</li>
+      <li>images</li>
+    </ul>
+  </li>
+</ul>
+
+<p><code class="highlighter-rouge">.erb</code> stands for Embedded Ruby, which embeds ruby code inside html</p>
+
+<h3 id="tags-used-in-html-files">Tags used in html files</h3>
+
+<p><code class="highlighter-rouge">&lt;% %&gt;</code> to evaluate Ruby<br />
+<code class="highlighter-rouge">&lt;%= %&gt;</code> to evaluate Ruby and print the result<br />
+To indicate where to add the main content in the application.html.erb template file use <code class="highlighter-rouge">&lt;%=yield%&gt;</code></p>
+
+<h3 id="additional-layout-components">Additional layout components</h3>
+
+<p><code class="highlighter-rouge">&lt;%= stylesheet_link_tag :all %&gt;</code> will write out the appropriate html to include all stylesheets in the public/stylesheets directory<br />
+<code class="highlighter-rouge">&lt;%= javascript_include_tag :defaults %&gt;</code> will include all the default javascript (jquery from Rails 3.1)
+<code class="highlighter-rouge">&lt;%= csrf_meta_tag %&gt;</code> cross site request forgery meta tag will add meta tags to the top of the doc and other tags to forms</p>
+
+<h3 id="root-path-and-images">Root path and images</h3>
+
+<p>When a resource is requested by the browser it will automatically be searched for in the <code class="highlighter-rouge">public</code> folder first. If not found, the request will be sent to Rails.</p>
+
+<h3 id="adding-a-link">Adding a link</h3>
+
+<p>To add a link use <code class="highlighter-rouge">&lt;%= link_to [link text], [link path url] %&gt;</code><br />
+So to link to the page for that zombie use e.g. <code class="highlighter-rouge">&lt;%= link_to tweet.zombie.name, zombie_path(tweet.zombie) %&gt;</code><br />
+This can alternatively be written  <code class="highlighter-rouge">&lt;%= link_to [link text], [object to show] %&gt;</code><br />
+e.g. <code class="highlighter-rouge">&lt;%= link_to tweet.zombie.name, tweet.zombie %&gt;</code></p>
+
+<h3 id="getting-more-info-from-the-api-documentation">Getting more info from the API documentation</h3>
+
+<p>There are many options you can use with the method <code class="highlighter-rouge">link_to</code>.
+In order to find more information about this method:</p>
+
+<ol>
+  <li><code class="highlighter-rouge">git clone</code> the rails code and use grep to search for that method name: <code class="highlighter-rouge">grep -rin 'def link_to'</code></li>
+  <li>Use the online documentation at <a href="http://api.rubyonrails.org">http://api.rubyonrails.org</a></li>
+  <li>Searchable online documentation with comments at <a href="http://apidock.com/rails">http://apidock.com/rails</a></li>
+  <li>Use the rails searchable API doc at <a href="http://railsapi.com">http://railsapi.com</a></li>
+</ol>
+
+<h3 id="link_to-paths">link_to paths</h3>
+
+<p>When using <code class="highlighter-rouge">link_to</code> there are various macros to generate the correct RESTful style / MVC style url.</p>
+
+<ul>
+  <li><code class="highlighter-rouge">tweets_path</code> to show all the tweets (<code class="highlighter-rouge">/tweets</code>)</li>
+  <li><code class="highlighter-rouge">new_tweet_path</code> to go to the page to add a new tweet (<code class="highlighter-rouge">/tweets/new</code>)</li>
+  <li><code class="highlighter-rouge">tweet_path(tweet)</code> or just <code class="highlighter-rouge">tweet</code> to go to the page for that tweet (e.g. <code class="highlighter-rouge">/tweets/1</code> or <code class="highlighter-rouge">tweets/1/show</code>)</li>
+  <li><code class="highlighter-rouge">edit_tweet_path(tweet)</code> to go to the edit page for that tweet (e.g. <code class="highlighter-rouge">/tweets/1/edit</code>)</li>
+  <li><code class="highlighter-rouge">tweet, :method =&gt; :delete</code> to delete a tweet (generates <code class="highlighter-rouge">/tweets/1</code>)</li>
+</ul>
+
+<p>These all follow the recipe:
+<code class="highlighter-rouge">&lt;%= link_to text_to_show, code %&gt;</code></p>
+
+<h2 id="level-4-controllers-must-be-eaten">Level 4: Controllers must be eaten</h2>
+
+<p>In the Ruby application stack, Models is at the bottom, then Controllers and then Views second from top. All requests initially go to the controller.</p>
+
+<ul>
+  <li>app
+    <ul>
+      <li>models</li>
+      <li>views</li>
+      <li>controllers
+        <ul>
+          <li>tweets_controllers.rb</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="naming-conventions">Naming conventions</h3>
+
+<p>The name of the controller <code class="highlighter-rouge">tweets_controller</code> matches the path in the url <code class="highlighter-rouge">/tweets/</code>.</p>
+
+<p>The controller class method name <code class="highlighter-rouge">show</code> also indicates the view which should be rendered, <code class="highlighter-rouge">show.html.erb</code>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class TweetsController &lt; ApplicationController
+	def show
+		@tweet = Tweet.find(params[:id])
+	end
+end
+</code></pre></div></div>
+
+<p>There is a way to override the name of the view which will be rendered by using the following code inside the controller method:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>render :action =&gt;  'status' # will render a view call status.html.erb
+</code></pre></div></div>
+
+<h3 id="variable-scope">Variable scope</h3>
+
+<p>All calls to the model will be moved from the view to the controller. Now the view code doesn’t contain lots of Ruby code. The code in the controller action method will be executed and control passed to the view. Any variables required by the view will be marked with a <code class="highlighter-rouge">@</code>. The <code class="highlighter-rouge">@</code> symbol is then used both within the controller code and the view code.</p>
+
+<h3 id="parameters">Parameters</h3>
+
+<p>Parameters in the query string GET variables or in the POST variables are passed to the controller in a hash called <code class="highlighter-rouge">params</code>.
+There are often nested hashes within the <code class="highlighter-rouge">params</code> hash (i.e. called with e.g. /tweets?tweet[status]=I’m dead)</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>params = {:tweet =&gt; {:status =&gt; "I'm dead"}}
+</code></pre></div></div>
+
+<p>To extract this value we can use <code class="highlighter-rouge">params[:tweet][:status]</code>.</p>
+
+<p>When creating a new tweet with this status, the code would be:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@tweet = Tweet.create(:status =&gt; params[:tweet][:status])
+</code></pre></div></div>
+
+<p>or alternatively, just pass the hash from the params into the create method:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@tweet = Tweet.create(params[:tweet])
+</code></pre></div></div>
+
+<p>NOTE: In Rails 4 strong paramters are required. This means in the controller you need to specify which models are required and which paramters for that model are permitted. Only required for creates or updates.</p>
+
+<h3 id="generating-xml-and-json-formats">Generating xml and json formats</h3>
+
+<p>By default in ruby the convention for requesting the output in a different format is to append <code class="highlighter-rouge">.xml</code> or <code class="highlighter-rouge">.json</code> on the end of the url e.g. <code class="highlighter-rouge">/tweets/1.xml</code>.</p>
+
+<p>In the controller, the <code class="highlighter-rouge">respond_to</code> keyword is used:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class TweetsController &lt; ApplicationController
+	def show			
+		@tweet = Tweet.find(params[:id])
+
+		respond_to { |format| 
+			format.html # show.html.erb
+			format.xml { render :xml =&gt; @tweet }
+			format.json { render :json =&gt; @tweet }
+		}
+	end
+end
+</code></pre></div></div>
+
+<p>This will automatically render the tweet in either xml or json.</p>
+
+<h3 id="common-controller-actions">Common controller actions</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class TweetsController &lt; ApplicationController
+	def index 	# show all items
+	def show		# show a single item
+	def new 		# show a create form
+	def edit 		# show an edit form
+	def create 	# create a new item
+	def update 	# update an item
+	def destroy	# delete an item
+end
+</code></pre></div></div>
+
+<h3 id="authorisation">Authorisation</h3>
+
+<p>The session hash can be used to store e.g. the user’s id and restrict edits to items only this user has created.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class TweetsController &lt; ApplicationController
+	def edit
+		if session[:user_id] != @tweet.zombie_id
+			flash[:notice] = "Sorry, you can't edit this tweet"
+			redirect_to(tweets_path)
+		end
+	end
+end
+</code></pre></div></div>
+
+<p>The flash hash is used to send messages to the user. To redirect the user back to a different controller, use the <code class="highlighter-rouge">redirect_to</code> method.</p>
+
+<p>In Rails 3 the redirection and notice can be combined:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>redirect_to(tweets_path, :notice =&gt; "Sorry, you can't edit this tweet")
+</code></pre></div></div>
+
+<h3 id="common-code-for-several-actions">Common code for several actions</h3>
+
+<p>If there is common code which is called in several actions, this can be extracted to its own method.
+This method can be called by using the <code class="highlighter-rouge">before_filter</code> command which can specify a method to execute, as well as conditions when the method should be executed.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>before_filter  :get_tweet, :only =&gt; [:edit, :update, :destroy]
+before_filter  :check_auth, :only =&gt; [:edit, :update, :destroy]
+
+def get_tweet
+	@tweet = Tweet.find(params[:id])
+end
+def check_auth
+	if session[:user_id] != @tweet.zombie_id
+		redirect_to(tweets_path, :notice =&gt; "Sorry, you can't edit this tweet")
+	end
+end
+</code></pre></div></div>
+
+<h2 id="level-5-routing-into-darkness">Level 5: Routing into darkness</h2>
+
+<p>The final component in the ruby application stack is routing, sitting right at the top. Routes are required to properly find the paths for the link_to functions and find the actions.</p>
+
+<p>They are defined in a file called routes.rb in the config directory.</p>
+
+<ul>
+  <li>app
+    <ul>
+      <li>models</li>
+      <li>views</li>
+      <li>controllers</li>
+    </ul>
+  </li>
+  <li>config
+    <ul>
+      <li>routes.rb</li>
+    </ul>
+  </li>
+</ul>
+
+<p>This file contains code to create a RESTful resource to generate several default routes:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ZombieTwitter::Application.routes.draw do |map| 
+	resources :tweets
+end
+</code></pre></div></div>
+
+<h3 id="custom-routes">Custom routes</h3>
+
+<p>To specify custom routes:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>match 'new_tweet' =&gt; 'Tweets#new' # controller Tweets, action new
+match 'all' =&gt; 'Tweets#index'
+</code></pre></div></div>
+
+<p>However, once you do this the usual <code class="highlighter-rouge">tweets_path</code> will still direct to <code class="highlighter-rouge">/tweets</code> instead of <code class="highlighter-rouge">/all</code>. We can define a path which will redirect to <code class="highlighter-rouge">/all</code> as part of the route, which we can then use with link_to.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>match 'all' =&gt; 'Tweets#index', :as =&gt; 'all_tweets"'"
+
+&lt;%= link_to 'All tweets', all_tweets_path %&gt;
+</code></pre></div></div>
+
+<h3 id="redirects">Redirects</h3>
+
+<p>Alternatively we may want to keep <code class="highlighter-rouge">/tweets</code>, but redirect to this if someone enters <code class="highlighter-rouge">/all</code>. This is done using the <code class="highlighter-rouge">redirect</code> keyword:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>match 'all' =&gt; redirect('/tweets')
+match 'google' =&gt; redirect('http://www.google.com')
+</code></pre></div></div>
+
+<p>The second example shows this mechanism being used to redirect outside of the application.</p>
+
+<h3 id="root-route">Root route</h3>
+
+<p>Specify where the root of the application default to using the root route.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root :to =&gt; "Tweets#index"
+</code></pre></div></div>
+
+<p>Correspondingly the link_to is:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;%= link_to "All tweets", root_path %&gt;
+</code></pre></div></div>
+
+<h3 id="route-parameters">Route parameters</h3>
+
+<p>By default a number after an action in the url is assigned to a variable called <code class="highlighter-rouge">id</code>, but an alternative variable name can be specified in the routing.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>match "local_tweets/:zipcode" =&gt; "Tweets#index"
+</code></pre></div></div>
+
+<p>Another example uses a variable without specifying any controller (as in e.g. <a href="http://www.twitter.com/user3">http://www.twitter.com/user3</a>)</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>match ":name" =&gt; "Tweets#index"
+</code></pre></div></div>
+:ET

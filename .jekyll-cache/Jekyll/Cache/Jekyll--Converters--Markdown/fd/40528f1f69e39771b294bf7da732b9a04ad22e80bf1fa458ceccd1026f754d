@@ -1,0 +1,47 @@
+I"Q<h2 id="references">References</h2>
+
+<ul>
+  <li>Instructions for setting up: http://newcoder.io/begin/setup-your-machine/</li>
+  <li>Pip package repo: https://pypi.python.org/pypi/</li>
+</ul>
+
+<h3 id="pip">Pip</h3>
+
+<p>Tool to install Python packages.
+    pip3 list                   # shows packages already installed
+    pip3 list –outdated        # shows outdated packages
+    pip3 install –upgrade pip3</p>
+
+<h3 id="virtualenv">Virtualenv</h3>
+
+<p>Creates a virtual environment for a Python project to isolate dependencies.Equivalent of ruby’s Gemfile.
+Install using pip:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip3 install virtualenv
+</code></pre></div></div>
+
+<h3 id="virtualenvwrapper">Virtualenvwrapper</h3>
+
+<p>Simplifies commands for virtualenv. Install using pip.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip3 install virtualenvwrapper
+</code></pre></div></div>
+
+<p>Check the /usr/bin/local/virtualenvwrapper.sh script for set up.
+Ensure it is using the correct python by additionally setting the <code class="highlighter-rouge">VIRTUALENVWRAPPER_PYTHON</code> environment variable.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkvirtualenv TestEnv        # create a new virtual environment and activate
+deactivate                  # deactivate the current virtual environment
+workon                      # list current environments
+workon TestEnv              # activate the TestEnv virtual environment
+rmvirtualenv TestEnv        # remove the TestEnv virtual environment
+</code></pre></div></div>
+
+<p>See http://virtualenvwrapper.readthedocs.org/en/latest/index.html for further info.</p>
+
+<h3 id="site-for-testing-http-requests">Site for testing http requests</h3>
+
+<p>http://requestb.in/
+http://httpbin.org/</p>
+
+:ET

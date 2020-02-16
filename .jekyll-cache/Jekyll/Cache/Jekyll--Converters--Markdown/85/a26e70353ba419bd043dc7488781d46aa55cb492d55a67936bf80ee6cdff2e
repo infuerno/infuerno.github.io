@@ -1,0 +1,393 @@
+I"�p<h2 id="resources">Resources</h2>
+
+<ul>
+  <li>Source code: https://github.com/Farata/angulartypescript</li>
+  <li>To Type or Not to Type: Quantifying Detectable Bugs in JavaScript: http://earlbarr.com/publications/typestudy.pdf</li>
+  <li>Angular Material: https://material.angular.io</li>
+  <li>Angular Material Guidelines: https://material.io/guidelines</li>
+  <li>Webpack: http://webpack.js.org</li>
+  <li>Event reference: https://developer.mozilla.org/en-US/docs/Web/Events</li>
+</ul>
+
+<h2 id="organisation">Organisation</h2>
+
+<ul>
+  <li>Chapter 1: high level overview - cli - different ways to compile - intro to sample app ngAuction</li>
+  <li>Chapter 2: components, ser- vices, directives, pipes and modules (page 44)</li>
+  <li>Chapter 3: router (page 72)</li>
+  <li>Chapter 4: advanced router - lazy loading modules (page 102)</li>
+  <li>Chapter 5: dependency injection - providers and injectors - how to swap the object being injected (page 144)</li>
+  <li>Chapter 6: observables - <code class="highlighter-rouge">switchMap</code> (page 158)</li>
+  <li>Chapter 7: Flex Layout library - <code class="highlighter-rouge">ObservableMedia</code> service (page 176)</li>
+  <li>Chapter 8: loosely coupled intercomponent communication (page 203)</li>
+  <li>Chapter 9: component lifecycle - change detection (page 232)</li>
+  <li>Chapter 10: angular forms - template-driven and reactive (page 254)</li>
+  <li>Chapter 11: Forms API - validators (page 275)</li>
+  <li>Chapter 12: HTTP - HttpClient - also write web servers in Node and Express (page 302)</li>
+  <li>Chapter 13: Sockets - push mechanism from server to client (page 335)</li>
+  <li>Chapter 14: Testing (page 365)</li>
+  <li>Chapter 15: Maintaining state in Redux style using NgRx (page 405)</li>
+  <li>Appendix A: ECMAScript 6,7,8 language enhancements (page 428)</li>
+  <li>Appendix B: TypeScript (page 463)</li>
+  <li>Appendix C: npm and Yarn - semantic versioning (page 491)</li>
+  <li>Appendix D: RxJS (page 498)</li>
+</ul>
+
+<h1 id="chapter-1-introducing-angular">Chapter 1: Introducing Angular</h1>
+
+<p>The main advantage which React and Vue.js have over Angular is that they can be embedded easily within another web app. However this will be answered with the introduction of <code class="highlighter-rouge">@angular/elements</code>.</p>
+
+<p>Angular Material is a library of approx 30 UI components. Further components are available in other 3rd party libraries e.g. PrimeNG, Kendo UI, DevExtreme. Can also use Bootstrap.</p>
+
+<h2 id="introducing-the-angular-cli">Introducing the Angular CLI</h2>
+
+<p>Assuming you have the latest version of the Angular CLI installed, running <code class="highlighter-rouge">ng update</code> will update all dependencies with <code class="highlighter-rouge">package.json</code>. See https://update.angular.io for further details on updating angular.</p>
+
+<p><code class="highlighter-rouge">ng serve</code> builds bundles in memory without creating files. The following files are generated (regenerated everytime a file changes):</p>
+
+<ul>
+  <li><code class="highlighter-rouge">inline.bundle.js</code> is a file used by the Webpack loader to load other files</li>
+  <li><code class="highlighter-rouge">main.bundle.js</code> includes your own code (components, services, and so on)</li>
+  <li><code class="highlighter-rouge">polyfills.bundle.js</code> includes polyfills needed by Angular so it can run in older browsers</li>
+  <li><code class="highlighter-rouge">styles.bundle.js</code> includes CSS styles from your app</li>
+  <li><code class="highlighter-rouge">vendor.bundle.js</code> includes the code of the Angular framework and its dependencies</li>
+</ul>
+
+<p>For each bundle, Angular CLI generates a source map file to allow debugging the original TypeScript, even though the browser will run the generated JavaScript. The size of the <code class="highlighter-rouge">vendor.bundle.js</code> in the dev build will be greatly reduced in the production build.</p>
+
+<p>Angular CLI uses Webpack to build the bundles and <code class="highlighter-rouge">webpack-dev-server</code> to serve the app. <code class="highlighter-rouge">ng serve</code> runs <code class="highlighter-rouge">webpack-dev-server</code>. Starting Angular 7, Bazel is an alternative to Webpack.</p>
+
+<h2 id="jit-vs-aot-compilation">JIT vs AOT compilation</h2>
+
+<p>Angular templates need to be compiled for the browser to understand them. With JIT, the compliation happens once the browser has downloaded all the files (the Angular compiler <code class="highlighter-rouge">ngc</code> is in the <code class="highlighter-rouge">vendor.bundle.js</code>).</p>
+
+<p>Using JIT compilation in production is discouraged since the templates should be precompiled into JavaScript before the bundles are created (also save having to download the compiler). This is what ahead-of-time (AOT) compilation is about.</p>
+
+<p>When bundles are built with the –prod option, Angular CLI performs code optimisation and AOT compilation. See it in action by running <code class="highlighter-rouge">ng serve --prod</code>. If third party libraries produce AOT errors, it can be turned off: <code class="highlighter-rouge">ng serve --prod --aot false</code>.</p>
+
+<p>Whereas <code class="highlighter-rouge">ng serve</code> generates files in memory, the <code class="highlighter-rouge">ng build</code> command generates files in the dist directory (by default), but the bundle sizes won’t be optimized.</p>
+
+<p>With <code class="highlighter-rouge">ng build --prod</code>, the generated files will be optimized but not compressed. Gzip compression will need to be applied afterwards.</p>
+
+<h1 id="chapter-2-the-main-artefacts-of-an-angular-app">Chapter 2: The main artefacts of an Angular app</h1>
+
+<h2 id="components">Components</h2>
+
+<p>The main artefact - a class with a view (UI). To turn a class into a component, decorate it with the <code class="highlighter-rouge">@Component()</code> decorator. (These are Typescript decorators which are processed by the Angular compiler to add additional functionality. Similarity with <code class="highlighter-rouge">@Input()</code>.)</p>
+
+<ul>
+  <li>A component belongs to EXACTLY ONE module (declared in the <code class="highlighter-rouge">declarations</code>)</li>
+  <li>Selectors for app projects start with <code class="highlighter-rouge">app-</code> by default (<code class="highlighter-rouge">lib-</code> for libraries). It is good practice to come up with something unique for your application. Specify the prefix in <code class="highlighter-rouge">angular.json</code></li>
+</ul>
+
+<h2 id="services">Services</h2>
+
+<p>Services are for code which fetches or manipulates data, for business logic.</p>
+
+<ul>
+  <li>The <code class="highlighter-rouge">@Injectable()</code> decorator ensures it is registered in the container</li>
+  <li>Use <code class="highlighter-rouge">provideIn: </code><code class="highlighter-rouge">root</code><code class="highlighter-rouge"> </code> for Angular 6 upwards (previously had to declare in the <code class="highlighter-rouge">providers</code> section of (usually) the root module)</li>
+</ul>
+
+<h2 id="directives">Directives</h2>
+
+<ul>
+  <li>Teach old HTML new tricks</li>
+  <li>Two different types:
+    <ul>
+      <li>structural which change the structure of a template e.g. <code class="highlighter-rouge">*ngFor</code> OR</li>
+      <li>attribute which change the behaviour or visual representation e.g. <code class="highlighter-rouge">ngModel</code></li>
+    </ul>
+  </li>
+  <li>Can also have custom directives</li>
+</ul>
+
+<h2 id="pipes">Pipes</h2>
+
+<p>A pipe <code class="highlighter-rouge">|</code> is a template element to transform output e.g. <code class="highlighter-rouge">&lt;p&gt;Your birthday is {{ birthday | date }}&lt;/p&gt;</code></p>
+
+<ul>
+  <li>Various built in pipes e.g. <code class="highlighter-rouge">DatePipe</code> and the name used on the template e.g. <code class="highlighter-rouge">date</code></li>
+  <li>Others <code class="highlighter-rouge">| uppercase</code>, <code class="highlighter-rouge">| lowercase</code>, <code class="highlighter-rouge">| currency</code>, <code class="highlighter-rouge">| async</code> (unwraps data from an <code class="highlighter-rouge">Observable</code> stream)</li>
+  <li>Some pipes take input parameters e.g. <code class="highlighter-rouge">| date:'medium'</code></li>
+  <li>Can chain pipes</li>
+  <li>Can also have custom pipes</li>
+</ul>
+
+<h2 id="modules">Modules</h2>
+
+<p>Container for a group of related components, services, directives and pipes e.g. for shipping or billing</p>
+
+<ul>
+  <li>All apps must have at least one module - the root module - which is bootstrapped during application launch</li>
+  <li>The root module must include the <code class="highlighter-rouge">BrowserModule</code>, and contain the <code class="highlighter-rouge">bootstrap</code> configuration</li>
+  <li>Features modules must include the <code class="highlighter-rouge">CommonModule</code> instead</li>
+  <li>Feature modules must <code class="highlighter-rouge">export</code> any components, services, classes, directives, pipes which need to be accessed by other modules</li>
+</ul>
+
+<h2 id="data-binding">Data binding</h2>
+
+<p>Keeps a component’s properties in sync with the view</p>
+
+<ul>
+  <li>Interpolation - simply use <code class="highlighter-rouge">{{ }}</code> in the template e.g. <code class="highlighter-rouge">&lt;h1&gt;Hello !&lt;/h1&gt;</code></li>
+  <li>One-way binding class -&gt; template: use <code class="highlighter-rouge">[]</code> e.g. <code class="highlighter-rouge">&lt;span [hidden]="isValid"&gt;This field is required&lt;/span&gt;</code></li>
+  <li>One-way binding template -&gt; class: use <code class="highlighter-rouge">()</code> e.g. <code class="highlighter-rouge">&lt;button (click)='getProducts()'&gt;Get Products&lt;/button&gt;</code></li>
+  <li>To gain access to the browser’s event object use <code class="highlighter-rouge">$event</code> e.g. <code class="highlighter-rouge">&lt;button (click)='getProducts($event)'&gt;Get Products&lt;/button&gt;</code> e.g. the target property specifies has the DOM element where the event occured</li>
+  <li>Can also have custom events (Chapter 8)</li>
+  <li>Two-way binding invariably uses <code class="highlighter-rouge">ngModel</code> e.g. <code class="highlighter-rouge">&lt;input type='text' [(ngModel)]="shippingAddress"&gt;</code>
+    <ul>
+      <li>if the value of the <code class="highlighter-rouge">shippingAddress</code> variable changes the value in the input field will be updated</li>
+      <li>if the value of the input field changes, the value of the <code class="highlighter-rouge">shippingAddress</code> variable will be updated</li>
+    </ul>
+  </li>
+  <li>Remember to import the <code class="highlighter-rouge">FormsModule</code> for <code class="highlighter-rouge">ngModel</code></li>
+</ul>
+
+<h1 id="chapter-3-router-basics">Chapter 3: Router basics</h1>
+
+<p>The <code class="highlighter-rouge">&lt;router-outlet&gt;</code> represents the content area used by the router - can have more than one (Chapter 4).</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<ul>
+  <li>Two possible location strategies
+    <ul>
+      <li><code class="highlighter-rouge">HashLocationStrategy</code> - works with all browsers</li>
+      <li><code class="highlighter-rouge">PathLocationStrategy</code> - aka History API based navigation - default - only works with browsers supporting HTML5
+        <ul>
+          <li>Uses the browser’s History API. This API allows programmatically going back and forth through the history stack as well as altering it</li>
+          <li>For non root paths, requires a <code class="highlighter-rouge">&lt;base href="/mypath"&gt;</code> for the browser to resolve CSS etc and a value for <code class="highlighter-rouge">APP_BASE_HREF</code> in the root module for Angular router to resolve <code class="highlighter-rouge">routerLink</code> properties and calls to <code class="highlighter-rouge">router.navigate()</code></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Configure routes by defining an array of type <code class="highlighter-rouge">Route</code> (with the array of type <code class="highlighter-rouge">Routes</code>)</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>const routes: Routes = [
+    { path: '', component: HomeComponent },
+    { path: 'product', component: ProductDetailComponent }
+];
+</code></pre></div></div>
+
+<ul>
+  <li>Routing is module based</li>
+  <li>If declaring for the root module use <code class="highlighter-rouge">RouterModule.forRoot(routes)</code> in the <code class="highlighter-rouge">imports</code> section (the CLI’s <code class="highlighter-rouge">--routing</code> option actually configures a seperate file <code class="highlighter-rouge">app-routing.module.ts</code> for route configuration)</li>
+  <li><code class="highlighter-rouge">forRoot</code> creates a router module AND a service</li>
+  <li><code class="highlighter-rouge">forChild</code> (used in feature modules) only creates a router module</li>
+</ul>
+
+<h2 id="navigation">Navigation</h2>
+
+<ul>
+  <li>Navigation using <code class="highlighter-rouge">routerLink</code>: <code class="highlighter-rouge">&lt;a [routerLink]="['/product']"&gt;Product Details&lt;/a&gt;</code></li>
+  <li>Navigation using <code class="highlighter-rouge">navigate()</code>: <code class="highlighter-rouge">this.router.navigate(['/product'])</code></li>
+  <li>By default the URL in the browser changes, but can be skipped using <code class="highlighter-rouge">skipLocationChange</code></li>
+  <li>Useful to create a 404 component and configure the route <code class="highlighter-rouge">**</code> to display this component (catch all) e.g. <code class="highlighter-rouge">{ path: '**', component: _404Component }</code></li>
+</ul>
+
+<h2 id="passing-data-to-routes">Passing data to routes</h2>
+
+<ul>
+  <li>Configure the route to include parameters e.g. <code class="highlighter-rouge">{ path: 'product/:id', component: ProductDetailComponent }</code></li>
+  <li>Pass the value in the routerLink: <code class="highlighter-rouge">&lt;a [routerLink]="['/product', productId]"&gt;Product Detail&lt;/a&gt;</code></li>
+  <li>The receiving component can get data from the route by injecting <code class="highlighter-rouge">ActivatedRoute</code></li>
+  <li>Access the <code class="highlighter-rouge">id</code> using <code class="highlighter-rouge">route.snapshot.paramMap.get('id')</code></li>
+  <li><strong>CAREFUL</strong> using snapshot - it won’t change in some cases - need to subscribe to the <code class="highlighter-rouge">ActivatedRoute.paramMap</code> property to get URL changes
+    <ul>
+      <li>e.g. <code class="highlighter-rouge">route.paramMap.subscribe( params =&gt; this.productID = params.get('id') );</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="passing-query-parameters-to-routes">Passing query parameters to routes</h3>
+
+<ul>
+  <li>Query parameters aren’t scoped to any particular route (so not specified in the route config)</li>
+  <li>Using routerLink: <code class="highlighter-rouge">&lt;a [routerLink]="['/products']" [queryParams]="{category:'sports'}"&gt;Sports products &lt;/a&gt;</code></li>
+  <li>Using navigation requires access to the <code class="highlighter-rouge">Router</code> object: <code class="highlighter-rouge">this.router.navigate(['/products'], {queryParams: {category: 'sports'}});</code></li>
+  <li>The receiving component can get query param data using <code class="highlighter-rouge">ActivatedRoute</code> again: <code class="highlighter-rouge">route.snapshot.queryParamMap.get('category')</code></li>
+</ul>
+
+<h3 id="child-routes">Child routes</h3>
+
+<p>The <code class="highlighter-rouge">children</code> property of <code class="highlighter-rouge">Route</code> is used to specify relative routes for child components e.g.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'product/:id', component: ProductDetailComponent,
+    children: [
+      { path: '', component: ProductDescriptionComponent },
+      { path: 'seller/:id', component: SellerInfoComponent }
+    ]
+  }
+];
+</code></pre></div></div>
+
+<p>In this example, there are two <code class="highlighter-rouge">&lt;router-outlet&gt;</code>s:</p>
+<ol>
+  <li>In the <code class="highlighter-rouge">app.component.html</code></li>
+  <li>In the <code class="highlighter-rouge">product.detail.component.html</code></li>
+</ol>
+
+<p><img src="https://www.dropbox.com/s/6ymgcc3k5g3bag3/Screenshot%202020-01-30%2021.21.33.png?raw=1" alt="Two router outlets" /></p>
+
+<h3 id="host">:host</h3>
+<p><code class="highlighter-rouge">:host</code> is a psuedo class selector which can be used with elements created using Shadow DOM (provides better encapsulation for components). Use <code class="highlighter-rouge">:host</code> to apply a background colour to the whole component e.g. <code class="highlighter-rouge">:host { background: yellow; }</code></p>
+
+<h3 id="deep-linking">Deep linking</h3>
+<p>Although the link <code class="highlighter-rouge">http://localhost:4200/#/product/1234/seller/5678</code> works when Angular’s index.html is loaded, it results in a 404 when it isn’t loaded. Any 404s should redirect to index.html so that “deep links” continue to work properly (Angular CLI dev server is already configured to do this).</p>
+
+<h3 id="router-events">Router events</h3>
+<p>There are various events which can be hooked into e.g. <code class="highlighter-rouge">NavigationStart</code> and <code class="highlighter-rouge">NavigationEnd</code> (see 6.6). For debugging, router events can be logged to the console via the <code class="highlighter-rouge">forRoot()</code> method: <code class="highlighter-rouge">RouterModule.forRoot(routes, { enableTracing: true })</code></p>
+
+<h1 id="chapter-4-router-advanced">Chapter 4: Router advanced</h1>
+
+<h1 id="chapter-5-dependency-injection-in-angular">Chapter 5: Dependency injection in Angular</h1>
+
+<h2 id="using-angular-material-components">Using Angular Material Components</h2>
+
+<ul>
+  <li>Angular Material is a library offering 30 UI Components and 4 prebuilt themes.</li>
+  <li>A theme is a collection of palettes which look good together. 500 is the <strong>primary</strong> colour for the palette</li>
+  <li>A prebuilt theme file can be reference in the <code class="highlighter-rouge">index.html</code> OR the global <code class="highlighter-rouge">styles.css</code> at e.g. <code class="highlighter-rouge">@angular/material/prebuilt-themes/indigo-pink.css</code></li>
+  <li>Reference colours using e.g. <code class="highlighter-rouge">primary</code>, <code class="highlighter-rouge">accent</code>, <code class="highlighter-rouge">warn</code> etc e.g. <code class="highlighter-rouge">&lt;mat-toolbar color="primary"&gt;&lt;/mat-toolbar&gt;</code></li>
+  <li>Each of the 30 components is packaged in a feature module, so any used need to be imported in either <code class="highlighter-rouge">AppModule</code> OR in can be added to a seperate feature module e.g. <code class="highlighter-rouge">MyAppMaterialModule</code> to retain separation (import this module into the <code class="highlighter-rouge">AppModule</code>). Only add those modules required.</li>
+</ul>
+
+<h3 id="adding-mat-to-an-angular-app">Adding MAT to an Angular app</h3>
+
+<ul>
+  <li>Install libraries manually using: <code class="highlighter-rouge">npm i @angular/material @angular/cdk @angular/animations</code></li>
+  <li>Alternatively <code class="highlighter-rouge">npm add @angular/material</code> adds libraries and also updates source files as required (for details see: https://material.angular.io/guide/getting-started)</li>
+</ul>
+
+<h1 id="chapter-7-laying-out-pages-with-flex-layout">Chapter 7: Laying out pages with Flex Layout</h1>
+
+<ul>
+  <li>The term Responsive Web Design (RWD) was coined by Ethan Marcotte in the article “Responsive Web Design,” available at http://alistapart.com/article/responsive-web- design</li>
+  <li>The Flex Layout Library in combination with its <code class="highlighter-rouge">ObservableMedia</code> service allows writing responsive designs with minimal CSS.</li>
+  <li>Write RWDs with:
+    <ul>
+      <li>CSS <code class="highlighter-rouge">@media</code> queries and breakpoints</li>
+      <li>CSS Flexbox with <code class="highlighter-rouge">@media</code> queries - LINK</li>
+      <li>CSS Grid - LINK</li>
+      <li>Angular Flex Layout library - doesn’t require CSS with <code class="highlighter-rouge">@media</code> queries. Instead uses directives. Full documentation at: https://github.com/angular/flex-layout/wiki. <strong>PURE TYPESCRIPT LAYOUT ENGINE</strong>.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="using-flex-layout-directives">Using Flex Layout directives</h2>
+
+<ul>
+  <li>Two types of directives: one for containers and one for children:
+    <ul>
+      <li>container directives for aligning children</li>
+      <li>children directives for order, space taken etc</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Directive | Description | Values
+–|–
+Container directives
+<code class="highlighter-rouge">fxLayout</code> | Use CSS Flexbox to layout children | <code class="highlighter-rouge">row</code>, <code class="highlighter-rouge">column</code>, <code class="highlighter-rouge">row-reverse</code>, <code class="highlighter-rouge">column-reverse</code>
+<code class="highlighter-rouge">fxLayout.sm</code> | Specify layout for particular sizes only | Also <code class="highlighter-rouge">fxLayout.lt-md</code> for e.g. all breakpoints less than medium
+<code class="highlighter-rouge">fxLayoutAlign</code> | Specify alignment for child elements | either <code class="highlighter-rouge">main-axis</code> or <code class="highlighter-rouge">cross-axis</code>; <code class="highlighter-rouge">start</code>, <code class="highlighter-rouge">center</code>, <code class="highlighter-rouge">end</code>
+<code class="highlighter-rouge">fxLayoutGap</code> | Controls space between child elements | %, px etc
+Child directives
+<code class="highlighter-rouge">fxFlex</code> | Controls the amount of space a child takes | %, px, <code class="highlighter-rouge">grow</code>, <code class="highlighter-rouge">shrink</code>, <code class="highlighter-rouge">basis</code>
+<code class="highlighter-rouge">fxFlexAlign</code> | Change the alignment specified with <code class="highlighter-rouge">fxLayoutAlign</code> | <code class="highlighter-rouge">start</code>, <code class="highlighter-rouge">baseline</code>, <code class="highlighter-rouge">center</code>, <code class="highlighter-rouge">end</code>
+<code class="highlighter-rouge">fxFlexOrder</code> | Change order of elements e.g. move an important component to visible area on smaller screens</p>
+
+<ul>
+  <li>Add Flex Layout library: <code class="highlighter-rouge">npm i @angular/flex-layout @angular/cdk</code></li>
+  <li>Import the <code class="highlighter-rouge">FlexLayoutModule</code> in the root module</li>
+</ul>
+
+<h2 id="mediaobserver-service">MediaObserver service</h2>
+
+<p>Subscribe to screen size changes using the <code class="highlighter-rouge">MediaObserver</code> service’s <code class="highlighter-rouge">media$</code> observable</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export class AppComponent {
+  showExtras$: Observable&lt;boolean&gt;;
+
+  constructor(private mediaObserver: MediaObserver) {
+    this.showExtras$ = mediaObserver.media$
+      .pipe(map(change =&gt; {
+        return change.mqAlias === 'md' ? true : false;
+      }));
+  }
+</code></pre></div></div>
+
+<p>Instead of checking the value of <code class="highlighter-rouge">mqAlias</code> every time it changes, can instead use <code class="highlighter-rouge">isActive</code> API to check if a particular breakpoint is currently active. Ensure the <code class="highlighter-rouge">mediaObserver</code> reference is public so that it is accessible in the template. Then simply use e.g. <code class="highlighter-rouge">*ngIf="mediaObserver.isActive('md')"</code></p>
+
+<h2 id="scss-syntax">SCSS syntax</h2>
+
+<ul>
+  <li>Variables - start with <code class="highlighter-rouge">$</code> e.g. <code class="highlighter-rouge">$font-stack: Helvetica, sans-serif;</code> and can be used in CSS e.g. <code class="highlighter-rouge">body {font: 100% $font-stack;}</code></li>
+  <li>Nesting - easier to read syntax for nested CSS selectors</li>
+  <li>Mixins - allow defining blocks of styles e.g. <code class="highlighter-rouge">@mixin reset-list { margin: 0; padding: 0; list-style: none; }</code>. These are used in other styles with <code class="highlighter-rouge">@include</code> e.g. <code class="highlighter-rouge">ul { @include: reset-list; color: red; }</code>. Can also define variables on a mixin.</li>
+  <li>Partials - files to be imported into other files. Name starts with <code class="highlighter-rouge">_</code> e.g. <code class="highlighter-rouge">_theme.scss</code>. Import using <code class="highlighter-rouge">@import</code> e.g. <code class="highlighter-rouge">@import './theme';</code></li>
+</ul>
+
+<h2 id="theming">Theming</h2>
+
+<ul>
+  <li>https://www.materialpalette.com - MAT theme colours</li>
+  <li>Create _theme.scss - to import a theme from MAT</li>
+  <li>In styles.scss</li>
+</ul>
+
+<h1 id="chapter-14-testing-angular-applications">Chapter 14: Testing Angular applications</h1>
+
+<blockquote>
+  <p>A unit test should verify that a known, fixed input produces a known, fixed output (Google engineer Elliotte Rusty Harold)</p>
+</blockquote>
+
+<p>Jasmine is the recommended framework for writing unit tests for Angular applications (there are others). Jasmine comes with its own browser based test runner. Karma is an alternative command line based runner (easier to automate).</p>
+
+<p>Unit test specs are writting BDD style e.g. <code class="highlighter-rouge">StarsComponent emits the change rating event</code> (and serves as program documentation). <em>Assertions</em> are followed by <em>matchers</em> e.g. <code class="highlighter-rouge">expect(2 + 2).toEqual(4)</code> OR <code class="highlighter-rouge">expect(2 + 2).not.toEqual(5)</code>. Complete list of matchers are in <code class="highlighter-rouge">@types/jasmine/index.d.ts</code></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>describe('MyCalculator', () =&gt; {                          // A suite description and a function implementing the suite
+ it('should know how to multiply', () =&gt; { 
+   // The code that tests multiplication goes here
+});
+it('should not divide by zero', () =&gt; {                  // A spec to test division
+   // The code that tests division by zero goes here
+}); });
+</code></pre></div></div>
+
+<h1 id="appendix-a-an-overview-of-ecmascript">Appendix A: An overview of ECMAScript</h1>
+
+<p>Appendix assumes familiarity with ES5, and only covers enhancements introduced for ES6, 7 and 8.</p>
+
+<h4 id="a2-scope-of-variables-and-this">A2 Scope of variables and <code class="highlighter-rouge">this</code></h4>
+
+<p>Scoping of <code class="highlighter-rouge">var</code> is confusing with the variable declaration <strong>hoist</strong>ed to the top of the execution context e.g. function. Use of <code class="highlighter-rouge">this</code> is also not straightforward. ES6 solves these problems with the <code class="highlighter-rouge">let</code> keyword and the use of arrow functions to resolve difficulties with <code class="highlighter-rouge">this</code>.</p>
+
+<h4 id="a3-template-literals-and-multiline-strings">A3 Template literals and multiline strings</h4>
+
+<ul>
+  <li>e.g. <code class="highlighter-rouge">`Hello ${customerName}`</code></li>
+  <li>e.g. <code class="highlighter-rouge">`This string</code><br />
+<code class="highlighter-rouge">runs over two lines with a carriage return in the middle`</code></li>
+</ul>
+
+<h4 id="a4-optional-parameters-and-default-values">A4 Optional parameters and default values</h4>
+
+<p>As per C#</p>
+
+<h4 id="a5-arrow-function-expressions-this-and-that">A5 Arrow function expressions, this and that</h4>
+
+<ul>
+  <li><code class="highlighter-rouge">let sum = (arg1, arg2) =&gt; arg1 + arg2;</code> // no need for curly braces, no need to use <code class="highlighter-rouge">return</code></li>
+  <li>multiline expressions require braces and <code class="highlighter-rouge">return</code></li>
+  <li><code class="highlighter-rouge">const arr = [1, 2, 3, 4, 5]; console.log( "Sum of elements is " + arr.reduce((a,b) =&gt; a+b));</code> // prints 15</li>
+  <li><code class="highlighter-rouge">console.log( "Even numbers are " + arr.filter( value =&gt; value % 2 === 0));</code> // prints 2 4</li>
+</ul>
+
+<p>Fat arrow functions ensure this behaves properly when you want to access <code class="highlighter-rouge">this</code> from a closure.</p>
+
+:ET

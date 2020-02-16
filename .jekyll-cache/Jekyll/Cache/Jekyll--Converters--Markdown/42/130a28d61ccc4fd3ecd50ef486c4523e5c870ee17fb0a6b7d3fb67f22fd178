@@ -1,0 +1,1166 @@
+I"�q<h2 id="references">References</h2>
+
+<ul>
+  <li>Book website: http://aka.ms/modauth</li>
+  <li>Microsoft docs: http://aka.ms/aaddev</li>
+  <li>Blog: www.cloudidentity.com</li>
+  <li>Twitter: www.twitter.com/vibronet</li>
+  <li>Code samples: http://aka.ms/modauth/files</li>
+  <li>Book updates: http://www.cloudidentity.com/blog/books/book-updates/</li>
+</ul>
+
+<h2 id="related-content">Related content</h2>
+
+<ul>
+  <li>May 2017 - The keys to the cloud: Use Microsoft identities to sign in and access API from your mobile and web apps: https://channel9.msdn.com/Events/Build/2017/B8084</li>
+  <li>Sept 2017 - Office development: Authentication demystified: https://www.youtube.com/watch?v=DIgFbvnEItc&amp;feature=youtu.be (1h 14m)</li>
+</ul>
+
+<h2 id="overview">Overview</h2>
+
+<p>First 4 chapters are an overview, last 6 more in depth</p>
+
+<ul>
+  <li>Chapter 1: Walkthrough</li>
+  <li>Chapter 2: History of identity mgmt</li>
+  <li>Chapter 3: Intro to Azure AD and ADFS</li>
+  <li>Chapter 4: Intro to developer libraries (1-4 online at: https://ptgmedia.pearsoncmg.com/images/9780735696945/samplepages/9780735696945.pdf)</li>
+  <li>Chapter 5: In-depth walkthrough</li>
+  <li>Chapter 6: In-depth Open ID and OAuth2</li>
+  <li>Chapter 7: OWIN middleware; (online at: https://www.microsoftpressstore.com/articles/article.aspx?p=2473126)</li>
+  <li>Chapter 8: Azure AD application model (online at: https://www.microsoftpressstore.com/articles/article.aspx?p=2473127)</li>
+  <li>Chapter 9: Web APIs</li>
+  <li>Chapter 10: Windows Server 2016 and ADFS</li>
+</ul>
+
+<h2 id="chapter-1-your-first-activity-directory-app">Chapter 1. Your first Activity Directory app</h2>
+
+<p>The .NET framework has a specific class to represent the identity of the authenticated caller: <code class="highlighter-rouge">ClaimsPrincipal</code> in <code class="highlighter-rouge">System.Security.Claims</code> in the mscorlib dll. All other principal class derive from <code class="highlighter-rouge">ClaimsPrincipal</code> - so this object should always be populated in the case of an authenticated user to an .NET application.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    var cp = ClaimsPrincipal.Current;
+    string welcome = $"Welcome {cp.FindFirst(ClaimTypes.GivenName).Value} {cp.FindFirst(ClaimTypes.Surname).Value}";
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">ClaimsPrincipal</code> has a static property <code class="highlighter-rouge">Current</code> which retrieves the current instance of <code class="highlighter-rouge">ClaimsPrincipal</code> from either <code class="highlighter-rouge">Thread.CurrentPrincipal</code> or ??? <code class="highlighter-rouge">HttpContext.Current.User.ClaimsPrincipal</code> ??? via a delegate, <code class="highlighter-rouge">ClaimsPrincipalSelector</code> to customise this.</p>
+
+<p>The <code class="highlighter-rouge">ClaimTypes</code> collection abstracts away the horrendously long key names for common claim types.</p>
+
+<p>Not all information is provided at authentication time in the claims. For further information about the user, the Directory Graph API is provided.</p>
+
+<h2 id="chapter-2-identity-protocols-and-application-types">Chapter 2. Identity protocols and application types</h2>
+
+<h3 id="pre-claims-authentication-techniques">Pre-claims authentication techniques</h3>
+
+<h4 id="passwords-profile-stores-and-individual-applications">Passwords, profile stores and individual applications</h4>
+
+<p>A brute force approach is to maintain a user profile store listing the attributes of each user. The problem is then simply how to correlate the current request to the correct user profile. Passwords are a crude mechanism to deal with this scenario. The application associates the secret string to a set of attributes defining the user for its purposes. (In reality a username is additionally used.)</p>
+
+<p>It is an attractive option even today, since it is relatively straight forward with existing libraries and gives complete control over the relationship with the user.</p>
+
+<h4 id="domains-integration-authentication-and-applications-on-an-intranet">Domains, integration authentication and applications on an intranet</h4>
+
+<p>Activity Directory centralised the user-profile storage and credential-verification functions for intranet applications. This mechanism was made possible by the Domain Controller. A perfect solution where the computer and user are intranet based and always joined to a domain. The problem is that this is not necessarily always the case.</p>
+
+<h3 id="claims-based-identity">Claims-based identity</h3>
+
+<p>Cross-company collaberation solutions was the natural follow up to the local network era where Company A’s users wanted access to an application exposed by Company B. The same problem was exposed when hosting applications off-premise. Claims-based identity is a set of concepts common to many of the identity protocols that emerged to try and solve these issues. The main traits can be found in all modern protocols.</p>
+
+<h4 id="identity-providers-dcs-for-the-internet">Identity providers: DCs for the internet</h4>
+
+<p>Multiple authorities run by business entities, scoped to a specific user population (does this mean each user is serviced by one and only one, or multiple?). IPs or IdPs (later to be called Authorities).</p>
+
+<p>An application <em>trusts</em> a given IdP if the application believes what a given IdP says about a user (a <em>Relying Party</em>).</p>
+
+<p>To achieve extending one authority’s scope beyond infrastructural boundaries:</p>
+
+<ol>
+  <li>The IdP needs to be easily identifiable - unique identifiers, specific endpoints and public/private key pairs: metadata</li>
+  <li>Tokens to represent the authentication outcome which can be unambiguously tied back to the IdP by signatures. The signature is verified using the contents of the message (the token) AND the public key. If the verification is successful this means the token:
+    <ul>
+      <li>has come from IdP - signature could only be produced by someone with the private key i.e. the IdP</li>
+      <li>hasn’t been tampered with - since the signature is based on the contents of the message (token)</li>
+    </ul>
+  </li>
+</ol>
+
+<p><em>Claims</em> are user attributes which have been serialized into a signed token and issued by an IdP e.g. the user’s surname. For all applications trusting the IdP - this becomes THE TRUTH. This concept is <em>pivotal</em> and so provides the name to the whole approach.</p>
+
+<h4 id="claims-oriented-protocols">Claims-oriented protocols</h4>
+
+<p>These are the ingredients, now here is how it works (in general terms, disregarding protocol specific variations).</p>
+
+<h5 id="generic-flow">Generic flow</h5>
+
+<ol>
+  <li>Application reads an IdP’s metadata (typically out of band, but not always)</li>
+  <li>The user authenticates and obtains a token (web apps: typically 302 to IdP, sign in, 302 back with token; clients and APIs will obtain a token differently e.g. by contacting the IdP for a token server to server)</li>
+  <li>Client sends the token to the app and the app validates the token</li>
+  <li>(Optional) Application establishes a session (to remove the need for the token dance with every request)</li>
+</ol>
+
+<p>SAML and WS-Fed are supported in both Windows Server ADFS and Azure AD. Both emerged as solutions to cross-domain SSO.</p>
+
+<p>The usual approach (non claims) to authentication is to validate credentials once and then use a session cookie. This works well until your application includes solutions hosted on different domains. Several SSO solutions have been developed to overcome the shortcomings of domain-bound cookies.</p>
+
+<h5 id="saml">SAML</h5>
+
+<p>SAML tokens can be sent across domains and be used to initialize a session with a new domain. Tokens are known as <em>assertions</em>. SAML is XML based which makes it verbose. SAML defines lots of different <em>messages</em> to support various sign-in flows. The Single Logout category of messages provide a mechanism to propogate sign-out to all applications.</p>
+
+<h5 id="ws-federation">WS-Federation</h5>
+
+<p>The WS-* (WS-Star) specifications aimed to define how communications could operate regardless of software stack or location: WS-ReliableMessaging, WS-Trust, WS-Security were all concerned with web services communications. Microsoft implementations tried to follow WS-<em>: WCF is largely based on WS-</em> and ADFS supports WS-Trust. WS-Federation was concerned with federated access and a small part of the specification covered browser based comms. This particular part is usually what is referred to as WS-Federation now and is still widely in use today.
+It implements the generic flow with a significantly simpler set of messages than SAML. IP (role) and STS (software component to issue tokens) and RP (web app which consumes tokens issued by the STS). There is no mandated token type - SAML format is usually used. It defines messages supporting standard sign-in and distributed sign-out. Unlike SAML, messages are not signed - only the token is.</p>
+
+<h3 id="modern-apps-and-protocols">Modern apps and protocols</h3>
+
+<p>Both SAML and WS-Federation are robust, production-grade implementations for cross domain authentiation. However they aren’t flexible enough to cover the many different use cases required by the applications being built today e.g. accessing APIs and access delegation.</p>
+
+<h4 id="access-delegation">Access delegation</h4>
+
+<p>A particular integration flow whereby resources on one application need to be accessed by another application became very common place in the mid-2000s with the growth of sites like Facebook, Twitter, LinkedIn etc.</p>
+
+<p>Anti-pattern, just ask a user for their credentials for another web app and masquerade as them</p>
+
+<p>OAuth then tried to resolve this - first with OAuth 1.0, then OAuth WRAP and finally OAuth 2. The architecture and the protocols define how to expose your resources for delegated access as well as how to access a different suppliers resources as a client.</p>
+
+<h4 id="oauth2-and-web-applications">OAuth2 and web applications</h4>
+
+<ul>
+  <li>For applications wishing to expose resources via APIs to third parties, OAuth describes an architecture for delegated access</li>
+  <li>For applications that require access to resources managed by a different application, OAuth provides the mean to securely access that application</li>
+</ul>
+
+<p>Canonical OAuth2 flow:</p>
+
+<p><img src="Simplified OAuth2 Canonical Flow" alt="simplified-oauth2-canonical-flow.png" /></p>
+
+<ol>
+  <li>User tries to access area of app A which requires access to resources R managed by app B</li>
+  <li>User is redirected to <em>authorisation endpoint</em>, “I’m coming from app A and wish to access R”. User authenticates and grants access to R. Authorisation endpoint returns <em>code</em>.</li>
+  <li>Code is passed back to app A via the browser.</li>
+  <li>App A presents the code to the <em>token endpoint</em> with evidence that is is in fact app A (e.g. password)</li>
+  <li>Token endpoint validates the request and returns an <em>access token</em> (may also return other things here e.g. refresh token)</li>
+  <li>App A uses the access token to request R from App B</li>
+</ol>
+
+<p>This is <em>profoundly</em> different from the issues which had so far been addressed by SAML and WS-Fed. Identity is no longer at the centre. There are two applications involved, not just one, with the user involved initially to set up the delegation, but then stepping back.</p>
+
+<h5 id="oauth2-and-claims">OAuth2 and Claims</h5>
+
+<p>OAuth2 and claims-based identity patterns have very little in common. There were many gaps in the specification and vendors filled these in differently each time.</p>
+
+<h4 id="layering-web-sign-in-on-oauth">Layering web sign-in on OAuth</h4>
+
+<p>The cross-domain single sign-on still existed. OpenID hadn’t yet managed to offer a compelling solution, but the big providers were also ideal identity sources and already offered delegated access. People figured out a way to leverage OAuth for a poor-man’s sign-on protocol.</p>
+
+<p>Poor-man’s sign-on flow using OAuth:</p>
+
+<ol>
+  <li>User tries to sign in to app A, A triggers an authorization flow (steps 1-5 above) toward app B</li>
+  <li>A uses the access token to call any API on app B (useful if there is one with identity info, but anything will do)</li>
+  <li>If successful the token issued to the user is capable of obtaining a valid token from B and therefore must be a user of B.</li>
+</ol>
+
+<p>The hack is dependent on some kind of API to test out the access token. This part is provider dependent and so will vary. (Facebook exposes entities via Graph, 23andMe exposes genome-related APIs and EventBrite event-organisation APIs.)</p>
+
+<h4 id="openid-connect">OpenID Connect</h4>
+
+<p>A formalisation of the pseudo sign-in pattern using OAuth. Implemented as extentions to OAuth2.</p>
+
+<ul>
+  <li>Defines an authentication-request message type (on top of OAuth2’s authorization requests)</li>
+  <li>New token type, ID token, to communicate to the client identity information about the user</li>
+  <li>A UserInfo endpoint to provide identity information following token acquisition</li>
+  <li>Discovery metadata</li>
+</ul>
+
+<p>Hybrid flow:</p>
+
+<p>Augments the canonical flow by returning the ID token with the authorisation code (the latter of which is opaque to everyone except the issuer). To make this viable requires specifying: format; encoding; information token should carry; checks needed to establish validity. JWT offers all this.
+Once app A has validated the ID token they can stop there OR continue with OAuth2 to validate the code, get an access token and call any endpoints required (including the UserInfo endpoint).
+If app A won’t be using the code, the initial request can specify to the authorisation server not to bother including it. (Strictly, the specification dictates the use of the UserInfo endpoint, but in practice the ID token does contains claims about the user and the additional call is not made.)</p>
+
+<p>Authorization code flow:</p>
+
+<p>Similar to hybrid flow, but the ID token is returned with the Access Token, having been successfully swapped for the code returned via the client browser. Here the chances of the token having been tampered with are much less, so validation of the token is not necessary if the TLS channel the token is sent down server to server is itself valid. Token contents itself, e.g. the token was issued for your app, are all that is required to be verified.</p>
+
+<h4 id="on-behalf-of-grant">On-Behalf-Of Grant</h4>
+
+<p>An OAuth2 flow which describes how to request a token on behalf of a caller without showing any further consent prompts. Flow proceeds:</p>
+
+<ol>
+  <li>API A is accessed via user token U.</li>
+  <li>A then requests a token for API B from the Authorization Server, presenting U and identification of API A (e.g. shared secret)</li>
+  <li>AS issues token T allowing API A to access API B with the same rights as he user who originally sent token U.</li>
+  <li>A access B with T</li>
+</ol>
+
+<h4 id="client-credentials-grant">Client Credentials Grant</h4>
+
+<p>Accessing a resource with no user in sight e.g. windows service. The claims in any token issued will describe the client application itself.</p>
+
+<h4 id="implicit-grant">Implicit Grant</h4>
+
+<p>Used in SPAs (Single Page Applications). Applications can request an access token directly from the authorisation endpoint. The token is returned in a URI fragment (a string following a <code class="highlighter-rouge">#</code> symbol in a URI). The token can be stored in local storage and then attached to requests, much like a browser send the appropriate cookies with each request.</p>
+
+<h4 id="native-clients">Native Clients</h4>
+
+<p>Utilise the OAuth type flows by presenting a browser window (disguised as the native app) for credentials and consent. The Microsoft ADAL library for requesting tokens has built in ability when used in a native app to display the browser surface relevant to that device.</p>
+
+<p>Alternatively, in the next iteration a <em>hero app</em> only concerned with acquiring tokens takes care of authentication and shares this with other apps.</p>
+
+<h2 id="chapter-3-introducing-azure-ad-and-azure-adfs">Chapter 3. Introducing Azure AD and Azure ADFS</h2>
+
+<h3 id="adfs">ADFS</h3>
+
+<p>Allows users in an on premise AD to access applications published on the internet via their domain credentials. Navigating to the app on the internet will bounce the user to authenticate against the local ADFS pages, a token will be issued and forwarded to the app, the app will validate the token and sign in the user.</p>
+
+<p>ADFS v2 is an out of band download for Windows 2008 R2.</p>
+
+<p>ADFS “v3” ships with Windows 2012 R2 and is a superset of ADFS v2 adding OAuth2 authorization code grant for public clients.</p>
+
+<p>ADFS with Windows 2016 supports many more flows than previously including a decent set of OAuth2 and OpenID Connect flows.</p>
+
+<h3 id="azure-ad">Azure AD</h3>
+
+<p>Originally developed for Office 365 workloads to support cloud based Active Directory functionality, subsequently also offered for use with a customer’s own applications.</p>
+
+<ul>
+  <li>Helps with application provisioning and directory enquiries which are more difficult with an on premise ADFS instance.</li>
+  <li>Offers a full range of protocols: SAML, WS-Fed, OpenID Connect and OAuth2</li>
+  <li>The <em>Directory Graph API</em> allows querying and manipulating directory entries via REST</li>
+</ul>
+
+<p>Each tenant comes with</p>
+
+<ul>
+  <li>default domain e.g. tenantname.onmicrosoft.com</li>
+  <li>further registered domains e.g. dot.kitchen</li>
+  <li>a tenantID - a GUID</li>
+</ul>
+
+<p>Any of these can be used to locate the various endpoints e.g. for OAuth2 https://login.microsoft.com/dot.kitchen/oauth2/authorize</p>
+
+<p>There are seperate sets of endpoints for</p>
+
+<ul>
+  <li>OAuth2 (and hence OpenID Connect)</li>
+  <li>SAML sign-in, sign-out and metadata</li>
+  <li>WS-Fed metadata</li>
+</ul>
+
+<h4 id="application-model">Application model</h4>
+
+<p>Azure AD models applications in 2 main ways (see Chapter 8 for more):</p>
+
+<ul>
+  <li>Identify the application - i.e. authentication protocols it supports</li>
+  <li>Handle user consent when a token is requested including dynamic app configuration across clients</li>
+</ul>
+
+<h4 id="directory-graph-api">Directory Graph API</h4>
+
+<p>OData3 compliant REST interface to manipulate entities in the Azure AD Tenant including users, groups and applications (see Chapter 9).</p>
+
+<h4 id="directory-sync">Directory sync</h4>
+
+<p>AD Tenants can be set up to sync back to an on premise AD. There are two different configurations:</p>
+
+<ul>
+  <li>Federated tenants - only users are synced, credentials and attributes remain on premise and use ADFS, authentication therefore relies on the on prem ADFS</li>
+  <li>Managed tenants - users and creds are synced so the Azure AD can handle authentication requests without references to the on prem installation</li>
+</ul>
+
+<h4 id="application-proxy">Application proxy</h4>
+
+<p>Only offered by the paid tiers of Azure AD (Basic and Premium). Allows intranet apps to be accessed by clients running outside of the network without having to reconfigure the application at all to use claims based identities. Useful for legacy applications.</p>
+
+<h2 id="chapter-4-introducing-the-identity-developer-libraries">Chapter 4. Introducing the identity developer libraries</h2>
+
+<p>Applications are in one of two possible roles:</p>
+<ol>
+  <li>Token requestors - applications which want to access resources and do so via a token</li>
+  <li>Resource protectors - applications which host resources which are protected by tokens</li>
+</ol>
+
+<h3 id="token-requestors">Token requestors</h3>
+
+<h4 id="responsibilities">Responsibilities</h4>
+
+<ol>
+  <li>Acquire token(s) (potentially using UI/UX elements) from the IdP. This includes a request in the correct format for the chosen protocol specifying: client application, target resource, directory to be used. Parse the token from a response and handle possible error scenarios</li>
+  <li>Attach tokens to the requests sent to Resource Protectors - may or may not be the same protocol / mechanism for token acquisition. Must also select the correct token for the resource (if more than one token in play)</li>
+  <li>Store the token(s) and managed session related tasks e.g. token renewal operations</li>
+</ol>
+
+<p>AD identity libraries cover 1. and 3. Resourse providers usually cover off 2. since this code would necessarily have to be in the language / framework of the resource rather than the IdP (with the exception of ADAL JS).</p>
+
+<h4 id="adal---active-directory-authentication-library">ADAL - Active Directory Authentication Library</h4>
+
+<p>Covers nearly all token requestor requirements. Only designed to request tokens from Active Directory and ADFS - not other IdPs. It is not a traditional protocol library, but tries to abstract away implementation details and provide primitives to request tokens without exposing the details of the actual protocol in use.</p>
+
+<ul>
+  <li>ADAL .NET v1 - released September 2013, based on .NET 4.0, supports getting tokens from Azure AD, ADFS Win2012R2, ACS 2. Helps with flows often found server side such as <strong>client-credential</strong> and the <strong>confidential-client authorization-code</strong> grant.</li>
+  <li>ADAL .NET v2 - released September 2014, based on .NET 4.5.x including async primitives. Newly supported authentication flows include: direct use of username-passwords for .NET native clients; WIA for federated tenants; on behalf of - allows user identity to flow through tiers (for
+example, user1 calling service1, which in turn calls service2 on behalf of user1)</li>
+  <li>ADAL .NET v3 - released ??, supports .NET core</li>
+</ul>
+
+<h3 id="resource-protectors">Resource protectors</h3>
+
+<p>Covers any piece of software which may be consumed by a remote client e.g. web applications serving UX elements to a browser, web API consumed by mobile apps or server processes.</p>
+
+<p>Several things to do to authenticate an incoming request:</p>
+
+<ol>
+  <li>Read an IdP’s metadata to configure itself</li>
+  <li>For unauthenticated requests for web apps, generate a sign-in message and redirect the client to the IdP</li>
+  <li>For authenticated requests, extract the token from the request and validate it</li>
+  <li>In web apps, create a session e.g. by issuing a session cookie</li>
+</ol>
+
+<p>Often implemented using middleware, Microsoft has provided libraries for this kind of functionality for a long time including WSE and WCF.</p>
+
+<h4 id="wif---windows-identity-foundation">WIF - Windows Identity Foundation</h4>
+
+<p>First developer library for identity tasks with several libraries to represent protocol artefacts as well as HTTP modules to easily support claims based identity in ASP.NET applications.</p>
+
+<p>Originally released out of band from .NET 3.5, they were eventually included in .NET 4.5 in mscorlib.dll. Most commonly used to secure ASP.NET app with WS-Federation by adding a series of <code class="highlighter-rouge">HttpModules</code>.</p>
+
+<h4 id="owin-middleware-for-net-45x-or-katana-3x">OWIN middleware for .NET 4.5.x, or Katana 3.x</h4>
+
+<p>In ASP.NET 4.6 most of the request processing was rewritten using OWIN. The AD libraries followed suite, with most of the resource protector components rewritten as OWIN middleware too.</p>
+
+<h4 id="todo-finish-this-section">TODO FINISH THIS SECTION</h4>
+
+<h2 id="chapter-5-getting-started-with-web-sign-on-and-active-directory">Chapter 5. Getting started with web sign-on and Active Directory</h2>
+
+<p>The choice of “Web app / API” or “Native” client will affect the authentication flows available</p>
+<ul>
+  <li>Web apps can be the recipient of redirect based protocols e.g. SAML, OIDC</li>
+  <li>Web apps can be assigned secrets - native clients cannot be trusted to protect it</li>
+</ul>
+
+<h3 id="steps-to-configure-a-regular-mvc-web-app-to-used-oidc-with-azure-ad">Steps to configure a regular MVC web app to used OIDC with Azure AD:</h3>
+
+<ol>
+  <li>Create a new MVC web application with no authentication</li>
+  <li>Install-Package Microsoft.Owin.Host.SystemWeb</li>
+  <li>Install-Package Microsoft.Owin.Security.Cookies</li>
+  <li>Install-Package Microsoft.Owin.Security.OpenIdConnect</li>
+  <li>Create a new app registration in Azure AD noting the client ID (application ID)</li>
+  <li>Enable the OWIN pipeline by adding a new “OWIN Startup class” called <code class="highlighter-rouge">Startup.cs</code> and add the partial keyword - this has the <code class="highlighter-rouge">OwinStartup</code> attribute which cases the <code class="highlighter-rouge">Configuration</code> method to be invoked at assembly load time</li>
+  <li>Configure the OpenID Connect middleware by adding a <code class="highlighter-rouge">Startup.Auth.cs</code> class to configure the OWIN authentication middleware (traditional to use seperate classes for each functional area and call from main Configure method)
+ i. Add a <code class="highlighter-rouge">ConfigureAuth</code> method
+ ii. Set the default authentication method to “Cookies”
+ iii. Add Cookie Authentication to the OWIN pipeline
+ iv. Add OpenIdConnect Authentication to the OWIN pipeline
+ v. Call <code class="highlighter-rouge">ConfigureAuth</code> from the main <code class="highlighter-rouge">Configure</code> method</li>
+  <li>Add <code class="highlighter-rouge">Authorize</code> attributes to methods, classes, application as required</li>
+</ol>
+
+<p>IMPORTANT: by default, the OpenID Connect middleware is configured to react to outgoing 401s by intercepting and transforming them in authentication requests</p>
+
+<h3 id="add-explicit-sign-in-and-sign-out-links">Add explicit sign-in and sign-out links</h3>
+
+<p>The OWIN infrastructure offers two methods <code class="highlighter-rouge">Challenge</code> and <code class="highlighter-rouge">SignOut</code> to message the middlewares in the pipeline to trigger a sign in or sign out flow. The actual behaviour will depend on the middleware.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public void SignIn()
+{
+    if (!Request.IsAuthenticated)
+    {
+        HttpContext.GetOwinContext().Authentication.Challenge(new
+            AuthenticationProperties { RedirectUri = “/” },
+            OpenIdConnectAuthenticationDefaults.AuthenticationType);
+    }
+}
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public void SignOut()
+{
+    HttpContext.GetOwinContext().Authentication.SignOut(
+        OpenIdConnectAuthenticationDefaults.AuthenticationType,
+        CookieAuthenticationDefaults.AuthenticationType);
+}
+</code></pre></div></div>
+
+<h4 id="distributed-sign-out">Distributed sign-out</h4>
+
+<p>The OpenID Connect middleware for ASP.NET 4.6 (that is to say, the one with package version 3.x.x) does not support distributed sign-out (unlike WS-Federation using WIF). Currently instead, OpenID Connect handles sessions via a combination of iframes and JavaScript client-side logic.</p>
+
+<h4 id="switch-from-oidc-to-ws-fed-for-running-against-an-adfs-instance">Switch from OIDC to WS-Fed (for running against an ADFS instance)</h4>
+
+<p>OIDC support for ADFS was only added to the ADFS in Windows Server 2016 (more in chapter 10). Currently switching the consuming app to WS-Fed is fairly simple anyway:</p>
+
+<p>Update the <code class="highlighter-rouge">Startup.Auth</code> class to include the WS-Fed middleware rather than the OIDC middleware.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>app.UseWsFederationAuthentication(new WsFederationAuthenticationOptions {
+    Wtrealm = "http://myapp/whatever",
+    MetadataAddress = "https://sts.contoso.com/federationmetadata/2007-06/federationmetadata.xml"
+}
+</code></pre></div></div>
+
+<p>Update the SignIn and SignOut actions to reference WS-Fed instead:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public void SignIn()
+{
+    if (!Request.IsAuthenticated)
+    {
+        HttpContext.GetOwinContext().Authentication.Challenge(new
+            AuthenticationProperties { RedirectUri = “/” },
+            WsFederationAuthenticationDefaults.AuthenticationType);
+    }
+}
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public void SignOut()
+{
+    HttpContext.GetOwinContext().Authentication.SignOut(
+        WsFederationAuthenticationDefaults.AuthenticationType, CookieAuthenticationDefaults.AuthenticationType);
+}
+</code></pre></div></div>
+
+<h2 id="chapter-6-openid-connect-and-azure-ad-web-sign-on">Chapter 6. OpenID Connect and Azure AD web sign-on</h2>
+
+<h3 id="recap">Recap</h3>
+
+<ul>
+  <li>Hybrid flow: OAuth 2.0 flow in which an Authorization Code is returned from the Authorization Endpoint, some tokens are returned from the Authorization Endpoint e.g. ID Token, and others are returned from the Token Endpoint e.g. Access Token.</li>
+  <li>Authorization-code flow: OAuth 2.0 flow in which an Authorization Code is returned from the Authorization Endpoint and all tokens are returned from the Token Endpoint. Suitable for Clients that can securely maintain a Client Secret between themselves and the Authorization Server.</li>
+  <li>Implicit flow: OAuth 2.0 flow in which all tokens are returned from the Authorization Endpoint and neither the Token Endpoint nor an Authorization Code are used.</li>
+</ul>
+
+<h3 id="specifications">Specifications</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Spec</th>
+      <th>URL</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>OpenID Connect Core 1.0</td>
+      <td>http://openid.net/specs/openid-connect-core-1_0.html</td>
+      <td>Details the format of authentication request and response message for hybrid, authorization-code and implicit flows. Details the format of the <code class="highlighter-rouge">id_token</code> and how it should be validated. Lists the canonical claim types used to transmit attributes. By default the OpenID Connect OWIN middleware uses the hybrid flow. Also describes various other things including UserInfo endpoint.</td>
+    </tr>
+    <tr>
+      <td>OpenID Connect Discovery 1.0</td>
+      <td>http://openid.net/specs/openid-connect-discovery-1_0.html</td>
+      <td>Describes ways for IdPs to describe their metadata - endpoints, identifiers, signing keys - so RPs can aquire information to generate AuthN requests and validate responses. OpenID Connect OWIN middleware leverages the discovery mechanism to minimise development tasks and keep metadata fresh.</td>
+    </tr>
+    <tr>
+      <td>OAuth2.0 Multiple Response Type 1.0</td>
+      <td>http://openid.net/specs/oauth-v2-multiple-response-types-1_0.html</td>
+      <td>Which tokens should be returned in a response and how</td>
+    </tr>
+    <tr>
+      <td>OAuth2.0 Form Post Response Mode 1.0</td>
+      <td>http://openid.net/specs/oauth-v2-form-post-response-mode-1_0.html</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>OpenID Connect Session Management 1.0</td>
+      <td>http://openid.net/specs/openid-connect-session-1_0.html; http://openid.net/specs/openid-connect-logout-1_0.html</td>
+      <td>Defines how to monitor the End-User’s login status on an ongoing status so the RP can log out an End-User who has logged out of the IdP. RP needs to know the session management related URLs (usually via discovery). Requires iframes and JavaScript, so difficult to manage via server side technologies. The draft “logout” spec uses more traditional means.</td>
+    </tr>
+    <tr>
+      <td>OAuth2 Authorization Framework</td>
+      <td>https://tools.ietf.org/html/rfc6749</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>OAuth2 Bearer Token Usage</td>
+      <td>https://tools.ietf.org/html/rfc6750</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>JSON Web Token (JWT)</td>
+      <td>https://tools.ietf.org/html/rfc7519</td>
+      <td>Compact token format; two parts Base64URL encoded JSON; one part Base64URL encoded signature</td>
+    </tr>
+    <tr>
+      <td>JSON Web Signature (JWS)</td>
+      <td>https://tools.ietf.org/html/rfc7515</td>
+      <td>How JWTs are signed</td>
+    </tr>
+    <tr>
+      <td>JSON Web Algorithms (JWA)</td>
+      <td>https://tools.ietf.org/html/rfc7518</td>
+      <td>Possible values for algorithms for computing signatures etc</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="openid-connect-exchanges-signing-in-with-azure-ad">OpenID Connect exchanges signing in with Azure AD</h3>
+
+<ul>
+  <li>GET to /Account/SignIn - activates the code to generate an authentication request</li>
+  <li>302 to Azure AD with OIDC authentication request message
+    <ul>
+      <li>Authorization endpoint starts with <code class="highlighter-rouge">https://login.microsoft.com/tenant-guid</code> followed by e.g. <code class="highlighter-rouge">/oauth2/authorize/</code> for oauth/oidc; <code class="highlighter-rouge">/saml2</code> for SAML</li>
+      <li>by default OWIN middleware sends parameter <code class="highlighter-rouge">response_type=code+id_token</code> i.e. hybrid flow</li>
+      <li>by default sends <code class="highlighter-rouge">response_mode=form_post</code></li>
+      <li><code class="highlighter-rouge">scope</code> indicates which resources an app is requesting access to e.g. <code class="highlighter-rouge">scope=openid+profile</code> - <code class="highlighter-rouge">openid</code> differentiates this as an OIDC request rather than an OAuth2 request; <code class="highlighter-rouge">profile</code> could alternatively be <code class="highlighter-rouge">email</code>, <code class="highlighter-rouge">address</code>, <code class="highlighter-rouge">phone</code> which are predefined sets of claims</li>
+      <li><code class="highlighter-rouge">state</code> is a field the client can use to stuff anything it wants back when the authentication response is eventually returned (canonically used to prevent CSRF attacks)</li>
+      <li><code class="highlighter-rouge">nonce</code> introduced by OpenID Connect to mitigate token replay attacks - stored in a cookie and then sent back by the browser for the server to compare the value in the token with the value stored in the cookie from the browser - a stoken id_token cannot pass this check</li>
+    </ul>
+  </li>
+  <li>Optional parameters not included by default:
+    <ul>
+      <li><code class="highlighter-rouge">login_hint</code> - used for prepopulating the username text box</li>
+      <li><code class="highlighter-rouge">prompt</code> - value of <code class="highlighter-rouge">login</code> will force reauthentiation; value of <code class="highlighter-rouge">none</code> will ensure reauthentication doesn’t happen and will send failure if the user is now not authenticated; value of <code class="highlighter-rouge">select_account</code> will ask the user to select an account if multiple are currently logged in with</li>
+      <li><code class="highlighter-rouge">domain_hint</code> introduced by Azure AD to specify the IdP to authenticate with</li>
+      <li><code class="highlighter-rouge">resource</code> again Azure AD specific - tells Azure AD which resource you want a code / access token for e.g. Microsoft API, third-party API etc</li>
+    </ul>
+  </li>
+  <li>Potential call to discovery endpoint to get up to the minute information re validating tokens (recursive)</li>
+  <li>Actual authentication UI will depend on current state of user e.g. cookie to indicate already authenticated etc</li>
+  <li>Azure AD sends back to the browser with the <code class="highlighter-rouge">code</code>, <code class="highlighter-rouge">id_token</code>, <code class="highlighter-rouge">state</code>, <code class="highlighter-rouge">session_state</code> and various cookies</li>
+  <li>Browser POSTs this form back to the application (using JavaScript), additionally sending the cookie with the <code class="highlighter-rouge">nonce</code></li>
+  <li>Server validates the nonce, and all the other goodies received from Azure AD and if everything ok, sets up a session</li>
+  <li>Server response sets its own session cookie, invalidates the nonce cookie and 302 redirects to the initially requested page</li>
+</ul>
+
+<p><img src="TODO" alt="The web sign-in component of the OpenID Connect hybrid flow" /></p>
+
+<h3 id="jwt">JWT</h3>
+
+<p>The ID Token is in JWT format (as are all Azure AD Tokens).</p>
+
+<p>The JWT is a compact token, designed to be transmitted in HTTP headers and URL query parameters. JWT in turn relies on JWS, JSON Web Signature which defines how to digitally sign an JSON payload (as well as attaching the info needed to validate the signature). JWT also relies on JWE for encrypting tokens - currently not supported by Azure AD.</p>
+
+<p>JWTs have three parts, seen on the wire as three strings delineated by <code class="highlighter-rouge">.</code>s - Base64URL encoded (difference between Base64URL encoding and Base64 encoding is that it doesn’t contain a trailing <code class="highlighter-rouge">=</code> sign)</p>
+
+<ol>
+  <li>JWS Protected Header - with token type, algorithm used for signing, key used for signing</li>
+  <li>JWS Payload - claims</li>
+  <li>JWS Signature - signature of the first two parts using the algorithm and key specified, Base64URL encoded - this party is actually binary</li>
+</ol>
+
+<p>A valid signature indicates the token hasn’t been tampered with in transport, but is only the beginning of the validation process e.g. key indicated (in <code class="highlighter-rouge">kid</code>) must also be one specified in the discovery document.</p>
+
+<h3 id="id-token-from-azure-ad">ID Token (from Azure AD)</h3>
+
+<p><code class="highlighter-rouge">iss</code> - issues of the token - OWIN middleware compares this value to the value of <code class="highlighter-rouge">issuer</code> from the discovery document and fails the authentication if not the same
+<code class="highlighter-rouge">sub</code> - identifier of the user - unique and not reassignable
+<code class="highlighter-rouge">aud</code> - i.e. the client the token was minted for
+<code class="highlighter-rouge">exp</code> - expiry time
+<code class="highlighter-rouge">nbf</code> - not valid before time
+<code class="highlighter-rouge">iat</code> - issued at
+<code class="highlighter-rouge">c_hash</code> - derived from the value of the authorization code
+<code class="highlighter-rouge">acr</code> - level of assurance
+<code class="highlighter-rouge">amr</code> - authentication method e.g. <code class="highlighter-rouge">pwd</code>
+<code class="highlighter-rouge">email</code> - email address of the user
+<code class="highlighter-rouge">given_name</code>, <code class="highlighter-rouge">family_name</code>, <code class="highlighter-rouge">name</code>, <code class="highlighter-rouge">nickname</code>
+<code class="highlighter-rouge">oid</code> - object id - management operations on the caller (user) can use this id to identify this entity (why not use the <code class="highlighter-rouge">sub</code>??)
+<code class="highlighter-rouge">pwd_exp</code> - password expiry time
+<code class="highlighter-rouge">pwd_url</code> - url which provides password update functionality
+<code class="highlighter-rouge">tid</code> - tenant identifier - same as the GUID in the endpoints and the value of <code class="highlighter-rouge">issuer</code> in the discovery document
+<code class="highlighter-rouge">upn</code> - user principal name - can be reassigned - also not all flows yield a upn
+<code class="highlighter-rouge">unique_name</code> - present for users even when the upn is not. If the upn <em>is</em> present, it has the same value
+<code class="highlighter-rouge">groups</code>, <code class="highlighter-rouge">roles</code> - multivalue types used to transmit group membership</p>
+
+<h3 id="openid-connect-exchanges-for-signing-out-from-the-app-and-azure-ad">OpenID Connect exchanges for signing out from the app and Azure AD</h3>
+
+<ul>
+  <li>GET to /Account/SignOut</li>
+  <li>302 to Azure AD logout URL e.g. <code class="highlighter-rouge">https://login.microsoft.com/tenant-guid/oauth2/logout</code>
+    <ul>
+      <li>as found in the discovery document under <code class="highlighter-rouge">end_session_endpoint</code></li>
+      <li>parameter <code class="highlighter-rouge">post_logout_redirect_uri</code> indicates where to redirect the user after successful signout</li>
+      <li>browser is requested to invalidate the previously issued session cookie</li>
+      <li><code class="highlighter-rouge">state</code> parameter can be used if required</li>
+      <li><code class="highlighter-rouge">id_token_hint</code> contains the id_token received at authentication time to resolve any ambiguity with which account should be signed out of</li>
+    </ul>
+  </li>
+  <li>Azure AD does various redirects, cleans cookies etc before finally redirecting back to any specified URL</li>
+</ul>
+
+<h2 id="chapter-7-the-owin-openid-connect-middleware">Chapter 7. The OWIN OpenID Connect middleware</h2>
+
+<p>WIF was built on <code class="highlighter-rouge">HttpModule</code>, the extensibility technology de jour at the time. The current libraries are built on OWIN.</p>
+
+<h3 id="owin">OWIN</h3>
+
+<p>OWIN is an open standard: Open Web Interface for .NET, Microsoft is one of many contributors. OWIN suggests a way of building software modules (middlewares) which can process HTTP requests and responses. The modules are concatenated in a processing pipeline and at every instant, the state of an HTTP transaction is represented by the <em>environment dictionary</em>.</p>
+
+<p><code class="highlighter-rouge">IDictionary&lt;string, object&gt;</code></p>
+
+<p>Correspondingly, a middleware is simply a module which implements the interface:</p>
+
+<p><code class="highlighter-rouge">Func&lt;IDictionary&lt;string, object&gt;, Task&gt;</code></p>
+
+<p>It receives the environment dictionary as input, acts on it and passes it to the next module in the pipeline. e.g. Logging middleware might read the dictionary and logs details from it, Authentication middleware might inspect the dictionary, finds a 401, change it to a 302 and update the response to include an authentication request. The dictionary acts to decouple the modules.</p>
+
+<p>At startup the middleware pipeline is constructed and initialized depending on the modules and the order specified. OWIN details a generic mechanism. However, the ASP.NET implementation is only referenced here.</p>
+
+<h3 id="katana">Katana</h3>
+
+<p>Katana is Microsoft’s .NET 4.5-based components which implement functionality in ASP.NET 4.6 based on the OWIN specification. Includes:</p>
+
+<ul>
+  <li>base middleware classes</li>
+  <li>framework for initializing the pipeline</li>
+  <li>pipeline hosts for ASP.NET</li>
+  <li>collection of middleware for all kinds of tasks</li>
+</ul>
+
+<p>A <code class="highlighter-rouge">Startup</code> class decorated by the <code class="highlighter-rouge">assembly:OwinStartup</code> attribute initializes the OWIN pipeline when its <code class="highlighter-rouge">Configure</code> method is automatically invoked.</p>
+
+<p>Alternative methods:</p>
+<ul>
+  <li>have just one <code class="highlighter-rouge">Startup</code> class</li>
+  <li>use the <code class="highlighter-rouge">OwinStartup</code> attribute (overrides if any other class is also named <code class="highlighter-rouge">Startup</code>)</li>
+  <li>configure via appSettings e.g. <code class="highlighter-rouge">&lt;add key="owin:appStartup" value="WebAppChapter5.Startup" /&gt;</code> (overrides both of the above)</li>
+</ul>
+
+<p>The <code class="highlighter-rouge">Configure</code> methods signature is <code class="highlighter-rouge">public void Configure(IAppBuilder app)</code> and <code class="highlighter-rouge">IAppBuilder</code> used to support the initialization of the application is:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public interface IAppBuilder
+{
+    IDictionary&lt;string, object&gt; Properties {get; } // stores capability information from the server and host to reference if req
+
+    object Build(Type returnType); // rarely called in code
+    IAppBuilder New();
+    IAppBuilder Use(object middleware, params object[] args); // use to add middleware to the pipeline
+}
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">Properties</code> dictionary is used by the server (e.g. IIS Express) and host (e.g. <code class="highlighter-rouge">SystemWeb</code>) to store capability information and can be used by the Configure method. (<code class="highlighter-rouge">SystemWeb</code> is actually an <code class="highlighter-rouge">HttpModule</code>, a trick to integrate with the traditional <code class="highlighter-rouge">System.Web</code> pipeline). The host populates the <code class="highlighter-rouge">app</code> variable which gets passed to the <code class="highlighter-rouge">Configure</code> method (in Katana the implementation of <code class="highlighter-rouge">IAppBuilder</code> is a concrete type <code class="highlighter-rouge">AppBuilder</code>.</p>
+
+<p>The non public <code class="highlighter-rouge">_middleware</code> property of <code class="highlighter-rouge">app</code> will gather references to the modules as they are added to the pipeline using <code class="highlighter-rouge">Use*</code>. <code class="highlighter-rouge">UseCookieAuthentication</code> is a convenience extension method which translates to <code class="highlighter-rouge">app.Use(typeof(CookieAuthenticationMiddleware), app, options)</code>.</p>
+
+<p>Middleware only really needs to implement the <code class="highlighter-rouge">Func</code> interface, alternatively Katana offers base classes which follow more structured patterns e.g. the base class <code class="highlighter-rouge">OwinMiddleware</code> (NOTE has interop issues - do not use!).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public abstract class OwinMiddleware
+{
+    protected OwinMiddleware(OwinMiddleware next) { Next = next; }
+    protected OwinMiddleware Next { get; set; }
+    public abstract Task Invoke(IOwinContext context);
+}
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">IOwinContext</code> is a convenience wrapper of the OWIN environment directory. Each module in the pipeline will be visited twice, once as the request is processed and once (in reverse) as the response is processed. Each module does work and then calls the next module in the pipeline. A module can decide to shortcut the remaining modules by not calling <code class="highlighter-rouge">Next</code>. Simple “debug” middlewares can be interleaved with the actual middlewares to inspect what is happening. e.g.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>app.Use(async (Context, next) =&gt; {
+    // request processing - do something here e.g. `Debug.WriteLine(...)`
+    await next.Invoke();
+    // response processing - do something here e.g. `Debug.WriteLine(...)`
+});
+</code></pre></div></div>
+
+<p>Disable chatty browserlink using <code class="highlighter-rouge">&lt;add key="vs:EnableBrowserLink" value="false" /&gt;</code> if getting in the way. The <code class="highlighter-rouge">Context</code> object has several properties useful for inspecting during pipeline execution including <code class="highlighter-rouge">Authentication</code>, <code class="highlighter-rouge">Environment</code> - the so called environment dictionary, <code class="highlighter-rouge">Request</code> and <code class="highlighter-rouge">Response</code> and finally <code class="highlighter-rouge">TraceOutput</code>.</p>
+
+<h4 id="authentication-middleware">Authentication middleware</h4>
+
+<p>Protocol middlewares and cookie middlewares collaborate to determine authentication. Communication between the two middlewares is via the <code class="highlighter-rouge">AuthenticationManager</code> instance in the <code class="highlighter-rouge">Context</code>.</p>
+
+<p>The cookie middleware is added to the pipeline in front of any protocol middlewares. By default, protocol middlewares are <strong>Active</strong> by default i.e. its option’s <code class="highlighter-rouge">AuthenticationMode</code> property is set to <code class="highlighter-rouge">Active</code>. If multiple protocol middlewares are included, this behaviour may have to be tailored to ensure the correct middleware is triggered in the right situation.</p>
+
+<p>A protocol middleware, having validated a request successfully will set <code class="highlighter-rouge">Context.Authentication</code> properties <code class="highlighter-rouge">AuthenticationResponseGrant</code>, <code class="highlighter-rouge">SignInEntry</code> and <code class="highlighter-rouge">User</code> to communicate to the cookie middleware. The cookie middleware specifically uses <code class="highlighter-rouge">AuthenticationResponseGrant</code>’s content to generate a session.</p>
+
+<p>The <code class="highlighter-rouge">AuthenticationResponseGrant.AuthenticationType</code> property can be set to <code class="highlighter-rouge">Cookies</code> by the protocol middleware if this was set as the default in the configuration e.g. <code class="highlighter-rouge">app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefault.AuthenticationType)</code> (and not overriden by local overrides).</p>
+
+<p>In further requests, the cookie middleware validates the cookie and rehydrates the corresponding <code class="highlighter-rouge">ClaimsPrincipal</code> to <code class="highlighter-rouge">Authentication.User</code>. This passes unchanged through the protocol middlewares.</p>
+
+<p><code class="highlighter-rouge">Challenge</code> works by setting the <code class="highlighter-rouge">Authentication.AuthenticationResponseChallenge</code> property to a value signifying the protocol middleware to use for signing in e.g. “OpenIdConnect” - this ensures this middleware is triggered even if set to the <code class="highlighter-rouge">AuthenticationMode</code> property is set to <code class="highlighter-rouge">Passive</code>.</p>
+
+<p>Similarily <code class="highlighter-rouge">SignOut</code> works by setting the <code class="highlighter-rouge">Authencation.AuthenticationResponseRevoke</code> property - this time containing a collection of authentication types e.g. “Cookies” and “OpenIdConnect”.</p>
+
+<h4 id="diagnostic-middleware">Diagnostic middleware</h4>
+
+<p>Katana provides diagnostics via NuGet package Microsoft.Owin.Diagnostics. Add the following to enable and configure right at the beginning of the main configuration routine (i.e. at the beginning of the pipeline):</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>app.UseErrorPage(new ErrorPageOptions() {
+    ShowCookies = true,
+    ShowEnvironment = true,
+    ShowQuery = true,
+    ShowExceptionDetails = true,
+    ShowHeaders = true,
+    ShowSourceCode = true,
+    SourceCodeLineCount = 10
+});
+</code></pre></div></div>
+
+<h3 id="openid-connect-middleware">OpenID Connect middleware</h3>
+
+<h4 id="openidconnectauthenticationoptions">OpenIdConnectAuthenticationOptions</h4>
+
+<p>Out of the box, the defaults work well. However many options can be changed via the <code class="highlighter-rouge">OpenIdConnectAuthenticationOptions</code> class. Parameter names in the options class match protocol names, but with .NET consistent casing.</p>
+
+<h5 id="application-coords-and-request-options">Application coords and request options</h5>
+
+<ul>
+  <li><code class="highlighter-rouge">RedirectUri</code> by default is null, controls the value of the <code class="highlighter-rouge">redirect_uri</code> in the parameter. If multiple are registered the Azure AD will pick one slightly randomly.</li>
+  <li><code class="highlighter-rouge">PostLogoutRedirectUri</code> where to redirect the application following logout</li>
+  <li><code class="highlighter-rouge">ClientSecret</code> required to redeem an authorization code</li>
+  <li><code class="highlighter-rouge">ResponseType</code> e.g. “id_token”, “code id_token” support automatics user sign in; “code” requires custom code</li>
+  <li><code class="highlighter-rouge">Resource</code> specific to Azure AD</li>
+  <li><code class="highlighter-rouge">Scope</code> the OAuth2 / OpenID Connect scope parameter</li>
+</ul>
+
+<h5 id="authority-coords-and-validation">Authority coords and validation</h5>
+
+<p>By default middlewares obtain (most) validation coords by reference, via the metadata endpoint. There are configuration options for suppliers which supply metdata differently as well as the option to SUPPLY EVERYTHING MANUALLY for providers which don’t provide metadata.</p>
+
+<p>The <code class="highlighter-rouge">ConfigurationManager</code> class retrieves, caches and refreshes validation settings retrieved via discovery.</p>
+<ul>
+  <li><code class="highlighter-rouge">Authority</code> - used by Azure AD, metadata URL is generated from this</li>
+  <li><code class="highlighter-rouge">Metadata</code> - for other providers, the URL of the metadata endpoint</li>
+  <li><code class="highlighter-rouge">BackchannelCertificateValidator</code>, <code class="highlighter-rouge">BackchannelHttpHandler</code>, <code class="highlighter-rouge">BackchannelTimeout</code> - for overriding default validation behaviour</li>
+  <li><code class="highlighter-rouge">OpenIdConfiguration</code> can be manually populated with coords if received out of band e.g. authZ endpoint, issuer value, signing keys</li>
+  <li>
+    <p><code class="highlighter-rouge">IConfigurationManager</code> can be overriden to completely customise logic</p>
+  </li>
+  <li><code class="highlighter-rouge">SecurityTokenHandlers</code> by default includes JWT handler</li>
+  <li><code class="highlighter-rouge">RefreshOnIssuerKeyNotFound</code> flag to refresh from metadata if cached keys don’t match</li>
+  <li><code class="highlighter-rouge">CallbackPath</code> configure only one url to receive tokens (not necessarily recommended)</li>
+  <li><code class="highlighter-rouge">ProtocolValidator</code> by default contains an instance of <code class="highlighter-rouge">OpenIdConnectProtocolValidator</code> - static validations e.g. complying with current format as well as ensuring certain claims are present</li>
+</ul>
+
+<h5 id="middleware-mechanics">Middleware mechanics</h5>
+
+<p>Other options for driving the general behaviour of the middleware;</p>
+
+<ul>
+  <li><code class="highlighter-rouge">SignInAsAuthenticationType</code> determines the value of <code class="highlighter-rouge">AuthenticationType</code> of the <code class="highlighter-rouge">ClaimsPrincipal</code> generated from the incoming token e.g. “Cookies”</li>
+  <li><code class="highlighter-rouge">AuthenticationType</code> identifies this middleware e.g. <code class="highlighter-rouge">OpenIdConnect</code></li>
+  <li><code class="highlighter-rouge">AuthenticationMode</code> e.g. “Active” or “Passive”</li>
+  <li><code class="highlighter-rouge">UseTokenLifetime</code> will default a cookie middleware’s session timeout to the length of validity of the <code class="highlighter-rouge">id_token</code> (defaults to 1 hour on Azure AD) - IMPORTANT - set this to FALSE if you want the use the session-duration settings on the <code class="highlighter-rouge">CookieMiddleware</code> instead</li>
+  <li><code class="highlighter-rouge">Caption</code> - use for the text for a button to show the user if there are mutliple possible middlewares for this user to sign on with</li>
+</ul>
+
+<h4 id="notifications">Notifications</h4>
+
+<h3 id="tokenvalidationparameters">TokenValidationParameters</h3>
+
+<p>The last level to which things can be configured, the <code class="highlighter-rouge">OpenIdConnectAuthenticationOptions</code> property <code class="highlighter-rouge">TokenValidationParameters</code>. This is usually populated with metadata by the protocol middlewares in discovery, but properties can alternatively be specified manually.</p>
+
+<p>Main validity checks include issuer, audience, signing key and validity interval. The <code class="highlighter-rouge">TokenValidationParameters</code> hold options to check the token against (validity interval is compared against the clock):</p>
+
+<ul>
+  <li><code class="highlighter-rouge">ValidIssuer</code> - was it issued by the authority you were expecting?</li>
+  <li><code class="highlighter-rouge">ValidAudience</code> - was it issued to you?</li>
+  <li><code class="highlighter-rouge">IssuerSigningKey</code> - the key with which the token as been signed</li>
+</ul>
+
+<p>Both String and IEnumberable types exist of the latter two.</p>
+
+<p>Validation flags allow the turning on and off of validation checks.</p>
+
+<ul>
+  <li><code class="highlighter-rouge">ValidateAudience</code> - compare the audience in the incoming token with the declared audience (the <code class="highlighter-rouge">clientId</code> for OpenIdConnect)</li>
+  <li><code class="highlighter-rouge">ValidateIssuer</code></li>
+  <li><code class="highlighter-rouge">ValidateSigningKey</code> - is the key used for signing in the list of trusted keys?</li>
+  <li><code class="highlighter-rouge">ValidateLifetime</code> - enforce the validity interval declared in the token or ignore it (an intranet with an expired token which can’t get access to the Azure AD on the internet to refresh it?)</li>
+  <li><code class="highlighter-rouge">RequireExpirationTime</code> - whether the application accepts tokens without expiration times..</li>
+  <li><code class="highlighter-rouge">RequireSignedTokens</code> - may be useful in development</li>
+</ul>
+
+<p>Validators allow you to implement custom validation code e.g. managing a valid issues list in a more flexible way that allowed by the built in functionality.</p>
+
+<h3 id="sessions">Sessions</h3>
+
+<p>Cookie middleware stores the full <code class="highlighter-rouge">ClaimsPrincipal</code> crafted from an incoming token. If additionally wanting to persist the actual token, a custom implementation of <code class="highlighter-rouge">IAuthenticationSessionStore</code> may be more appropriate so as not to bust the size of the cookie (i.e. store info server side and a reference to this in the cookie - wouldn’t this be what they do anyway??). Be aware that this will be used everytime an authenticated request is received, so a 2-level cache where most data is in memory and look ups to a persistence layer used only where necessary.</p>
+
+<h2 id="chapter-8-azure-ad-application-model">Chapter 8. Azure AD application model</h2>
+
+<p>Azure AD provides functionality to model users, organisations and applications. This chapter covers applications, specifically:</p>
+
+<ul>
+  <li>how Azure AD represents applications and the constructs used</li>
+  <li>mechanisms to provision applications beyond one’s own organisation</li>
+  <li>the consent framework</li>
+  <li>roles, groups etc to control access</li>
+</ul>
+
+<p>There is A LOT more in Azure AD than in ADFS, but the complication has been abstracted away.</p>
+
+<h3 id="application-and-service-principal">Application and Service Principal</h3>
+
+<p>Azure AD emerged from ADFS. Applications were initially based on the same model used there and used Service Principals. These were great for representing an appliation “instance”, but not for the application itself.</p>
+
+<ul>
+  <li>Applications are abstract, the Service Principal is a concrete instance in a specific directory. Each customer will need to have a seperate instance; Development, Staging and Production will also need to have seperate instances. However, all stem from the same abstract Application.</li>
+  <li>From the directory viewpoint, an application is just a client, also requiring access to certain resources under the directory’s control.</li>
+</ul>
+
+<h4 id="application">Application</h4>
+
+<p>Azure AD therefore defines a new entity: <code class="highlighter-rouge">Application</code>. This is the blueprint. A <code class="highlighter-rouge">ServicePrincipal</code> is created at runtime via <strong>consent</strong>. This involves a provisioning flow driven by consent.</p>
+
+<p>NOTE: provision of an <code class="highlighter-rouge">Application</code> in its home tenant creates both an the <code class="highlighter-rouge">Application</code> AND the <code class="highlighter-rouge">ServicePrincipal</code>, so the experience between using an application as a home user will be different from using the application as a user in a different tenant.</p>
+
+<p>https://graphexplorer.azurewebsites.net/ - easy interface to perform REST calls on Azure AD Graph API. Login to the tenant you wish to query.</p>
+
+<ul>
+  <li>https://graph.windows.net/agdio.onmicrosoft.com/ for a list of objects</li>
+  <li>https://graph.windows.net/agdio.onmicrosoft.com/applications for a list of application</li>
+  <li>https://graph.windows.net/agdio.onmicrosoft.com/applications?$filter=appId+eq+’37741a71-4a76-4e63-a167-77e4a22fbba7’ to filter to just one application</li>
+</ul>
+
+<h5 id="protocol-and-authentication-settings">Protocol and authentication settings</h5>
+
+<ul>
+  <li><code class="highlighter-rouge">appId</code> the client_id of the application</li>
+  <li><code class="highlighter-rouge">replyURLs</code> the multivalue property of possible allowed redirect URLs the client application is able to request</li>
+  <li><code class="highlighter-rouge">identifierURLs</code> various identification URLs you may want to assign to your application to override the directory assigned <code class="highlighter-rouge">appId</code>. Corresponds to the <strong>realm</strong> in SAML and WS-Federation. Corresponds to <strong>audience</strong> in OAuth2 when used by web APIs</li>
+  <li><code class="highlighter-rouge">publicClient</code> boolean value - security implications for each type</li>
+  <li><code class="highlighter-rouge">passwordCredentials</code>, <code class="highlighter-rouge">keyCredentials</code> for when the application is itself acting as a client</li>
+  <li><code class="highlighter-rouge">displayName</code> shown in e.g. consent prompts</li>
+  <li><code class="highlighter-rouge">homepage</code> landing page when e.g. listed in an app store - common to use an authenticated page in the app for this to ensure authentication flows through</li>
+  <li><code class="highlighter-rouge">samlMetadataUrl</code> for SAML implemenations - the metadata url</li>
+  <li><code class="highlighter-rouge">oauth2AllowImplicitFlow</code> false by default</li>
+  <li><code class="highlighter-rouge">oauth2AllowUrlPathMatching</code> deviate from the standard functionality that ALL redirect URLs must exist verbatim in the <code class="highlighter-rouge">replyURLs</code> collection</li>
+  <li><code class="highlighter-rouge">oauth2RequirePostResponse</code> by default all requests are expected via GET, setting this value to true relaxes this constraint</li>
+  <li><code class="highlighter-rouge">groupMembershipClaims</code> receive group membership for the user as claims - either <code class="highlighter-rouge">SecurityGroup</code> or <code class="highlighter-rouge">All</code>, default is null</li>
+  <li><code class="highlighter-rouge">appRoles</code> roles associated with the application</li>
+  <li><code class="highlighter-rouge">availableToOtherTenants</code> defaults to false, switch to true for multitenant apps. These applications have extra constraints - <code class="highlighter-rouge">identifierURLs</code> must now contain proper URLs with the hostname matching a domain registered in the tenant (coding changes also required if changing from line of business app to multitenant app)</li>
+  <li><code class="highlighter-rouge">knownClientApplications</code> in the case your “application” actually comprises of e.g. a client application AND a web API application (where the client application is used to access the web API application) then by storing the client_id of the web API application within the client’s <code class="highlighter-rouge">knownClientApplications</code>, the user can be asked to consent to both applications having access at the same time and thus provision a ServicePrincipal for both at the get go.</li>
+</ul>
+
+<h5 id="things-you-can-do-with-the-application-besides-signing-in">Things you can do with the Application (besides signing in)</h5>
+
+<ul>
+  <li><code class="highlighter-rouge">oauth2Permissions</code> a Application representing a web API must define at least one scope, otherwise and access token would be meaningless. Hence the default entry here for the scope <code class="highlighter-rouge">user_impersonation</code>
+    <ul>
+      <li><code class="highlighter-rouge">id</code> unique identifier of the scope</li>
+      <li><code class="highlighter-rouge">..Description</code> and <code class="highlighter-rouge">..Name</code> used in consent prompts</li>
+      <li><code class="highlighter-rouge">type</code> if permission can by granted by any user (<code class="highlighter-rouge">User</code>), or only an admistrator (<code class="highlighter-rouge">Admin</code>)</li>
+      <li><code class="highlighter-rouge">value</code> the name of the scope</li>
+    </ul>
+  </li>
+</ul>
+
+<h5 id="resources-and-permissions-the-application-needs-to-operate">Resources and permissions the Application needs to operate</h5>
+
+<ul>
+  <li><code class="highlighter-rouge">requiredResourceAccess</code> - very powerful entry - define what resources an application may want to access - an access type of <code class="highlighter-rouge">Scope</code> defines that the application will access in a delegated way i.e. on behalf of a user (and the consent may have to be obtained either by an admin user or the user itself, as determined by the <code class="highlighter-rouge">type</code> entry on the corresponding <code class="highlighter-rouge">oauth2Permissions</code> entry). <code class="highlighter-rouge">Role</code> on the other hand means the application requires that access for its own identity (always requires admin consent).</li>
+</ul>
+
+<p>NOTE in v1 of Azure AD, consent is only granted once for all permissions declared. If an extra permission is added, then the intial consent must be revoked and consent reacquired (v2 may change this).</p>
+
+<h4 id="service-principal">Service Principal</h4>
+
+<p>https://graph.windows.net/agdio.onmicrosoft.com/servicePrincipals?$filter=publisherName+eq+’Agilisys Ltd’</p>
+
+<p>The service principal entry looks similar to the application entry but is actually fairly different.</p>
+<ul>
+  <li>MISSING: flags defining protocol behaviour at runtime as well as <code class="highlighter-rouge">knownClientApplication</code> and <code class="highlighter-rouge">requiredResourceAccess</code></li>
+  <li>TRANSFERRED: <code class="highlighter-rouge">appId</code>; various optional URLs e.g. <code class="highlighter-rouge">errorUrl</code>, <code class="highlighter-rouge">logoutUrl</code>, <code class="highlighter-rouge">samlMetadataUrl</code>; <code class="highlighter-rouge">appRoles</code>, <code class="highlighter-rouge">oauth2Permissions</code> and credentials</li>
+  <li>ADDITIONAL: <code class="highlighter-rouge">appOwnerTenantId</code>, <code class="highlighter-rouge">publisherName</code>; <code class="highlighter-rouge">servicePrincipalNames</code> = <code class="highlighter-rouge">identifierUrls</code> + <code class="highlighter-rouge">appId</code>; <code class="highlighter-rouge">appRoleAssignmentRequired</code> gate token issuance for specific users only; <code class="highlighter-rouge">tags</code> mainly used by the Azure portal</li>
+</ul>
+
+<h3 id="consent-and-delegated-permissions">Consent and delegated permissions</h3>
+
+<p>https://graph.windows.net/agdio.onmicrosoft.com/oauth2PermissionGrants</p>
+
+<p>In order to keep track of which clients / users have access to which resources and with what permissions, Azure AD uses the <code class="highlighter-rouge">oauth2PermissionGrants</code> collection.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+    "clientId": "b7a5bb5e-fb87-440c-bc97-c196d6f657a9",         /* Ag.MA.Users.ApiClient.Demo */
+    "consentType": "AllPrincipals",
+    "expiryTime": "2018-09-25T17:43:58.6786004",
+    "objectId": "Xrult4f7DES8l8GW1vZXqac0-E01j1lBrS4WN9yfJ7g",
+    "principalId": null,
+    "resourceId": "4df834a7-8f35-4159-ad2e-1637dc9f27b8",      /* Windows Azure Active Directory */
+    "scope": "User.Read",
+    "startTime": "0001-01-01T00:00:00"
+},
+</code></pre></div></div>
+
+<p>An example entry contains the following attributes:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">clientId</code> the <code class="highlighter-rouge">objectId</code> from the <code class="highlighter-rouge">ServicePrincipal</code> representing the client</li>
+  <li><code class="highlighter-rouge">con</code></li>
+  <li><code class="highlighter-rouge">principalId</code> the <code class="highlighter-rouge">objectId</code> from the <code class="highlighter-rouge">User</code></li>
+  <li><code class="highlighter-rouge">resourceId</code> the <code class="highlighter-rouge">objectId</code> from the <code class="highlighter-rouge">ServicePrincipal</code> representing the source</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>appId</th>
+      <th>name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>00000001-0000-0000-c000-000000000000</td>
+      <td>Azure ESTS Service</td>
+    </tr>
+    <tr>
+      <td>00000002-0000-0000-c000-000000000000</td>
+      <td>Windows Azure Active Directory</td>
+    </tr>
+    <tr>
+      <td>00000003-0000-0000-c000-000000000000</td>
+      <td>Microsoft Graph</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>https://msdn.microsoft.com/Library/Azure/Ad/Graph/howto/azure-ad-graph-api-permission-scopes
+https://msdn.microsoft.com/Library/Azure/Ad/Graph/api/api-catalog</p>
+
+<p>Revoke individual user consent by logging into https://myapps.microsoft.com/, choose the application you wish to revoke consent for and click “Remove”.</p>
+
+<p>If any of the resources your application requires admin access, then either this application cannot be accessed by regular users (they won’t be able to obtain the requisite consent) OR an admin will initially be required to approve this on behalf of all users using the <code class="highlighter-rouge">promt=admin_consent</code> on the first request.</p>
+
+<ul>
+  <li>This will add a consent for <code class="highlighter-rouge">AllPrincipals</code> to the <code class="highlighter-rouge">oauth2PermissionGrants</code> collection</li>
+  <li>Individual users will then not be shown consent prompts.</li>
+  <li>If an administrator creates this application in the azure portal, then by default this consent is already provisioned (TO TEST - would this then save having to do the consent screen for client credential applications?)</li>
+</ul>
+
+<h3 id="app-user-assignment">App user assignment</h3>
+
+<p>By default every user can request access to every application (and may or may not be granted access). An application can be configured to allow access to an explicit set of users only via the “User assignment required to access app” flag on the application configuration options on the Service Principal i.e. under Enterprise Applications. If the flag is turned on after provisioning, any user already given consent will automatically be in the list.</p>
+
+<p>Each time a user is explicity given access, an entry will be added to the <code class="highlighter-rouge">AppRoleAssignment</code> list of the <code class="highlighter-rouge">ServicePrincipal</code>. If the application employs specific roles, this will be recorded in this list. Possible values for <code class="highlighter-rouge">principalType</code> in this entry are <code class="highlighter-rouge">User</code>, <code class="highlighter-rouge">Group</code> and <code class="highlighter-rouge">ServicePrincipal</code> where this is assigned to a client application.</p>
+
+<p>https://graph.windows.net/agd.io/servicePrincipals/42097f55-8474-4a07-b319-9b05715e7b55/appRoleAssignedTo</p>
+
+<h3 id="app-roles">App roles</h3>
+
+<p>Roles traditionally represent permissions grouping. These will be sent as claims in the token (in the id_token under the <code class="highlighter-rouge">roles</code> claim). Following the creation of roles, these can then be assigned to individual users. The <code class="highlighter-rouge">appRoles</code> section of the <code class="highlighter-rouge">Application</code> manifest is used to specifiy roles. The <code class="highlighter-rouge">allowMemberTypes</code> attribute can be set to one of <code class="highlighter-rouge">User</code> (can be assigned to users and groups).</p>
+
+<p>In ASP.NET this claim can be utilised as the source for role information for <code class="highlighter-rouge">[Authorize]</code> etc functionality by adding the following to the identity pipeline. i.e. add the following to the OpenIDConnect initialization options: <code class="highlighter-rouge">TokenValidationParameters = new TokenValidationParameters { RoleClaimType = "roles" }</code></p>
+
+<h3 id="app-permissions">App permissions</h3>
+
+<p>When wanting to confer access rights to an application itself, app permissions are used. e.g. client credential flow. Whereas delegated permissions are represented via the <code class="highlighter-rouge">oauth2Permission</code> and <code class="highlighter-rouge">oauth2PermissionGrants</code>, application permissions are represented by the <code class="highlighter-rouge">appRoles</code> and the <code class="highlighter-rouge">appRoleAssignedTo</code>. In <code class="highlighter-rouge">appRoles</code> the type is set to <code class="highlighter-rouge">Application</code> in this use case.</p>
+
+<p>A client application declares in advance what permissions it requires - configurable via the azure portal which will explicity list any <code class="highlighter-rouge">appRoles</code> with the type <code class="highlighter-rouge">Application</code>. Once selected this is added to the application’s <code class="highlighter-rouge">requiredResourceAccess</code> collection with a type of <code class="highlighter-rouge">Role</code> instead of <code class="highlighter-rouge">Scope</code>.</p>
+
+<p>Consent is required as usual, but only admins can give this consent - via the <code class="highlighter-rouge">prompt=admin_consent</code> flag.</p>
+
+<h3 id="groups">Groups</h3>
+
+<p>Groups can be configured for users. Azure AD can also be configured to send group information for a user in the token via the <code class="highlighter-rouge">groupMembershipClaims</code> property in the <code class="highlighter-rouge">Application</code> object. Valid values are <code class="highlighter-rouge">SecurityGroup</code> or <code class="highlighter-rouge">All</code>. The groups are sent in the token as the <code class="highlighter-rouge">objectId</code>. Use the graph API to query information about the group.</p>
+
+<p>https://www.youtube.com/watch?time_continue=633&amp;v=cdoY_pnqPiA</p>
+
+<h2 id="chapter-9-consuming-and-exposing-a-web-api-protected-by-azure-ad">Chapter 9. Consuming and exposing a web API protected by Azure AD</h2>
+
+<h3 id="consuming-a-web-api-protected-by-azure-ad">Consuming a web API protected by Azure AD</h3>
+
+<p>Tokens for accessing APIs can be extremely powerful, allowing the token holder to do any number of operations.</p>
+
+<h4 id="redeeming-a-code-for-an-access-token">Redeeming a code for an access token</h4>
+
+<p>Gaining a token in hybrid or authorization code flows requires the authorisation code to be redeemed for the access and refresh tokens (and indeed the id token if using authorisation code flow) via a server to server call. For Azure AD, this is via an authenticated POST to the authn server’s token endpoint (authentication here uses the calling application’s credentials e.g. client secret). In order for this call to be authorised, the application needs to have previously been setup to declare which permissions it needs and the user needs to have consented to them. In Azure AD, all applications are automatically given the authentication permission - “Sign in and access the user’s profile”. In Azure AD this also gives the application the right to query the graph API for the user’s profile (writing to the user’s profile via the Graph API requires application permissions to be previous configured and explicit consent from the user).</p>
+
+<p>The application asking to read on the user’s behalf also needs credentials. This is either via a <code class="highlighter-rouge">passwordCredential</code> - a string passed in the <code class="highlighter-rouge">client_secret</code> property of the request or via a <code class="highlighter-rouge">keyCredential</code> - the public key of an X.509 certificate, with the application holding the private key and signing a JWT assertion attached to the request to the token endpoint.</p>
+
+<p>The <code class="highlighter-rouge">AuthenticationCodeReceived</code> notification is handled when configuring the OpenIdConnect middleware. The ADAL client libraries can be used to redeem the code. NOTE don’t use the default cache settings for web applications - more later. ADAL will automatically take care of redeeming any refresh token for a new access token when they run out (by default issued for an hour). The <code class="highlighter-rouge">AuthenticationResult</code> holds the tokens as well as several other bits of metadata pertaining to the authentication e.g. <code class="highlighter-rouge">TenantId</code> - the id of the tenant where authentication was ultimately performed.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var context = new AuthenticationContext(_authority);
+var credential = new ClientCredential(_clientId, _appKey);
+var url = new Uri(HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Path));
+
+AuthenticationResult result = context.AcquireTokenByAuthorizationCode(_code, url, credential, _resourceId);
+</code></pre></div></div>
+
+<h4 id="using-an-access-token">Using an access token</h4>
+
+<p>The most common way to use the access token is to attach it to the request in the Authorization HTTP header. If the bearer token is not attached or is not valid, the server will return a 401 Unauthorised (rather than the 302 that a web app may normally return).</p>
+
+<p>Using cookies for protecting a web API is an anti-pattern. In this scenario, the whole application could be protected using OpenID or WS-Fed and once authenticated, the browser has the requisite cookie to make authenticated requests. The AJAX calls will then succeed if issued from the same browser. However, this doesn’t work very well, since when the cookie expires, the middleware will issue a 302 which can’t be exploited directly.</p>
+
+<p>As long access tokens for making API calls are retrieved via one of the <code class="highlighter-rouge">AuthenticationContext</code>s <code class="highlighter-rouge">AcquireToken*</code> methods, the ADAL library will take care of retrieving access tokens from the cache and getting fresh ones using the refresh tokens when required.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var context = new AuthenticationContext(_authority);
+var credential = new ClientCredential(_clientId, _appKey);
+
+AuthenticationResult result = context.AcquireTokenSilent(_resourceId, credential, UserIdentifier.AnyUser);
+
+// use result.AccessToken ... e.g. 
+
+var client = new HttpClient();
+client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", result.AccessToken);
+var response = client.GetAsync(_apiUrl).Result;
+if (response.IsSuccessStatusCode) {
+    _log.Debug(response.Content.ReadAsStringAsync().Result);
+}
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">AcquireTokenSilent</code>’s parameters are similar to conditions which must hold true for the requested token, which the framework will check prior to calling the API: for the specified resource, for the specified client_id (passed in via the credential object) and for any user. The call to the token endpoint must be authenticated in the case of web apps, but will be unauthenticated in the case of native / public apps. There are overloads for both situations.</p>
+
+<p>The “refresh token grant” OAuth2 flow is handled silently by ADAL whenever the access token has expired.</p>
+
+<ul>
+  <li>Generally Azure AD refresh tokens are valid for 14 days and new refresh tokens can be obtained up to 90 days from first issuance.</li>
+  <li>Refresh tokens for Microsoft accounts last only 12 hours.</li>
+  <li>Refresh tokens can be invalidated at any time e.g. when a user changes his / her password</li>
+</ul>
+
+<p>To test access token expiry behaviour, debug and after instantiating the context, alter the value of <code class="highlighter-rouge">context.TokenCache["ExpiresOn"]</code> to a date in the past.</p>
+
+<dl>
+  <dt>Multiresource Refresh Tokens</dt>
+  <dd>The access token will be tied down to the actual resource requested, but the refresh token will be issued for all resources the user has permission to use / has granted consent for. This means that using <code class="highlighter-rouge">AcquireTokenSilent</code> to request access to a different resource after the first request, will also work fine. This is known as multiresource refresh tokens or MRRTs.</dd>
+</dl>
+
+<h4 id="adal-cache-considerations-for-web-applications">ADAL cache considerations for web applications</h4>
+
+<p>Originally designed to work for native clients e.g. running in isolation on a user’s desktop or phone. The default ADAL cache is in-memory, relies on a static store available process wide. Therefore every AuthenticationContext instantiated will read and write against the same token cache.</p>
+
+<p>This can be an issue for web applications:</p>
+<ul>
+  <li>Accessed by many users, isolation issues by using the same store, high volume of storage required, lookup times become slow</li>
+  <li>Could be deployed on multiple noes where the cache needs to be shared</li>
+  <li>Caches must survive process recycles</li>
+</ul>
+
+<p>Recommendation is therefore to implement a custom cache to suit the architecture of the specific web application. To do this, create a custom cache derived from <code class="highlighter-rouge">TokenCache</code> with implementations for the 3 notifications it provides: <code class="highlighter-rouge">BeforeAccess</code>, <code class="highlighter-rouge">BeforeWrite</code> and <code class="highlighter-rouge">AfterAccess</code>. Pass an instance of this into the initialisation of the <code class="highlighter-rouge">AuthenticationContext</code> ensuring to always pass the same instance for the same user / same store.</p>
+
+<p>Sample naive cache implementation given in the book. Samples online contain more complete solutions using EF. VS new project wizards also creates a custom cache class based on EF IF you tick the box to have Read Directory functionality.</p>
+
+<h4 id="when-acquiretokensilent-fails">When <code class="highlighter-rouge">AcquireTokenSilent</code> fails</h4>
+
+<p>Because:</p>
+<ul>
+  <li>no tokens in the cache yet</li>
+  <li>multiple cached tokens available - fails with <code class="highlighter-rouge">AdalException</code> of multiple_matching_tokens_detected - in this instance need to be more specific in the application code
+    <ul>
+      <li>may happen e.g. in on behalf of scenarios</li>
+      <li>may also happen due to cache being implemented incorrectly e.g. still using default cache with <code class="highlighter-rouge">UserIdentifier.AnyUser</code> and containing tokens for all concurrent users - instead use e.g. <code class="highlighter-rouge">new UserIdentifier(_email, UserIdentifierType.OptionalDisplayableId)</code></li>
+    </ul>
+  </li>
+  <li>all tokes expired
+    <ul>
+      <li>in this case the tokens may have expired, but the session the user has with the app is still alive and the user can still use functionality on the app which doesn’t require calling the API. https://klout.com is an example of how to handle this well (aggregatino of social media site)</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="accessing-an-api-as-an-application-client-credentials">Accessing an API as an application: Client credentials</h3>
+
+<p>Configure your client app to list the API as a required resource, and trigger the minting of the consent by using <code class="highlighter-rouge">promt=admin_consent</code>. Requesting a token is now simply: <code class="highlighter-rouge">result = context.AcquireToken(resourceId, clientcredential)</code>. ADAL will automatically cache the access token and use it for all further requests to the API, as well as caching the client credential and using them to request a new access token when the current one expires.</p>
+
+<h3 id="accessing-an-api-on-behalf-of-another-user-raw-oauth2-authorization-grant">Accessing an API on behalf of another user: Raw OAuth2 Authorization Grant</h3>
+
+<p>Allowing an application to acquire and use an access token on behalf of another user requires the implementation of OAuth2 authorization grant flow. With ADAL currently you have to write code to:</p>
+
+<ol>
+  <li>receive the authorization code</li>
+  <li>validate messages</li>
+</ol>
+
+<p>Detailed code at: https://github.com/Azure-Samples/active-directory-dotnet-webapp-webapi-oauth2-useridentity</p>
+
+<h3 id="exposing-a-protected-web-api">Exposing a protected web API</h3>
+
+<p>Web APIs are registered in Azure in exactly the same way as web apps. Additionally, they have to declare the permissions a client can request at consent time in terms of either:</p>
+
+<ul>
+  <li>delegated permissions</li>
+  <li>application permissions</li>
+</ul>
+
+<p>In order to validate tokens, the <code class="highlighter-rouge">UseWindowsActiveDirectoryBearerAuthentication</code> middleware is added to the pipeline and configured with the token validation coords: <code class="highlighter-rouge">Tenant</code>, <code class="highlighter-rouge">Audience</code> in a corresponding options object. If <code class="highlighter-rouge">Tenant</code> is specified as e.g. abctenant.onmicrosoft.com, then this is automatically assumed to be associated with the Azure AD instance https://login.microsoftonline.com. Connect to a different instance by omitting the <code class="highlighter-rouge">Tenant</code> property and manually specifing the <code class="highlighter-rouge">MetadataAddress</code> property instead - NOTE: this needs to be the WS-Fed metadata URL. e.g. for the default Azure AD instance this translates to https://login.microsoftonline.com/abctenant.onmicrosoft.com/federationmetadata/2006/federationmetadata.xml.</p>
+
+<p>Aside: Microsoft chose JWT as the format for access tokens simply because it is not only Microsoft which will be the receiver of those access tokens for their own APIs (as it would be for e.g. Facebook) but since developers can write their own APIs to be protected by Azure AD. The libraries to validate id_tokens can be repurposesed to also validate access tokens.</p>
+
+<p>Aside 2: <code class="highlighter-rouge">UseWindowsActiveDirectoryBearerAuthentication</code> is simply an Azure AD specific wrapper around <code class="highlighter-rouge">UseOAuthBearerAuthentication</code> with specific ways to calculate the authority metadata. The latter class ultimately instantiates middleware which implements a generic JWT-based OAuth2 bearer interceptor and validator.</p>
+
+<p>The <code class="highlighter-rouge">oAuth2Permissions</code> section in the <code class="highlighter-rouge">Application</code> object should contain an entry for each delegated permission or <code class="highlighter-rouge">scope</code> the web API should support. If an admin user hasn’t already configured consent for <code class="highlighter-rouge">AllPrincipals</code> or this web API will be consumed across multiple tenants, then the user will need to additionally grant consent for the web API at the consent prompt.</p>
+
+<h4 id="handling-web-api-calls">Handling web API calls</h4>
+
+<p>In this example a web app will be the client calling the web API. In the web app registration in Azure, add permissions to call the web API in the “Permissions to other Applications” section (any app which has a Service Principal and some scopes or roles specified should appear). If you are signed in as an admin, the new permissions should be reflected in the Service Principal entry and consent entry straight away. If not, the current consent may need to be revoked and reobtained. Check the <code class="highlighter-rouge">oauth2PermissionGrants</code> to make sure.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NOTE using fiddler with http://localhost sometimes doesn't work. Instead use http://localhost.fiddler
+</code></pre></div></div>
+
+<h4 id="exposing-both-a-web-ux-and-a-web-api-from-the-same-project">Exposing both a web UX and a web API from the same project</h4>
+
+<p>The web UX needs the <code class="highlighter-rouge">Cookie</code> and <code class="highlighter-rouge">OpenIdConnect</code> authentication middlewares; the web API needs the <code class="highlighter-rouge">BearerAuthentication</code> middleware. The solution is to add all three to the pipeline and configure the BearerAuthentication with a different <code class="highlighter-rouge">AuthenticationType</code> e.g. <code class="highlighter-rouge">OAuth2Bearer</code>.</p>
+
+<p>Then decorate all API action methods with an additional attribute <code class="highlighter-rouge">[HostAuthentication("OAuth2Bearer")]</code></p>
+
+<h4 id="a-web-api-calling-another-api-flowing-the-identity-of-the-caller-and-using-on-behalf-of">A web API calling another API: Flowing the identity of the caller and using “on behalf of”</h4>
+
+<p>This requires “on-behalf-of” flow as defined by OAuth2 Token Exchange extensions. The first API needs to send the authority the access_token it received from the caller, sending its credentials and the second API as the resource it wants to call. It should then receive an access_token for the second API in return.</p>
+
+<p>This requires the first API to save the access_token it receives. Within the <code class="highlighter-rouge">TokenValidationParameters</code> the <code class="highlighter-rouge">SaveSigninToken</code> property can be set to true. For web APIs using <code class="highlighter-rouge">BearerAuthentication</code> this makes no difference, but the web UX projects, the token would be the id_token and would (by default) increase the session cookie size, so only turn on when required.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var bootstrapContext = ClaimsPrincipal.Current.Identities.First().BootstrapContext as System.IdentityModel.Tokens.BootstrapContext;
+var accessTokenFromUser = bootstrapContext.Token;
+
+// wrap the the original token augmented with token type and username of the original user
+var userAssertion = new UserAssertion(accessTokenFromUser, "urn:ietf:params:oauth:grant-type:jwt-bearer", username);
+
+var authContext = new AuthenticationContext(_authority);
+var result = authContext.AcquireToken(_resource, _clientCredentials, userAssertion);
+</code></pre></div></div>
+
+<h4 id="protecting-a-web-api-with-adfs-3">Protecting a web API with ADFS “3”</h4>
+
+<p>ADFS uses JWT format for access tokens too, so the ADAL bearer middleware can be almost repurposed as is. A new class <code class="highlighter-rouge">ActiveDirectoryFederatedServicesBearerAuthentication</code> is used instead, typically initialised with <code class="highlighter-rouge">Audience</code> and <code class="highlighter-rouge">MetaAddress</code> (WS-Fed metadata of the ADFS instance).</p>
+
+<p>Applications need to be completely pre registered with ADFS by an administrator, potentially using PowerShell e.g. using <code class="highlighter-rouge">Add-ADFSRelyingPartyTrust</code> command.</p>
+
+<p>ADFS “3” OAuth2 support is limited to public clients i.e. clients that do not have their own credentials. ADFS in Windows Server 2016, on the other hand, supports both types of clients.</p>
+
+<h2 id="chapter-10-adfs-in-windows-server-2016-technical-preview-3">Chapter 10. ADFS in Windows Server 2016 Technical Preview 3</h2>
+
+<ul>
+  <li>Spin up a Windows 2016 server</li>
+  <li>Add Roles and Features &gt; Active Directory</li>
+  <li>Promote server to Domain Controller
+    <ul>
+      <li>New forest e.g. <code class="highlighter-rouge">pasta.local</code></li>
+      <li>DNS not necessary, but leaving it ticked is fine</li>
+    </ul>
+  </li>
+  <li>Create new self signed cert</li>
+  <li>Add Roles and Features &gt; ADFS
+    <ul>
+      <li>New federation service</li>
+      <li>Choose cert and name the service appropriately e.g. <code class="highlighter-rouge">bertocci.pasta.local</code></li>
+      <li>Choose user to run the service (e.g. admininstrator - DEV only)</li>
+    </ul>
+  </li>
+  <li>Create test user</li>
+  <li>Ensure port 443 is open on the NSG</li>
+  <li>Add local hosts entry to public IP</li>
+  <li>Check the equivalent url can be hit externally e.g. https://bertocci.pasta.local/</li>
+</ul>
+
+<h2 id="further-reading">Further reading</h2>
+
+<h3 id="other-platforms">Other platforms</h3>
+
+<ul>
+  <li>https://github.com/azuread/ ADAL libraries for other Java, Ruby, Python etc</li>
+  <li>https://github.com/azure-samples?query=active-directory comprehensive list of samples</li>
+</ul>
+
+<h3 id="spas">SPAs</h3>
+
+<p>AzureAD offers comprehensive support. As well as the source code and the samples</p>
+<ul>
+  <li>http://www.cloudidentity.com/blog/tag/adaljs/</li>
+  <li>Office API samples - SPAs are a popular way to consume Azure AD and the Office API</li>
+</ul>
+
+<h3 id="azure-b2c">Azure B2C</h3>
+
+<ul>
+  <li>http://aka.ms/b2c</li>
+</ul>
+
+<h3 id="azure-ad-vnext-and-convergence-with-microsoft-accounts">Azure AD vNext and convergence with Microsoft accounts</h3>
+
+<p>Next version of Azure AD will have several missing features especially the ability to get tokens from either Azure AD or Microsoft accounts using the same libraries. Static permissions and consent rules will also be overhauled.</p>
+
+<ul>
+  <li>http://aka.ms/aadconvergence</li>
+</ul>
+:ET

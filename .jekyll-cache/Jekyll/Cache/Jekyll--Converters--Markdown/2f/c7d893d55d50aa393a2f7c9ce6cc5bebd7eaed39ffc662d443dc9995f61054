@@ -1,0 +1,27 @@
+I"$	<h2 id="reference">Reference</h2>
+
+<p><a href="http://kunststube.net/encoding/">http://kunststube.net/encoding/</a></p>
+
+<h2 id="basics">Basics</h2>
+
+<p>Computers can’t store text, pictures etc, only 1s and 0s. In order to convert a string of 1s and 0s into text or pictures we need to have a set of rules to do this. These rules are known as the <em>encoding scheme</em>.</p>
+
+<p>The ASCII encoding scheme codes <code class="highlighter-rouge">01100010</code> as a <code class="highlighter-rouge">b</code>, and <code class="highlighter-rouge">011010001</code> as a <code class="highlighter-rouge">t</code>. It uses 8 bits or 1 byte for every character it can encode, using the last 7 bits only and therefore contains a maxiumum of 128 characters.</p>
+
+<p>Encoded in ASCII: 01001000 01100101 01101100 01101100 01101111 00100000 01010111 01101111 01110010 01101100 01100100
+Decoded: Hello World</p>
+
+<h2 id="unicode">Unicode</h2>
+
+<p>Since ASCII only uses 1 byte with a potential maximum of 256 characters, many different encoding schemes have since been created. Unicode is an attempt to unify all coding schemes and give enough space to cover all characters required. 2 bytes is not enough for all the characters in unicode. 3 bytes is enough but awkward. 4 bytes is good, but can end up taking up alot of space if only writing in e.g. English. For this reason different Unicode encoding schemes exist. UTF-32 uses 4 bytes. UTF-16 and UTF-8 use <em>variable</em> lengths, and use the minimum number of bytes required to hold each particular letter or symbol. UTF-16 will use a minimum of 2 bytes, whereas UTF-8 can use only 1 byte if possible.</p>
+
+<h3 id="unicode-code-points">Unicode code points</h3>
+
+<p>Unicode code points are written in hexidecimal (to keep them shorter), preceded by U+.</p>
+
+<h2 id="garbled-text">Garbled text</h2>
+
+<p>Garbled text results when something has guessed the wrong encoding to read a stream of 1s and 0s from a file, network stream etc. A computer always needs to be told what encoding a particular stream is in.
+If a stream of bytes is encode incorrectly and then saved using the same method to decode, the resulting stream will be garbage and the original text is lost. The only way to get back to it would be to correctly guess the same encoding, decoding steps and carry them out in reverse.</p>
+
+:ET

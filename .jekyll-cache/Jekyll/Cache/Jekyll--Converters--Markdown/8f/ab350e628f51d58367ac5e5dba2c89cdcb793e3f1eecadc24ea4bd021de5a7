@@ -1,0 +1,505 @@
+I" e<p>137 pages</p>
+
+<h3 id="reference">Reference</h3>
+
+<p>Templates: https://github.com/MarimerLLC/csla/tree/master/Support/Templates/cs/Files</p>
+
+<h2 id="chapter-1-key-object-concepts-page-11">Chapter 1: Key Object Concepts (page 11)</h2>
+
+<h3 id="stereotypes">Stereotypes</h3>
+
+<p>Stereotypes supported by CSLA.NET:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Stereotype</th>
+      <th>Description</th>
+      <th>Base Class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Editable root</td>
+      <td>Read/write properties; Retrieved/stored directly</td>
+      <td><code class="highlighter-rouge">BusinessBase&lt;T&gt;</code></td>
+    </tr>
+    <tr>
+      <td>Editable child</td>
+      <td>Read/write properties; Retrieved/stored via parent</td>
+      <td><code class="highlighter-rouge">BusinessBase&lt;T&gt;</code></td>
+    </tr>
+    <tr>
+      <td>Editable root list</td>
+      <td>List object containing editable child objects. List is retrieved/stored directory</td>
+      <td><code class="highlighter-rouge">BusinessListBase&lt;T,C&gt;</code> <code class="highlighter-rouge">BusinessBindingListBase&lt;T,C&gt;</code></td>
+    </tr>
+    <tr>
+      <td>Editable child list</td>
+      <td>List is retrieved/stored via parent</td>
+      <td><code class="highlighter-rouge">BusinessListBase&lt;T,C&gt;</code> <code class="highlighter-rouge">BusinessBindingListBase&lt;T,C&gt;</code></td>
+    </tr>
+    <tr>
+      <td>Dynamic root list</td>
+      <td>Editable root objects; Retrieved/stored directly</td>
+      <td><code class="highlighter-rouge">DynamicListBase&lt;C&gt;</code> <code class="highlighter-rouge">DynamicBindingListBase&lt;C&gt;</code></td>
+    </tr>
+    <tr>
+      <td>Command</td>
+      <td>Executes a command on the server, reports back results</td>
+      <td><code class="highlighter-rouge">CommandBase&lt;T&gt;</code></td>
+    </tr>
+    <tr>
+      <td>Unit of work</td>
+      <td>Combines operations against several objects</td>
+      <td><code class="highlighter-rouge">ReadOnlyBase&lt;T&gt;</code> <code class="highlighter-rouge">CommandBase&lt;T&gt;</code></td>
+    </tr>
+    <tr>
+      <td>Read-only root</td>
+      <td>Read properties; Retrieved/stored directly</td>
+      <td><code class="highlighter-rouge">ReadOnlyBase&lt;T&gt;</code></td>
+    </tr>
+    <tr>
+      <td>Read-only child</td>
+      <td>Read properties; Retrieved/stored via parent</td>
+      <td><code class="highlighter-rouge">ReadOnlyBase&lt;T&gt;</code></td>
+    </tr>
+    <tr>
+      <td>Read-only root list</td>
+      <td>List object containing read-only child objects. List is retrieved/stored directory</td>
+      <td><code class="highlighter-rouge">ReadOnlyListBase&lt;T,C&gt;</code> <code class="highlighter-rouge">ReadOnlyBindingListBase&lt;T,C&gt;</code></td>
+    </tr>
+    <tr>
+      <td>Read-only child list</td>
+      <td>List is retrieved/stored via parent</td>
+      <td><code class="highlighter-rouge">ReadOnlyListBase&lt;T,C&gt;</code> <code class="highlighter-rouge">ReadOnlyBindingListBase&lt;T,C&gt;</code></td>
+    </tr>
+    <tr>
+      <td>Name/value list</td>
+      <td>Read name / value objects</td>
+      <td><code class="highlighter-rouge">NameValueListBase&lt;K,V&gt;</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="serializers">Serializers</h3>
+
+<ul>
+  <li><code class="highlighter-rouge">BinaryFormatter</code> (DEFAULT) and <code class="highlighter-rouge">NetDataContractSerializer</code> (NDCS) (NOT RECOMMENDED) create true clones</li>
+  <li><code class="highlighter-rouge">MobileFormatter</code> clone like functionality for Silverlight, WP7 and .NET</li>
+  <li><code class="highlighter-rouge">Serialization</code> attribute generally used on each and every object</li>
+  <li><code class="highlighter-rouge">DataContract</code> and <code class="highlighter-rouge">DataMember</code> can also be used at a field level - NDCS only - NOT RECOMMENDED - cannot swap to another formatter and will miss out any fields not decorated</li>
+  <li><code class="highlighter-rouge">BinaryFormatter</code> is normally faster and more efficient, so shouldn’t be overriden. However the <code class="highlighter-rouge">MobileFormatter</code> avoids use of reflection and so may work in medium trust environments where the <code class="highlighter-rouge">BinaryFormatter</code> is disallowed.</li>
+</ul>
+
+<h3 id="object-relationships">Object Relationships</h3>
+
+<p>Relationships are important because the conceptual differences mean the code which is written to implement them is also different.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Relationship</th>
+      <th>Description</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Containment</td>
+      <td>Parent child relationship</td>
+      <td>an <code class="highlighter-rouge">OrderEdit</code> object contains a <code class="highlighter-rouge">LineItems</code> collection, which in turn contains <code class="highlighter-rouge">LineItemEdit</code> objects. This set of objects is an <strong>object graph</strong>. The object at the top of the graph is the <strong>root</strong> object.</td>
+    </tr>
+    <tr>
+      <td>Using</td>
+      <td>Separate and independent objects which collaborate</td>
+      <td><code class="highlighter-rouge">LineItemEdit</code> uses a <code class="highlighter-rouge">TaxCalculator</code> to calculate tax depending on country.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="equality">Equality</h3>
+
+<p>Object equality can mean different things - actually the same object, or two different objects containing the same values. The <code class="highlighter-rouge">Equals</code> method can be overriden, or the <code class="highlighter-rouge">IEquatable</code> interface implemented.</p>
+
+<h3 id="basic-csla-4-property-concepts">Basic CSLA 4 Property Concepts</h3>
+
+<p>Properties can become complex. A <code class="highlighter-rouge">getter</code> requires checking authorization, a <code class="highlighter-rouge">setter</code> requires checking: authorization, is new value different to existing value, <code class="highlighter-rouge">PropertyChanging</code> event, run rules, mark object as changed, <code class="highlighter-rouge">PropertyChanged</code> event.</p>
+
+<p>CSLA defines a standard way to declare properties and backing fields involving:</p>
+<ul>
+  <li>metadata descriptions and</li>
+  <li>helper methods.</li>
+</ul>
+
+<h4 id="metadata">Metadata</h4>
+
+<p>A <code class="highlighter-rouge">static</code> <code class="highlighter-rouge">PropertyInfo</code> field contains metadata about the property and is “registered” with the framework using the <code class="highlighter-rouge">RegisterProperty</code> method:</p>
+
+<p><code class="highlighter-rouge">public static readonly PropertyInfo&lt;string&gt; MyTextProperty = RegisterProperty&lt;string&gt;(c =&gt; c.MyText);</code></p>
+
+<p>Declaring metadata in this way is a requirement for using CSLA features.</p>
+
+<h5 id="registerproperty-method"><code class="highlighter-rouge">RegisterProperty</code> method</h5>
+
+<p>The <code class="highlighter-rouge">RegisterProperty</code> method registers the property’s metadata with the “field manager”, the CSLA.NET property management subsystem (with various overloads). It creates an instance of <code class="highlighter-rouge">IPropertyInfo</code> containing property metadata - which is returned to the class and can be stored in a <code class="highlighter-rouge">static</code> field. It also registers the instance with a <code class="highlighter-rouge">static</code> data structure maintained by the framework.</p>
+
+<h5 id="propertyinfot-and-ipropertyinfo"><code class="highlighter-rouge">PropertyInfo&lt;T&gt;</code> and <code class="highlighter-rouge">IPropertyInfo</code></h5>
+
+<p>The <code class="highlighter-rouge">RegisterProperty</code> method either accepts a pre-created <code class="highlighter-rouge">IPropertyInfo</code> (usually a <code class="highlighter-rouge">PropertyInfo&lt;T&gt;</code>) or will create an instance for you. (PropertyInfo<T> is strongly typed and therefore more efficient.)</T></p>
+
+<p>The <code class="highlighter-rouge">PropertyInfo&lt;T&gt;</code> stores the property metadata (hence can be static at the class level). Elements in <code class="highlighter-rouge">IPropertyInfo</code> include: <code class="highlighter-rouge">Name</code>, <code class="highlighter-rouge">Type</code>, <code class="highlighter-rouge">FriendlyName</code>, <code class="highlighter-rouge">DefaultValue</code> (only use in value or immutable types since will be shared across all instances). The types can be extended to store extra metadata if required (advanced).</p>
+
+<h5 id="helper-methods">Helper Methods</h5>
+
+<p>Helper methods encapsulate authorisation, validation and so forth:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public string MyText
+      {
+get { return GetProperty(MyTextProperty); }
+set { SetProperty(MyTextProperty, value); } }
+</code></pre></div></div>
+
+<p>with the <code class="highlighter-rouge">GetProperty</code> and <code class="highlighter-rouge">SetProperty</code> methods behaving as outlined above.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Method</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">GetProperty</code></td>
+      <td>Gets a property, checking authorization rules</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">ReadProperty</code></td>
+      <td>Gets a property, no authorization checked</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">SetProperty</code></td>
+      <td>Sets a property, authorization, validation etc</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">LoadProperty</code></td>
+      <td>Simply sets a property, no auth, valiadtion, events raised etc</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">GetPropertyConvert</code>, <code class="highlighter-rouge">ReadPropertyConvert</code>, <code class="highlighter-rouge">SetPropertyConvert</code>, <code class="highlighter-rouge">LoadPropertyConvert</code></td>
+      <td>As above, additionally converting the new value to the correct backing field type</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="backing-fields">Backing fields</h4>
+
+<p>CSLA 4 allows you to implement properties using a manual backing field, or a “managed” backing field. In the latter case the CSLA .NET base class manages the property’s value on your behalf. Performance is slightly worse using managed backing fields, but generally recommended unless there is a high performance requirement.</p>
+
+<h4 id="types-of-property-declaration">Types of Property Declaration</h4>
+
+<p>Different base objects implement properties differently e.g. <code class="highlighter-rouge">BusinessBase</code> properties provide full read/write functionality; <code class="highlighter-rouge">CriteriaBase</code> properties are lightweight</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Declaration type</th>
+      <th>Property gets or sets</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Read/write</td>
+      <td>Primitive or standard .NET type</td>
+    </tr>
+    <tr>
+      <td>Read/write with conversion</td>
+      <td>Converts to and from the type of field containing the value</td>
+    </tr>
+    <tr>
+      <td>Read-only</td>
+      <td>Non-public setter</td>
+    </tr>
+    <tr>
+      <td>Read-only with conversion</td>
+      <td>Non-public setter with conversion</td>
+    </tr>
+    <tr>
+      <td>Child</td>
+      <td>Containment, typically has a non-public setter</td>
+    </tr>
+    <tr>
+      <td>Child with lazy loading</td>
+      <td>Only loaded or created on demand</td>
+    </tr>
+    <tr>
+      <td>Inter-graph reference</td>
+      <td>Reference to another object in the same object graph (not child)</td>
+    </tr>
+    <tr>
+      <td>Using reference</td>
+      <td>Reference to object OUTSIDE the object graph, no setter</td>
+    </tr>
+    <tr>
+      <td>Manual backing fields</td>
+      <td>Includes read/write and read-only</td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="read-write">Read-Write</h5>
+
+<ul>
+  <li>The getter uses the <code class="highlighter-rouge">GetProperty</code> method, passing in the static IPropertyInfo metadata. If a user is NOT authorised the default value is returned (throwing exceptions will cause UIs to blow up - use <code class="highlighter-rouge">CanReadProperty</code> to check first).</li>
+  <li>The setter uses <code class="highlighter-rouge">SetProperty</code>, taking the same metadata field and the new value. Throws a <code class="highlighter-rouge">SecurityException</code> in this case if the user is not allowed to change the value</li>
+  <li>Child objects have to be taken into account when setting properties (more later)</li>
+  <li><code class="highlighter-rouge">SetProperty</code> invokes business rules for this property and any dependent property</li>
+  <li>Raises the <code class="highlighter-rouge">PropertyChanged</code> event to support data binding</li>
+</ul>
+
+<h5 id="read-write-with-no-rules">Read-Write with No Rules</h5>
+
+<ul>
+  <li>Might need a field just to “store” a value, but with no rules.</li>
+  <li>Required for certain base classes e.g. <code class="highlighter-rouge">CommandBase</code>. Here the <code class="highlighter-rouge">ReadProperty</code> and <code class="highlighter-rouge">LoadProperty</code> methods are used instead.</li>
+  <li>Property itself can be private, but ensure the metadata is declared public if requiring full support from certain data access models e.g. <code class="highlighter-rouge">ObjectFactory</code></li>
+</ul>
+
+<h5 id="read-write-with-value-conversion">Read-Write with Value Conversion</h5>
+
+<ul>
+  <li>Common example: string property backed by an enum value (note, breaks localization) where a string representation is useful for the UI</li>
+  <li>Various mechanisms allow a value of one type to be converted into another type. Conversion will succeed as long as one of those mechanisms works.</li>
+  <li>To access the underlying backing field (e.g. the enum here) a private property of the same type (e.g. the enum) is the easiest approach. NOTE <code class="highlighter-rouge">RegisterProperty</code> is not required a second time (obviously).</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public static readonly PropertyInfo&lt;TestEnum&gt; MyStringEnumProperty = RegisterProperty&lt;TestEnum&gt;(c =&gt; c.MyStringEnum);
+public string MyStringEnum
+{
+  get { return GetPropertyConvert&lt;TestEnum, string&gt;(MyStringEnumProperty); }
+  set { SetPropertyConvert&lt;TestEnum, string&gt;(MyStringEnumProperty, value); }
+}
+</code></pre></div></div>
+<h5 id="read-only-and-read-only-with-value-conversion">Read-Only (and Read-Only with Value Conversion)</h5>
+
+<ul>
+  <li>If authorisation is required for getting properties, these can be implemented using <code class="highlighter-rouge">GetProperty</code> and <code class="highlighter-rouge">LoadProperty</code> with the setter private (assumption being that properties do not change over the lifetime of the object)</li>
+  <li>For base types which don’t support authorisation rules, use <code class="highlighter-rouge">ReadProperty</code> instead</li>
+</ul>
+
+<h5 id="child-object-reference">Child Object Reference</h5>
+
+<ul>
+  <li>Need to use an overload of <code class="highlighter-rouge">RegisterProperty</code> helper method to specify the relationship type as <code class="highlighter-rouge">RelationshipTypes.Child</code></li>
+  <li>For some situations, the child object will be read only, the property has a private setter and will be created when creating the parent object e.g. with code such as <code class="highlighter-rouge">Addresses = DataPortal.CreateChild&lt;AddressEditList&gt;();</code></li>
+</ul>
+
+<h5 id="child-object-reference-with-lazy-loading">Child Object Reference with Lazy Loading</h5>
+
+<ul>
+  <li>Create or load the child object in the getter</li>
+  <li>Additionally specify the relationship type <code class="highlighter-rouge">RelationshipTypes.LazyLoad</code> e.g.</li>
+</ul>
+
+<p><code class="highlighter-rouge">public static readonly PropertyInfo&lt;AddressEditList&gt; AddressesProperty = RegisterProperty&lt;AddressEditList&gt;(c =&gt; c.Addresses, RelationshipTypes.Child | RelationshipTypes.LazyLoad);</code></p>
+
+<ul>
+  <li>The getter may be invoked on the client, but need to converse with the server i.e. data portal in order to load the object. Two methods:
+    <ol>
+      <li>Directly use the data portal</li>
+      <li>Use a seperate “child object creator” e.g. <code class="highlighter-rouge">AddressListCreator</code> class with <code class="highlighter-rouge">Result</code> property which will be called from the getter (if not already loaded - check this using <code class="highlighter-rouge">FieldManager.FieldExists</code>)</li>
+    </ol>
+  </li>
+</ul>
+
+<h5 id="properties-with-manual-backing-fields">Properties with Manual Backing Fields</h5>
+
+<p>Examples of where you might use manual backing fields include:</p>
+<ul>
+  <li>Inter-graph references</li>
+  <li>Using relationship references</li>
+  <li>Scenarios where you need to apply attributes to fields</li>
+  <li>
+    <p>High-performance scenarios where using managed backing fields is a performance bottleneck</p>
+  </li>
+  <li>Still register a static metadata field for the property, but specify the <code class="highlighter-rouge">RelationshipTypes.PrivateField</code></li>
+  <li>Initialise the private variable with the <code class="highlighter-rouge">MyProperty.DefaultValue</code></li>
+  <li><code class="highlighter-rouge">GetProperty</code>, <code class="highlighter-rouge">SetProperty</code> have overloads to use the manual backing field for consistency</li>
+  <li>No need for <code class="highlighter-rouge">ReadProperty</code> or <code class="highlighter-rouge">LoadProperty</code> - just use the backing field - but loosely typed versions of these methods which can be used if required</li>
+</ul>
+
+<h5 id="inter-graph-reference">Inter-Graph Reference</h5>
+
+<p>For example <code class="highlighter-rouge">PersonEdit</code> has a list of child objects of type <code class="highlighter-rouge">AddressList</code>, but also has a reference <code class="highlighter-rouge">PrimaryAddress</code>. This would be an inter-graph reference. The difference is important for how n-level undo works - need to increase edit level for all objects in the object graph ONLY ONCE.</p>
+
+<p>Inter-graph references must use a manual backing field AND must have the <code class="highlighter-rouge">[NotUndoable]</code> attribute applied to that backing field. Since not a child object only the <code class="highlighter-rouge">RelationshipTypes.PrivateField</code> is needed.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public static readonly PropertyInfo&lt;AddressEdit&gt; PrimaryAddressProperty = RegisterProperty&lt;AddressEdit&gt;(c =&gt; c.PrimaryAddress, RelationshipTypes.PrivateField);
+[NotUndoable]
+private AddressEdit _primaryAddress = PrimaryAddressProperty.DefaultValue; public AddressEdit PrimaryAddress
+{
+  get { return GetProperty(PrimaryAddressProperty, _primaryAddress); }
+  set { SetProperty(PrimaryAddressProperty, ref _primaryAddress, value); }
+}
+</code></pre></div></div>
+
+<h5 id="using-reference">Using Reference</h5>
+
+<p>A reference to an object OUTSIDE the object graph. Best way is NOT to keep a reference to this object. Either create a reference when needed, or get a reference and store only in a local variable.</p>
+
+<p>For times when a reference is REQUIRED - this MUST be implemented using a manual backing field and decorated with the [NotUndoable] and [NonSerialized] attributes. Lazy loading of this reference MUST also be implemented - since after deserialization the property value will be null.</p>
+
+<h5 id="non-generic-loadproperty-method">Non-Generic LoadProperty Method</h5>
+
+<p>Most examples above use the generic overloaded version of the LoadProperty method e.g. <code class="highlighter-rouge">LoadProperty(AddressesProperty, value)</code>.</p>
+
+<p>The non-generic overload is substantially slower than the generic overload, because the value types aren’t known at compile time. Only use if there’s no way to invoke the generic overload.</p>
+
+<h3 id="method-declarations">Method Declarations</h3>
+
+<p>Similarly to properties, declaration of methods include the declaration of a static metadata field as well as use of helper methods to check authorization.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public static readonly MethodInfo TestMethod = RegisterMethod(typeof(EditableProperties), "Test");
+public void Test()
+{
+  CanExecuteMethod(TestMethod, true); // method author must remember to add this line first
+  // do some work here
+}
+</code></pre></div></div>
+
+<h3 id="metastate">Metastate</h3>
+
+<p>CSLA objects maintain their own status. Following flags are available:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Description</th>
+      <th>Stereotypes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">IsNew</code></td>
+      <td>Object’s primary key value doesn’t exist in data store</td>
+      <td>Editable root and child</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">IsDeleted</code></td>
+      <td>Object is marked for deletion (and on save will delete rather than update). Generally used for child objects.</td>
+      <td>Editable root and child</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">IsChild</code></td>
+      <td>Child object</td>
+      <td>Editable root and child, Editable list</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">IsDirty</code></td>
+      <td>Has been changed (object or child)</td>
+      <td>Editable root and child, Editable list</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">IsSelfDirty</code></td>
+      <td>Has been changed (this object only)</td>
+      <td>Editable root and child</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">IsValid</code></td>
+      <td>No broken rules (object or child)</td>
+      <td>Editable root and child, Editable list</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">IsSelfValid</code></td>
+      <td>No broken rules (this object only)</td>
+      <td>Editable root and child</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">IsBusy</code></td>
+      <td>Async operations in progress (object or child)</td>
+      <td>Editable root and child, Editable list</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">IsSelfBusy</code></td>
+      <td>Async operations in progress (this object only)</td>
+      <td>Editable root and child</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">IsSavable</code></td>
+      <td><code class="highlighter-rouge">IsDirty &amp;&amp; IsValid &amp;&amp; !IsBusy</code> AND user is authorised</td>
+      <td>Editable root and child, Editable list</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>It is possible to directly alter metastate</li>
+  <li>It is possible to override how metastate works (make sure you know what you are doing)</li>
+  <li>Various events are raised during an object’s lifetime</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>Event</th>
+      <th>Description</th>
+      <th>Stereotypes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">PropertyChanged</code></td>
+      <td>A property has changed</td>
+      <td>Editable root and child</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">PropertyChanging</code></td>
+      <td>A property is changing</td>
+      <td>Editable root and child</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">ListChanged</code></td>
+      <td>The list or item in the list has changed (<code class="highlighter-rouge">BindingList</code> subclasses only)</td>
+      <td>Editable list</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">CollectionChanged</code></td>
+      <td>The collection or item in the collection has changed (<code class="highlighter-rouge">ObservableCollection</code> subclasses only)</td>
+      <td>Editable list</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">ChildChanged</code></td>
+      <td>An object in the graph has changed</td>
+      <td>Editable root and child, Editable list</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">Saved</code></td>
+      <td>The object graph has been saved</td>
+      <td>Editable root, Editable root list</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">BusyChanged</code></td>
+      <td>The objects busy status has changed</td>
+      <td>Editable root and child, Editable list</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="accessing-metastate">Accessing Metastate</h4>
+
+<ul>
+  <li>via public properties directly from the object itself</li>
+  <li>via <code class="highlighter-rouge">ITrackStatus</code> interface which all business objects implement (useful for polymorphism)</li>
+  <li>via <code class="highlighter-rouge">INotifyBusy</code> interface to access busy status as well as <code class="highlighter-rouge">BusyChanged</code> events (useful for polymorphism)</li>
+  <li>via <code class="highlighter-rouge">INotifyChildChanged</code> interface for <code class="highlighter-rouge">ChildChanged</code> events (useful for polymorphism)</li>
+</ul>
+
+<p>Note: metastate properties do NOT support data binding</p>
+
+<h2 id="chapter-2-solution-structure-page-57">Chapter 2: Solution Structure (page 57)</h2>
+<h2 id="chapter-3-object-stereotypes-page-64">Chapter 3: Object Stereotypes (page 64)</h2>
+<h2 id="chapter-4-business-rules-page-91">Chapter 4: Business Rules (page 91)</h2>
+
+:ET

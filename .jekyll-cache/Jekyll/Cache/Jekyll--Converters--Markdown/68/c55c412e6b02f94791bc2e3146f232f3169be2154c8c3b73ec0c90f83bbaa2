@@ -1,0 +1,82 @@
+I"w<h2 id="introduction-and-prerequisites">Introduction and Prerequisites</h2>
+
+<p>This course focuses on MVC 5 and VS 2013. Ensure already familiar with:</p>
+
+<ul>
+  <li><a href="https://www.pluralsight.com/courses/mvc4-building">Building applications with ASP.NET MVC 4</a> covers MVC fundamentals (all relevant except security model)</li>
+  <li><a href="https://app.pluralsight.com/library/courses/mvc4/table-of-contents">ASP.NET MVC 4 Fundamentals</a> (particularly checkout async and web API modules)</li>
+</ul>
+
+<h3 id="whats-new">What’s new?</h3>
+
+<ul>
+  <li>OWIN and Katana - several ASP.NET features moved to Katana middleware</li>
+  <li>Identity and Membership - new interface based Identity components - understand OAuth2, OIDC and local accounts</li>
+  <li>Bootstrap 3</li>
+  <li>WebAPI 2 - attribute routing - makes previously difficult routing scenarios easy - enable CORS - secure an API</li>
+  <li>EF6 - async API - multiple DB contexts against a single database with different migrations - enums / drop down lists - logging with Glimpse</li>
+  <li>SignalR - enables real time comms between browser and server</li>
+  <li>VS 2013 - Browser Link - new Azure tooling</li>
+</ul>
+
+<h3 id="upgrading-from-mvc-4-to-mvc-5">Upgrading from MVC 4 to MVC 5</h3>
+
+<ul>
+  <li>Update the version of the .NET framework from 4 to at least 4.5</li>
+  <li>Main action is then to update all the NuGet packages
+    <ul>
+      <li>Manage NuGet packages at the solution level</li>
+      <li>Microsoft.AspNet.Web.Helpers.Mvc has been renamed - uninstall and later reinstall (provides CAPTCHA and gravatars)</li>
+      <li>Can run “Update All” - may or may not work e.g. Bootstrap from v2 to v3 may break layout. Better to upgrade top level packages first
+        <ul>
+          <li>Microsoft ASP.NET MVC - update this first</li>
+          <li>EntityFramework - update next</li>
+          <li>Microsoft ASP.NET Web API 2 - then this</li>
+        </ul>
+      </li>
+      <li>Will automatically update packages.config - NOTE Microsoft.AspNet.Razor and Microsoft.AspNet.WebPages both now at version 3.0.0
+        <ul>
+          <li>Three big version changes to remember: MVC from 4 to 5; Razor from 2 to 3; WebPages from 2 to 3</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Update Web.config (including any in Views folder)
+    <ul>
+      <li>key=”webpages:Version” from 2.0.0.0 to 3.0.0.0</li>
+      <li>dependentAssembly System.Web.WebPages from 2.0.0.0 to 3.0.0.0</li>
+      <li>dependentAssembly System.Web.Mvc from 4.0.0.0 to 5.0.0.0</li>
+      <li>update any references in the pages section</li>
+    </ul>
+  </li>
+  <li>Reinstall ASP.NET Web Helpers Library (version 3.0.0)</li>
+  <li>Update .csproj - edit and remove ProjectTypeGuid starting E3E, ending BE47</li>
+</ul>
+
+<h2 id="owin-and-katana">OWIN and Katana</h2>
+
+<p>Not much has changed from MVC4 to MVC5, but the environment the MVC framework lives in has changed quite a bit. 
+New project for ASP.NET called Katana which provides components based on a specification called OWIN.
+Some features from ASP.NET have moved into OWIN middleware (with more features likely to move in the future)</p>
+
+<h2 id="identity-and-security">Identity and Security</h2>
+
+<h3 id="forms-based-authentication">Forms based authentication</h3>
+
+<p>The “Individual User Accounts” option users stored accounts in a SQL server database.
+In your application, <code class="highlighter-rouge">Request.IsAuthenticated</code> and <code class="highlighter-rouge">User.Identity</code> are populated by the framework.
+The login url is specified in StartupAuth.cs
+<code class="highlighter-rouge">[Authorize]</code> attribute can be applied to the controller or the class. If on the class, <code class="highlighter-rouge">[AllowAnonymous]</code> can override a class level <code class="highlighter-rouge">[Authorize]</code> attribute.
+<code class="highlighter-rouge">[Authorize(Users="sallen")</code> or <code class="highlighter-rouge">[Authorize(Roles="admin,sales")]</code> to specify specific groups of users.</p>
+
+<p>The <code class="highlighter-rouge">UserLogins</code> table stores information about 3rd party logins e.g. Facebook and Twitter</p>
+
+<h4 id="microsoftaspnetidentitycore">Microsoft.AspNet.Identity.Core</h4>
+
+<p>One of the nuget packages which gets installed automatically (and an assembly) - defines some core abstractions e.g. <code class="highlighter-rouge">IUser</code>, <code class="highlighter-rouge">IRole</code>. Abstractions for persisting user information are: <code class="highlighter-rouge">IUserStore</code> which needs to be able to create a user, delete a user and find a user by id; <code class="highlighter-rouge">IUserPasswordStore</code> and <code class="highlighter-rouge">IUserLoginStore</code> both inherit from <code class="highlighter-rouge">IUserStore</code> and add additional capabilities which must be provided. <code class="highlighter-rouge">UserManager</code> class takes an object which implements at least the <code class="highlighter-rouge">IUserStore</code> interface - this class provides the domain logic for managing users. The <code class="highlighter-rouge">UserManager</code> is what is needed inside an application that wants to manage users (not a user store). If you want to provide low level details of how to store users, then implement an <code class="highlighter-rouge">IUserStore</code> interface and then pass this to the <code class="highlighter-rouge">UserManager</code></p>
+
+<h4 id="microsoftaspnetidentityentityframework">Microsoft.AspNet.Identity.EntityFramework</h4>
+
+<p>Provides concrete types which implement the interfaces above e.g. <code class="highlighter-rouge">IdentityUser : IUser</code> and <code class="highlighter-rouge">IdentityRole : IRole</code> - both Entities. It also contains a <code class="highlighter-rouge">UserStore</code> class which uses SQL server with Entity Framework. Instantiate this and give it to the <code class="highlighter-rouge">UserManager</code> to use this user store. When a <code class="highlighter-rouge">UserStore</code> is created it will need an Entity Framework data context. The assembly defines one you may want to use or inherit from called <code class="highlighter-rouge">IdentityDbContext</code>.</p>
+
+:ET

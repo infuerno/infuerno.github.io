@@ -1,0 +1,3 @@
+I"\<h2 id="assignment">Assignment</h2>
+<p>The conditional assignment operator  <code class="highlighter-rouge">||=</code> can be used to assign something only if currently not assigned. It’s made up of the OR <code class="highlighter-rouge">||</code> logical operator and the normal <code class="highlighter-rouge">=</code> assignment operator.</p>
+:ET

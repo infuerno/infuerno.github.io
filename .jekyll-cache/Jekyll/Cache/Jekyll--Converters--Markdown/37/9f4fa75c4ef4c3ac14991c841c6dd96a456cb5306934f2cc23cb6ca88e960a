@@ -1,0 +1,83 @@
+I"�<h1 id="devexpress-webinars---async-from-scratch-from-a-language-lovers-perspective">DevExpress Webinars - Async from scratch, from a language lover’s perspective</h1>
+
+<p>Also by Jon Skeet, about the same time (7 March 2011). URL: https://www.youtube.com/watch?v=HpA2x_JvLD4</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code></code></pre></div></div>
+
+<ul>
+  <li>Task = future or promise in other languages.</li>
+  <li>Asking a task for a result will block the current thread until the task is ready for its result.</li>
+  <li>Methods return a <code class="highlighter-rouge">T</code>, but <code class="highlighter-rouge">async</code> methods are declared to return a <code class="highlighter-rouge">Task&lt;T&gt;</code></li>
+  <li>This is similar to iterator blocks where the yield return is of type <code class="highlighter-rouge">T</code>, but the method returns <code class="highlighter-rouge">IEnumerable&lt;T&gt;</code> (similar code under the hood). In async case instead of the caller asking for the next item, we are waiting for some other thing to come back to us.</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>IEnumerable&lt;string&gt; GetFoo()
+{
+    yield return "hello";
+    yield return "world";
+}
+</code></pre></div></div>
+
+<ul>
+  <li>Debug &gt; Windows &gt; Parallel Tasks (nothing)</li>
+  <li>
+    <p>Debug &gt; Windows &gt; Parallel Stacks (nothing) - switch to frame - not sure why</p>
+  </li>
+  <li>In forms / web / WPF when you return from await, <code class="highlighter-rouge">await</code> will ensure you are called back on the UI thread so you can interact with controls etc.</li>
+  <li><code class="highlighter-rouge">await</code> won’t necessarily need to complete on a seperate thread IF there is no waiting to do</li>
+  <li>AND therefore if you don’t call <code class="highlighter-rouge">await</code>, but simply say <code class="highlighter-rouge">var x = t.Result</code> THEN you won’t get any of the magic which decides if it needs to use a different thread etc to wait for the result - it will simply use the current thread and you’ll be blocked.</li>
+  <li>Think of three very different things:
+    <ul>
+      <li>The caller - gets to go off and do whatever it wants</li>
+      <li>The async method - ends up getting paused</li>
+      <li>The async operation / awaitable object - does whatever it needs to do to complete its work</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// caller
+static void PrintPageLength()
+{
+    Task&lt;int&gt; lengthTask = GetPageLengthAsync("http://csharpindepth.com");
+    Console.WriteLine("Can continue doing other things here ....");
+    Console.WriteLine(lengthTask.Result);
+}
+// async method
+static async Task&lt;int&gt; GetPageLengthAsync(string url)
+{
+    Task&lt;string&gt; fetchTextTask = httpClient.GetStringAsync(url); // async operation
+    int length = (await fetchTextTask).Length;
+    return length;
+}
+</code></pre></div></div>
+
+<ul>
+  <li>As far as the calling code is concerned, the async method is a normal method which happens to return a <code class="highlighter-rouge">Task</code> type. The fact that it may or may not do some async stuff is ignored (the <code class="highlighter-rouge">async</code> keyword is not really necessary, but helps as a visual clue for developers - and therefore incidentally not specified in interfaces or abstract classes)</li>
+  <li>Can only await <code class="highlighter-rouge">await</code>able expressions. The <strong>awaitable pattern</strong> determines this. It codifies what is meant by an <strong>asynchronous operation</strong>.</li>
+</ul>
+
+<h1 id="pluralsight---asynchronous-c-50">Pluralsight - Asynchronous C# 5.0</h1>
+<h2 id="a-quick-tour-of-async-in-c-5">A Quick Tour of Async in C# 5</h2>
+
+<h1 id="getting-started-with-asynchronous-programming-in-net">Getting Started with Asynchronous Programming in .NET</h1>
+
+<h2 id="asynchronous-programming-in-net-using-async-and-await">Asynchronous Programming in .NET Using Async and Await</h2>
+
+<ul>
+  <li>Covering console apps, ASP.NET, win forms, WFP, Xamarin etc</li>
+  <li><code class="highlighter-rouge">HttpClient</code> only allows asynchronous connections c.f. the legacy <code class="highlighter-rouge">WebClient</code></li>
+  <li>Suited for IO operations e.g. Disk, Web/API, Database or Memory</li>
+  <li>Suffixing method names with <code class="highlighter-rouge">Async</code> is no longer a design guideline</li>
+  <li>A <strong>continuation</strong> is all the code in a method which is executed AFTER an <code class="highlighter-rouge">await</code>ed operation completes</li>
+  <li>Multiple <code class="highlighter-rouge">await</code> keywords in a method, will introduce multiple <strong>continuation</strong>s</li>
+  <li>The <code class="highlighter-rouge">await</code> keyword introduces a <strong>continuation</strong> allowing us to get back to the original context (thread)</li>
+  <li>If you don’t use the <code class="highlighter-rouge">await</code> keyword and an exception occurs - that exception will be swallowed, swallowed by the <code class="highlighter-rouge">Task</code> which is a reference to the ongoing operation</li>
+  <li>Exceptions occuring in <code class="highlighter-rouge">async void</code> methods cannot be caught - so ensure that code inside event handlers (or delegates) is super simple and cannot cause exceptions in itself
+    <ul>
+      <li>Avoid <code class="highlighter-rouge">async voic</code></li>
+      <li>Await asynchronous operations</li>
+    </ul>
+  </li>
+  <li>Don’t call <code class="highlighter-rouge">Result</code> or <code class="highlighter-rouge">Wait()</code> unless you are in the continuation after using <code class="highlighter-rouge">await</code></li>
+</ul>
+:ET

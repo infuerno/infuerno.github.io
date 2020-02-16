@@ -1,0 +1,22 @@
+I"b<h2 id="chapter-3-an-introduction-to-chef">Chapter 3: An introduction to Chef</h2>
+
+<h3 id="exercise-1-install-chef">Exercise 1: Install Chef</h3>
+
+<p>Omnibus installer: installs chef on a server, client or node.</p>
+
+<p>chef-apply: allows a single recipe to be run from the command line</p>
+
+<p>chef-solo: limited chef client which uses locally stored cookbooks to apply to its own node.</p>
+<ul>
+  <li>can retrieve cookbooks from local directory or from a remote url (common)</li>
+  <li>node-specific attributes are not retrieved from chef, but most be located in a local file, remote url etc</li>
+  <li>data bags, roles, environments are all located in default locations locally</li>
+  <li>Opscode docs: <a href="http://docs.opscode.com/chef_solo.html">http://docs.opscode.com/chef_solo.html</a></li>
+</ul>
+
+<p>chef-client:</p>
+
+<p>chef-shell:</p>
+
+<p>knife:</p>
+:ET

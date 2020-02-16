@@ -1,0 +1,120 @@
+I"�<h2 id="references">References</h2>
+
+<ul>
+  <li>Automated testing for Fraidy cats like me</li>
+  <li>C# Fundamentals with Visual Studio 2015</li>
+  <li>Domain Driven Design Fundamentals</li>
+  <li>SOLID Principles of OO Design by Steve Smith</li>
+  <li>How EF6 Enables Mocking DbSets More Easily</li>
+  <li>https://domainlanguage.com/ddd/</li>
+</ul>
+
+<p>Others</p>
+<ul>
+  <li>Object Oriented Programming fundamentals in C# by Deborah Kurata</li>
+  <li>Encapsulation and SOLID by Mark Seeman</li>
+</ul>
+
+<h2 id="understanding-ef-encapsulation-and-the-great-repository-debates">Understanding EF Encapsulation and the Great Repository Debates</h2>
+
+<ul>
+  <li>Should we use repositories with EF? What other encapsulation patterns are there?</li>
+  <li>
+    <p>Should queries return <code class="highlighter-rouge">IQueryable</code> or <code class="highlighter-rouge">IEnumerable</code>?</p>
+  </li>
+  <li>Dealing with disconnected data are is different between single objects and graphs, especially when persisting the data
+    <ul>
+      <li>Useful to work with the objects in different ways e.g. <code class="highlighter-rouge">CustomerData</code> class and <code class="highlighter-rouge">CustomerWithOrdersData</code> class.</li>
+      <li>For consumers, helpful because the don’t have to worry about getting a graph when wanting a single type or vice versa</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="implementing-encapsulation-patterns">Implementing Encapsulation Patterns</h2>
+<h3 id="logging-in-tests">Logging in Tests</h3>
+
+<ul>
+  <li>For more information about <strong>Logging</strong> watch EF6 Ninja Edition, Improved Database Interaction module</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[TestClass]
+public class GenericRepositoryIntegrationTests {
+    private StringBuilder _logBuilder = new StringBuilder();
+    private string _log;
+
+    public GenericRepositoryIntegrationTests() {
+	  //...
+      SetupLogging();
+    }
+
+    private void WriteLog() {
+      Debug.WriteLine(_log);
+    }
+
+    private void SetupLogging() {
+      _context.Database.Log = BuildLogString;
+    }
+
+    private void BuildLogString(string message) {
+      _logBuilder.Append(message);
+      _log = _logBuilder.ToString();
+    }
+}
+</code></pre></div></div>
+
+<h3 id="non-tracking-alternative-to-generic-findbyid">Non-tracking alternative to generic FindById</h3>
+
+<ul>
+  <li>Queries shoud be implemented using <code class="highlighter-rouge">AsNoTracking()</code> in disconnected scenarios</li>
+  <li>Find is called on a DbSet, but uses tracking (in fact checks the cache first). NOT performant. Instead could use <code class="highlighter-rouge">SingleOrDefault</code>. However, since repo is Generic, lamda expression to identify entity doesn’t know the attributes.
+    <ul>
+      <li>Create <code class="highlighter-rouge">IEntity</code> interface with an <code class="highlighter-rouge">Id</code> property and adjust GenericRepository: <code class="highlighter-rouge">public class GenericRepository&lt;TEntity&gt; where TEntity : class, IEntity</code></li>
+      <li>If instead the key names are e.g. <code class="highlighter-rouge">CustomerId</code>, <code class="highlighter-rouge">ProductId</code> etc - may have to build the lamda dynamically (ouch!)</li>
+      <li>For composite keys, generic repositories are probably NOT the right way to go</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="add-eager-loading">Add Eager Loading</h3>
+
+<ul>
+  <li>Useful to have further repository methods to include related data e.g. <code class="highlighter-rouge">FindByInclude</code> and <code class="highlighter-rouge">AllInclude</code></li>
+</ul>
+
+<h3 id="dependency-injection-with-structuremap">Dependency Injection with StructureMap</h3>
+
+<ul>
+  <li>Dependency Injection - DI, loose coupling, dependencies are pushed in from somewhere else rather than <strong>new</strong>ed up. Super useful for testing</li>
+  <li>Inversion of Control - define who is in control of instantiating dependencies. Use an IoC container</li>
+  <li>See the SOLID principles of OO Design course for more details</li>
+  <li>Install-Package StructureMap</li>
+  <li>Install-Package StructureMap.MVC5 - takes care of wiring up the StructureMap container into an MVC5 application (note not updated for StructureMap 4, so needs to be installed afterwards / seperately)</li>
+  <li>Creates a new folder <code class="highlighter-rouge">DependencyResolution</code>, as well as <code class="highlighter-rouge">StructuremapMvc.cs</code> in the App_Start folder. The <code class="highlighter-rouge">StructuremapMvc</code> class gets run due to attributes which hook it up to the <code class="highlighter-rouge">PreApplicationStart</code> lifecycle event.</li>
+  <li>Main configuration for rules for the container is in <code class="highlighter-rouge">DefaultRegistry.cs</code></li>
+  <li>Built in conventions cover some use cases e.g. adding <code class="highlighter-rouge">Example</code> for <code class="highlighter-rouge">IExample</code></li>
+  <li>The “closed generic” <code class="highlighter-rouge">GenericRepository&lt;Customer&gt;</code> will also be taken care of</li>
+  <li>The DbContext needs to be explicitly added e.g. `For<DbContext>().Use<OrderSystemContext>().Transient();</OrderSystemContext></DbContext></li>
+  <li>Needed to add the following to get the older version of StructureMap.Mvc5 to work with StructureMap since the <code class="highlighter-rouge">ScanTypes</code> method needs to be implemented with the new version</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// inside ControllerConvention.cs
+
+public void ScanTypes(TypeSet types, Registry register) {
+	types.AllTypes().ForEach(type =&gt; {
+		if (type.CanBeCastTo&lt;Controller&gt;() &amp;&amp; !type.IsAbstract) {
+			registry.For(type).LifecycleIs(new UniquePerRequestLifecycle());
+		}
+	})
+}
+</code></pre></div></div>
+
+<ul>
+  <li>To only use e.g. <code class="highlighter-rouge">OrderSystemContext</code> with certain repository classes, can use the following registry code:</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>For(typeof(GenericRepository&lt;&gt;))
+  .Use(typeof(GenericRepository&lt;&gt;))
+  .Ctor&lt;DbContext&gt;().Is(new OrderSystemContext());
+</code></pre></div></div>
+
+:ET

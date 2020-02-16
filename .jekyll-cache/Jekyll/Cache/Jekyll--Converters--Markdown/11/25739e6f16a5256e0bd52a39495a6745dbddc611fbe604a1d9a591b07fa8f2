@@ -1,0 +1,300 @@
+I"Ì><h3 id="references">References</h3>
+
+<p>MSDN documentation: https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable?redirectedfrom=MSDN&amp;view=netframework-4.8</p>
+
+<h2 id="an-introduction">An Introduction</h2>
+
+<p>Previous to LINQ, there were many different APIs for access data in different sources e.g. Object Data using generic collections classes; Relational Data using ADO.NET; XML Data using XmlDocument.</p>
+
+<p>Step up Language Integrated Query.</p>
+
+<h2 id="linq-and-c">Linq and C#</h2>
+
+<p>It is possible to iterate over both <code class="highlighter-rouge">arrays</code> and <code class="highlighter-rouge">List&lt;T&gt;</code> types since both have a method called <code class="highlighter-rouge">GetEnumerator</code>. This is because they both implement the interface <code class="highlighter-rouge">IEnumerable&lt;T&gt;</code>. The following code shows this explicity:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Array of Employee
+IEnumerable&lt;Employee&gt; developers = new Employee[]
+{
+    new Employee() { Id = 1, Name = "Tom"},
+    new Employee() { Id = 1, Name = "Dick"}
+};
+IEnumerator&lt;Employee&gt; enumerator = developers.GetEnumerator();
+while (enumerator.MoveNext()) {
+    Console.WriteLine(enumerator.Current.Name);
+}
+
+// List&lt;T&gt; of Employee
+IEnumerable&lt;Employee&gt; sales = new List&lt;Employee&gt;
+{
+    new Employee() { Id = 1, Name = "Harry"}
+};
+
+IEnumerator&lt;Employee&gt; enumerator = sales.GetEnumerator();
+while (enumerator.MoveNext()) {
+    Console.WriteLine(enumerator.Current.Name);
+}
+</code></pre></div></div>
+
+<p>Note 1: With <code class="highlighter-rouge">enumerator.MoveNext()</code> the implementation of how the next item is being fetched is completely hidden, it could be an array, a list, or the next row in a database. 
+Note 2: <code class="highlighter-rouge">IEnumerable</code> defines only ONE method - <code class="highlighter-rouge">GetEnumerator</code>. All other methods used in LINQ e.g. <code class="highlighter-rouge">Order</code>, <code class="highlighter-rouge">Where</code> etc are <strong>extension</strong> methods. This keeps the interface simple, easy to implement and easier to extend in the future.</p>
+
+<h3 id="lamda-expressions">Lamda Expressions</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>IEnumerable&lt;string&gt; filteredList = cities.Where(StartsWithL);
+
+public bool StartsWithL(string name) {
+    return name.StartsWith("L");
+}
+</code></pre></div></div>
+
+<p>The <strong>Named Method</strong> approach provides the name of a method to the <code class="highlighter-rouge">Where</code> extension method which takes a string and returns bool. <code class="highlighter-rouge">Where</code> will call this method for each item in the collection.</p>
+
+<p>An <strong>Anonymous Method</strong> can also be used : <code class="highlighter-rouge">var filteredList = cities.Where(delegate(string s) { return s.StartsWith("L"); });</code>. However, this syntax is noisy and hard to read.</p>
+
+<p>Hence the introduction of the <strong>Lambda Expression</strong> syntax: <code class="highlighter-rouge">var filteredList = cities.Where(s =&gt; s.StartsWith("L"));</code></p>
+
+<h3 id="using-func-and-action-types">Using Func and Action types</h3>
+
+<p>Most LINQ extension methods take <code class="highlighter-rouge">Func</code> types.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Func&lt;int, int&gt; square = x =&gt; x * x;
+Func&lt;int, int, int&gt; add = (x, y) =&gt; x + y; // 0 or 2 or more parameters require brackets
+Action&lt;int&gt; write = s =&gt; Console.WriteLine(s);
+
+write(square(add(5, 3)));
+</code></pre></div></div>
+
+<h3 id="query-syntax-vs-method-syntax">Query Syntax vs Method Syntax</h3>
+
+<p>Query syntax starts with <code class="highlighter-rouge">from</code> and finishes with <code class="highlighter-rouge">select</code> or <code class="highlighter-rouge">group</code>. The <code class="highlighter-rouge">from</code> expression can be thought of similar to a <code class="highlighter-rouge">foreach</code> loop. It comes at the top rather than the <code class="highlighter-rouge">select</code> (as in SQL) so that intellisense can be helpful.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from city in cities
+where city.StartsWith("L") &amp;&amp; city.Length &gt; 15
+orderby city
+select city
+</code></pre></div></div>
+
+<p>Not every LINQ operator is available in the query syntax, so sometimes need to use the method syntax e.g. Count</p>
+
+<h2 id="linq-queries">LINQ Queries</h2>
+
+<p>Execution is deferred until an item in the enumeration are actually needed. This way we can define an infinite sequence, and keep that seperate from how the sequence is to be used, how much of the sequence is required etc.</p>
+
+<p>To find out whether a particular LINQ extension offers deferred execution is to check the MSDN documentation. Under remarks - it will clearly state if the method in question is using deferred execution or not. e.g. <code class="highlighter-rouge">Count</code> does not - it needs to know how many items in the collection.</p>
+
+<p>See: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/classification-of-standard-query-operators-by-manner-of-execution</p>
+
+<h3 id="pitfalls">Pitfalls</h3>
+
+<ol>
+  <li>Multiple executions - CAREFUL not to evaluate the enumeration multiple times, e.g. calling <code class="highlighter-rouge">.Count()</code> in a logging line prior to iterating over the collection.</li>
+  <li>When catching exceptions, ensure they are being caught when the query is being executed, not when it is being defined.</li>
+</ol>
+
+<h3 id="streaming-operators">Streaming operators</h3>
+
+<p>The deferred execution operators can be divided into streaming and non-streaming where streaming operators donâ€™t need to read the whole data source before starting to return items e.g. <code class="highlighter-rouge">Where</code>. An example of a non-streaming deferred execution operator is <code class="highlighter-rouge">OrderBy</code>. The behaviour becomes similar to an operator which operates immediately - however, execution is still deferred, but after the first call to <code class="highlighter-rouge">MoveNext()</code> the operator needs to iterate through all entries to find which one it should return first.</p>
+
+<p>Need to think carefully about the queries (where using LINQ to Objects). If you can only fit 10 items on the screen out of a possible result set of 20,000 - then will be more efficient if you can only use streaming operations in your query. Also better to use e.g. <code class="highlighter-rouge">Where</code> before <code class="highlighter-rouge">OrderBy</code></p>
+
+<h2 id="filtering-order-and-projecting">Filtering, Order and Projecting</h2>
+
+<h3 id="csv-to-objects">CSV to Objects</h3>
+<ol>
+  <li>Firstly read all lines of the file into a string array, filtering out any lines not required e.g. header line, blank lines at the end.</li>
+  <li>For each line of the file, transform into a car object using the LINQ select (aka project, transform, map) operator.</li>
+</ol>
+
+<ul>
+  <li>Use <code class="highlighter-rouge">ThenBy</code> and <code class="highlighter-rouge">ThenByDescending</code> to do a secondary order on a ordered result set</li>
+  <li><code class="highlighter-rouge">Select</code> is useful to project items from one type to items of a different type e.g. a line of a csv file (string) into a car e.g. <code class="highlighter-rouge">Select(Car.ParseFromCsv)</code> where <code class="highlighter-rouge">ParseFromCsv</code> is named method which will take a <code class="highlighter-rouge">string</code> and return a <code class="highlighter-rouge">Car</code></li>
+  <li><code class="highlighter-rouge">Select</code> combined with anonymous types is useful to only return a subset of the fields of an object. e.g.
+    <ul>
+      <li>defined an anonymous type using <code class="highlighter-rouge">new { Day = "Monday", Weather = "Gloomy" };</code></li>
+      <li>select a subset using an anonymous type: <code class="highlighter-rouge">new { Name = Car.Name, Manufacturer = Car.Manufacturer };</code></li>
+      <li>use the shorthand to make it less verbose: <code class="highlighter-rouge">new { Car.Name, Car.Manufacturer };</code> // automatically works out you want 2 properties and their names</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">SelectMany</code> is also a projection operator which can flatten objects - i.e. take a collection of collections and flatten it to a single collection. So <code class="highlighter-rouge">[[1,3,4], [3,4,5]]</code> becomes <code class="highlighter-rouge">[1,3,4,3,4,5]</code></li>
+</ul>
+
+<h2 id="joining-grouping-and-aggregating">Joining, Grouping and Aggregating</h2>
+
+<h3 id="joins">Joins</h3>
+<p>Joins in LINQ are similar to INNER JOINs in SQL.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// query syntax for joining on multiple properties
+var query = from car in cars
+            join manufacturer in manufacturers
+            on new { car.Manufacturer, car.Year } 
+                equals
+                new { Manufacturer = manufacturer.Name, manufacturer.Year }
+            select new
+            {
+                car.Name,
+                manufacturer.Country
+            };
+
+// method syntax for joining on multiple properties
+var query2 = cars
+    .Join(manufacturers, 
+        c =&gt; new { c.Manufacturer, c.Year }, 
+        m =&gt; new { Manufacturer = m.Name, m.Year }, 
+        (c, m) =&gt; new { c.Name, m.Country })
+    .ToList();
+</code></pre></div></div>
+
+<h3 id="grouping">Grouping</h3>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// query syntax
+var query = from car in cars
+            group car by car.Manufacturer.ToUpper() into manufacturer
+            orderby manufacturer.Key
+            select manufacturer;
+
+// method syntax
+var query2 = cars.GroupBy(c =&gt; c.Manufacturer.ToUpper())
+    .OrderBy(g =&gt; g.Key);
+
+// output
+foreach (var group in query2)
+{
+    Console.WriteLine(group.Key);
+    foreach (var car in group.OrderByDescending(c =&gt; c.Combined).Take(2))
+    {
+        Console.WriteLine($"\t{car.Name} : {car.Combined}");
+    }
+}
+</code></pre></div></div>
+
+<h3 id="grouping-and-joining">Grouping and Joining</h3>
+<p>The Type of both <code class="highlighter-rouge">query</code> objects in the above code is <code class="highlighter-rouge">IOrdered Enumerable&lt;IGrouping&lt;string, Car&gt;&gt;</code>.</p>
+
+<p>GroupJoins are useful for when you want to both join and group data from two different sources e.g. Group by Manufacturer, but include various attributes from the manufacturer as well as car numerous car attributes.</p>
+
+<p>Can use both <code class="highlighter-rouge">join</code> and <code class="highlighter-rouge">group</code>, but can alternatively use a group <code class="highlighter-rouge">join</code> by using the <code class="highlighter-rouge">join</code> <code class="highlighter-rouge">into</code> query syntax.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var query = from manufacturer in manufacturers
+    join car in cars on manufacturer.Name equals car.Manufacturer into carGroup
+    select new
+    {
+        Manufacturer = manufacturer,
+        Cars = carGroup
+    };
+
+var query2 = manufacturers
+    .GroupJoin(cars, m =&gt; m.Name,
+        c =&gt; c.Manufacturer, 
+        (m, c) =&gt; new { Manufacturer = m, Cars = c });
+
+foreach (var group in query2)
+{
+    Console.WriteLine(group.Manufacturer.Name);
+    foreach (var car in group.Cars.OrderByDescending(c =&gt; c.Combined).Take(2))
+    {
+        Console.WriteLine($"\t{car.Name} : {car.Combined}");
+    }
+}
+</code></pre></div></div>
+
+<h3 id="aggregations">Aggregations</h3>
+<p>There are numerous aggregation functions including <code class="highlighter-rouge">Max</code>, <code class="highlighter-rouge">Min</code>, <code class="highlighter-rouge">Avg</code>. If calculating multiple aggregations, careful not to loop over data sets more than once. Use <code class="highlighter-rouge">Aggregate</code> possible with a custom class e.g. <code class="highlighter-rouge">CarStatistics</code> to calculate aggregates whilst parsing the data only once.</p>
+
+<h2 id="linq-to-xml">LINQ to XML</h2>
+
+<p>In the <code class="highlighter-rouge">System.Xml.Linq</code> namespace, added automatically to most projects. Introduced a number of classes beginning with an <code class="highlighter-rouge">X</code>:</p>
+<ul>
+  <li><code class="highlighter-rouge">XDocument</code></li>
+  <li><code class="highlighter-rouge">XElement</code></li>
+  <li><code class="highlighter-rouge">XAttribute</code></li>
+  <li><code class="highlighter-rouge">XComment</code></li>
+  <li><code class="highlighter-rouge">XDeclaration</code> - encoding and namespaces e.g. <code class="highlighter-rouge"><span class="cp">&lt;?xml version ="1.0" encoding="utf-8" ?&gt;</span></code>
+All classes derive from <code class="highlighter-rouge">XNode</code></li>
+</ul>
+
+<h3 id="generating-xml">Generating XML</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// without LINQ
+var records = LoadCars("fuel.csv");
+var document = new XDocument();
+
+var cars = new XElement("Cars");
+foreach (var record in records)
+{
+    var car = new XElement("Car",
+        new XAttribute("Name", record.Name),
+        new XAttribute("Manufacturer", record.Manufacturer),
+        new XAttribute("Combined", record.Combined)
+    );
+    cars.Add(car);
+}
+
+document.Add(cars);
+document.Save("fuel.xml");
+
+// with LINQ
+var records = LoadCars("fuel.csv");
+var document = new XDocument();
+
+var cars = new XElement("Cars",
+    from record in records
+    select new XElement("Car",
+        new XAttribute("Name", record.Name),
+        new XAttribute("Manufacturer", record.Manufacturer),
+        new XAttribute("Combined", record.Combined))
+);
+
+document.Add(cars);
+document.Save("fuel.xml");
+
+</code></pre></div></div>
+
+<h3 id="querying-xml">Querying XML</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>XDocument document = XDocument.Load("fuel.xml");
+
+var query = document.Element("Cars").Elements("Car")
+    .Where(e =&gt; e.Attribute("Manufacturer").Value == "BMW")
+    .OrderBy(e =&gt; e.Attribute("Name").Value);
+
+query.ToList().ForEach(e =&gt; Console.WriteLine(e.ToString()));
+</code></pre></div></div>
+
+<h3 id="creating-xml-with-namespaces">Creating XML with namespaces</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var records = LoadCars("fuel.csv");
+
+var ns = (XNamespace)"http://dot.kitchen/cars/2016";
+var ex = (XNamespace)"http://dot.kitchen/cars/2016/ex";
+
+var document = new XDocument();
+var cars = new XElement(ns + "Cars",
+    from record in records
+    select new XElement(ex + "Car",
+        new XAttribute("Name", record.Name),
+        new XAttribute("Manufacturer", record.Manufacturer),
+        new XAttribute("Combined", record.Combined))
+);
+
+// add a prefix for the ex namespace so it doesn't
+// appear on each &lt;Car&gt; element
+cars.Add(new XAttribute(XNamespace.Xmlns + "ex", ex));
+document.Add(cars);
+document.Save("fuel.xml");
+</code></pre></div></div>
+
+<h3 id="querying-xml-with-namespaces">Querying XML with namespaces</h3>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>XDocument document = XDocument.Load("fuel.xml");
+
+var ns = (XNamespace)"http://dot.kitchen/cars/2016";
+var ex = (XNamespace)"http://dot.kitchen/cars/2016/ex";
+
+var query = document.Element(ns + "Cars").Elements(ex + "Car")
+    .Where(e =&gt; e.Attribute("Manufacturer").Value == "BMW")
+    .OrderBy(e =&gt; e.Attribute("Name").Value);
+
+query.ToList().ForEach(e =&gt; Console.WriteLine(e.ToString()));
+</code></pre></div></div>
+
+<h2 id="linq-and-the-entity-framework">LINQ and the Entity Framework</h2>
+
+:ET

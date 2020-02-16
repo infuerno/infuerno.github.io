@@ -1,0 +1,10 @@
+I"E<h2 id="shortcuts">Shortcuts</h2>
+<ul>
+  <li>Ctrl + . - to activate the contextual menu to e.g. add missing using statements</li>
+  <li>F12 - go to implementation</li>
+  <li>F9 - set a breakpoint</li>
+  <li>Ctrl K, C - comment out code</li>
+  <li>Ctrl K, D - format code</li>
+  <li>Ctrl . - implement an interface</li>
+</ul>
+:ET

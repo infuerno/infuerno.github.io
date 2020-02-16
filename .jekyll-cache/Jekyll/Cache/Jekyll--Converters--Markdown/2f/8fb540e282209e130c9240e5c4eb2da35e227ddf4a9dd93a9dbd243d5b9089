@@ -1,0 +1,90 @@
+I"�<h3 id="references">References</h3>
+<p>Source code: http://manning.com/DependencyInjectionin.NET</p>
+
+<ul>
+  <li>Learn what Dependency Injection is</li>
+  <li>Learn what kinds of problems it solves</li>
+  <li>Learn the patterns for using it</li>
+  <li>Look at the various tools which help in applying those patterns</li>
+</ul>
+
+<h2 id="chapter-1-a-dependency-injection-tasting-menu">Chapter 1: A Dependency Injection tasting menu</h2>
+<ul>
+  <li>Code bases need to be maintainable</li>
+  <li>One way of making a code base maintainable is through loose coupling</li>
+  <li>Loose coupling makes code extensible, extensibility makes it maintainable</li>
+  <li>DI is a technique that enables loose coupling</li>
+  <li>Program to an interface not an implementation</li>
+  <li>Programming to interfaces is easy, but where do the instances come from - this is where DI comes in</li>
+  <li>DI injects dependencies from the outside, with constructor injection being the preferred method</li>
+</ul>
+
+<h3 id="fallacies-about-di">Fallacies about DI</h3>
+<ul>
+  <li>Late Binding: DI enables late binding (implementation chosen at runtime via config) but is ONLY ONE of the many aspects of DI</li>
+  <li>Unit Testing: Again, relevant, but DI does much more</li>
+  <li>Service Locator: DI is the opposite of service locator - we don’t ask for dependencies, we force consumers to supply them.</li>
+  <li>DI Container: optional - without this is sometimes known as poor man’s DI - more work, but doesn’t compromise principles</li>
+</ul>
+
+<h3 id="purpose-of-di">Purpose of DI</h3>
+<p>Liskov Substitution Principle - should be able to replace one implementation of an interface without breaking either client or implementation. One of the most important software design principles for DI.</p>
+<ul>
+  <li><strong>Null Object</strong> - replace an implementation with something that does nothing - so as not to break the client</li>
+  <li><strong>Decorator</strong> - introduce new features with cross cutting concerns by implementing an interface and and also allowing the original component to plug back into the decorator. e.g. add an implementation which encompasses</li>
+  <li><strong>Composite</strong> - add new functionality to an existing codebase by composing an existing implementation of an interface with a new implementation</li>
+  <li><strong>Adapter</strong> - match two related but separate interfaces to each other - useful when using a third party API which needs to be consumed by your application according to a specific interface</li>
+</ul>
+
+<h3 id="benefits-of-di">Benefits of DI</h3>
+<ul>
+  <li><strong>Late Binding</strong> - by injecting a dependency via a constructer, there is only one place which couples these two classes together - where the constructor is called. This then enables late binding by swapping out a hard coded implementation choice, with an implementation choice specified via config.</li>
+  <li><strong>Extensibility</strong> - loose coupling allows the application to be recomposed in a different way with minimal changes e.g. by replacing one implementation of a particular interface with another. Open for extensibility, closed for modification.</li>
+  <li><strong>Parallel Development</strong></li>
+  <li><strong>Maintainability</strong> - a known benefit of the single responsibility principle - adding new features becomes simpler because it is clearer where those changes should be applied - more often that not be adding classes and recomposing the application</li>
+  <li><strong>Testability</strong> - by coding to interfaces, mocks, test doubles, fakes etc can all be injected easily to limit the testing to the class under test rather than its dependencies</li>
+</ul>
+
+<h3 id="when-to-use-di">When to use DI</h3>
+<p>Not everything needs to be abstracted away and made pluggable. Distinguish between types that pose no danger (stable) and types that may tighten an application’s degree of coupling (volatile).</p>
+<ul>
+  <li><strong>Seam</strong> - where a dependency is separated via DI</li>
+  <li><strong>Stable dependency</strong> - doesn’t change, backwards compatible, contain deterministic algorithms, isn’t volatile</li>
+  <li><strong>Volatile dependency</strong>
+    <ul>
+      <li>A dependency which introduces a requirement to set up and configure a runtime environment e.g. databases. LINQ to Entities implies a relational database. Other out of process resources including message queues, web services and the file system.</li>
+      <li>A dependency which doesn’t yet exist</li>
+      <li>A dependency which can’t be installed on all machines (e.g. expensive 3rd party library)</li>
+      <li>A dependency which has non deterministic behaviour e.g. random numbers, or algorithms which depend on the current date or time
+Volatile dependencies are the focal point of DI. Introduce seams for these kind of dependencies.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="di-scope">DI Scope</h3>
+<p>By removing the responsibility of instantiating a dependency from a consuming class, that class loses control, but the control is not lost, just moved to another place. In doing so there are several benefits:</p>
+<ul>
+  <li><strong>Object composition</strong> - closely associated with the original meaning of DI, compose classes into application with greater control</li>
+  <li><strong>Object lifetime</strong> - surrendering creation of dependencies also means a class gives up control of when instances are created and when they go out of scope. Dependencies can be shared between consumers. Garbage collection generally means not much of an issue in .NET. Dependencies which implement <code class="highlighter-rouge">IDisposable</code> become complicated. Something else higher up in the call stack must control the lifetime.</li>
+  <li><strong>Interception</strong> - Prior to injecting a dependency, it can be intercepted and altered. Interception is an application of the Decorator design pattern.</li>
+</ul>
+
+<blockquote>
+  <p>There are many misconceptions about DI. Some people think that it only addresses narrow problems, such as late binding or unit testing; although these aspects of soft- ware design certainly benefit from DI, the scope is much broader. The overall purpose is maintainability.</p>
+</blockquote>
+
+<blockquote>
+  <p>The idea of DI as a service modeled along the lines of a dictionary leads directly to the SERVICE LOCATOR anti-pattern. This is why I put so much emphasis on the need to clear your mind of even the most basic assumptions. After all, when we’re talking about dictionaries, we’re talking about stuff that belongs in the “reptile brain of programming.”</p>
+</blockquote>
+
+<h3 id="di-or-ioc">DI or IoC</h3>
+<p>DI is a subset of IoC.
+Inversion of Control simply refers to any style of programming where a framework or runtime controls program flow e.g. ASP.NET - where the ASP.NET page lifecycle controls the flow. Nowadays, the term IoC is often used to refer specifically to IoC over dependencies, or Dependency Injection.  However IoC is actually much broader.</p>
+
+<h2 id="to-read">To Read</h2>
+<ul>
+  <li><a href="https://martinfowler.com/eaaDev/EventSourcing.html">Event Sourcing</a>
+http://blogs.msdn.com/b/nblumhardt/archive/2008/12/27/container-managed-application-design-prelude-where-does-the-container-belong.aspx</li>
+  <li>Currently, the most promising alternative to n-layer applications is an architectural style related to the Command- Query Responsibility Segregation (CQRS) pattern. For more information, see Rinat Abdullin, “CQRS Starting Page,” http://abdullin.com/cqrs</li>
+</ul>
+:ET

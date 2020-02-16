@@ -1,0 +1,181 @@
+I"b+<h2 id="who-is-owasp">Who is OWASP?</h2>
+
+<p>OWASP is a not for project organisation which exists to promote web security. They are technology agnostic and contributed to selflessly by the security community.
+Each year they realease a top 10 list of the most critical web application security risks.</p>
+
+<h2 id="injection">Injection</h2>
+
+<h3 id="overview">Overview</h3>
+
+<p>Most common injection examples are SQL injections, but can also have e.g. LDAP injections.</p>
+
+<p>Distinguish between trusted data and untrusted data. Taking the example of a GET request of <code class="highlighter-rouge">http://mysite.com/Widget?Id=1</code>, the trusted data is <code class="highlighter-rouge">http://mysite.com/Widget?Id=</code> and the untrusted data is <code class="highlighter-rouge">1</code>
+We assume that the this translates to a SQL query of <code class="highlighter-rouge">SELECT * FROM Widget WHERE Id = 1</code></p>
+
+<h3 id="mounting-an-attack">Mounting an attack</h3>
+
+<p>By changing the URL to <code class="highlighter-rouge">http://mysite.com/WidgetId=1 or 1=1</code> this could translate to a SQL query of <code class="highlighter-rouge">SELECT * FROM Widget WHERE Id = 1 or 1=1</code> which would in affect select all records from the Widget table.</p>
+
+<p>Furthermore if the web page was written to just display all results from the database, then data that wasn’t designed to be access has now been accessed.</p>
+
+<h3 id="common-defences">Common defences</h3>
+
+<ul>
+  <li>Whitelist untrusted data - a list of data known to be good, ensure incoming untrusted data adheres to expected patterns</li>
+  <li>Parameterise SQL statements - seperate the query from the data</li>
+  <li>Fine tune DB permissions - principle of least privilege</li>
+</ul>
+
+<h2 id="broken-authentication-and-session-management">Broken Authentication and Session Management</h2>
+
+<p>Each time a logged in user makes a request, it is authenticated. Each time them make a request, they are sending additional information which authenticates them. An attacker can hijack this information and impersonate the victim.</p>
+
+<h3 id="mounting-an-attack-1">Mounting an attack</h3>
+
+<ul>
+  <li>Steal the authentication cookie: physically from the user’s PC, over an unencrypted network, by exploiting an XSS risk</li>
+  <li>Steal the session id, which can often by in the URL rather than in a cookie: copied and pasted by the victim, retrieved from a log, sent via an insecure email</li>
+  <li>Account management attack, brute force login, exploit passwork resest (secret q and a of famous person), discover weak credentials (e.g. 4 number pin easy to go through all options)</li>
+</ul>
+
+<h3 id="common-defences-1">Common defences</h3>
+
+<ul>
+  <li>Protect the cookies - it is usually cookies which persist the authenticated state of the user between each request. <em>Two fundamental steps</em>:
+    <ul>
+      <li>Ensure HttpOnly flag is set on the cookie (cannot be accessed through script)</li>
+      <li>Ensure the secure flag is set (can only be sent over HTTPS)</li>
+    </ul>
+  </li>
+  <li>Decrease the window of risk - expire session quickly (trade off on usability); rechallenge the user on key actions (e.g. ask for previous password on change of password - if a user has hijacked a session they won’t be able to provide this)</li>
+  <li>Harden account management - don’t limit password lengths, don’t limit password characters; lock out users after x failed password attempts (for e.g. 15 mins)</li>
+</ul>
+
+<h2 id="cross-site-scripting-xss">Cross site scripting (XSS)</h2>
+
+<p>Reflected XSS: attacker gives the victim a url with an XSS payload (e.g. via bit.ly), user clicks on the link goes to the website and the XSS is reflected back in the page and is now loaded in the user’s browser. After this client data may be sent back to the attacker (e.g. cookies)</p>
+
+<p>Persistant XSS: the XSS payload has already been persisted to a database, user uses application, pulls data from data including XSS payload which is then streamed to the client browser.</p>
+
+<h3 id="mounting-an-attack-2">Mounting an attack</h3>
+
+<p>A search on http://www.mysite.com/Search?q=Lager often reflects the search term back to the browser <code class="highlighter-rouge">You searched for &lt;strong&gt;Lager&lt;/strong&gt;</code>. Untrusted data in both the request and the response is the word “Lager”. If this can be replaced by some script, this script can be used to pull out a user’s cookies, posting them to a third party. If there are authentication cookies there, then these can possibly be used to hijack and authenticated session.</p>
+
+<h3 id="common-defences-2">Common defences</h3>
+
+<ul>
+  <li>Whitelist untrusted data</li>
+  <li>Always encode output, including data from the database e.g. if the <code class="highlighter-rouge">&lt;script&gt;</code> tag is escaped, it will just be written to the browser rathen than actually running script.</li>
+  <li>Encode for context - different encoding required for HTML / attributes / JavaScript / CSS (and use a trusted framework to do this)</li>
+</ul>
+
+<h2 id="insecure-direct-object-references">Insecure direct object references</h2>
+
+<p>A direct object reference is an observable key used to identify an individual database record. E.g. manually changing query string to gain access to data.</p>
+
+<h3 id="common-defences-3">Common defences</h3>
+
+<ul>
+  <li>Must have access controls in places, must expect these rules to be tested</li>
+  <li>Use indirect maps, map actual keys to temporary ones - when done well, only exists for that user, for that session</li>
+  <li>Avoid predictable keys like incrementing integers or natural keys (e.g. usernames)</li>
+</ul>
+
+<h3 id="security-misconfiguration">Security misconfiguration</h3>
+
+<p>Broad risk, covering a number of things. Basically an attacker gains access to an unsecured resource e.g. poorly secured admin page, web logs, internal error messages. This can be due to a number of things:</p>
+<ul>
+  <li>Is the software out of date?</li>
+  <li>Unnecessary features enabled?</li>
+  <li>Default credentials?</li>
+  <li>Internal implementation data exposed in error messages?</li>
+  <li>Security settings not set to secure values?</li>
+</ul>
+
+<h3 id="common-defences-4">Common defences</h3>
+
+<ul>
+  <li>Harden the install, turn off unused features, apply principle of least privilege</li>
+  <li>Tune the application to ensure it is production ready, defaults are often not good enough</li>
+  <li>Ensure all packages are up to date, especially third party ones</li>
+</ul>
+
+<p>e.g. google for <code class="highlighter-rouge">inurl:elmah.axd "error log for"</code> to find lots of elmah log details!</p>
+
+<h2 id="sensitive-data-exposure">Sensitive data exposure</h2>
+
+<p>E.g. logging in over HTTP is vulnerable to a MITM attack where an attacker can sniff the username and password and even manipulate HTTP data</p>
+
+<ul>
+  <li>Insufficient use of SSL - login not loaded over SSL, cookies not sent over SSL, using mixed mode and loading the page over HTTPS but embedded javascript over HTTP, attacker can now manipulate the javascript and get the page to post to somewhere else</li>
+  <li>Bad cryptography - storage of passwords, no encryption, symmetric encryption, poor protection of keys, weak algorithms</li>
+  <li>Other risks - auto complete, disclosure via URL - sensitive data should not be sent in the URL, leaked data via logs</li>
+</ul>
+
+<h3 id="common-defences-5">Common defences</h3>
+
+<ul>
+  <li>Minimise sensitive data collection, if you don’t need DOB, don’t collect it</li>
+  <li>Apply HTTPS <em>everywhere</em> - start with secure by default</li>
+  <li>Use strong crypto storage</li>
+</ul>
+
+<h2 id="missing-function-level-access-control">Missing function level access control</h2>
+
+<p>E.g. Admin user logs into a web application, makes an authenticated request for a page, response contains link to admin in nav (which they are given since they are logged in as admin). However, link to the admin page works doesn’t have any access control, attacker can gain URL and then gain access to admin page.</p>
+
+<h3 id="mounting-an-attack-3">Mounting an attack</h3>
+
+<ul>
+  <li>Does UI show navigation to unauthorised functions?</li>
+  <li>Are server side authentication / authorisation checks missing?</li>
+  <li>Are server side checks done on untrusted data?</li>
+  <li>Are system or diagnostic resources (e.g. Elmah logs) accessible without proper authorisation?</li>
+  <li>Will ‘forced browsing’ disclosed unsecured resources (e.g. by enumerating possible URLs)</li>
+</ul>
+
+<h3 id="common-defences-6">Common defences</h3>
+
+<ul>
+  <li>Define a clear authorisation model which uses roles</li>
+  <li>Check for default framework resources (check with good automatic scanner / dynamic analysis security tool)</li>
+  <li>Always test unprivileged roles e.g. capture and reply priviliged requests under an priviliged user</li>
+</ul>
+
+<h2 id="cross-site-request-forgery-csrf--xsrf">Cross-site Request Forgery (CSRF / XSRF)</h2>
+
+<p>A user has to be tricked into submitting a “forged” request to a site which they are already authenticated on (e.g. via a live authentication cookie in their cookie store)
+Imagine an attacker shares a malicious link with a user. User clicks a link and their site is loaded into the user’s browser along with a malicious request which loads the target website. If the user has an authentication cookie for the target website this will automatically be sent with the request - however the contents of the request did not come from the user, but from the attacker. So if e.g. the request contains an amount of money to transfer to a bank account, the user can submit this to their own banking website unwittingly.</p>
+
+<h3 id="common-defences-7">Common defences</h3>
+
+<ul>
+  <li>MOST IMPORTANT: employ anti-forgery tokens - adds randomness to the request which the attacker can’t discover</li>
+  <li>Validate the referrer</li>
+  <li>Native browser defences (e.g. cross origin resource sharing / COREs)</li>
+</ul>
+
+<h2 id="using-components-with-known-vulnerabilities">Using Components with Known Vulnerabilities</h2>
+
+<h3 id="common-defences-8">Common defences</h3>
+
+<ul>
+  <li>Know which libraries, components, version you are using, keep an inventory</li>
+  <li>Keep abreast of updates and CVEs</li>
+  <li>Keep components updated</li>
+</ul>
+
+<h2 id="unvalidated-redirects-and-forwards">Unvalidated redirects and forwards</h2>
+
+<p>Attacker shares a URL with a redirect payload. User clicks on link to go to website, but is then redirected to a malicious website.
+This situation exists where a website redirects to external sites via an internal page to e.g. log the page hits to the external sites. An attacker simply publishes his url with the redirect to the malicious site and the user doesn’t notice.</p>
+
+<h3 id="common-defences-9">Common defences</h3>
+
+<ul>
+  <li>Whitelist the URLs which the redirect supports</li>
+  <li>Use indirect references e.g. an ID in a database which then retrieves the actual URL to redirect to</li>
+  <li>Check the referrer</li>
+</ul>
+
+:ET

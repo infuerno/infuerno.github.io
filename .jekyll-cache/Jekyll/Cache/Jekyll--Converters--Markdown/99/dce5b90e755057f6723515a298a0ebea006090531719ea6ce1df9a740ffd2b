@@ -1,0 +1,20 @@
+I"\<h2 id="references">References</h2>
+
+<ul>
+  <li>Glossary - https://angular.io/guide/glossary</li>
+  <li>Project file structure - https://angular.io/guide/file-structure</li>
+</ul>
+
+<h3 id="one-application-per-workspace">One application per workspace</h3>
+
+<p>Beginners and intermediate users are encouraged to use ng new to create a separate workspace for each application.</p>
+
+<h3 id="multiple-applications-per-workspace">Multiple applications per workspace</h3>
+
+<p>Angular also supports workspaces with multiple projects. This type of development environment is suitable for advanced users who are developing shareable libraries, and for enterprises that use a “monorepo” development style, with a single repository and global configuration for all Angular projects.
+To set up a monorepo workspace, you should skip the creating the root application. See Setting up for a multi-project workspace below.</p>
+
+<h2 id="xx">xx?</h2>
+
+<p>The Angular class binding makes it easy to add and remove a CSS class conditionally. Just add [class.some-css-class]=”some-condition” to the element you want to style.</p>
+:ET

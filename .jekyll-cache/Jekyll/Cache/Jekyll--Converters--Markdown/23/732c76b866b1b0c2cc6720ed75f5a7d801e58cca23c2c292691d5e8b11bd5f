@@ -1,0 +1,25 @@
+I"Þ<h2 id="note-on-setting-app-module-to-a-variable">Note on setting app module to a variable</h2>
+
+<p>Using the following code is bad practice:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var app = angular.module('app', [ ]);
+app.directive('productTitle', function() { ... });
+</code></pre></div></div>
+
+<p>Better to do this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>angular.module('app')
+    .directive('productTitle', function() { ... });
+</code></pre></div></div>
+
+<h2 id="routes">Routes</h2>
+
+<p>There are 4 steps to using routes</p>
+<ol>
+  <li>Use ngView i.e in the main index.html have a div marked up <code class="highlighter-rouge">&lt;div ng-view&gt;&lt;/div&gt;</code> where all the contents will go</li>
+  <li>Load the ngRoute library by declaring it as a dependency</li>
+  <li>Import the ngRoute module by adding javascript src mark up</li>
+  <li>Define the route in routes.js</li>
+</ol>
+
+:ET

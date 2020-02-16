@@ -1,0 +1,52 @@
+I"�<h2 id="episode-3-rails-4-and-os-x-mountain-lion">Episode 3: Rails 4 and OS X Mountain Lion</h2>
+
+<h3 id="spinjs">spin.js</h3>
+<p><a href="http://fgnass.github.io/spin.js/">http://fgnass.github.io/spin.js/</a> for spinning pictures using pure css, no images in sight</p>
+
+<h3 id="sprite-cow">Sprite Cow</h3>
+<p>Instead of serving multiple images, it is better to combine all images into one big image, which only requires one http request and then show define images as part of the overall sprite map using starting coordinates and length / height.
+<a href="http://www.spritecow.com/">http://www.spritecow.com/</a></p>
+
+<h3 id="uicloud">UICloud</h3>
+<p>Lots of UI elements etc for inspiration, use <a href="http://ui-cloud.com/">http://ui-cloud.com/</a></p>
+
+<h3 id="iconmonstr">IconMonstr</h3>
+<p>Lots of free icons <a href="http://iconmonstr.com/">http://iconmonstr.com/</a></p>
+
+<h2 id="episode-2-retinafy-your-website">Episode 2: Retinafy your website</h2>
+
+<h3 id="retinajs">RetinaJS</h3>
+<p>Swaps out images using javascript if you are on a retina device by looking for images and then looking for corresponding images on the server with the additional ‘@2x’ naming convention. e.g. <code class="highlighter-rouge">images/star.png</code> for the normal image and <code class="highlighter-rouge">images/star@2x.png</code> for the retina image. Download at <a href="http://retinajs.com/">http://retinajs.com/</a>.</p>
+
+<h3 id="sublime-text-tips">Sublime Text tips</h3>
+<p>Some great short cuts for sublime text at <a href="http://blog.alainmeier.com/post/27255145114/some-things-beginners-might-not-know-about-sublime-text">http://blog.alainmeier.com/post/27255145114/some-things-beginners-might-not-know-about-sublime-text</a>.</p>
+
+<h2 id="episode-1-css-and-javascript-tools">Episode 1: CSS and JavaScript Tools</h2>
+
+<h3 id="caesar">Caesar</h3>
+
+<p>Calculate more complex animation curves <a href="http://matthewlein.com/ceaser/">http://matthewlein.com/ceaser/</a></p>
+
+<h3 id="scrollorama">Scrollorama</h3>
+
+<p>Some cool effects as you scroll down the page with the scrollorama javascript library at <a href="http://johnpolacek.github.io/superscrollorama/">http://johnpolacek.github.io/superscrollorama/</a></p>
+
+<h3 id="meteor">Meteor</h3>
+
+<p>Meteor is a javascript framework which:</p>
+<ul>
+  <li>can run a local webserver to server your html, css and javascript files</li>
+  <li>updates your browser automatically when a file is updated and saved</li>
+  <li>insert into a database (e.g. mongo) and the screen will also update</li>
+  <li>mongo api calls possible on a client (not just the server)</li>
+  <li>doesn’t lose state of the application when javascript is updated / redeployed</li>
+</ul>
+
+<h3 id="css-responsive-frameworks">CSS Responsive Frameworks</h3>
+
+<ul>
+  <li>Twitter Bootstrap at <a href="http://getbootstrap.com/">http://getbootstrap.com/</a></li>
+  <li>Zurb Foundation 4 at <a href="http://foundation.zurb.com/">http://foundation.zurb.com/</a></li>
+</ul>
+
+:ET

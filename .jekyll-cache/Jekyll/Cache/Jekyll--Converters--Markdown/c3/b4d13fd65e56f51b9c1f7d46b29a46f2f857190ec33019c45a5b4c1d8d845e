@@ -1,0 +1,175 @@
+I"Q-<h2 id="generic-delegates">Generic Delegates</h2>
+
+<p>Regular delegates would require using <code class="highlighter-rouge">object</code> and the disadvantages (not type safe, boxing performance hit).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// declare a delegate type
+public delegate void Printer(object data);
+
+// declare a method that has the same signature
+public void WriteToConsole(object data) {
+    Console.WriteLine(data);
+}
+
+// create a delegate to point to this method
+var consolePrinter = new Printer(WriteToConsole);
+// invoke the delegate
+consolePrinter.Invoke("hello");
+// or pass the delegate to a method that will use it
+buffer.Dump(consolePrinter);
+
+// using shorthand (method group conversion)
+var consolePrinter = WriteToConsole;
+consolePrinter("hello"); // or buffer.Dump(consolePrinter)
+</code></pre></div></div>
+
+<p>Using generics:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// make it all generic
+public delegate void Printer&lt;T&gt;(T data);
+public void WriteToConsole&lt;T&gt;(T data) {
+    Console.WriteLine(data);
+}
+var consolePrinter = new Printer&lt;double&gt;(WriteToConsole);
+consolePrinter.Invoke(2.0); // or buffer.Dump(consolePrinter)
+</code></pre></div></div>
+
+<h2 id="general-purpose-delegate-types">General purpose delegate types</h2>
+
+<p>To save having to create your own delegate types, there are several built in delegate types which can be used instead: <code class="highlighter-rouge">Func</code>, <code class="highlighter-rouge">Action</code> and <code class="highlighter-rouge">Predicate</code>.</p>
+
+<h3 id="action">Action</h3>
+
+<p>Always returns void, but can take from 0 to 16 params, the types of which are determined using from 0 to 16 generic type arguments. e.g. <code class="highlighter-rouge">Action&lt;double&gt;</code> can be used for a method which returns <code class="highlighter-rouge">void</code>, but takes one parameter of type <code class="highlighter-rouge">double</code>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var consolePrinter = new Action&lt;double&gt;(WriteToConsole);
+consolePrinter(2.0);
+// or if passing to a method, that method would have to be updated to accept a delegate type of Action
+buffer.Dump(consolePrinter);
+
+// can use method group conversion instead
+var consolePrinter = WriteToConsole;
+
+// can use anonymous method
+Action&lt;double&gt; consolePrinter = delegate(double data) { Console.WriteLine(data);};
+
+// can use lamda expression
+Action&lt;double&gt; consolePrinter = d =&gt; Console.WriteLine(data);
+buffer.Dump(consolePrinter);
+
+// can use inline lamda
+buffer.Dump(d =&gt; d.Console.WriteLine(data));
+</code></pre></div></div>
+
+<h3 id="func">Func</h3>
+
+<p>Always has a return type, which is the last argument specified as well as 0 to 16 parameters e.g. <code class="highlighter-rouge">Func&lt;double, double&gt;</code> points to a method which takes a <code class="highlighter-rouge">double</code> and returns a <code class="highlighter-rouge">double</code>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Func&lt;double, double&gt; square = d =&gt; d * d;
+Func&lt;double, double, double&gt; add = (x, y) =&gt; x + y;
+</code></pre></div></div>
+
+<h3 id="predicate">Predicate</h3>
+
+<p>Always returns a boolean.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Predicate&lt;double&gt; isLessThanTen = d =&gt; d &lt; 10;
+</code></pre></div></div>
+
+<h2 id="events-and-generics">Events and Generics</h2>
+
+<p>As well as <code class="highlighter-rouge">Func</code>, <code class="highlighter-rouge">Action</code> and <code class="highlighter-rouge">Predicate</code> the built in delegate <code class="highlighter-rouge">EventHandler</code> is useful for raising events.</p>
+
+<p><strong>Come back to this after checking more into events</strong></p>
+
+<h2 id="constraints-covariance-contravariance">Constraints, Covariance, Contravariance</h2>
+
+<h3 id="constraints">Constraints</h3>
+
+<p>Use the <code class="highlighter-rouge">where</code> keyword to restrict generic types. This means that we know we can now call certain methods in the implementation. It makes more sense to add these restrictions just to the implementations rather than interfaces, since the interface doesn’t care about implementation details. However matter of personal taste.</p>
+
+<h3 id="covariance">Covariance</h3>
+
+<ul>
+  <li><code class="highlighter-rouge">IEnumerable&lt;Employee&gt; temp = employeeRepository.FindAll()</code> - this is ok because <code class="highlighter-rouge">FindAll</code> returns <code class="highlighter-rouge">IQueryable</code> which implements <code class="highlighter-rouge">IEnumerable</code>, so the collection returned will be IQueryable as well as IEnumerable.</li>
+  <li><code class="highlighter-rouge">IEnumerable&lt;Person&gt; temp = employeeRepository.FindAll()</code> - this is also OK. <code class="highlighter-rouge">FindAll</code> return a collection of <code class="highlighter-rouge">Employee</code>s and since <code class="highlighter-rouge">Employee</code> inherits from <code class="highlighter-rouge">Person</code>, those employees will also be people. This only works because the IEnumerable interface is specified using the <code class="highlighter-rouge">out</code> keyword (a generic modifier) which allows the <code class="highlighter-rouge">T</code> parameter to “vary” i.e. <code class="highlighter-rouge">IEnumerable&lt;out T&gt;</code>. The <code class="highlighter-rouge">T</code> parameter is covariant. The <code class="highlighter-rouge">GetEnumerator</code> method in the IEnumerable interface is allowed to return types which are “more derived” than the original type specified.</li>
+  <li>NOTE: covariance only works with delegates and interfaces (not classes)</li>
+  <li>Covariance can only be used on an interface where the <code class="highlighter-rouge">T</code> is returned. It can’t be used when the <code class="highlighter-rouge">T</code> is used as a parameter. Treating employees as people is ok when they are returned to a caller. But treating a person as an employee will be a problem. So we can’t accept a person instead.</li>
+  <li>A solution is to split out the interface into the read only methods which simply return T and then implement this interface by the other one</li>
+  <li><code class="highlighter-rouge">interface IReadOnlyRepository&lt;out T&gt;</code></li>
+</ul>
+
+<h3 id="contravariance">Contravariance</h3>
+
+<ul>
+  <li>The opposite. Allow generic interfaces which define methods which accept T, but don’t return it, to accept T OR any type which derives from T. Do this using the <code class="highlighter-rouge">in</code> keyword: <code class="highlighter-rouge">interface IWriteOnlyRepository&lt;in T&gt;</code></li>
+  <li>The <code class="highlighter-rouge">IRepository</code> interface is now empty with read split out to <code class="highlighter-rouge">IReadOnlyRepository</code> and writes split out to <code class="highlighter-rouge">IWriteOnlyRepository</code>. The <code class="highlighter-rouge">IRepository</code> simply implements both interfaces, but specifies that <code class="highlighter-rouge">T</code> must be invariant when dealing with <code class="highlighter-rouge">IRepository</code>. e.g. can only use Employee objects here and nothing else. i.e. <code class="highlighter-rouge">IRepository&lt;T&gt; : IReadOnlyRepository&lt;T&gt;, IWriteOnlyRepository&lt;T&gt;</code></li>
+  <li>Example with a delegate: <code class="highlighter-rouge">delegate TOutput Converter&lt;in TInput, out TOutput&gt;(TInput input)</code></li>
+</ul>
+
+<h2 id="generics-and-reflection">Generics and Reflection</h2>
+
+<h3 id="instantiate-generic-types">Instantiate Generic Types</h3>
+
+<p>Create a generic type using the whole type definition</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Type t = typeof(List&lt;Employee&gt;);
+object o = Activator.CreateInstance(t);
+Console.WriteLine(o.GetType().Name); // List`1
+o.GetType().GenericTypeArguments.ToList().ForEach(arg =&gt; Console.Write($"[{arg.Name}]")); // [Employee]
+</code></pre></div></div>
+
+<p>Create a generic type where collection type and item type are specified seperately by calling <code class="highlighter-rouge">MakeGenericType</code> on the collection type.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Type typeCollection = typeof(List&lt;&gt;);
+type typeItem = typeof(Employee);
+Type closedType = typeCollection.MakeGenericType(typeItem);
+object o = Activator.CreateInstance(closedType);
+</code></pre></div></div>
+
+<h3 id="invoke-generic-methods">Invoke Generic Methods</h3>
+
+<p>The below code would usually work for non generic methods, but doesn’t work where generic parameters are required.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var employee = new Employee();
+var employeeType = employee.GetType();
+var methodInfo = employeeType.GetMethod("Speak");
+methodInfo.Invoke(employee, null); // null since method doesn't have any parameters
+</code></pre></div></div>
+
+<p>Need to create a generic method using <code class="highlighter-rouge">MakeGenericMethod</code> on the method info: <code class="highlighter-rouge">methodInfo = methodInfo.MakeGenericMethod(typeof(DateTime));</code></p>
+
+<h2 id="odds-and-ends">Odds and Ends</h2>
+
+<h3 id="enums">Enums</h3>
+
+<p>When using generics with <code class="highlighter-rouge">enum</code>s - it is not possible to constrain a generic type to be of type enumeration. The nearest possible is of a value type. So e.g. writing a generic method to convert a string to an enumeration cannot be constrained to ensure it will only be used with enumerations.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>enum ColourType {
+    Black, White
+}
+public static StringExtensions
+{
+    public static T ParseEnum&lt;T&gt;(this string value) : where T : struct
+    {
+        return (T)Enum.Parse(typeof(T), value);
+    }
+}
+
+var input = "black";
+var colour = input.ParseEnum&lt;ColourType&gt;();
+</code></pre></div></div>
+
+<h3 id="maths">Maths</h3>
+
+<p>Can’t enforce generic types such that they implement certain operators e.g. <code class="highlighter-rouge">+</code>, <code class="highlighter-rouge">&lt;</code>, <code class="highlighter-rouge">+=</code>. Best approach here is overloaded methods instead.</p>
+
+<h3 id="using-base-types">Using Base Types</h3>
+
+<p>If you have a generic class <code class="highlighter-rouge">Item&lt;T&gt;</code> and you want to have a list of only these items, you need to defined a strongly type list OF strongly typed items and it wouldn’t be possible to e.g. have <code class="highlighter-rouge">Item&lt;int&gt;</code> and <code class="highlighter-rouge">Item&lt;double&gt;</code> in the same list.</p>
+
+<p>One solution is to create a <code class="highlighter-rouge">Item</code> base type and have <code class="highlighter-rouge">Item&lt;T&gt; : Item</code> inherit from this base type. This way you have have a <code class="highlighter-rouge">List&lt;Item&gt;</code> and maintain some control over what is added to the list.</p>
+
+<h3 id="generics-and-statics">Generics and Statics</h3>
+
+<p>Static fields belong to the generic type specified FOR a particular type e.g. <code class="highlighter-rouge">Item&lt;int&gt;</code> and not shared across all <code class="highlighter-rouge">Item&lt;T&gt;</code>.</p>
+:ET

@@ -1,0 +1,90 @@
+I"�<h2 id="overview">Overview</h2>
+
+<h3 id="oauth2">OAuth2</h3>
+
+<p>OAuth is for delegated authorisation. An application needs to access a back end service. Pop up a login dialog and user password and use this to authenticate on the back end service. This only works if you have a uniform authentication mechanism. OAuth2 is about requesting an access token from an authorisation server and then using this access token to talk to a back end service.</p>
+
+<h3 id="openid-connect">OpenID Connect</h3>
+
+<p>Conversely this solves a different problem for authentication. Application might not need to talk to a back end service, but does need to know who the user is, so needs to talk to an authentication server, type in the password at this server which allows it to validate your identity.</p>
+
+<h3 id="json-web-token">JSON Web Token</h3>
+
+<p>Emerging standard. OpenID Connect mandates the use of this format. OAuth2 doesn’t require it, but recommends it.</p>
+
+<h2 id="producing-and-consuming-tokens-in-net">Producing and consuming tokens in .NET</h2>
+
+<p>Microsoft Library on Nuget: Microsoft.IdentityModel.Tokens.JWT</p>
+
+<h3 id="producing">Producing</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var token = new JWTSecurityToken(
+	issuer: "http://myissuer",
+	audience: "http://myresource",
+	claims: GetClaims(),
+	signingCredentials: GetKey(),
+	validFrom: DateTime.UtcNow,
+	validTo: DateTime.UtcNow.AddHours(1)
+);
+
+var tokenString = new JWTSecurityTokenHandler().WriteToken(token);
+</code></pre></div></div>
+
+<h3 id="consuming">Consuming</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// retrieve the token from e.g. HTTP header
+var token = new JWTSecurityToken(tokenString);
+
+// validate token
+var validationParams = new TokenValidationParamters {
+	ValidIssuer = "http://myissuer",
+	AllowedAudience = "http://myresource",
+	SigningToken = GetSigningKey()
+};
+var handler = new JWTSecurityTokenHandler();
+var principal = handler.ValidateToken(token, validationParams);
+</code></pre></div></div>
+
+<h2 id="what-is-oauth2">What is OAuth2</h2>
+
+<p>An open protocol to allow <em>secure authorization</em> using a simple and standard method from web, mobile and desktop applications.
+Problem: there is a human user who wants to access data
+There is a different between a resource owner (a human) and a client (an application the human is using). This client application may have been written by a third party vendor which is not fully trusted.
+Master key: full access to a resource e.g. main password
+Valet parking key: restricted access to a resource e.g. an access token</p>
+
+<h3 id="players">Players</h3>
+
+<p>4 players:</p>
+<ol>
+  <li>Resource Owner “owns a resource” on a…</li>
+  <li>Resource Server which trusts a…</li>
+  <li>Authorisation Server</li>
+  <li>Client. Can be trusted / partially trusted e.g. written by a third party as well as public (runs on a mobile device) or confidential (runs on a trusted server)</li>
+</ol>
+
+<p>A Resource Owner uses a client, the client is previously registered with the Authorisation server and the Authorisation server authorises the client and issues a limited access key. With this key, the client can access the resource.</p>
+
+<h3 id="trust-zones">Trust Zones</h3>
+
+<p>The Resource Server and Authorisation server belong to one zone and there is tight coupling between these two: the Authorization Server knows about the resources that you want to protect and the Resource Server knows how to validate the client access tokens it receives.</p>
+
+<p>The Resource Owner and Resource Server have a trust relationship with each other.</p>
+
+<p>The client is not necessarily part of any Trust Zone (although could be made so in the Trusted Client scenario). This is different to other mechanisms e.g. WS-Trust where the client was always a trusted client.</p>
+
+<h3 id="flows">Flows</h3>
+
+<p>With User Interaction</p>
+<ul>
+  <li>Authorization Code Flow - tends to be used with classically web server rendered applications. A web application client requests authorisation, requests a token, accesses a resource.</li>
+  <li>Implicit Flow - used with native / local clients - request authorization and token together, access resource.</li>
+</ul>
+
+<p>No User Interaction</p>
+<ul>
+  <li>Resource Owner Password Credential Flow - for trusted clients, request a token using resource owner credentials and then access resource (closest to enterprice, where the client collects the master key and uses this to access the resource)</li>
+  <li>Client Credential Flow - Client to server communication, a token is requested using the client credentials and then access is granted to the resource (no resource owner involved)</li>
+</ul>
+
+:ET

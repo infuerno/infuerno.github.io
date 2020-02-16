@@ -1,0 +1,39 @@
+I"‘<h1 id="foundational-concepts">Foundational Concepts</h1>
+
+<p>Azure Monitor is a complete solution.</p>
+
+<p>Data captured are either metrics OR logs. Use Metrics Explorer OR Log Analytics</p>
+
+<h2 id="data-sources">Data sources</h2>
+
+<ul>
+  <li>Application monitoring data - your code</li>
+  <li>Guest OS monitoring data - CPU usage, memory</li>
+  <li>Azure resource data - e.g. CosmosDB available storage</li>
+  <li>Azure subscription data - e.g. cost to date</li>
+</ul>
+
+<h2 id="insight-offerings">Insight offerings</h2>
+
+<ul>
+  <li>Application Insights specialises in monitoring web applications</li>
+  <li>Container Insights is for containers including container logs</li>
+  <li>VM Insights for VMs</li>
+  <li>Network Insights</li>
+</ul>
+
+<h2 id="visualisation">Visualisation</h2>
+<p>Dashboards, custom Log Views (which can also be added to a dashboard) and Power BI can be used to visualise the data. Power BI can be configured to import data from Log Analytics</p>
+
+<h2 id="integration">Integration</h2>
+
+<ul>
+  <li>Stream to event hubs before publishing to an external provider</li>
+  <li>Use Logic Apps to automate transformation and publication</li>
+  <li>Ingest and Export APIs</li>
+</ul>
+
+<h2 id="sample-application-architecture">Sample Application Architecture</h2>
+
+<p><img src="https://www.dropbox.com/s/0b43x5z3s7apekd/Screenshot%202019-11-27%2023.19.52.png?raw=1" alt="Sample Application Architecture" /></p>
+:ET

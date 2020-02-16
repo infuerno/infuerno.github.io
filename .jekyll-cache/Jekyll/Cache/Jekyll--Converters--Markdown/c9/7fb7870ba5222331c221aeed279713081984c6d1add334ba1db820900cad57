@@ -1,0 +1,186 @@
+I"(<ul>
+  <li><code class="highlighter-rouge">shaken-rg</code> - resource group</li>
+  <li><code class="highlighter-rouge">shaken-serviceplan</code> - app service plan</li>
+  <li><code class="highlighter-rouge">shaken</code> - app service</li>
+  <li>slots - <code class="highlighter-rouge">shaken</code> and <code class="highlighter-rouge">shaken-staging</code></li>
+  <li><code class="highlighter-rouge">shaken-insights</code> - Application Insights</li>
+  <li><code class="highlighter-rouge">shakendb</code> - sql database</li>
+  <li><code class="highlighter-rouge">shaken.database.windows.net</code> - sql server</li>
+</ul>
+
+<h2 id="foundational-concepts">Foundational Concepts</h2>
+
+<p>Azure CLI tools now cross platform at version 2</p>
+
+<ul>
+  <li><code class="highlighter-rouge">az login</code> to open a browser to login</li>
+  <li><code class="highlighter-rouge">az account set -s [subscription-name]</code> to set a subscription</li>
+  <li><code class="highlighter-rouge">az vm start --resource-group docker-rg --name docker</code> to start a VM</li>
+</ul>
+
+<p>The CLI additionally has query syntax e.g.</p>
+<ul>
+  <li><code class="highlighter-rouge">az account list-locations --query [].name</code></li>
+</ul>
+
+<h2 id="building-web-applications-and-apis">Building Web Applications and APIs</h2>
+
+<ul>
+  <li>App Services support various Web, API, Logic and Mobile applications (Logic apps look like they have been split away now)</li>
+  <li>Various preconfigured options e.g. WordPress on Linux</li>
+  <li>Need to choose OS - either Windows or Linux</li>
+  <li>Service Plans - App Services are deployed to an App Service Plan. App Service Plans describe the performance characteristics of the service. Multiple services can be deployed to the same App Service Plan (i.e. the applications are deployed together onto the same machine).
+    <ul>
+      <li>App Service Plans can be scaled UP just like VMs.</li>
+      <li>They can also be scaled OUT by increasing the number of instances of a plan - can be configured to scale out or in in response to the load</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="creating-a-web-app-via-the-cli">Creating a web app via the CLI</h3>
+
+<ul>
+  <li><code class="highlighter-rouge">az group create -n shaken-rg --location uksouth</code></li>
+  <li><code class="highlighter-rouge">az appservice plan create --resource-group shaken-rg --name shaken-plan --sku S1</code></li>
+  <li><code class="highlighter-rouge">az webapp -g shaken-rg -p shaken-plan -n shaken</code></li>
+</ul>
+
+<h3 id="deploying-a-web-app-to-an-azure-app-services">Deploying a web app to an Azure App Services</h3>
+
+<p>Various options including:</p>
+<ul>
+  <li>FTP to push a published version to Azure</li>
+  <li>Upload a zip file</li>
+  <li>VS - right click on project - publish - simple wizard</li>
+  <li>From a source code repo e.g. GitHub OR hosted in the App Service itself</li>
+</ul>
+
+<p>To use a local repo:</p>
+<ul>
+  <li>Create a git repo inside the App Service itself via the App Service &gt; Deployment Center option.</li>
+  <li>Ensure Deployment Credentials are setup</li>
+  <li>Add the specified url as a remote in your git repo</li>
+  <li>Push!</li>
+</ul>
+
+<p>Azure uses git hooks to take additional actions following push including attempting to recognise the type of application (e.g. .net core; nodejs) and then building and deploying the application.</p>
+
+<h2 id="monitoring-and-scaling-web-applications">Monitoring and Scaling Web applications</h2>
+
+<h3 id="understanding-deployment-slots">Understanding deployment slots</h3>
+
+<ul>
+  <li>Slots are similar to having another app service but instead based on an existing app service. Once configured additional slots will have their own url e.g. https://shaken-staging.azurewebsites.net.</li>
+  <li>Different slots can have different Application settings (which will automatically override any settings specified in a config file).</li>
+  <li>A git repository additionally needs to be provisioned for the slot with separate remote url and credentials.</li>
+  <li>Following that running applications can be “swapped” between environments either via the web portal or the CLI.</li>
+  <li><code class="highlighter-rouge">az webapp deployment slot swap -g shaken-rg -n shaken --slot staging --target-slot production</code></li>
+</ul>
+
+<h3 id="monitoring-app-service-applications">Monitoring App Service applications</h3>
+
+<p>On the Overview of the App Service there are several metrics dashboards. Otherwise the “Monitor” resource allows you to build various different metrics dashboards.</p>
+
+<p>App Services: Requests, Requests  in Application Queue
+App Service Plans: CPU percentage; Memory percentage; Http Queue length</p>
+
+<p>CPU percentage which is spiking e.g. over 90% means there is too much load, maybe too many app services deployed to a single app service plan.</p>
+
+<h4 id="alerts">Alerts</h4>
+
+<p>Alerts can be set up watch a metric and email, text or phone if something is out of normal range. (Alerts can also be set up for activities on the portal e.g. a VM is created.)</p>
+
+<h4 id="scaling">Scaling</h4>
+
+<p>Azure offers both horizontal and vertical scaling. Vertical scaling is moving the application to a bigger or small server (App Service Plan). Horizontal scaling is increasing the number of applications servicing the load. In general horizontal scaling is preferred. Stateless web apps are therefore preferred.</p>
+
+<p>Various parameters available to indicate when to scale out or in, and thresholds.</p>
+
+<h4 id="using-application-insights">Using Application Insights</h4>
+
+<p>Diagnostic logs are logs that the application or the web server produces. Can be turned on or off (i.e. anything written to System.Diagnostic). Can choose where to store them.</p>
+
+<p>Application Insights can store information about every request, how long they took, how long database calls took etc. Need to install the necessary packages for your chosen language (by default these days).</p>
+
+<p>To add see: https://github.com/Microsoft/ApplicationInsights-aspnetcore/wiki/Getting-Started-for-a-ASP.NET-CORE-2.0-WebApp</p>
+
+<ol>
+  <li>Create Application Insights on Azure and get the key</li>
+  <li>Add key to appSettings.config</li>
+  <li>if Aspnet.Core.All metapackage is not installed add NuGet package</li>
+  <li>Add to OWIN pipeline</li>
+</ol>
+
+<h4 id="advanced-tools">Advanced tools</h4>
+
+<p>Go to Developer Tools &gt; Advanced = Project Kudu. LOTS of stuff available e.g. https://shaken.scm.azurewebsites.net</p>
+
+<h4 id="remote-debugging">Remote debugging</h4>
+
+<p>In visual studio, use “Cloud Explorer” to connect to azure and find the App Service. Set breakpoints in your code then attach to the remote process to remotely debug it. (May have to turn off “Just my code”).</p>
+
+<h2 id="using-cloud-databases">Using Cloud databases</h2>
+
+<h3 id="azure-sql">Azure SQL</h3>
+<p>Azure SQL databases need to be associated with an Azure SQL server - which is merely a container with an admin login to connect to database.</p>
+
+<p>SQL elatic pools are useful if managing multiple databases.</p>
+
+<p>Azure SQL database performance is measured in DTUs - data throughput unit - blended mix of CPU, memory and IO. Configured at the database level (not the server level).</p>
+<ul>
+  <li>5 DTUs - Basic Tier - up to 2GB, no concurrent users</li>
+  <li>10 DTUs - Standard Tier - up to 250GB - adequate for 25,000 page views per day with a few database queries per page view.</li>
+  <li>Lots of tools to monitor DTU usage.</li>
+</ul>
+
+<h3 id="azure-cosmos-db">Azure Cosmos DB</h3>
+
+<p>Azure Costmos DB account &gt; database &gt; collection - collections hold the “documents” and can hold any kind of data - one collection can hold all kinds of different information of difference formats. May seperate into high performance collection (accessed frequently) and low performance colllection.</p>
+
+<ul>
+  <li>Storage capacity can either be fixed (cheaper) or unlimited. With unlimited a “document” needs to be specified which will be used to partition the data.</li>
+  <li>Throughput measured in RU/s - 1RU = fetching 1KB over HTTP. Minimum possible is 400 RUs = 400KB per second.</li>
+  <li><code class="highlighter-rouge">Install-Package Microsoft.Azure.DocumentDB.Core</code> (Cosmos DB was formerly called Document DB)</li>
+  <li>Connect using a URL e.g. https://shaken.documents.azure.com and a key (either read or read-write)</li>
+</ul>
+
+<h2 id="cloud-storage">Cloud Storage</h2>
+
+<ul>
+  <li>Blob Storage = binary large object. Block blob - good for streaming; Page blob - good for random access reads and writes; Append blob - e.g. for logs</li>
+  <li>Table Storage = key, value pairs</li>
+  <li>Queue Storange = for messaging</li>
+  <li>File Storage</li>
+  <li>Disk Storage = for data disks</li>
+</ul>
+
+<p>A Shared Access Signature gives limited permissions to a shared container. These can be created in code, so can generate a Shared Access Signature, append it to a URL (it can be used in this way) and give this URL to the user. A Shared Access Policy can be built to specify the exact parameters required e.g. permissions (read), start time, end time.</p>
+
+<h2 id="functions">Functions</h2>
+
+<p>When creating a “Function App” in Azure, need to specify either an App Service Plan OR a Consumption Plan.</p>
+
+<p>App service plans need to be paid for whether the functions are running or not and also don’t automatically scale up or down unless set up to do so. Consumption plans are pro rata the usage (number of times the function runs, resources used etc), with a generous free quota.</p>
+
+<p>A storage account is also required for “book keeping”</p>
+
+<p>A Function App can contain:</p>
+<ul>
+  <li>functions</li>
+  <li>proxies - sits between a client and a backend service - can change the incoming request or outgoing response</li>
+  <li>slots</li>
+</ul>
+
+<p>Authorisation can be set to:</p>
+<ul>
+  <li>Anonymous - no auth required</li>
+  <li>Function - set at the Function level</li>
+  <li>Admin - set at the Function App level</li>
+</ul>
+
+<p>v1 - Full .NET Framework<br />
+v2 - .NET Core (currently in preview)</p>
+
+<p>Functions can be developed with the Azure portal or locally. Once developed locally, they become read only on the portal</p>
+
+:ET

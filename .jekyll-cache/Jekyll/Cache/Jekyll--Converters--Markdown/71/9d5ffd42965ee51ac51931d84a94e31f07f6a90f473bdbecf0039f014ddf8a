@@ -1,0 +1,273 @@
+I"7<h2 id="overview">Overview</h2>
+
+<ul>
+  <li>Compiled - down to machine code
+    <ul>
+      <li>Fast compile times, mainly due again to simplicity</li>
+    </ul>
+  </li>
+  <li>Garbage Collected - no performance hit - latency free</li>
+  <li>Concurrent - passing data instead of sharing data</li>
+  <li>Static
+    <ul>
+      <li>Efficient like a static language, ease of use like a dynamic language - achieved by keeping Go very simple</li>
+      <li>Type safe and memory safe - an int is always an int - can’t point to the wrong memory location</li>
+    </ul>
+  </li>
+  <li>No inheritance - often better to use composition over inheritance</li>
+  <li>No generic programming (currently…)</li>
+  <li>No assertions (developer crutch)</li>
+  <li>No method overloading - makes it faster to compile</li>
+  <li>Go Interfaces - implicitly implemented</li>
+  <li>No classes - only user defined types</li>
+  <li>Systems level language - but otherwise not really similar to C and C++</li>
+</ul>
+
+<h3 id="references">References</h3>
+
+<ul>
+  <li>https://github.com/nsf/gotris/blob/master/gotris.go</li>
+  <li>https://golang.org</li>
+</ul>
+
+<h3 id="text-editors">Text Editors</h3>
+
+<ul>
+  <li>http://go-ide.com</li>
+  <li>http://go-lang.cat-v.org/text-editors/</li>
+</ul>
+
+<h3 id="development-setup">Development setup</h3>
+
+<ul>
+  <li>$GOROOT is an environment variable set by the installer</li>
+  <li>$GOPATH is set to ~/go by default, but can be overidden - root of your go workspace</li>
+  <li><code class="highlighter-rouge">go run hello.go</code> will run the given file</li>
+  <li><code class="highlighter-rouge">go build hello.go</code> will create an executable in the current directory</li>
+  <li><code class="highlighter-rouge">go install hello</code> will create an executable in the <code class="highlighter-rouge">bin</code> directory</li>
+</ul>
+
+<h2 id="variables-types-and-pointers">Variables, Types and Pointers</h2>
+
+<p>http://golang.org/ref/spec</p>
+
+<ul>
+  <li>Basic Types:
+    <ul>
+      <li>bool</li>
+      <li>string</li>
+      <li>int, int8, int16, int32, int64 - int size depends on the architecture e.g. 32bit on 32bit machine - int and int32 are not compatible</li>
+      <li>uint, uint8, uint16, uint32, uint64, uintptr</li>
+      <li>byte (uint8) - byte and uint8 ARE compatible</li>
+      <li>rune (int32), like char</li>
+      <li>float32, float64</li>
+      <li>complex64, complex128</li>
+    </ul>
+  </li>
+  <li>Other Types:
+    <ul>
+      <li>Array, Slice, Struct, Pointer (points to a memory address), Function (can be stored, passed, treated just like any other data type), Interface, Map (key, value pair), Channel (used for communication between go routines)</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="variables">Variables</h3>
+
+<ul>
+  <li><code class="highlighter-rouge">var message string</code> where the type is declared after the variable name</li>
+  <li><code class="highlighter-rouge">var a, b, c int</code> to declare multiple variables of the same type</li>
+  <li><code class="highlighter-rouge">var message string = "hello"</code> to initialise at the same time as declaration</li>
+  <li><code class="highlighter-rouge">var a, b, c int = 1, 2, 3</code> to initialise multiple variables</li>
+  <li><code class="highlighter-rouge">var a, message, c, flag = 1, "hello", 3, true</code> go infers types if not specified</li>
+  <li><code class="highlighter-rouge">a, message, c, flag := 1, "hello", 3, true</code> can shortcut initialisation using <code class="highlighter-rouge">:=</code> inside a <code class="highlighter-rouge">func</code></li>
+</ul>
+
+<h3 id="pointers">Pointers</h3>
+
+<ul>
+  <li>A pointer is a variable which contains the memory address of another variable</li>
+  <li>The type of a pointer refers to the type which the pointer points to e.g. ‘pointer to a int’, ‘pointer to a string’</li>
+  <li>Even though these pointers will all hold addresses, a pointer is always scoped to a particular type and can’t change</li>
+  <li>Any parameters which are passed to functions in Go are copied
+    <ul>
+      <li>ints will be passed by value and changes to the variable inside the function will NOT effect the value of the original int</li>
+      <li>pointers to ints are also passed by value and copied, but will nevertheless still point to the same memory location as before and dereferencing and changing the value will change the value of the int the pointer is pointing to</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="user-defined-types">User Defined Types</h3>
+
+<ul>
+  <li><code class="highlighter-rouge">type Salutation string</code> the user defined type ‘Saluation’ is simply a string - methods could then be added to the Saluation type (see later)
+```
+// capital S means this type is publically visible
+type Saluation struct { 
+  name string 
+  greeting string
+}</li>
+</ul>
+
+<p>func main() {
+        var x Salutation = Salutation {“bob”, “hyas”} // OR
+        var x = Salutation {“bob”, “hyas”} // OR
+        x := Salutation {“bob”, “hyas”}
+}</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+### Constants
+
+* `const PI = 3.14`
+* `const Language = "GO"`
+
+</code></pre></div></div>
+<p>// here A would be equal to 0, B to 1 and C to 2
+const (
+    A = iota
+    B = iota
+    C = iota
+    D // don’t need to repeat after the first one
+)</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+## Functions
+
+* Multiple return values - in other languages you often need to choose between throwing an exception or returning an error code. If you choose to return an error code, you often can't return anything else, but in Go you can return multiple values.
+* Functions are treated just like any other type: pass them into other functions, declare as variables, return from functions - similar to delegates in C# or JavaScript functions
+* Go supports function literals - declaring a function inside another function, remembers the context of that other function - aka closure
+* Parameter types are writen after the parameter name e.g. `CreateMessage(name string)`
+* If all parameters are of the same type, as in variable declaration, just specify at the end e.g. `CreateMessage(name, greeting string)`
+* Specify a return type after the parameters e.g. `CreateMessage(name, greeting string) string`
+* If returning multiple values specify multiple types in brackets e.g. `CreateMessage(name, greeting string) (string, string)`. Return both types together
+* Assign return types thus `message, alternative := CreateMessage("bob", "hello")`
+* If you don't need all the return types, then Go will complain if you assign to a variable, but then don't use it. Instead use `_` e.g. `_, alternative := CreateMessage("bob", "hello")`
+* The return values can also be named in the function declaration - simply set the vars inside the message body and then return with the keyword by itself i.e. `return`
+
+### Variadic functions
+
+* A function which has a variable number of parameters of a certain type 
+* Specified using `...` e.g. `CreateMessage(name string, greeting ...string)`
+* Use `len(greeting)` to find the length of a slice
+
+### Function types
+
+* Functions can be passed just as any other type e.g. `Greet(s Salutation, do func(string)` where the function passed for the second parameter would have to be a function which took a single string parameter with no return type
+* The function type can also be declared e.g. `type Printer func(string) ()` where the empty final brackets indicate no return type. Now the method signature for `Greet` can be `Greet(s Salutation, do Printer)`
+
+### Closures
+
+A function which returns a function
+
+</code></pre></div></div>
+<p>func CreatePrintFunction(custom string) Printer {
+    return func(m string) {
+        fmt.Println(m + custom)
+    }
+}</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+This is a closure since the function which is returned has the `custom` variable hard coded in its definition, yet it can be changed each time the outer function itself is called
+
+Examples of function usage (advanced): https://golang.org/doc/codewalk/functions/
+
+## Branching
+
+* `if` statements can have an optional assignment e.g. `if x := 1; isFormal { ...` which is scoped to the if statement
+* `switch` statements 
+    - do not fall through by default - so no need for break statements - use `fallthrough` keyword to override (will fallthrough to next statement even if case doesn't match)
+    - can have a list of matches e.g. `case "Joe", "Mary" : prefix = "Dr"`
+    - don't something to switch on, cases can be an expression e.g. instead of `switch name { ...` just have `switch { ...` where each case statement now has to be boolean e.g. `case name == "Joe", name == "Mary"`  - cleaner than lots of if..else..else statements
+    - can switch on types rather than the value of a variable e.g. `switch x.(type)` will switch on the type of x, test using `case int:` etc
+
+## Loops
+
+* `for` is the only loop - by leaving omitting optional elements can recreate **while** loops and can recreate **foreach** loops using range
+* `for condition { ...` where condition is evaulated each time and the loop continues while true = while loop
+* `for init; cond; post { ...` usual for loop
+* `for { ...` is also valid, effectively an infinite loop you'd have to break out of
+* `break` and `continue` keywords work as expected
+* `for a, b := range collection` allows you to iterate over a collection without having to index into the collection. For strings, arrays and slices `a` is the index and `b` is the item in the collection. Works for:
+    - array or slice
+    - string - over each `rune` in a `string` 
+    - map - over each key value pair e.g. `for key, value := range myMap { ..`
+    - channel - waiting for data - communication between threads or Go routines
+
+http://golang.org/doc/effective_go.html#for
+http://golang.org/ref/spec#For_statements
+
+## Maps
+
+* Data structure which maps keys to values - called dictionaries in some languages - key must be unique
+* Reference types
+* Keys must have the equality operator defined (most do, but maps and slices don't)
+* Maps are not thread safe - avoid using maps concurrently
+* Declare using `var myMap map[string]string` where `[string]` denotes the type of the key and `string` the type of the value
+* Initialise using `make` e.g. `myMap = make(map[string]string)` to allocate memory for it
+* Can alternatively be declared, initialised and defined in one statement:
+
+</code></pre></div></div>
+<p>myMap := map[string]string {
+    “Bob”: “Mr”,
+    “Jane”: “Mrs”,
+}
+```</p>
+
+<ul>
+  <li>Operations on maps include:
+    <ul>
+      <li>insert or update e.g. <code class="highlighter-rouge">myMap["BoB"] = "Mr"</code></li>
+      <li>delete e.g. <code class="highlighter-rouge">delete(myMap, "Bob")</code> - works fine even if the key doesn’t exist</li>
+      <li>check for existence - optional assignment in <code class="highlighter-rouge">if</code> statement can be used: <code class="highlighter-rouge">if prefix, exists := myMap["Bob"]; exists { ...</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="arrays">Arrays</h2>
+
+<ul>
+  <li>Fixed size</li>
+  <li>The size and the type of elements stored are both part of the array’s <strong>type</strong> - this means that to use an array for a paramter it would need to be of the specific size AND type to compile</li>
+  <li>Array is zeroed when defined e.g. if array of ints, values are set to 0</li>
+  <li>Value type</li>
+</ul>
+
+<h2 id="slices">Slices</h2>
+
+<ul>
+  <li>Fixed size - but can be reallocated with append</li>
+  <li>Type is slice of underlying type - length is not part of the type (unlike arrays)</li>
+  <li>A slice effectively wraps an array and is in effect a pointer to an array</li>
+  <li>Reference type which points to an array</li>
+  <li>Use <code class="highlighter-rouge">make</code> to initialise otherwise nil - specify length (and optionally capacity) e.g. <code class="highlighter-rouge">var slice []int = make([]int, 3)</code></li>
+  <li>Can declare, initialise and define at the same time e.g. <code class="highlighter-rouge">slice := []int {1, 2, 3, 4, 5}</code></li>
+  <li>Common to slice a slice e.g. <code class="highlighter-rouge">slice = slice[1:2]</code> specifying start index inclusively and end index exclusively
+    <ul>
+      <li>can omit the start index or the end index e.g. <code class="highlighter-rouge">slice[:3]</code></li>
+    </ul>
+  </li>
+  <li>Append elements to a slice using <code class="highlighter-rouge">append</code> e.g. <code class="highlighter-rouge">slice = append(slice, 7)</code>
+    <ul>
+      <li>can append multiple elements e.g. <code class="highlighter-rouge">slice = append(slice, 7, 8, 9)</code></li>
+      <li>can append a slice by ‘expanding’ it e.g. <code class="highlighter-rouge">slice = append(slice, slice...)</code></li>
+    </ul>
+  </li>
+  <li>Delete the nth element using append e.g. <code class="highlighter-rouge">slice = append(slice[:n], slice[n:]...)</code> (no delete function)</li>
+</ul>
+
+<h2 id="methods">Methods</h2>
+
+<ul>
+  <li>There are no classes in Go, only structs. Methods (cf functions) declare what type they can operate as well as having parameters and return types, like functions</li>
+  <li>Methods can only be created on named types - though can simply redefine e.g. an int as a named type e.g. <code class="highlighter-rouge">type myInt int</code></li>
+  <li>Methods can also operate on pointers to named types - in this way the underlying type can be modified (can’t be modified if the method is defined on the type itself)</li>
+</ul>
+
+<h2 id="interfaces">Interfaces</h2>
+
+<ul>
+  <li>Don’t need to specify that a named type “implements” an interface</li>
+  <li>Just need to ensure all the methods specified on the interface are defined and implemented</li>
+  <li>An empty interface is one that doesn’t specify an methods that need implementing - every type will effectively then implement this interface</li>
+</ul>
+
+<h2 id="concurrency">Concurrency</h2>
+:ET

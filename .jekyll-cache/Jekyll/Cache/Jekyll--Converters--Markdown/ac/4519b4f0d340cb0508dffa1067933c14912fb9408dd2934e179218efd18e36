@@ -1,0 +1,103 @@
+I"�<h2 id="about-this-book">About this book</h2>
+
+<p>Nancy and OWIN used extensively</p>
+
+<p>12 chapters in 4 parts:</p>
+
+<p>Part 1: Introduction</p>
+<ul>
+  <li>Chapter 1: Introduction to microservices, Nancy and OWIN</li>
+  <li>Chapter 2: Example of a complete microservice</li>
+</ul>
+
+<p>Part 2: Design</p>
+<ul>
+  <li>Chapter 3: Design of microservices system</li>
+  <li>Chapter 4: Design of collaboration between microservices</li>
+  <li>Chapter 5: Data storage</li>
+  <li>Chapter 6: Robustness</li>
+  <li>Chapter 7: Testing, complete system as well as individual services</li>
+</ul>
+
+<p>Part 3: implementation of cross cutting concerns</p>
+<ul>
+  <li>Chapter 8: OWIN middleware</li>
+  <li>Chapter 9: Monitoring and logging</li>
+  <li>Chapter 10: Security</li>
+  <li>Chapter 11: Microservices platform and an example of using it</li>
+</ul>
+
+<p>Part 4: Creating end user applications</p>
+
+<h3 id="references">References</h3>
+
+<ul>
+  <li>GitHub repository for code samples using up to date releases of library frameworks: https://github.com/horsdal/microservices-in-dotnet- core</li>
+  <li>Private forum: https://www.manning.com/books/microservices-in-net-core</li>
+</ul>
+
+<h1 id="part-1-getting-started-with-microservices">Part 1: Getting started with microservices</h1>
+
+<h2 id="chapter-1-microservices-at-a-glance">Chapter 1: Microservices at a glance</h2>
+
+<p>A microservice is a service with ONE narrowly focussed capability. Break a system down to its capabilities and then implement each one as a seperate microservices. Each microsystem should:</p>
+
+<ul>
+  <li>Run in a seperate process</li>
+  <li>Be deployed on its own</li>
+  <li>Have its own datastore</li>
+  <li>Collaberate with other services to complete its own actions</li>
+</ul>
+
+<p>HTTP is commonly used to collaberate, but a Service Bus or a binary protocol like Thrift can also be used.</p>
+
+<h3 id="microservice-characteristics">Microservice characteristics</h3>
+
+<h4 id="responsibility-for-a-single-capability">Responsibility for a single capability</h4>
+
+<p>Single responsibility which represents one capability.</p>
+
+<blockquote>
+  <p>Uncle Bob: Gather together the things that change for the same reasons. Separate those things that change for different reasons.</p>
+</blockquote>
+
+<p>Two types of capability: business e.g. keep track of contents of basket or calculate prices and technical e.g. integration to a third party system</p>
+
+<h4 id="individually-deployable">Individually deployable</h4>
+
+<p>This is important because trying to deploy all microservices or a group of them would be unwieldly. This affects the way microservices interact. Changes to a microservice’s interface usually must be backward compatible so that other existing microservices can continue to collaborate with the new version the same way they did with the old. Communication must also be robust and other microservices should expect other services to fail - either offering reduced functionality or longer processing times.</p>
+
+<h4 id="consists-of-one-or-more-processes">Consists of one or more processes</h4>
+
+<p>Reduces coupling / downtime between services. If the code of two microservices is running in the same process and one is redeployed how does the running code get replaced? Therefore microservices should run in their own processes. Microservices often need at least two processes to support code and data store.</p>
+
+<h4 id="own-its-own-datastore">Own its own datastore</h4>
+
+<p>Each microservice is in charge of its own data and other services access only via the public API. Different database technologies can be used as appropriate (with the downside of choosing different technologies the overhead in support)</p>
+
+<h4 id="maintainable-by-a-small-team">Maintainable by a small team</h4>
+
+<p>A team of 5 should be able to support several microservices, from developing, efactoring, deploying, running in production, testing, fixing bugs etc.</p>
+
+<h4 id="replaceable">Replaceable</h4>
+
+<p>Be writeable from scratch in a reasonable time frame.</p>
+
+<h3 id="costs-and-downsides-of-microservices">Costs and downsides of microservices</h3>
+
+<p>Microservices are distributed systems. They are harder to reason about, harder to test, communications is orders of magnitudes slower. There will be a complex production setup for a system comprised of microservices.</p>
+
+<p>The system should be sufficiently complex to justify the overhead.</p>
+
+<p>Performance can be improved by using event-based asynchronous collaboration rather than synchronous remote calls, and storing copies of the same data in several microservices to ensure it’s available where it’s needed.</p>
+
+<h3 id="code-reuse">Code reuse</h3>
+
+<p>Pulling common code out of different microservices into a reusable library incurs hidden costs. Dependencies increase and code navigation becomes slower. The reusable library must be developed with multiple use cases in mind. Introduces coupling and versioning considerations.</p>
+
+<blockquote>
+  <p>With these points in mind, be wary of code reuse and only judiciously attempt it. There is, however, a case to be made for reusing infrastructure code that implements technical concerns.</p>
+</blockquote>
+
+<p>Reusing infrastructure code across services can greatly reduce the amount of effort required to write a new service.</p>
+:ET

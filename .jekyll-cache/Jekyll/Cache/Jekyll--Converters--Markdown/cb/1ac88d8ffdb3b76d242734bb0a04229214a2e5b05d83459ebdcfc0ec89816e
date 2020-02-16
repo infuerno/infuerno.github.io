@@ -1,0 +1,66 @@
+I"ê<h2 id="philosophy">Philosophy</h2>
+
+<p>There are 5 modes:</p>
+<ul>
+  <li>Normal / Command mode - Vim starts in this mode</li>
+  <li>Insert</li>
+  <li>Visual</li>
+  <li>Replace</li>
+  <li>Command-line</li>
+</ul>
+
+<p>d2w
+delete - two - words
+operator - count - motion</p>
+
+<h3 id="help">Help</h3>
+
+<p><code class="highlighter-rouge">:h &lt;term&gt;</code> e.g. <code class="highlighter-rouge">:h movement</code>
+<code class="highlighter-rouge">:bd</code> to exit (<code class="highlighter-rouge">b</code>uffer <code class="highlighter-rouge">d</code>delete)</p>
+
+<h3 id="conventions">Conventions</h3>
+
+<ul>
+  <li>Upper case commands are usually supersized versions of their lower case counterparts
+    <ul>
+      <li><code class="highlighter-rouge">i</code> inserts text at the cursor, <code class="highlighter-rouge">I</code> inserts text at the start of the line</li>
+      <li><code class="highlighter-rouge">w</code> moves the cursor forward one word, <code class="highlighter-rouge">W</code> moves the cursor forward to the next space</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="the-basics">The Basics</h2>
+
+<p><code class="highlighter-rouge">h</code> left
+<code class="highlighter-rouge">j</code> down
+<code class="highlighter-rouge">k</code> up
+<code class="highlighter-rouge">l</code> right, <code class="highlighter-rouge">6l</code> right 6 letters</p>
+
+<p><code class="highlighter-rouge">yy</code> yank line
+<code class="highlighter-rouge">p</code> paste below cursor
+<code class="highlighter-rouge">P</code> paste above cursor
+<code class="highlighter-rouge">i</code> insert text before cursor
+<code class="highlighter-rouge">a</code> append text after cursor</p>
+
+<p><code class="highlighter-rouge">fN</code> jump forward to first <code class="highlighter-rouge">N</code>
+<code class="highlighter-rouge">3fN</code> jump forward to third <code class="highlighter-rouge">N</code>
+<code class="highlighter-rouge">w</code> forward one word
+<code class="highlighter-rouge">3w</code> forward three words
+<code class="highlighter-rouge">b</code> back one word
+<code class="highlighter-rouge">cw</code> change word
+<code class="highlighter-rouge">3cw</code> change 3 words
+<code class="highlighter-rouge">u</code> undow
+<code class="highlighter-rouge">ctrl-R</code> redo</p>
+
+<p><code class="highlighter-rouge">:w</code> write
+<code class="highlighter-rouge">:w!</code> write without confirmation
+<code class="highlighter-rouge">:q</code> quit
+<code class="highlighter-rouge">:q!</code> quit without confirmation
+<code class="highlighter-rouge">:wq</code> write and quit</p>
+
+<p>Vim comes with syntax highlighting of over 500 file types. 
+Use <code class="highlighter-rouge">Ctrl-c</code> or <code class="highlighter-rouge">Ctrl-[</code> as equivalent keys to <code class="highlighter-rouge">Esc</code> OR just use <code class="highlighter-rouge">Alt</code> plus the normal modifier which will automatically put you back in normal mode.</p>
+
+<p><code class="highlighter-rouge">:w !sudo tee %</code> will allow you sudo rights to write to a file you didn‚Äôt open with sudo permissions - <code class="highlighter-rouge">!</code> executes a shell command, and <code class="highlighter-rouge">%</code> expands to the current filename (i.e. <code class="highlighter-rouge">:w !sudo tee example.conf</code> -&gt; <code class="highlighter-rouge">cat example.conf | sudo tee example.conf</code> meaning editor contents are piped to the file example.conf with root permissions)</p>
+
+:ET

@@ -1,0 +1,330 @@
+I"�D<h2 id="preface">Preface</h2>
+
+<p>Mozilla javascript reference: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">https://developer.mozilla.org/en-US/docs/Web/JavaScript</a></p>
+
+<p>David Flanagan: O’Reilly JavaScript: The Definitive Guide <a href="http://shop.oreilly.com/product/9780596805531.do">http://shop.oreilly.com/product/9780596805531.do</a></p>
+
+<h2 id="chapter-1-javascript-objects">Chapter 1: JavaScript Objects</h2>
+
+<h3 id="creating-objects">Creating objects</h3>
+
+<p>An object in JavaScript is just a container for properties, each of which has a name and a value.
+Methods are just properties which contain a <code class="highlighter-rouge">Function()</code> object.</p>
+
+<p>New objects can be created by calling the <code class="highlighter-rouge">new Object()</code> constructor function. 
+User defined contructor functions can also be defined to create custom objects:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var Person = function (living, age, gender) {
+    this.living = living;
+    this.age = age;
+    this.gender = gender;
+this.getGender = function () { return this.gender; }; };
+</code></pre></div></div>
+
+<p>Conventionally, a capital letter is used (i.e. <code class="highlighter-rouge">var Person</code>, not <code class="highlighter-rouge">var person</code>).</p>
+
+<p>Objects created from either <code class="highlighter-rouge">new Person()</code> or <code class="highlighter-rouge">new Object()</code> with the same properties will be exactly the same object. Only the method of creating is different.</p>
+
+<p>Functions can be named or not named:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var Person = function (living, age, gender) { ... };
+var Person = function Person (living, age, gender) { ... };
+</code></pre></div></div>
+
+<h3 id="javascript-constructors-create-and-return-object-instances">JavaScript constructors create and return object instances</h3>
+
+<p>A constructor function is a cookie cutter for producing objects that have default properties and property methods.
+The <em>only difference</em> between a constructor function and a normal function is how it behaves when invoked with the <code class="highlighter-rouge">new</code> keyword. In this case, JavaScript sets the value of <code class="highlighter-rouge">this</code> to the new object being created and returns it (instead of false).</p>
+
+<h3 id="the-native-javascript-object-constructors">The native JavaScript object constructors</h3>
+
+<p><code class="highlighter-rouge">Number(), String(), Boolean(), Object(), Array(), Function(), Date(), RegExp(), Error()</code></p>
+
+<p>JavaScript is mostly constructed from these nine native (aka global) objects as well as the string, number and Boolean primitive values.</p>
+
+<p>Note, <code class="highlighter-rouge">Math</code> is a static object, a container for methods (and therefore not instantiated using the <code class="highlighter-rouge">new</code> keyword).</p>
+
+<h3 id="instantiating-constructors-using-the-new-operator">Instantiating constructors using the new operator</h3>
+
+<p>Constructor functions can be called with or without the <code class="highlighter-rouge">new</code> keyword.</p>
+
+<p>If called without using <code class="highlighter-rouge">new</code>:</p>
+<ul>
+  <li>the <code class="highlighter-rouge">this</code> referred to in a constructor function is no longer the object under construction, but the parent object (see Chapter 6)</li>
+  <li>the object is not returned (the constructor function could always explicity return the object)</li>
+</ul>
+
+<p>You can log <code class="highlighter-rouge">myobj.constructor</code> to see the function definition (which for the built in types won’t show you the actual defnition, but for an unknown type, will at least reveal how it was created and therefore reveal its type).</p>
+
+<h3 id="creating-shorthand-or-literal-values-from-constructors">Creating shorthand or literal values from constructors</h3>
+
+<p><em>Literals</em> are shorthand for creating objects for the built in types rather than calling the <code class="highlighter-rouge">new</code> keyword.</p>
+
+<ul>
+  <li>Number - just use the number</li>
+  <li>String - use quotes</li>
+  <li>Boolean - true or false</li>
+  <li>Object - {}</li>
+  <li>Array - []</li>
+  <li>Function - function(x, y) { return x* y };</li>
+  <li>RegExp - //</li>
+</ul>
+
+<p>In general the effect is exactly the same as using the <code class="highlighter-rouge">new</code> keyword. However, in the case of number, string and boolean types, a complex object is not created until object properties are used. e.g <code class="highlighter-rouge">'foo'.length</code>. Only at this point does a <em>wrapper</em> object get created and then discarded again afterwards.</p>
+
+<h3 id="primitive-aka-simple-values">Primitive (aka simple) values</h3>
+
+<p>The JavaScript values <code class="highlighter-rouge">5</code>, <code class="highlighter-rouge">'foo'</code>, <code class="highlighter-rouge">true</code>, and <code class="highlighter-rouge">false</code> , as well as <code class="highlighter-rouge">null</code> and <code class="highlighter-rouge">undefined</code>, are considered primitive because they are irreducible.</p>
+
+<p>Note, if using the <code class="highlighter-rouge">new</code> keyword to create String, Number or Boolean types, then complex objects <em>are</em> created and returned.</p>
+
+<p>Note, if you alternatively call the String(), Number() or Boolean() constructor functions without the <code class="highlighter-rouge">new</code> keyword, the primitive values are returned. <em>In this instance, are the complex objects constructed or not - I assume not.</em></p>
+
+<p>Primitive values are stored and copied by value, and are equal if equal in value.</p>
+
+<h3 id="complex-objects-aka-composite-objects-or-reference-types">Complex objects (aka composite objects or reference types)</h3>
+
+<p>Complex values are stored and manipulated by reference. They are equal only if referring to the same reference (address).</p>
+
+<h3 id="the-typeof-operator-used-on-primitive-and-complex-values">The <code class="highlighter-rouge">typeof</code> operator used on primitive and complex values</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>declaration</th>
+      <th>primitive / complex</th>
+      <th>typeof x</th>
+      <th>x.constructor</th>
+      <th>beware</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>var x = null</td>
+      <td>primitive</td>
+      <td>object</td>
+      <td>[error]</td>
+      <td>* typeof x is object (not null)</td>
+    </tr>
+    <tr>
+      <td>var x = undefined</td>
+      <td>primitive</td>
+      <td>undefined</td>
+      <td>[error]</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>var x = “string”</td>
+      <td>primitive</td>
+      <td>string</td>
+      <td>String</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>var x = String(“string”)</td>
+      <td>primitive</td>
+      <td>string</td>
+      <td>String</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>var x = 23</td>
+      <td>primitive</td>
+      <td>number</td>
+      <td>Number</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>var x = Number(23)</td>
+      <td>primitive</td>
+      <td>number</td>
+      <td>Number</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>var x = true</td>
+      <td>primitive</td>
+      <td>boolean</td>
+      <td>Boolean</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>var x = Boolean(true)</td>
+      <td>primitive</td>
+      <td>boolean</td>
+      <td>Boolean</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>var x = new Number(23)</td>
+      <td>complex</td>
+      <td>object</td>
+      <td>Number</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>var x = new String(“string”)</td>
+      <td>complex</td>
+      <td>object</td>
+      <td>String</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>var x = new Boolean(false)</td>
+      <td>complex</td>
+      <td>object</td>
+      <td>Boolean</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>var x = new Object()</td>
+      <td>complex</td>
+      <td>object</td>
+      <td>Object</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>var x = new Array(“foo”, “bar”)</td>
+      <td>complex</td>
+      <td>object</td>
+      <td>Array</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>var x = new Function(“x”, “y”, “return x * y”)</td>
+      <td>complex</td>
+      <td>function</td>
+      <td>Function</td>
+      <td>* typeof x is function (not object)</td>
+    </tr>
+    <tr>
+      <td>var x = new Date()</td>
+      <td>complex</td>
+      <td>object</td>
+      <td>Date</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>var x = new RegExp(“[a-z]+”)</td>
+      <td>complex</td>
+      <td>object</td>
+      <td>RegExp</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>var x = new Error(“Darn!”)</td>
+      <td>complex</td>
+      <td>object</td>
+      <td>Error</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="dynamic-properties-allow-for-mutable-objects">Dynamic properties allow for mutable objects</h3>
+
+<p>User-defined objects and most of the native objects can be augmented with extra functionality, storing extra properties and adding new methods.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>String.someExtraProperties = []; // add an array of extra properties
+String.prototype.anExtraMethod = function() { // some extra method definition }; // add an extra function
+</code></pre></div></div>
+
+<h3 id="all-constructor-instances-have-constructor-properties-that-point-to-their-constructor-function">All constructor instances have constructor properties that point to their constructor function</h3>
+
+<p>When any object is instantiated, the constructor property is created behind the scenes as a property of that object or instance. This property points to the constructor function that created the object.</p>
+
+<p>This is useful for determining the type of an object (more useful than <code class="highlighter-rouge">typeof</code> for object types, see table above). Note that the value returned is a reference the constructor function, NOT a string containing the function’s name.</p>
+
+<p>User defined contructor functions work in exactly the same way and when logged will show the actual implementation details.</p>
+
+<h3 id="the-instanceof-function">The <code class="highlighter-rouge">instanceof</code> function</h3>
+
+<p>By using the <code class="highlighter-rouge">instanceof</code> operator, we can determine (true or false) if an object is an instance of a particular constructor function.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var Person = function () { this.foo = 'bar'; };
+var person = new Person();
+
+console.log(person instanceof Person); // logs true
+console.log(person instanceof Object); // logs true
+
+// native objects work the same
+console.log(new Array('foo') instanceof Array) // logs true
+console.log(new Array('foo') instanceof Object); // logs true
+</code></pre></div></div>
+
+<p>Note, since all objects inherit from the Object() constructor all will return true for <code class="highlighter-rouge">instanceof Object</code></p>
+
+<p>Note, primitive values will return false from <code class="highlighter-rouge">instanceof</code> operations.</p>
+
+<h3 id="instances-can-have-their-own-properties">Instances can have their own properties</h3>
+
+<p>Objects can be augmented at any time (i.e. dynamic properties).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var myString = new String("hello");
+myString.isGreeting = true;
+</code></pre></div></div>
+
+<h2 id="chapter-2-working-with-objects-and-properties">Chapter 2: Working with Objects and Properties</h2>
+
+<ul>
+  <li>Objects can be nested inside other objects (and functions, regexs etc) ad infinitum. Sometimes known as <em>object chaining</em>.</li>
+  <li>Get or set an object’s properties using <em>dot notation</em> or <em>brackets</em>. Dot notation is more common, but bracket notation is useful when you have a variable containing the key or with property names which are invalid JavaScript identifiers (e.g. containing a numeral)</li>
+  <li>By using bracket notation you can mimic associative arrays found in other languages</li>
+  <li>If a property is a method, this can be invoked using the <code class="highlighter-rouge">()</code> operators e.g. <code class="highlighter-rouge">cody.getGender()</code></li>
+  <li>The <code class="highlighter-rouge">delete</code> operator can be used to remove a property from an object e.g. <code class="highlighter-rouge">delete person.name</code>. Note, this will not delete properties found on the prototype chain.</li>
+</ul>
+
+<h3 id="how-references-to-object-properties-are-resolved">How references to object properties are resolved</h3>
+
+<p>If you try to access a property not on the object, JavaScript will check on the prototype chain before returning <code class="highlighter-rouge">undefined</code>. E.g. accessing a non existent property on an <code class="highlighter-rouge">Array</code> object will also check <code class="highlighter-rouge">Array.prototype</code> and <code class="highlighter-rouge">Object.prototype</code>.</p>
+
+<p>The prototype chain is built using the object contructor function’s <code class="highlighter-rouge">prototype</code> object. This is the secret <code class="highlighter-rouge">__proto__</code> link contained in all objects which points to the constructor function which created the instance, specifically, the <em>prototype property</em> of the instance’s constructor function.</p>
+
+<p>For example, when you create a instance of an array, the <code class="highlighter-rouge">join</code> method is not a function on that particular instance, but via the <code class="highlighter-rouge">__proto__</code> link, it can access the <code class="highlighter-rouge">join</code> method of the Array class.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var ar = new Array();
+console.log(ar.hasOwnProperty('join')); // logs false
+console.log(ar.__proto__.hasOwnProperty('join')); // logs true
+console.log(ar.constructor.prototype.hasOwnProperty('join')); // logs true 
+console.log(Array.prototype.hasOwnProperty('join')); // logs true
+</code></pre></div></div>
+
+<p>Note, use <code class="highlighter-rouge">hasOwnProperty</code> to check for properties specific to that object and not from the prototype change. <code class="highlighter-rouge">in</code> also appears to have this behaviour in chrome (contrary to the book’s explanations that <code class="highlighter-rouge">in</code> includes all members of an object via the prototype chain).</p>
+
+<h3 id="host-objects-and-native-objects">Host objects and native objects</h3>
+
+<p>Within a browser environment, there are typically additional <em>host objects</em> which are not part of JavaScript specification, but just objects provided by the environment itself. These are in themselves very useful e.g. <code class="highlighter-rouge">window</code> and the objects it contains, but then are <em>not</em> part of the JavaScript specification.</p>
+
+<p>Enumerate <code class="highlighter-rouge">x in window</code> to show all properties in the <code class="highlighter-rouge">window</code> host object of a browser.</p>
+
+<p>Enumerate <code class="highlighter-rouge">x in window.document</code> to show all properties in the HTML document, or DOM.</p>
+
+<h3 id="underscorejs">Underscore.js</h3>
+
+<p>This library of functions extends the current offering of JavaScript 1.5 with a number of useful functions for all objects and a number more for arrays in particular including: <code class="highlighter-rouge">map()</code>, <code class="highlighter-rouge">select()</code> and <code class="highlighter-rouge">invoke()</code> where these are not yet provided by the native implementation.</p>
+
+<p>Full details at <a href="http://documentcloud.github.io/underscore/">http://documentcloud.github.io/underscore/</a></p>
+
+<h2 id="chapter-3-string">Chapter 3: String()</h2>
+
+<p>Avoid using <code class="highlighter-rouge">new String()</code> since the <code class="highlighter-rouge">typeof</code> function confusingly returns <code class="highlighter-rouge">object</code> and the complex object provided by using the new keyword is less performant.</p>
+
+<h3 id="string-properties-and-methods">String properties and methods</h3>
+
+<h2 id="chapter-4-number">Chapter 4: Number()</h2>
+
+<p>As with strings, avoid using <code class="highlighter-rouge">new Number()</code>.</p>
+
+<h3 id="number-properties-and-methods">Number properties and methods</h3>
+
+<p>The Number() object itself has a few useful properties: <code class="highlighter-rouge">MAX_VALUE</code>, <code class="highlighter-rouge">MIN_VALUE</code>, <code class="highlighter-rouge">NaN</code>, <code class="highlighter-rouge">NEGATIVE_INFINITY</code>, <code class="highlighter-rouge">POSITIVE_INFINITY</code></p>
+
+<p>Instance methods include: <code class="highlighter-rouge">toString()</code>, <code class="highlighter-rouge">valueOf()</code></p>
+
+<h2 id="chapter-5-boolean">Chapter 5: Boolean()</h2>
+
+<p>Any valid JavaScript value that is not 0, -1, null, false, NaN, undefined or empty string (“”) will be converted to true when creating a boolean.</p>
+
+<p>Beware, this means that a ‘false’ Boolean object (as opposed to a false boolean primitive value) will actually be true.</p>
+
+:ET

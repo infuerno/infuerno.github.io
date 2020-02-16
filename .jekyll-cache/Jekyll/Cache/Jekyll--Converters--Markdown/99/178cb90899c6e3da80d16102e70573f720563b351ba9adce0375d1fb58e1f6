@@ -1,0 +1,84 @@
+I"ˆ<p>W3C link to stylesheet possibilities: <a href="http://www.w3.org/TR/CSS21/propidx.html">http://www.w3.org/TR/CSS21/propidx.html</a></p>
+
+<p>Useful for checking HTML entities: <a href="http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references#Predefined_entities_in_XML">http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references#Predefined_entities_in_XML</a></p>
+
+<p>Normalize: <a href="http://necolas.github.io/normalize.css/">http://necolas.github.io/normalize.css/</a><br />
+Remove certain default styling added by browsers use normalize.css.</p>
+
+<p>gridulator.com: <a href="http://www.gridulator.com/">http://www.gridulator.com/</a></p>
+
+<p>Typing lessons for coders: <a href="http://typing.io/">http://typing.io/</a><br />
+Type some real open source code (whole modules) and get stats on your typing skills.</p>
+
+<p>Fonts: <a href="http://www.google.com/fonts/">http://www.google.com/fonts/</a><br />
+Easily add custom fonts using google fonts.</p>
+
+<h2 id="semantic-tags-less-commonly-used">Semantic tags less commonly used</h2>
+<h3 id="quotes">Quotes</h3>
+<h4 id="blockquote"><code class="highlighter-rouge">&lt;blockquote&gt;</code></h4>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;blockquote</span> <span class="na">cite=</span><span class="s">"http://example.com/citation-source.html"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;p&gt;</span>multi-paragraph quote<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/blockquote&gt;</span></code></pre></figure>
+
+<h4 id="q"><code class="highlighter-rouge">&lt;q&gt;</code></h4>
+
+<p>For inline quotes the <code class="highlighter-rouge">&lt;q&gt;</code> tag can be used. It adds quotation marks around the text. The <code class="highlighter-rouge">cite</code> attribute can also be used with this element.</p>
+
+<h3 id="code-and-preformatted-text">Code and preformatted text</h3>
+<h4 id="code"><code class="highlighter-rouge">&lt;code&gt;</code></h4>
+
+<p>The code tag is used to mark up any code. This is printed using a mono space font by default.</p>
+
+<h4 id="pre"><code class="highlighter-rouge">&lt;pre&gt;</code></h4>
+
+<p>The pre tag is used to denote preformatted text, which preserves any formatting e.g. line breaks in your text.</p>
+
+<p>The <code class="highlighter-rouge">&lt;pre&gt;</code> and <code class="highlighter-rouge">&lt;code&gt;</code> tags can be used together to enter multiple lines of code.</p>
+
+<h4 id="abbr"><code class="highlighter-rouge">&lt;abbr&gt;</code></h4>
+
+<p>Use to mark up abbreviations. By default there is no visible style change.</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">  <span class="nt">&lt;p&gt;</span>I know how to use <span class="nt">&lt;abbr</span> <span class="na">title=</span><span class="s">"self-contained underwater breathing apparatus"</span><span class="nt">&gt;</span>SCUBA<span class="nt">&lt;/abbr&gt;&lt;/p&gt;</span></code></pre></figure>
+
+<p>The title will be shown on hover tool tip wise.</p>
+
+<h4 id="address"><code class="highlighter-rouge">&lt;address&gt;</code></h4>
+
+<p>Used to denote contact details.</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">  <span class="nt">&lt;address&gt;</span>
+    Nick Pettit<span class="nt">&lt;br&gt;</span>
+    1234 Example Road<span class="nt">&lt;br&gt;</span>
+    Metropolis
+  <span class="nt">&lt;/address&gt;</span></code></pre></figure>
+
+<p>If the <code class="highlighter-rouge">&lt;address&gt;</code> tag comes as a direct child of the <code class="highlighter-rouge">&lt;body&gt;</code> element then this will be contact information for the whole page. To be marked as the contact information for just one person, this will need to be nested under the mark up for that person.</p>
+
+<h4 id="cite"><code class="highlighter-rouge">&lt;cite&gt;</code></h4>
+
+<p><code class="highlighter-rouge">&lt;cite&gt;</code> can be used a tag by itself. The default styling is to italicise this text. This is used to mark up book, film titles etc.</p>
+
+<h4 id="wbr"><code class="highlighter-rouge">&lt;wbr&gt;</code></h4>
+
+<p>Useful for marking where to break a long string in the case that there may or may not be enough space.</p>
+
+<h4 id="definition-lists">Definition lists</h4>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">  <span class="nt">&lt;dl&gt;</span>
+    <span class="nt">&lt;dt&gt;</span>Video pros<span class="nt">&lt;/dt&gt;</span>
+    <span class="nt">&lt;dd&gt;</span>John<span class="nt">&lt;/dd&gt;</span>
+    <span class="nt">&lt;dt&gt;</span>Teachers<span class="nt">&lt;/dt&gt;</span>
+    <span class="nt">&lt;dd&gt;</span>Nick<span class="nt">&lt;/dd&gt;</span>
+    <span class="nt">&lt;dd&gt;</span>Jim<span class="nt">&lt;/dd&gt;</span>
+    <span class="nt">&lt;dd&gt;</span>Armit<span class="nt">&lt;/dd&gt;</span>
+  <span class="nt">&lt;/dl&gt;</span>
+
+  <span class="nt">&lt;dl&gt;</span>
+    <span class="nt">&lt;dt</span> <span class="na">lang=</span><span class="s">"en-US"</span><span class="nt">&gt;</span>color<span class="nt">&lt;/dt&gt;</span>
+    <span class="nt">&lt;dt</span> <span class="na">lang=</span><span class="s">"en-GB"</span><span class="nt">&gt;</span>colour<span class="nt">&lt;/dt&gt;</span>
+    <span class="nt">&lt;dd&gt;</span>The sensation which derives from the ability to detect light.<span class="nt">&lt;/dd&gt;</span>
+  <span class="nt">&lt;/dl&gt;</span></code></pre></figure>
+
+:ET

@@ -1,0 +1,167 @@
+I"�!<h1 id="sublime-text-shortcuts">Sublime Text Shortcuts</h1>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Shortcut</td>
+      <td>Description</td>
+    </tr>
+    <tr>
+      <td>Ctrl-U</td>
+      <td>View page source (chrome)</td>
+    </tr>
+    <tr>
+      <td>Ctrl-/</td>
+      <td>Comment toggle on / off</td>
+    </tr>
+    <tr>
+      <td>Ctrl-Shift-D</td>
+      <td>Duplicate line</td>
+    </tr>
+    <tr>
+      <td>Ctrl-Click multiple places</td>
+      <td>Multiple cursors</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="html">HTML</h1>
+
+<ul>
+  <li>MDN - Super useful resource for HTML, CSS and JavaScript</li>
+  <li>Boolean attributes - attribute without a value e.g. <code class="highlighter-rouge">disabled</code></li>
+  <li>Whitespace - no matter how much whitespace is used (includes spaces and line breaks), the HTML parser reduces each one down to a single space when rendering the code</li>
+  <li>MDN element reference - lists all HTML elements (approx 100): https://developer.mozilla.org/en-US/docs/Web/HTML/Element</li>
+  <li>MDN attribute reference: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes</li>
+</ul>
+
+<h2 id="tables">Tables</h2>
+<ul>
+  <li>Use <code class="highlighter-rouge">&lt;tr&gt;</code> with <code class="highlighter-rouge">&lt;th&gt;</code> for headers. Enclose in <code class="highlighter-rouge">&lt;thead&gt;</code> and <code class="highlighter-rouge">&lt;tbody&gt;</code> for HTML5 enhanced semantics.</li>
+</ul>
+
+<h2 id="forms">Forms</h2>
+<ul>
+  <li><code class="highlighter-rouge">&lt;input&gt;</code> elements have a <code class="highlighter-rouge">type</code> attribute e.g. <code class="highlighter-rouge">button</code>, <code class="highlighter-rouge">checkbox</code>, <code class="highlighter-rouge">color</code>. See: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input</li>
+  <li><code class="highlighter-rouge">&lt;form&gt;</code> will submit to the same page using GET by default (if <code class="highlighter-rouge">action</code> or <code class="highlighter-rouge">method</code> are not specified)</li>
+  <li>Use the <code class="highlighter-rouge">name</code> attribute to specify the <strong>key</strong> of the value when submitting</li>
+  <li><code class="highlighter-rouge">&lt;label&gt;</code> can wrap around <code class="highlighter-rouge">&lt;input&gt;</code> OR use <code class="highlighter-rouge">for</code> to target the element with matching <code class="highlighter-rouge">id</code> attribute</li>
+  <li>Use the <code class="highlighter-rouge">name</code> attribute on <code class="highlighter-rouge">radio</code> type inputs to group, also used as the key when submitting</li>
+  <li>Use the <code class="highlighter-rouge">value</code> attribute on <code class="highlighter-rouge">radio</code> type inputs for the value when submitting (default is <code class="highlighter-rouge">on</code>)</li>
+  <li>Use the <code class="highlighter-rouge">name</code> attribute on <code class="highlighter-rouge">select</code> type for the key when submitting</li>
+  <li>Use the <code class="highlighter-rouge">value</code> atribute on <code class="highlighter-rouge">select</code> type to override the text when submitting</li>
+</ul>
+
+<h1 id="css">CSS</h1>
+
+<ul>
+  <li>All 148 named colours: http://colours.neilorangepeel.com</li>
+  <li>Specify colours using hex, rgb or rgba (includes transaprency) e.g. <code class="highlighter-rouge">rgba(255,0,0,.5)</code>. for 50% transparent red</li>
+</ul>
+
+<h2 id="selectors">Selectors</h2>
+<ul>
+  <li>Adjacent selector: <code class="highlighter-rouge">h4 + ul</code> - all <code class="highlighter-rouge">ul</code>s following <code class="highlighter-rouge">h4</code>s</li>
+  <li>Attribute selector e.g. all inputs of a certain type: <code class="highlighter-rouge">input[type="checkbox"]</code></li>
+  <li>Nth of type selector: <code class="highlighter-rouge">ul:nth-of-type(3)</code> or <code class="highlighter-rouge">li:nth-of-type(even)</code></li>
+  <li>Pseudo class selector: e.g. <code class="highlighter-rouge">a:hover</code>; <code class="highlighter-rouge">input:checked</code></li>
+</ul>
+
+<h2 id="specificity">Specificity</h2>
+<ul>
+  <li>Specifity calculator: https://specificity.keegan.st</li>
+  <li>W3C spec on specifity: https://www.w3.org/TR/selectors-3/#specificity</li>
+  <li>id selectors &gt; class, attribute, psuedo-class selectors &gt; type selectors</li>
+  <li>Additionally multiple class selectors &gt; a single class selector (total the number of selectors)</li>
+</ul>
+
+<h2 id="texts-and-fonts">Texts and Fonts</h2>
+
+<ul>
+  <li>Common fonts available in different OSes: https://www.cssfontstack.com</li>
+  <li>Google fonts - 1000 or so free fonts: https://fonts.google.com</li>
+  <li><code class="highlighter-rouge">em</code> is relative to the containing element</li>
+  <li><code class="highlighter-rouge">rem</code> is relative to the root element</li>
+</ul>
+
+<h2 id="box-model">Box model</h2>
+
+<ul>
+  <li>margin (orange) &gt; border &gt; padding (green) &gt; content (blue)</li>
+</ul>
+
+<h1 id="bootstrap-3-to-4">Bootstrap 3 to 4</h1>
+
+<ul>
+  <li>Migration docs: https://getbootstrap.com/docs/4.3/migration/</li>
+  <li>Main changes:
+    <ul>
+      <li>Flexbox is enabled by default</li>
+      <li>Switched from px to rem</li>
+      <li>Global font size changed from 14px to 16px</li>
+      <li>New “utility classes”</li>
+      <li>Grids: New grid tier, class names have changed</li>
+      <li><code class="highlighter-rouge">card</code>s replaces <code class="highlighter-rouge">panel</code>s, <code class="highlighter-rouge">thumbnail</code>s and <code class="highlighter-rouge">well</code>s</li>
+      <li>Colours completely revamped</li>
+      <li>Blockquotes revamped</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="utility-classes">Utility classes</h2>
+
+<ul>
+  <li>Border classes
+    <ul>
+      <li><code class="highlighter-rouge">border</code> or <code class="highlighter-rouge">border-left</code> to add borders</li>
+      <li><code class="highlighter-rouge">border-0</code> or <code class="highlighter-rouge">border-left-0</code> to remove existing borders</li>
+      <li><code class="highlighter-rouge">border-primary</code> for border colours</li>
+      <li><code class="highlighter-rouge">rounded-top</code> for border radius</li>
+    </ul>
+  </li>
+  <li>Spacing classes (non-responsive)
+    <ul>
+      <li>3 elements in the form <code class="highlighter-rouge">{property}{sides}-{size}</code>
+        <ul>
+          <li><code class="highlighter-rouge">m</code> or <code class="highlighter-rouge">p</code> - margin or padding</li>
+          <li><code class="highlighter-rouge">t</code>, <code class="highlighter-rouge">r</code> etc or <code class="highlighter-rouge">x</code>, <code class="highlighter-rouge">y</code> - top, right etc</li>
+          <li><code class="highlighter-rouge">0</code> up to <code class="highlighter-rouge">5</code> for the amount, or <code class="highlighter-rouge">auto</code></li>
+        </ul>
+      </li>
+      <li>e.g. <code class="highlighter-rouge">mt-0</code> for margin top of 0; <code class="highlighter-rouge">m-0</code> for margin all round of 0</li>
+    </ul>
+  </li>
+  <li>Spacing classes <strong>including</strong> responsive
+    <ul>
+      <li>4 elements: <code class="highlighter-rouge">{property}{sides}-{breakpoint}-{size}</code>
+        <ul>
+          <li><code class="highlighter-rouge">xs</code> by default if no breakpoint specified (i.e. all sizes)</li>
+          <li>Adding a breakpoint = that size AND larger</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="navbars">Navbars</h2>
+
+<ul>
+  <li>NEED to specify where the breakpoint between collapsed and expanded using <code class="highlighter-rouge">navbar-expand-{breakpoint}</code></li>
+  <li><code class="highlighter-rouge">navbar-light</code> for light text; <code class="highlighter-rouge">nav-dark</code> for dark text (<strong>required</strong>) (no more <code class="highlighter-rouge">navbar-default</code>)</li>
+  <li>NEED to specify a background color e.g. <code class="highlighter-rouge">bg-dark</code></li>
+</ul>
+
+<h2 id="display-utility">Display utility</h2>
+
+<ul>
+  <li>Replaces <code class="highlighter-rouge">visible-</code> and <code class="highlighter-rouge">hidden-</code>. Sets the css <code class="highlighter-rouge">display</code> property</li>
+  <li>As with spacing without breakpoints specifies for xs and therefore all sizes</li>
+  <li>With breakpoint specifies for that size and up
+    <ul>
+      <li>Hide on XL: <code class="highlighter-rouge">d-xl-none</code></li>
+      <li>Show on LG only: <code class="highlighter-rouge">d-none d-lg-block d-xl-none</code></li>
+    </ul>
+  </li>
+</ul>
+
+:ET

@@ -1,0 +1,224 @@
+I"�;<h2 id="introduction-to-the-python-fundamentals-13-mins">Introduction to the Python Fundamentals, 13 mins</h2>
+
+<ul>
+  <li>Initially developed by Guido in the late 1980s - BDFL (Benevolent Dictator For Life)</li>
+  <li>Open Source project - managed by non profit Python Software Foundation</li>
+  <li>Strongly typed language - every object has a definite type</li>
+  <li>Dynamically typed - no type checking prior to running it (unlike C++ or Java) i.e. uses duck typing</li>
+  <li>Interpreted language - it is actually compiled to a form of bytecode before executing, but this happens invisibly - experience is of immediately executing code with a noticeable compilation phase</li>
+  <li>Originally written in C - CPython - other implementation include:
+    <ul>
+      <li>Jython (written in Java, targets JVM)</li>
+      <li>IronPython (written in C#, targets .NET runtime)</li>
+      <li>pypy (written in a specialised subset of python, RPython)</li>
+    </ul>
+  </li>
+  <li>Python has a huge standard library - “batteries included” - which means many scripts will run out of the box</li>
+  <li>Python philosophy - <code class="highlighter-rouge">import this</code></li>
+</ul>
+
+<h2 id="getting-started-with-python-3-43-mins">Getting started with Python 3, 43 mins</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">_</code> in REPL to refer to most recently printed value</li>
+  <li>Ctrl-D to quit (mac, linux); Ctrl-Z to quit (windows) - <code class="highlighter-rouge">fg</code> if you accidentally press the wrong key and background the job</li>
+  <li><code class="highlighter-rouge">:</code> indicates the body of a contruct follows (for e.g. <code class="highlighter-rouge">if</code>, <code class="highlighter-rouge">for</code>, <code class="highlighter-rouge">while</code>)</li>
+  <li>Contemporary python code is indented by 4 spaces - can be either spaces or tabs - spaces have become standard - don’t mix</li>
+  <li>Terminate a block in the REPL by entering a blank line</li>
+  <li>Standard library modules, although available, still need to be imported: <code class="highlighter-rouge">import math</code></li>
+  <li><code class="highlighter-rouge">help(math)</code> to get help on the <code class="highlighter-rouge">math</code> module</li>
+  <li><code class="highlighter-rouge">help(math.factorial)</code> to get help on the <code class="highlighter-rouge">factorial</code> function in the <code class="highlighter-rouge">math</code> module</li>
+  <li>To use <code class="highlighter-rouge">factorial</code> without qualifying with the module name, use: <code class="highlighter-rouge">from math import factorial</code></li>
+  <li>To alias functions use: <code class="highlighter-rouge">from match import factorial as fac</code> - may be useful for a namespace clash - in general don’t use</li>
+  <li>Import multiple functions using <code class="highlighter-rouge">from math import (factorial, floor)</code> (brackets optional - don’t use <code class="highlighter-rouge">from math import *</code>)</li>
+  <li><code class="highlighter-rouge">/</code> is the floating point division operator</li>
+  <li><code class="highlighter-rouge">//</code> in the integer division operator</li>
+  <li>Python works with arbitrarily large integers (e.g. no upper limit of 2**31 - 1)</li>
+  <li><code class="highlighter-rouge">input()</code> to request input from the user</li>
+</ul>
+
+<h3 id="scalar-types-and-values">Scalar types and values</h3>
+
+<ul>
+  <li><code class="highlighter-rouge">int</code> signed, unlimited precision
+    <ul>
+      <li>specify in decimal (default); binary with <code class="highlighter-rouge">0b</code> prefix e.g. <code class="highlighter-rouge">0b10</code>; octal with <code class="highlighter-rouge">0o10</code>; hex with <code class="highlighter-rouge">0x10</code></li>
+      <li>convert to int using <code class="highlighter-rouge">int()</code> e.g. <code class="highlighter-rouge">int(3.7)</code></li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">float</code> IEEE-754 double precision - approx 15 bits of decimal precision
+    <ul>
+      <li>numbers with <code class="highlighter-rouge">.</code> or <code class="highlighter-rouge">e</code> are interpreted as floats e.g. <code class="highlighter-rouge">3e8</code> = 3 x 10^8 = 300000000.0</li>
+      <li><code class="highlighter-rouge">float("nan")</code>, <code class="highlighter-rouge">float("inf")</code>, <code class="highlighter-rouge">float("-inf")</code></li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">None</code> special type to indicate the absence of a value</li>
+  <li><code class="highlighter-rouge">bool</code> either <code class="highlighter-rouge">True</code> or <code class="highlighter-rouge">False</code>
+    <ul>
+      <li>e.g. <code class="highlighter-rouge">bool(1)</code><code class="highlighter-rouge"> is </code>True<code class="highlighter-rouge">; </code>bool(0)<code class="highlighter-rouge"> is </code>False<code class="highlighter-rouge">; </code>bool(“”)<code class="highlighter-rouge"> is </code>False` etc</li>
+      <li>expressions passed to the <code class="highlighter-rouge">if</code> and <code class="highlighter-rouge">while</code> statements are implicitly cast to bool using the <code class="highlighter-rouge">bool()</code> constructor</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="strings-and-collections-18-mins">Strings and Collections, 18 mins</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">str</code> - data type for strings
+    <ul>
+      <li>immutable sequence of Unicode codepoints (can think of these like characters - but not equivalent)</li>
+      <li>delimit with either single or double quotes</li>
+      <li>“hello” “world” - adjacent strings are concatenated - useful for formatting code</li>
+      <li>multiline strings use “”” or ‘’’ - embeds <code class="highlighter-rouge">\n</code> between strings</li>
+      <li><strong>Universal newlines</strong> support in Python3 translates <code class="highlighter-rouge">\n</code> to <code class="highlighter-rouge">\r\n</code> for Windows native carriage returns if running on Windows (PEP278)</li>
+      <li>raw strings don’t use escape sequences and are prefixed using <code class="highlighter-rouge">r</code> e.g <code class="highlighter-rouge">r'C:\Users\Merlin\'</code></li>
+      <li>use the <code class="highlighter-rouge">str()</code> string constructor to create strings based on other types e.g. <code class="highlighter-rouge">str(3)</code></li>
+      <li>strings are <strong>sequence types</strong>; use <code class="highlighter-rouge">[]</code> to index into strings</li>
+      <li>no character types i.e. <code class="highlighter-rouge">type('hello'[4])</code> is <code class="highlighter-rouge">&lt;class 'str'&gt;</code></li>
+      <li>default source code encoding is UTF-8</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">bytes</code>
+    <ul>
+      <li>immutable sequence of bytes</li>
+      <li>used for raw binary data and fixed width single byte character encodings such as ascii</li>
+      <li>use <code class="highlighter-rouge">b</code> i.e. <code class="highlighter-rouge">b'data'</code></li>
+      <li>converting between bytes and strings requires knowing the encoding of the byte sequence used to represent the string’s code points
+        <ul>
+          <li><code class="highlighter-rouge">'skål'.encode('utf-8')</code> -&gt; <code class="highlighter-rouge">b'sk\xc3\xa5l'</code></li>
+          <li><code class="highlighter-rouge">'skål'.encode('utf-7')</code> -&gt; <code class="highlighter-rouge">b'sk+AOU-l'</code></li>
+          <li>IMPORTANT: files, network resources and HTTP responses are transmitted as byte streams - so the encoding used is crucial</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">list</code>
+    <ul>
+      <li>mutable sequences of objects</li>
+      <li>the workhorse of python data structures</li>
+      <li>heterogeneous with respect to the types of objects contained e.g. <code class="highlighter-rouge">a = ['apple', 7, 'dog']</code></li>
+      <li>the <code class="highlighter-rouge">list</code> constructor can create lists from e.g. strings <code class="highlighter-rouge">list('hello')</code> gives <code class="highlighter-rouge">['h', 'e', 'l', 'l', 'o']</code></li>
+      <li>can span multiple lines</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">dict</code>
+    <ul>
+      <li>mutable mappings of keys to values (in some languages known as associative arrays)</li>
+      <li><code class="highlighter-rouge">{k1: v1, k2: v2}</code></li>
+      <li>note stored in any particular order</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="modularity-21-mins">Modularity, 21 mins</h2>
+
+<ul>
+  <li>Collections of related functions can be grouped into modules</li>
+  <li>Modules can be used from other modules (as long as no circular dependency)</li>
+  <li>Declare functions using the <code class="highlighter-rouge">def</code> keyword e.g. <code class="highlighter-rouge">def square(x)</code></li>
+  <li>Functions can return values e.g. <code class="highlighter-rouge">return x</code> or simply return i.e. <code class="highlighter-rouge">return</code>. In the latter case, <code class="highlighter-rouge">None</code> is returned.</li>
+  <li>To run a function as a script, use the value of <code class="highlighter-rouge">__name__</code> to detect if the file is being run OR simply imported e.g. <code class="highlighter-rouge">if __name__ == "__main__":</code></li>
+  <li>Recommended to ensure all modules can also be run as scripts if required using the <code class="highlighter-rouge">if __name__</code> directive</li>
+  <li>Take command line arguments using <code class="highlighter-rouge">sys.argv[1]</code> etc - ensure the <code class="highlighter-rouge">main</code> function takes arguments (so it can be used from another module, repl etc) and the <code class="highlighter-rouge">if __name__</code> part ONLY refers to the sys.argv arguments - so they can be passed in when running as a script</li>
+  <li>Better command line argument libraries: argparse (Standard Library) or docopt (Third Party)</li>
+  <li>Leave 2 blank lines between functions</li>
+  <li>Document functions with docstrings - first string in a named block e.g. function or module - customary to use triple quoted strings
+    <ul>
+      <li>PEP 257 outlines preferred syntax, but not used much</li>
+      <li>reStructuredText / Sphinx - available to build HTML document</li>
+      <li>Google’s Python Style Guide is preferred</li>
+      <li>Module docstrings go at the top of the file BEFORE any other statements</li>
+    </ul>
+  </li>
+  <li>Shebang command can also be added at the top of the file e.g. <code class="highlighter-rouge"><span class="c1">#! /usr/bin/env python3</span></code> where <code class="highlighter-rouge">/usr/bin/env</code> is used to locate <code class="highlighter-rouge">python3</code> - mark the script executable and now run directly using e.g. <code class="highlighter-rouge">./words.py</code></li>
+</ul>
+
+<h2 id="objects-21-mins">Objects, 21 mins</h2>
+
+<ul>
+  <li>Python only has named references to objects</li>
+  <li><code class="highlighter-rouge">int</code> is a reference type and is immutable. <code class="highlighter-rouge">y = 100</code> creates an object on the heap with the value 100 and <code class="highlighter-rouge">y</code> references it. <code class="highlighter-rouge">y = 1000</code> creates a different object on the heap. 100 is no longer referenced and is garbage collected at some point.</li>
+  <li><code class="highlighter-rouge">id()</code> returns a identifier representing the memory location of the object</li>
+  <li><code class="highlighter-rouge">is</code> uses <code class="highlighter-rouge">id()</code> to test for equality</li>
+  <li>Function arguments are transferred by “pass by object reference” - the value of the refrence is copied, but not the value of the object</li>
+  <li>Default values are evaluated WHEN a function is evaluated - so default values which use <strong>mutable</strong> objects, time etc are DOOMED - ONLY use immutable objects such as ints or strings for default arguments e.g. set mutable types to None and initialise inside the function if not passed in</li>
+</ul>
+
+<h3 id="dynamic-vs-static">Dynamic vs Static</h3>
+
+<ul>
+  <li>Dynamic = object types are resolved at runtime e.g. python, ruby cf</li>
+  <li>Static = objects are resolved at compile time e.g. C++</li>
+</ul>
+
+<h3 id="strong-vs-weak">Strong vs Weak</h3>
+
+<ul>
+  <li>Strong = generally means no implicity type conversion e.g. trying to add float and string in Python (exception is bool in <code class="highlighter-rouge">if</code> statements and <code class="highlighter-rouge">while</code> loops)</li>
+  <li>Weak = e.g. JavaScript, Perl</li>
+</ul>
+
+<h3 id="scopes">Scopes</h3>
+
+<p>IMPORTANT - scopes are NOT affected by for loops, while loops etc</p>
+
+<ul>
+  <li>Local = inside the current function</li>
+  <li>Enclosing = NOT COVERED</li>
+  <li>Global = inside a module e.g. import statements, class and function defs, constants (and occasionally variables)</li>
+  <li>Builtins = built in to the language provided by the <code class="highlighter-rouge">builtin</code> module</li>
+</ul>
+
+<p>Global refereneces can be read from a local scope BUT in order to assign the global references, need to use the <code class="highlighter-rouge">global</code> keyword inside the function e.g. <code class="highlighter-rouge">global count</code>.</p>
+
+<ul>
+  <li><code class="highlighter-rouge">dir(_module_name_)</code> to introspect an object and get a list of its attributes</li>
+  <li>Everything is an object including functions and modules</li>
+</ul>
+
+<h2 id="collections-45-mins">Collections, 45 mins</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">str</code> = immutable sequence of unicode code points</li>
+  <li><code class="highlighter-rouge">list</code> = mutable sequence of objects</li>
+  <li><code class="highlighter-rouge">dict</code> = mutable mapping from immutable keys to mutable objects</li>
+  <li><code class="highlighter-rouge">tuple</code> = immutable sequence of objects</li>
+  <li><code class="highlighter-rouge">range</code> = arithmetic progression of integers</li>
+  <li><code class="highlighter-rouge">set</code> = mutable collection of unique immutable objects</li>
+</ul>
+
+<h3 id="tuple">tuple</h3>
+
+<h3 id="str">str</h3>
+<h3 id="range">range</h3>
+<h3 id="list">list</h3>
+<h3 id="dict">dict</h3>
+<h3 id="set">set</h3>
+
+<h2 id="handling-exceptions-22-mins">Handling exceptions, 22 mins</h2>
+
+<h2 id="iterables-33-mins">Iterables, 33 mins</h2>
+
+<h2 id="classes-30-mins">Classes, 30 mins</h2>
+
+<p>https://www.python-course.eu/python3_properties.php</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class P:
+
+    def __init__(self, x):
+        self.x = x
+
+    @property
+    def x(self):
+        return self.__x
+
+    @x.setter
+    def x(self, x):
+        if x &gt; 0:
+            self.__x = x
+</code></pre></div></div>
+
+<h2 id="files-and-resource-management-31-mins">Files and Resource Management, 31 mins</h2>
+
+<h2 id="shipping-working-and-maintainable-code-34-mins">Shipping Working and Maintainable code, 34 mins</h2>
+:ET

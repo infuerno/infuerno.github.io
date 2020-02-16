@@ -1,0 +1,66 @@
+I"E<h2 id="references">References</h2>
+
+<ul>
+  <li>State of DevOps Report</li>
+  <li>Source code: https://www.manning.com/books/cloud-native-patterns and https://github.com/cdavisafc/cloudnative-abundantsunshine</li>
+  <li>Discussion forum: https://livebook.manning.com/#!/book/cloud-native-patterns</li>
+</ul>
+
+<h2 id="contents">Contents</h2>
+<h3 id="part-1">Part 1</h3>
+<ul>
+  <li>Chapter 1: The cloud-native model: apps/services, interactions, data p3</li>
+  <li>Chapter 2: Patterns and practices used in production</li>
+  <li>Chapter 3: Platforms supporting these patterns and practices</li>
+</ul>
+
+<h3 id="part-2">Part 2</h3>
+<ul>
+  <li>Chapter 4: Interactions, introduction of event driven rather than request, response</li>
+  <li>Chapter 5: Apps/services and data, deploy at scale, keep stateless</li>
+  <li>Chapter 6: Apps/services configuration</li>
+  <li>Chapter 7: Apps/services lifecycle, upgrades, rollbacks, blue/green upgrades</li>
+  <li>Chapter 8: Interactions, service discovery and dynamic routing</li>
+  <li>Chapter 9: Interactions, client side - retries</li>
+  <li>Chapter 10: Interactions, service side - API gateways, circuit breakers</li>
+  <li>Chapter 11: Observing behaviours and performance</li>
+  <li>Chapter 12: Breaking up the monolithic database</li>
+</ul>
+
+<h1 id="part-1-the-cloud-native-context">Part 1 The Cloud Native Context</h1>
+
+<blockquote>
+  <p>…operating cloud-native apps. I can hear some of you thinking “I’m dev—I don’t need to worry about that,” but please suspend your disbelief for a moment. The operational practices that deliver on some of your customers’ demands immediately translate to requirements on your software.</p>
+</blockquote>
+
+<h2 id="chapter-1-defining-cloud-native">Chapter 1 Defining “cloud-native”</h2>
+
+<ul>
+  <li>The applications you’re running on a particular infrastructure can be more stable than the infrastructure itself.</li>
+  <li>Cloud-native software is designed to anticipate failure and remain stable even when the infrastructure it’s running on is experiencing outages or is otherwise changing.</li>
+  <li>Three parts of cloud native software:
+    <ul>
+      <li>App - business logic - must be constructed so that upgrades and scaling is possible</li>
+      <li>Data - as with apps, must be decomposed and distributed</li>
+      <li>Interactions - communication between the apps and the data - many interaction patterns are completely new due to the extreme distribution which now exists</li>
+    </ul>
+  </li>
+  <li>Caching is a key pattern and technology in cloud-native software.</li>
+  <li>Ultimately, treating state as an outcome of a series of events forms the core of the distributed data fabric.</li>
+  <li>Accessing an app when it has multiple instances requires some type of routing system.</li>
+  <li>Automatic retries are an essential pattern in cloud-native software, yet their use can wreak havoc on a system if not governed properly. Cir- cuit breakers are essential when automated retries are in place.</li>
+  <li>Application metrics and logging, things we’ve been producing for decades, must be specialized for this new setting.</li>
+  <li>Reasons for not going cloud-native:
+    <ul>
+      <li>IOT where there is no capacity to support any redundancy and the systems aren’t critical e.g. rice cooker</li>
+      <li>Need complete consistency of data at all times e.g. a bank</li>
+      <li>The cost of rewriting is not worth the benefits OR no benefit to rewriting</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="chapter-3-the-platform-for-cloud-native-software">Chapter 3 The platform for cloud-native software</h2>
+
+<p>From the big cloud providers, we have Google App Engine, AWS Elastic Beanstalk, and Azure App Service (none of which are particularly widely adopted). Cloud Foundry is an open source cloud-native platform that has had remarkable penetration into large enterprises globally.</p>
+
+:ET

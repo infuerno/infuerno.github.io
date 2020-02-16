@@ -1,0 +1,130 @@
+I"=<h2 id="arrays">Arrays</h2>
+
+<p>Arrays allow us to store elements of the same data type contiguously in memory. They have random access which is crucial to algorithms like binary search, but their size is fixed.</p>
+
+<h2 id="linked-list">Linked list</h2>
+
+<p>Each node in a linked list allows us to store the element as well as a pointer to the next element. This allows the list to grow and shrink dynamically, but takes longer to access.</p>
+
+<h2 id="hash-tables">Hash Tables</h2>
+
+<p>Hash tables have the best of both worlds. Hash tables are arrays coupled with a function, the hash function. This function takes a piece of data, the key and outputs an integer, or hash value. This hash value maps the key to an index in the hash table. This determines where in the hash table to store and search for a key.</p>
+
+<p>A simple hash function for strings is to store in an array of length 26 according to the first letter.</p>
+
+<p>Collisions happen when different keys hash to the same value. E.g. <code class="highlighter-rouge">apple</code> and <code class="highlighter-rouge">ant</code>.</p>
+
+<ul>
+  <li>Linear probing is one way to resolve this. This method simply places the key in the next available slot. This can lead to clustering with popular keys. Search times start degrading to O(n).</li>
+  <li>Seperate chaining introduces linked lists with the hash table being an array of pointers. The worst case look up time now becomes O(n/k) where k is the size of the hash table assuming uniform distribution.</li>
+</ul>
+
+<p>It is important to choose a hash function which minimises the chances of collisions occurring.</p>
+
+<p>Good hash functions:</p>
+
+<ul>
+  <li>make use of all information given by a key, <code class="highlighter-rouge">cat</code> and <code class="highlighter-rouge">caterpillar</code> should hash to different values</li>
+  <li>distribute output uniformly</li>
+  <li>generate very differnent values for similar keys</li>
+  <li>are fast (will be called frequently and don’t want this to impact performance gained by using a hash table)</li>
+</ul>
+
+<h2 id="queues">Queues</h2>
+
+<p>A queue can be stored in an data type which stores elements in order such as an array or a linked list. We also need several methods to add an item to the end of the queue, <code class="highlighter-rouge">enqueue</code>, remove an item from the head of the queue, <code class="highlighter-rouge">dequeue</code>. Methods to return the size of the queue and if the queue is currently empty are also useful.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>typedef struct
+{
+    int head;                    // stores the index of the element currently at the head of the queue
+    int length;
+    int elements[CAPACITY];
+}
+queue;
+
+bool dequeue(queue* q, int* element)
+{
+    if (q-&gt;length &gt; 0)
+    {
+        *element = q-&gt;elements[q-&gt;head];
+        q-&gt;head = (q-&gt;head + 1) % CAPACITY;
+        q-&gt;length--;
+        return true;
+    }
+    return false;
+}
+
+bool enqueue(queue* q, int element)
+{
+    if (length &lt; capacity)
+    {
+        int tail = (q-&gt;head + q-&gt;length) % CAPACITY;
+        q-&gt;elements[tail] = element;
+        q-&gt;length++;
+        return true;
+    }
+    return false;
+}
+</code></pre></div></div>
+
+<h2 id="trees">Trees</h2>
+
+<p>Nodes can have parents and children. A leaf node doesn’t have any children and is at the outside edge of the tree. The root node is at the top of the tree and has no parent.</p>
+
+<h3 id="binary-trees">Binary trees</h3>
+
+<p>A binary tree is a specific sort of tree in which each node has at most 2 children.</p>
+
+<p>struct node
+{
+    int data;
+    struct node* left;
+    struct node* right;
+};</p>
+
+<h3 id="binary-search-trees">Binary search trees</h3>
+
+<p>A binary tree which is order to enable searching. The values in a node’s right sub tree are all greater than that node’s value and the values in a node’s left sub tree are all less than that node’s value.</p>
+
+<h3 id="balance-tree">Balance tree</h3>
+
+<p>A tree which has a minimal depth relative to the number of nodes.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bool search(node* root, int value)
+{
+    while (root != NULL)
+    {
+        if (root-&gt;data == value)
+            return true;
+        else if (root-&gt; data &gt; value)
+            root = root-&gt;left;
+        else 
+            root = root-&gt;right;
+    }
+    return false;
+}
+</code></pre></div></div>
+
+<h2 id="dictionaries">Dictionaries</h2>
+
+<p>A dictionary maps keys (usually strings) to values such as ints, chars, pointers to objects etc. This can be implemented using arrays, linked list, hash table, binary tree etc - whichever is most efficent.</p>
+
+<h2 id="tries">Tries</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>struct node
+{
+    // data
+    // may be boolean, definitions, pointer to an object etc
+
+    // pointers to other nodes
+    struct node* children[26];
+}
+</code></pre></div></div>
+
+<p>The keys are never explicity held in the data structure. Rather values are held at the end of each key e.g. in the 4th node in the chain for the word “bath” the letter h spot would contain the value for “bath”.</p>
+
+<p>Search and insert operations are proportional to the length of the word e.g. 4 operations for a word of length 4. In contrast tries take up a lot of space. Remember that even with large capacities available nowadays, optimisations are often in place to access memory in certain areas, so it pays to keep things as compact as possible.</p>
+
+<p>Tries are uniquely useful for autocompletion e.g. as in google search.</p>
+
+:ET

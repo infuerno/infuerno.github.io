@@ -1,0 +1,11 @@
+I"J<ul>
+  <li>vi is vim - on most systems vi is symlinked to vim - vim = vi improved</li>
+  <li>modal editor - there are 3 modes of operation:
+    <ul>
+      <li>command mode</li>
+      <li>edit mode - type ESC to go back to command mode</li>
+      <li>last line mode - type : to enter from command mode</li>
+    </ul>
+  </li>
+</ul>
+:ET

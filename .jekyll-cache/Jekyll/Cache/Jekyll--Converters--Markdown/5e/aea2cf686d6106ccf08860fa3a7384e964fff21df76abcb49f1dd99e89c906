@@ -1,0 +1,144 @@
+I"�&<h2 id="graphics-basics">Graphics Basics</h2>
+<h3 id="raster-vs-vector">Raster vs Vector</h3>
+<h4 id="raster">Raster</h4>
+<p>Made up of lots of pixels
+Does not retain appearance when zooming in 
+Depends on resolution (e.g. dpi)
+Images for the web only need to be 72dpi
+Images for print need at least 150-300dpi</p>
+
+<h4 id="vector">Vector</h4>
+<p>Made up of paths and mathematical formulas
+Retains quality when zooming in
+Does not need a particular resolution
+Can only be used for print, must be converted to raster before being used on the web</p>
+
+<p>For web, use vector as often as possible and convert to raster as late as possible to upload to the web</p>
+
+<h3 id="units-and-increments">Units and Increments</h3>
+<p>Points and picas are only used in print (as well as inches, centimetres etc).
+Use <strong>pixels</strong> for web design.
+Change the unit of measurement with Photoshop &gt; Preferences &gt; Units and Rulers
+Window &gt; Info shows the info panel which shows the  cursor position in pixels as well as the dimensions of any rectangular marquee.
+Click and drag on the ruler to show vertical or horizontal guides.</p>
+
+<h3 id="saving-for-the-web">Saving for the web</h3>
+<p>Need the perfect balance of quality vs file size.
+DO NOT use save as to save e.g. a jpeg version of your photoshop file. 
+Use File &gt; Save for Web and Devices.</p>
+
+<p>In the Save for Web and Devices preview a tabbed panel has different options. 2-Up is handy.</p>
+
+<ul>
+  <li>GIF: lossless, supports only 256 colours, supports transparency and animation</li>
+  <li>PNG-8: lossless, does not support animation</li>
+  <li>PNG-24: supports effects and drop shadows well, but has a large file size</li>
+  <li>JPEG: lossy, does not support transparency</li>
+  <li>WBMP: only supports black and white</li>
+</ul>
+
+<p>Adjust the parameters and check the file size. Set the matte colour if the background colour is known to get dithered edges. This helps blend the edge to keep it softer. Custom presets can be created if you want to save the options selected (in the case of creating multiple images of the same type). Zoom in on the graphic to check for quality and any areas of distortion.</p>
+
+<h2 id="dns-basics">DNS Basics</h2>
+<h3 id="domain-name-rules">Domain Name Rules</h3>
+<p>There are 3 different types of TLDs (top level domains):</p>
+<ol>
+  <li>Country code TLDs e.g. .uk, .us, .es</li>
+  <li>Generic TLDs e.g. .com, .org</li>
+  <li>Infrastructure TLDs</li>
+</ol>
+
+<h3 id="dns-ttl-and-propagation">DNS TTL and Propagation</h3>
+<p>Set a low TTL whilst developing and then a high TTL once in production. Reset to a low TTL if moving servers.</p>
+
+<h3 id="name-servers">Name Servers</h3>
+<p>Name servers give information about domain names. There are 2 different types: master (stores originals) and slave (stores copies).
+<code class="highlighter-rouge">host -t ns example.com</code> will show the nameservers for a particular domain.</p>
+
+<h3 id="dns-hosting">DNS Hosting</h3>
+<p>Some registrars provide DNS hosting (e.g. namecheap.com and hover). This provides a quick and easy solution for setting up DNS. They are usually basic, but also free. Alternatively there are provides which can host your DNS for you (e.g. dnssimple, pointhq). One advantage of using a different provider is that you won’t have to set up DNS again if you move name registrars. They have also recently started offering templates for external services to you domains e.g. google apps, github pages, CDNs.</p>
+
+<h3 id="root-servers">Root servers</h3>
+<p>The root servers have details of where the name servers are. They keep track of the root zone, the authoritative list of the DNS servers for all TLDs. There are 13 root servers throughout the world. <a href="http://www.iana.org/domains/root/db">http://www.iana.org/domains/root/db</a> lists all TLDs.</p>
+
+<h3 id="a-records">A Records</h3>
+<p><strong>A Records</strong> are the most common record returned by nameservers and map hostnames to IP addresses. There would be an A Record for every sub domain e.g. www, mail etc. An asterisk can also be used as a wildcard in place of specifying individual sub domains. AAAA records are used for IPv6 addresses.</p>
+
+<h3 id="mx-records">MX Records</h3>
+<p><strong>MX Records</strong> are used to point to servers which accept email messages via SMTP. In simple cases MX Records specify just one server. In more complicated cases Primary and Backup servers can be specified.</p>
+
+<h3 id="cname-records">CNAME Records</h3>
+<p>Short for the Canonical Name record. Usually used for aliases. In the case of e.g. 5 subdomains, A Records could be used to point all 5 subdomains to the same server. Alternatively a CNAME record could point all subdomains to one subdomain e.g. www, and then use the web server to take care of name resolution. The advantage is just one record to update if IP addresses change. CNAME records are usually specified with a dot at the end since you have to specify the full domain (e.g. www.example.com.)</p>
+
+<h3 id="fqdn">FQDN</h3>
+<p>Fully qualified domain name. These end with a dot (e.g. www.example.com.)</p>
+
+<h3 id="txt-records">TXT Records</h3>
+<p>Text records can contain freeform text of any type. One type is a SPF Text Record (Sender Policy Framework). These are used to specify you can send email on your behalf, introduced to try and combat spam. DKIM (Domain Keys Identified Message) are used to associate a domain name to an email message by adding a DKIM signature field to the email’s header. Some providers e.g. google ask you to add specific TXT records. This proves you own the domain since you can only add these records when owning a domain. Once verified by the external provider the TXT record can be safely deleted.</p>
+
+<h3 id="ptr-records">PTR Records</h3>
+<p>Used for reverse DNS to check if the server name is actually associated with the IP address. The format is the IP address in reverse with in-addr.arpa e.g. if the domain name mail.example.com points to IP address 1.2.3.4, then the PTR Record is 4.3.2.1.in-addr.arpa</p>
+
+<h3 id="soa-records">SOA Records</h3>
+<p>Start of Authority record is the first record in the DNS zone file. It indicates that this name server is the best source for data within this domain. Contains information like how often the domain name is updated, who manages it etc.</p>
+
+<p>The format is: Source host contact email; serial number; refresh time in seconds; retry time; expire time; minimum TTL.</p>
+
+<h2 id="chrome-dev-tools-basics">Chrome Dev Tools Basics</h2>
+<h3 id="elements-panel">Elements panel</h3>
+<p>Use the magnifying glass to hover over elements on the web page, view their margin and padding and jump to the corresponding html.
+Text and html can be edited, attributes can be edited or added, elements can be reordered by dragging and droping.</p>
+
+<h3 id="resources-panel">Resources panel</h3>
+<p>Shows all resources loaded on the web page as well as local storage which can be modified.</p>
+
+<h3 id="network-panel">Network panel</h3>
+<p>Clear out captures by clicking the no entry sign at the bottom.
+Cmd-Shift-R to do a hard reset on a mac.
+304 - gets from cache</p>
+
+<h4 id="timeline">Timeline</h4>
+<p>Different colours in the timeline represent different types of assets: HTML - blue; CSS - green; images - purple;
+Blue line represents when the DOM is loaded and therefore when the <code class="highlighter-rouge">loaded</code> event was fired.
+Red line represents when everything has finished loading.</p>
+
+<h4 id="optimisation">Optimisation</h4>
+<ul>
+  <li>Ensure there are no 404s or 500s.</li>
+  <li>Minimise HTTP requests by combining images into sprites, combining js files and css files</li>
+  <li>Minimse loading time by minifying css and js files</li>
+</ul>
+
+<h3 id="sources-panel">Sources panel</h3>
+<p>Right click &gt; Local modifications shows all modifications made.
+Right click &gt; Save as to save the files
+Pause button at the bottom of the panel lets you toggle on javascript exceptions: grey - don’t pause; blue - pause on all exceptions; burgundy - pause on all uncaught exceptions.</p>
+
+<h3 id="timeline-panel">Timeline panel</h3>
+<p>This panel shows the rendering performance of the page. Most screens will operate at 60hz so if a browser painting the page works at less than 60 fps due to complicated transitions, gradients, box shadows etc, then frames will be dropped.</p>
+
+<h3 id="profiles-panel">Profiles panel</h3>
+<p>Shows detailed information for profiling e.g. Javascript, heap size</p>
+
+<h3 id="audits-panel">Audits panel</h3>
+<p>Some handy tips for optimising performance.</p>
+
+<h3 id="console">Console</h3>
+<p>The console can be used to interact with the web page, DOM etc using javascript.
+e.g. getElementById(“intro”). Right click &gt; Reveal in Elements Panel will open this in the Elements panel. A shorthand for the same thing is $(“#intro”) (similar to jquery syntax, alias for document.querySelector() function).</p>
+
+<h4 id="using-the-console-from-javascript">Using the console from Javascript</h4>
+<p>Messages can be logged using console.log(). 
+Other functions detailed in the console api reference at https://developers.google.com/chrome-developer-tools/docs/console-api#consoledirxmlobject. 
+Also see the command line api reference at <a href="https://developers.google.com/chrome-developer-tools/docs/commandline-api">https://developers.google.com/chrome-developer-tools/docs/commandline-api</a>.
+Check the console for any javascript error details.</p>
+
+<h4 id="timing-functions">Timing functions</h4>
+<p>By using console.time(“NameOfMyTimer”) to start a timer and console.timeEnd(“NameOfMyTimer”), code can be timed.</p>
+
+<h4 id="entering-functions-directly-in-the-console">Entering functions directly in the console</h4>
+<p>Functions can be entered directly in the console. Use Shift+Enter to move down a line.</p>
+
+<h3 id="adjusting-settings">Adjusting settings</h3>
+
+:ET

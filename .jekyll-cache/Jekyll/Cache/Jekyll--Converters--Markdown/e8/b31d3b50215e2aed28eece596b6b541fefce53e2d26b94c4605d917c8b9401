@@ -1,0 +1,109 @@
+I"�<h2 id="bitwise-operators">Bitwise operators</h2>
+
+<p>| is Bitwise OR which will give you the result of “or”ing each bit of two ints, chars etc
+&amp; is Bitwise AND and will give you the result of “and”ing each bit of two ints, chars etc</p>
+
+<p>Upper case letter | 32 = lower case letter (i.e. 0s in every column except 32)
+Lower case letter &amp; ~32 = upper case letter (i.e. 1s in every column except 32 - where ~32 = 256 - 32)</p>
+
+<h2 id="command-line-arguments">Command line arguments</h2>
+
+<p>Main can be initialised with 2 parameters, <code class="highlighter-rouge">argc</code> and <code class="highlighter-rouge">char* argv[]</code>.</p>
+
+<p><code class="highlighter-rouge">argc</code> contains the number of arguments in including the command itself e.g. for <code class="highlighter-rouge">mv here there</code>, argc will be 3. <code class="highlighter-rouge">char* arg[]</code> will contain these arguments: <code class="highlighter-rouge">mv</code>, <code class="highlighter-rouge">here</code>, <code class="highlighter-rouge">there</code> and finally NULL or <code class="highlighter-rouge">\0</code>.</p>
+
+<h2 id="arrays">Arrays</h2>
+
+<p>There are two different ways to declare arrays:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// VERSION 1 (bracket-type array)
+int x[N];
+
+// VERSION 2 (pointer-type array)
+int *x = malloc(sizeof(int) * N); 
+</code></pre></div></div>
+
+<ul>
+  <li>The first creates the array on the stack, the second on the heap, with a variable x on the stack which holds the address of the assigned area on the heap.</li>
+  <li>The first since its on the stack be automatically deallocated. The second won’t be and <code class="highlighter-rouge">free</code> must be explicitly called.</li>
+  <li>The bracket array isn’t actually a variable, its just a symbol - a kind of constant which the compiler chooses for you. So you can’t increment the bracket array, but you can call e.g. x++ on the pointer array.</li>
+  <li><code class="highlighter-rouge">sizeof</code> the bracket array will return the size of the big block of memory on the stack, but <code class="highlighter-rouge">sizeof</code> the pointer array will return the size of the variable x itself (e.g. 4 bytes)</li>
+  <li>The bracket array can be initialised using shortcut notation <code class="highlighter-rouge">int x[] = {1,2,3,4};</code></li>
+</ul>
+
+<h2 id="redirecting-and-pipes">Redirecting and Pipes</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./hello &gt; file.txt              # redirects stdout to the file and overwrite previous contents
+./hello &gt;&gt; file.txt             # appends to previous contents
+./hello &gt; /dev/null             # discards the data
+./hello &lt; file.txt              # redirects stdin and provides input to the program from the contents of file.txt
+./hello &lt; file.txt &gt; file2.txt  # redirect both stdin and stdout
+./hello | ./redirect            # the output of hello is piped as the input to redirect
+cat students.txt                # cat reads a file and outputs the contents to stdout
+</code></pre></div></div>
+
+<h2 id="encryption-algorithms">Encryption Algorithms</h2>
+
+<h3 id="caesar-cipher">Caesar Cipher</h3>
+
+<p>This encrypts data by transposing each character by a set number of places e.g. with a key of 1: A becomes B, B becomes C, hello becomes ifmmp etc. There are only 25 possible keys which need to be tried in order to crack the cipher.</p>
+
+<h3 id="vigenere-cipher">Vigenere Cipher</h3>
+
+<p>This cipher is a polyalphabetic cipher which uses two or more cipher alphabets to encrypt the data which means that the letters are shifted by different amounts, dependent on a word or phrase as the encryption key.</p>
+
+<p><a href="http://www.counton.org/explorer/codebreaking/vigenere-cipher.php">http://www.counton.org/explorer/codebreaking/vigenere-cipher.php</a></p>
+
+<h3 id="rsa">RSA</h3>
+
+<p>Both ciphers above use the same key to both encrypt and decrypt the data. These are know as <em>symmetric</em> key algorithms. This means that the sender and receiver need to have agreed on the key upfront. But then how do they establish this key in the first place. The secret key would also need to be encrypted and decrypted.</p>
+
+<p>RSA uses a pair of keys, the public key and the private key. The public key is used to encrypt a message and the private key to decrypt a message. For two parties wanting to communicate, they both need their own set of keys. This is <em>assymetric</em> key cryptography.</p>
+
+<p>To generate the two keys, we first start with 2 large prime numbers. The public key uses the product of these primes, but not the primes themselves. Since it is computationally difficult to factor numbers, it is difficult for an attacker to work out the two primes which make up the product and thereby decipher the message.</p>
+
+<h4 id="two-prime-numbers">Two prime numbers</h4>
+
+<p>Generate two prime numbers by generating large numbers over and over again and then testing if they are probably prime. It is recommended that these numbers are at least 10^24 bits i.e. over 300 decimal digits.</p>
+
+<p>p = 23, q = 43</p>
+
+<h4 id="private-and-public-keys">Private and public keys</h4>
+
+<p>First calculate <code class="highlighter-rouge">n</code> and <code class="highlighter-rouge">m</code> thus:</p>
+
+<p>n = p * q = 23 * 43 = 989
+m = (p - 1) * (q - 1) = 22 * 42 = 924</p>
+
+<p>We now need another number <code class="highlighter-rouge">e</code> which is relatively prime to <code class="highlighter-rouge">m</code> and less than <code class="highlighter-rouge">m</code>. Two numbers are relatively prime (or co-prime) if their only common factor is 1. In practice <code class="highlighter-rouge">e</code> is commonly the prime number 65537, as long as this isn’t a factor of <code class="highlighter-rouge">m</code>.</p>
+
+<p><code class="highlighter-rouge">e</code> = 5</p>
+
+<p>Finally we need a number <code class="highlighter-rouge">d</code> such that <code class="highlighter-rouge">de = 1(mod m)</code>. 1(mod 924) = 925 = 1849 etc. 925 / 5 = 185. So <code class="highlighter-rouge">d</code> = 185.</p>
+
+<p>Public key is the pair (e, n) which is (5, 989).
+Private key is the pair (d, n) which is (185, 989).</p>
+
+<p>Notice that the original two primes do not feature in either the private or public keys.</p>
+
+<h4 id="encrypting">Encrypting</h4>
+
+<p>To encrypt a message we need to break it into parts less than <code class="highlighter-rouge">n</code> in size and then encrypt each part.</p>
+
+<p>chunk = message ^ e (mod  n)</p>
+
+<p>So if we want to encrypt <code class="highlighter-rouge">CS50</code> we can take the ascii values of C, S, 5, 0 i.e. 67, 83, 53, 48.
+Encrypting them gives e.g. for C: 67 ^ 5 (mod 989) = 1,350,125,107 mod 989 = 658</p>
+
+<h4 id="decrypting">Decrypting</h4>
+
+<p>message = (chunk ^ d) (mod n)</p>
+
+<p>So e.g. (658 ^ 185) (mod 989) = 67 [<em>how do we calculate this ??</em>]</p>
+
+<h4 id="critique">Critique</h4>
+
+<p>Since the message first needs to be broken down into chunks, this can be quite expensive. If we need to encrypt a large message it is common to use a mixture of symmetric key cryptography and assymetric key cryptography to make it secure but performant.</p>
+
+<p>AES using symmetric key cryptography and uses RSA to send the key between the two systems</p>
+:ET

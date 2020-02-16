@@ -1,0 +1,73 @@
+I"b<p>Reference: http://gitimmersion.com</p>
+
+<p>Notes ONLY of parts which were a useful reminder (an only up to Lab 35 so far)</p>
+
+<h2 id="getting-old-versions">Getting old versions</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">git checkout &lt;hash&gt;</code> to checkout a previous revision</li>
+  <li><code class="highlighter-rouge">git checkout master</code> by checking out a branch by name, you automatically go to the latest version of that branch</li>
+</ul>
+
+<h2 id="tagging-versions">Tagging versions</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">git tag v1</code> to tag the current version</li>
+  <li><code class="highlighter-rouge">git checkout v1^</code>  (or <code class="highlighter-rouge">v1~1</code>) to checkout the version immediately prior to v1</li>
+</ul>
+
+<h2 id="undoing-staged-changes">Undoing staged changes</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">git reset HEAD &lt;filename&gt;</code> will undo the staging of a file (but not the actual changes)</li>
+  <li><code class="highlighter-rouge">git checkout &lt;filename&gt;</code> to actually revert to the commited version once unstaged</li>
+</ul>
+
+<h2 id="undoing-commited-changes">Undoing commited changes</h2>
+
+<p>There are several ways to achieve this. A safe way is to simply create a new commit that reverses the unwanted changes.</p>
+
+<h3 id="revert">Revert</h3>
+
+<ul>
+  <li><code class="highlighter-rouge">git revert HEAD</code> will revert the last change, opening the editor</li>
+  <li><code class="highlighter-rouge">git revert HEAD --no-edit</code> will just revert it</li>
+</ul>
+
+<p>NB you can only revert the last change this way. Reverting a second time will revert the revert!</p>
+
+<h3 id="removing-commits">Removing commits</h3>
+
+<ul>
+  <li><code class="highlighter-rouge">git reset &lt;hash&gt;</code> or <code class="highlighter-rouge">git reset &lt;tag&gt;</code> will reset the HEAD to that point removing subsequent commits</li>
+  <li>Using <code class="highlighter-rouge">--hard</code> will also reset the files in the working directory</li>
+</ul>
+
+<p>IF one of these commits was tagged, <code class="highlighter-rouge">git log --all</code> will show them, they aren’t lost. However, any that aren’t tagged will be removed when garbage collection is run.</p>
+
+<p><em>IMPORTANT</em> Using <code class="highlighter-rouge">reset</code> on non local branches can be dangerous.</p>
+
+<h3 id="amending-a-commit">Amending a commit</h3>
+
+<p>If it is a simple amendment, just stage and commit using the <code class="highlighter-rouge">--amend</code> flag when committing. Original commit note will also be replaced.</p>
+
+<p><code class="highlighter-rouge">git commit --amend -m "Add change, add additional amendment</code></p>
+
+<h2 id="type-and-dump">Type and Dump</h2>
+
+<p><code class="highlighter-rouge">git cat-file -t &lt;hash&gt;</code> to show the type of a particular entry
+<code class="highlighter-rouge">git cat-file -p &lt;hash&gt;</code> to dump the detail of a particular entry</p>
+
+<h2 id="merge">Merge</h2>
+
+<p>Merge master branches into working branches regularly to pick up any changes. Ensure the working branch is checked out and use <code class="highlighter-rouge">git merge master</code>. NB produces ugly commit graphs.</p>
+
+<h3 id="conflicts">Conflicts</h3>
+
+<p>Any conflicts experienced when merging down from master need to be manually resolved and then committed in the working branch.</p>
+
+<h2 id="rebase">Rebase</h2>
+
+<p>Instead of using <code class="highlighter-rouge">merge</code>, use <code class="highlighter-rouge">rebase</code> e.g. on the working branch, rebase from master using <code class="highlighter-rouge">git rebase master</code>. The result is the same, but the commit history is much cleaner (and not accurate). Since rebase messes with the commit branch, its fine for local short lived branches, but stick to <code class="highlighter-rouge">merge</code> for branches in a public repo.</p>
+
+:ET

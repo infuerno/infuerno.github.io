@@ -1,0 +1,107 @@
+I"K <h3 id="references">References</h3>
+
+<ul>
+  <li>https://www.red-gate.com/simple-talk/dotnet/asp-net/advanced-uses-razor-views-asp-net-mvc/</li>
+</ul>
+
+<h2 id="chapter-1-aspnet-mvc">Chapter 1: ASP.NET MVC</h2>
+
+<h3 id="aspnet-mvc-introduction">ASP.NET MVC Introduction</h3>
+
+<h4 id="mvc-design-pattern">MVC Design Pattern</h4>
+
+<p>Model, View, Controller map directly to 3 of the 5 CSLA.NET layers:</p>
+
+<ul>
+  <li>Model &gt; Business Logic</li>
+  <li>Controller &gt; Interface Control</li>
+  <li>View &gt; Interface</li>
+</ul>
+
+<p>ViewModel objects are typically used in MVC since many domain objects are data centric and therefore don’t have properties appropriate for a view. This often happens when using an ORM to create domain objects. HOWEVER, in CSLA business objects should already reflect the user scenario. ViewModels should not generally be required.</p>
+
+<h4 id="aspnet-mvc-framework">ASP.NET MVC Framework</h4>
+
+<p>The framework supports the MVC design pattern. For CSLA MVC, all controller need to inherit from the <code class="highlighter-rouge">Csla.Web.Mvc.Controller</code> base class.</p>
+
+<ul>
+  <li><code class="highlighter-rouge">ViewData</code> is a dictionary object for passing arbitrary data to the view, but also has a <code class="highlighter-rouge">Model</code> property for providing a reference to a model object.</li>
+  <li><code class="highlighter-rouge">ViewBag</code> is a dynamic object and as such has no compile time checking. Typos are hard to spot.</li>
+</ul>
+
+<p>The default MVC model binder works fine for objects with:</p>
+
+<ul>
+  <li>a default constructor</li>
+  <li>properties with getters and setters</li>
+  <li>data validations, but nothing more complicated</li>
+</ul>
+
+<p>For some CSLA objects the regular model binder will fail. In these circumstances the alternative CSLA model binder can be used.</p>
+
+<h3 id="cslanet-mvc-features">CSLA.NET MVC Features</h3>
+
+<h4 id="aspnet-support">ASP.NET Support</h4>
+
+<p>The <code class="highlighter-rouge">ApplicationContext</code> object (stored on the HttpContext in ASP.NET) contains:</p>
+
+<ol>
+  <li>Access to numerous configuration settings</li>
+  <li>3 context dictionaries: <code class="highlighter-rouge">LocalContext</code>, <code class="highlighter-rouge">ClientContext</code>, <code class="highlighter-rouge">GlobalContext</code></li>
+  <li><code class="highlighter-rouge">User</code> property to access the principal</li>
+</ol>
+
+<p>A reference to <code class="highlighter-rouge">Csla.Web</code> must be added to ensure all features work as expected.</p>
+
+<h4 id="aspnet-mvc-support">ASP.NET MVC Support</h4>
+
+<p>Use of the MVC features is optional. The <code class="highlighter-rouge">Csla.Web.Mvc</code> assembly references the <code class="highlighter-rouge">System.Web.Mvc</code> assembly, so the correct version of the <code class="highlighter-rouge">Csla.Web.Mvc</code> assembly must be used.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">Controller</code></td>
+      <td>Has <code class="highlighter-rouge">SaveObject</code> and <code class="highlighter-rouge">LoadProperty</code> methods simplify having to use ‘new’ objects whether for create, edit OR delete. <code class="highlighter-rouge">SaveObject</code> method accepts the object to be save, a boolean indicating create or update and an optional alternative implementation of UpdateModel</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">CslaModelBinder</code></td>
+      <td>The regular ASP.NET model binder invokes <code class="highlighter-rouge">DataAnnotations</code> attribute rules after copying postdata back to an object. However CSLA has also run the same rules when each property’s <code class="highlighter-rouge">SetProperty</code> method is called during the model binding. The <code class="highlighter-rouge">CslaModelBinder</code> solves this problem by suspending rules when copying back (using <code class="highlighter-rouge">ICheckRules</code> interface) and then invoking all business and validation rules for the object. If using this model binder with list objects, ensure the <code class="highlighter-rouge">name</code> property of each HTML element follows the ASP.NET MVC list conventions i.e. the name will be rendered as <code class="highlighter-rouge">[0].personId</code> or <code class="highlighter-rouge">[0].firstName</code> (literally). <code class="highlighter-rouge">Html</code> helper methods will take care of this. The custom model binder must be loaded at application start i.e. in <code class="highlighter-rouge">Application_Start</code> of <code class="highlighter-rouge">Global.asax.cs</code> either globally - use <code class="highlighter-rouge">ModelBinders.Binders.DefaultBinder = new Csla.Web.Mvc.CslaModelBinder();</code> - or for a subset of types - <code class="highlighter-rouge">var cslaBinder = new Csla.Web.Mvc.CslaModelBinder(); ModelBinders.Binders.Add(typeof(ProjectTracker.Library.ProjectEdit), cslaBinder);</code>. Using the <code class="highlighter-rouge">CslaModelBinder</code> for all types is usual.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">IModelCreator</code></td>
+      <td>To bind the form collection to an object, an instance of the object needs to be created, often using <code class="highlighter-rouge">new</code>. In some circumstances for CSLA, the <code class="highlighter-rouge">create</code> factory method should instead by used. If the controller implements <code class="highlighter-rouge">IModelCreator</code> the method <code class="highlighter-rouge">CreateModel</code> needs to be implemented to specify how the model should be created e.g. by calling the static method <code class="highlighter-rouge">ProjectEdit.NewProject()</code>. <code class="highlighter-rouge">CreateModel</code> will be called by the <code class="highlighter-rouge">CslaModelBinder</code>. Alternative to this is to use view models (see below).</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">HtmlExtensions</code></td>
+      <td>The <code class="highlighter-rouge">Csla.Web.Mvc</code> namespace includes a <code class="highlighter-rouge">Html.HasPermission</code> extension method to customise the UI. The helper method defines markup which should be rendered if the user has permission and if the user doesn’t have permission. In this way elements can be hidden or made read only as required. The <code class="highlighter-rouge">IAuthorizeReadWrite</code> can alternatively be used.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">HasPermissionAttribute</code></td>
+      <td>Can be applied to a controller or action method. Used to leverage CSLA authorization rules for objects e.g. GetObject or CreateObject. Will redirect the user to the login screen if not authenticated or not authorised to perform this action. Generally UI elements should be hidden (e.g. using <code class="highlighter-rouge">Html.HasPermission</code>) but directly addressable controllers and actions must additionally be protected in this way.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">IViewModel</code></td>
+      <td>Used with ViewModels which generally rely on an existing BO for most properties, but want to add extra read only properties to be displayed, or extra verbs for use by the controller. The controller implements <code class="highlighter-rouge">IViewModel</code>. When model binding back, the underlying business object is used.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">ViewModelBase</code></td>
+      <td>Implements <code class="highlighter-rouge">IViewModel</code>. Optional. The ViewModel object will generally create / get the BO, rather than the controller (so the controller no longer needs to implement the interface).</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="mvvm">MVVM</h4>
+
+<p>The MVVM pattern specifies that the view binds to a viewmodel object, and the viewmodel object manages the model object.</p>
+
+<h2 id="chapter-2-business-and-data-access-layers">Chapter 2: Business and Data Access Layers</h2>
+
+<h2 id="chapter-3-application-implementation">Chapter 3: Application Implementation</h2>
+
+:ET

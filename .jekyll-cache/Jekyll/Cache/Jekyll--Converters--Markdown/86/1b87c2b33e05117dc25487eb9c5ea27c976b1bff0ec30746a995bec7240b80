@@ -1,0 +1,58 @@
+I"�<h2 id="why">Why?</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>We, in the enterprise development community, especially the web development community, have been tainted by years of hype that took us away from proper object oriented software development. 
+</code></pre></div></div>
+
+<ul>
+  <li>Eric Evans’ Blue Book - Domain-Driven Design: Tackling Complexity in the Heart of Software</li>
+  <li>Jimmy Nilsson’s Applying DDD</li>
+  <li>http://groups.yahoo.com/group/domaindrivendesign</li>
+</ul>
+
+<h2 id="introduction">Introduction</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Software design is an art, and like any art it cannot be taught and learned as a precise science, by means of theorems and formulas.
+
+A domain is something of this world. It cannot just be taken and poured over the keyboard into the computer to become code. We need to create an abstraction of the domain.
+</code></pre></div></div>
+
+<h3 id="what-is-this-abstraction">What is this abstraction?</h3>
+
+<ul>
+  <li>It is a model, a model of the domain.</li>
+  <li>It is not a particular diagram; it is the idea that the diagram is intended to convey.</li>
+  <li>It is not just the knowledge in a domain expert’s head; it is a rigorously organized and selective abstraction of that knowledge.</li>
+</ul>
+
+<p>We even need to leave some parts of the domain out. A domain contains just too much information to include it all into the model. And much of it is not even necessary to be considered.</p>
+
+<p>A model is an essential part of software design.
+We need to communicate this model with domain experts, with fellow designers, and with developers.
+There are different ways to do that.</p>
+
+<h3 id="how-is-the-model-communicated">How is the model communicated?</h3>
+
+<ul>
+  <li>One is graphical: diagrams, use cases, drawings, pictures, etc.</li>
+  <li>Another is writing. We write down our vision about the domain.</li>
+  <li>Another is language. We can and we should create a language to communicate specific issues about the domain.</li>
+</ul>
+
+<h3 id="code-design">Code design</h3>
+
+<p>When we have a model expressed, we can start doing code design, working on the details. Here code design patterns come handy, and they should be applied when necessary. Good coding techniques help to create clean, maintainable code.</p>
+
+<p>While Agile advocates recognize the importance of design decision, they resist upfront design. Instead they employ a great deal of implementation flexibility, and through iterative development with continuous business stakeholder participation and a lot of refactoring, the development team gets to learn more about the customer domain and can better produce software that meets the customers needs.</p>
+
+<p>And while the waterfall approach may lead to over-engineering, the fear of over- engineering may lead to another fear: the fear of doing a deep, thoroughly thought out design.</p>
+
+<h2 id="building-domain-knowledge">Building Domain Knowledge</h2>
+
+<h2 id="language">Language</h2>
+
+<h2 id="model-driven-design">Model-Driven Design</h2>
+
+<h2 id="refactoring">Refactoring</h2>
+
+<h2 id="preserving-model-integrity">Preserving Model Integrity</h2>
+:ET

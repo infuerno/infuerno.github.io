@@ -1,0 +1,44 @@
+I"Å
+<h2 id="managing-virtual-machines-with-vagrant">Managing virtual machines with Vagrant</h2>
+
+<ol>
+  <li>Install vagrant (using homebrew tap)</li>
+  <li>Install virtual box (again using homebrew tap)</li>
+  <li><code class="highlighter-rouge">vagrant init</code></li>
+  <li>Edit the <code class="highlighter-rouge">Vagrantfile</code> to specify the type of server to provision, can use Bento Box machine from <a href="https://github.com/opscode/bento">https://github.com/opscode/bento</a></li>
+  <li>Additionally instruct Vagrant to install the chef client</li>
+  <li><code class="highlighter-rouge">vagrant up</code></li>
+  <li><code class="highlighter-rouge">vagrant ssh</code></li>
+  <li>Node will have been added to chef server nodes</li>
+</ol>
+
+<p>To delete the box</p>
+<ol>
+  <li><code class="highlighter-rouge">vagrant destroy</code></li>
+  <li><code class="highlighter-rouge">knife node delete &lt;NODE-NAME&gt; -y &amp;&amp; knife client delete &lt;NODE-NAME&gt; -y</code></li>
+  <li>Alternatively the knife butcher plugin can clean up everything about the node from the chef server automatically</li>
+</ol>
+
+<h2 id="cookbooks">Cookbooks</h2>
+
+<p>Cookbooks can be created and managed using <code class="highlighter-rouge">knife</code>.</p>
+
+<p>The knife command supports a host of commands structured like the following: 
+<code class="highlighter-rouge">knife &lt;subject&gt; &lt;command&gt;</code></p>
+
+<p>Cookbooks on the server can be inspected using the <code class="highlighter-rouge">show</code> command.</p>
+<ul>
+  <li><code class="highlighter-rouge">knife cookbook show iptables 0.12.0 definitions</code></li>
+  <li><code class="highlighter-rouge">knife cookbook show iptables 0.12.0 definitions iptables_rule.rb</code></li>
+</ul>
+
+<h3 id="dependencies">Dependencies</h3>
+
+<p>Add any dependencies for a cookbook to the metadata.rb in the cookbook‚Äôs directory. Now features of other cookbooks can be used within a recipe using the <code class="highlighter-rouge">include_recipe</code> command. As long as these cookbooks have been uploaded to the chef server, they will be sent to the node. Both <code class="highlighter-rouge">depends</code> and <code class="highlighter-rouge">include_recipe</code> can take an additional argument to further specify the version.</p>
+
+<p><code class="highlighter-rouge">foodcritic</code> gem will analyse dependencies to ensure they are consistent.</p>
+
+<h3 id="managing-dependencies-with-berkshelf">Managing dependencies with Berkshelf</h3>
+
+<p>Like bundler for ruby, Berkshelf can manage all cookbook dependencies so that standard cookbooks do not have to be individually installed one by one and then uploaded to the chef server.</p>
+:ET

@@ -1,0 +1,23 @@
+I"f<p>#Notes</p>
+
+<p>Use .getClass() after any variable to print the class.</p>
+
+<p>Define lists and maps e.g. <code class="highlighter-rouge">list = []</code>, <code class="highlighter-rouge">map = [:]</code></p>
+
+<p>You can either use dot notation or square brackets notation to reference the keys to get the values e.g. <code class="highlighter-rouge">map.Key1</code> or <code class="highlighter-rouge">map["Key1"]</code></p>
+
+<p>##Closures</p>
+
+<p>These are blocks of code which can be passed around in variables and passed to certain methods.</p>
+
+<p>By default they take one variable called it.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>square = { it * it }
+println square(9)
+
+[0,1,2,3].collect(square)
+</code></pre></div></div>
+
+<p>will perform the function square on each member of the list and return a new array</p>
+
+:ET

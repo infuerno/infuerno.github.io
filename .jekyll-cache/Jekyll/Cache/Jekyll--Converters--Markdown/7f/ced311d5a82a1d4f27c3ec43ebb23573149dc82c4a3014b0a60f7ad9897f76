@@ -1,0 +1,160 @@
+I"j(<h2 id="chapter-1-getting-started">Chapter 1 Getting Started</h2>
+
+<ul>
+  <li>Any process that accesses the UI thread (UI-related tasks usually share a <strong>single</strong> thread) will be blocked in a synchronous application.</li>
+</ul>
+
+<h3 id="writing-async-methods">Writing async methods</h3>
+
+<p>The <code class="highlighter-rouge">async</code> and <code class="highlighter-rouge">await</code> keywords are used to denote asynchronous methods:</p>
+<ul>
+  <li>The <code class="highlighter-rouge">async</code> modifier must be used in the method signature</li>
+  <li>Return type must be <code class="highlighter-rouge">Task&lt;T&gt;</code>, <code class="highlighter-rouge">Task</code> or <code class="highlighter-rouge">void</code> (event handlers only)</li>
+  <li>Has to contain at least one <code class="highlighter-rouge">await</code></li>
+  <li>(optional) Name should end in <code class="highlighter-rouge">Async</code> e.g. <code class="highlighter-rouge">GetBrokenLinksAsync</code></li>
+</ul>
+
+<p>NOTE: methods are not awaitable - types are awaitable. Hence you await a <code class="highlighter-rouge">Task&lt;TResult&gt;</code> or a <code class="highlighter-rouge">Task</code></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        private async void btnName_Click(object sender, EventArgs e)
+        {
+            string text = await ReadTextAsync();
+            lblName.Text += text;
+        }
+
+        private async Task&lt;string&gt; ReadTextAsync()
+        {
+            await Task.Delay(TimeSpan.FromSeconds(4));
+            return "ola!";
+        }
+</code></pre></div></div>
+
+<p>NOTE: don’t return <code class="highlighter-rouge">void</code> unless creating an async event handler e.g. btnName_Click above. Methods should return <code class="highlighter-rouge">Task</code> if they return nothing or <code class="highlighter-rouge">Task&lt;T&gt;</code> if they return a value</p>
+
+<h3 id="avoid-deadlocks">Avoid deadlocks</h3>
+
+<p>Deadlocks can occur if mixing synchronous and asynchronous code. If a method calls an asynchronous method, but does not await the result (i.e. calls it synchronously) a deadlock can occur.</p>
+
+<p>This is due to contexts:</p>
+<ul>
+  <li>A windows form application uses a UI thread = UI context</li>
+  <li>An ASP.NET application has an ASP.NET request context</li>
+  <li>If neither, the thread pool context is used</li>
+</ul>
+
+<p>A method run on a button click which is not itself an asynchronous method, but which calls an asynchronous method will block the UI context thread. However when the async method it is calling is ready to return, it will wait patiently for the UI context so it can finish - it continues on the same context which started it. Deadlock.</p>
+
+<p>Two solutions:</p>
+<ol>
+  <li>Use <code class="highlighter-rouge">async</code> all the way down</li>
+  <li><code class="highlighter-rouge">Use ConfigureAwait(false)</code> - tells the async method not to resume on the context</li>
+</ol>
+
+<h2 id="chapter-2-how-do-i-use-async">Chapter 2 How Do I Use Async</h2>
+
+<p>For a method returning <code class="highlighter-rouge">Task&lt;T&gt;</code>, call the method as any other that returns a value, but additionally <code class="highlighter-rouge">await</code>ing it:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`int age = await GetAge(birthday);`
+</code></pre></div></div>
+
+<p>Alternatively, define the task and then await it in two seperate lines:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    Task&lt;int&gt; ageTask = GetAge(birthday);
+    int age = await ageTask;
+
+</code></pre></div></div>
+
+<p>Use async with the factory pattern to create a new object asynchronously:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    private async Task&lt;Person&gt; CreatePerson(string firstName, string lastName, DateTime dateofbirth) {
+        // process which creates a person and requires something asynchronous
+        return person;
+    }
+
+    Person person = await CreatePerson("Dirk", "Gently", new DateTime(1975, 1, 1));
+</code></pre></div></div>
+
+<h3 id="cancel-an-async-task">Cancel an async task</h3>
+
+<p>Cancelling async tasks requires a CancellationToken object to be passed to the async method. If the async method is cancelled, it throws an <code class="highlighter-rouge">OperationCancelledException</code>.</p>
+
+<ul>
+  <li>Instantiate a CancellationTokenSource object in the top most method e.g. <code class="highlighter-rouge">var cancelSource = new CancellationTokenSource</code></li>
+  <li>Filter a token down through the async methods e.g. <code class="highlighter-rouge">cancelSource.Token</code></li>
+  <li>Cancel the task by calling <code class="highlighter-rouge">Cancel()</code> on the cancel source object e.g. <code class="highlighter-rouge">cancelSource.Cancel()</code></li>
+  <li>Ensure the <code class="highlighter-rouge">cancelSource</code> is set to null at the end (why?)</li>
+</ul>
+
+<h3 id="cancel-after-a-specific-time">Cancel after a specific time</h3>
+
+<p>If no response has been received after a specific time, this allows us to cancel the task. In a similay way to above, explicitly call <code class="highlighter-rouge">cancelSource.CancelAfter(3000)</code> prior to calling the async method and passing in a token.</p>
+
+<h3 id="await-in-catch-and-finally">Await in catch and finally</h3>
+
+<p>Also possible. e.g. call a web page and if not returned, load from back up.</p>
+
+<h3 id="abstract-classes-and-interfaces">Abstract classes and interfaces</h3>
+
+<p>Abstract methods and interface methods are declared to return either <code class="highlighter-rouge">Task</code> or <code class="highlighter-rouge">Task&lt;T&gt;</code> as approprirate, but the <code class="highlighter-rouge">async</code> keyword is not used. When overriding or implementing the method, just need to add the <code class="highlighter-rouge">async</code> keyword.</p>
+
+<h2 id="chapter-3-real-world-examples">Chapter 3 Real World Examples</h2>
+
+<p>Bake in asynchronous functionality from the start. In particular consider reporting progress to the user. Use the <code class="highlighter-rouge">IProgress</code> interface with the Windows Progress bar in a win forms application to do this.</p>
+
+<h3 id="displaying-the-progress-of-an-async-method">Displaying the progress of an async method</h3>
+
+<p>Use an <code class="highlighter-rouge">IProgress&lt;T&gt;</code> parameter to your async method to be able to report on progress via the <code class="highlighter-rouge">progress.Report(value)</code> method. The <code class="highlighter-rouge">IProgress&lt;T&gt;</code> allows you to defined a callback method which is run each time <code class="highlighter-rouge">.Report()</code> is called, passing in the value supplied to the callback method.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    var progress = new Progress&lt;int&gt;(percent =&gt;
+    {
+        prgProgress.Value = percent;
+        lblProgress.Text = $"Processing... {percent}% done";
+    });
+</code></pre></div></div>
+
+<h3 id="pausing-the-progress-of-an-async-method">Pausing the progress of an async method</h3>
+
+<p><code class="highlighter-rouge">Task.Delay()</code> can be used to pause a task e.g. <code class="highlighter-rouge">Task.Delay(TimeSpan.FromSeconds(2))</code>. A cancellation token can additionally be passed to the <code class="highlighter-rouge">Delay</code> method e.g. <code class="highlighter-rouge">Task.Delay(TimeSpan.FromSeconds(2), cancelToken)</code>.</p>
+
+<h3 id="using-taskwhenall-to-wait-for-all-tasks-to-complete">Using Task.WhenAll() to wait for all tasks to complete</h3>
+
+<p>Add all tasks as parameters to the Task.WhenAll method where a Task is an async method returning a Task e.g.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>private async Task DoSomething() { await ..... };
+private async Task DoSomethingElse() { await ..... };
+
+await Task.WhenAll(DoSomething(), DoSomethingElse());
+</code></pre></div></div>
+
+<p>Methods which return a <code class="highlighter-rouge">Task&lt;T&gt;</code> can be used with <code class="highlighter-rouge">Task.WhenAll()</code> and the return values available in a return type of array of type T i.e. <code class="highlighter-rouge">T[]</code></p>
+
+<p>Tasks can alternatively be added to a list of type <code class="highlighter-rouge">List&lt;Task&gt;</code> and passed to the <code class="highlighter-rouge">Task.WhenAll()</code> method.</p>
+
+<h3 id="using-taskwhenany-to-wait-for-any-tasks-to-complete">Using Task.WhenAny() to wait for any tasks to complete</h3>
+
+<p>Once one task completes, the others can be cancelled. Instantiate a new <code class="highlighter-rouge">CancellationTokenSource</code>, pass a token into each async method. When one method has returned, just called <code class="highlighter-rouge">Cancel()</code> on the <code class="highlighter-rouge">CancellationTokenSource</code> object.</p>
+
+<h3 id="process-tasks-as-they-complete">Process tasks as they complete</h3>
+
+<ol>
+  <li>Add tasks to a list</li>
+  <li>Use <code class="highlighter-rouge">Task.WhenAny()</code> which will return the first task to finish</li>
+  <li>Remove from the list of tasks (otherwise the same task will just be processed multiple times)</li>
+  <li>Process the result as necessary</li>
+  <li>Keep going with the next task</li>
+</ol>
+
+<h2 id="chapter-4-use-semaphoreslim-to-access-shared-data">Chapter 4 Use SemaphoreSlim to access shared data</h2>
+
+<p><code class="highlighter-rouge">SemaphoreSlim</code> is a lighter version of the <code class="highlighter-rouge">Semaphore</code> class and is intended for use in a local app because it can be used only as a local Semaphore.</p>
+
+<ol>
+  <li>Initialise a semaphore e.g. <code class="highlighter-rouge">var sem = new SemaphoreSlim(1)</code></li>
+  <li>Get a lock on the semaphore e.g. <code class="highlighter-rouge">await sem.WaitAsync()</code></li>
+  <li>Access the shared resource</li>
+  <li>Release the lock e.g. <code class="highlighter-rouge">sem.Release()</code> - potentially as the finally part of a try catch.</li>
+</ol>
+
+<h2 id="chapter-5-unit-tests-and-async-and-await">Chapter 5 Unit Tests and async and await</h2>
+
+:ET

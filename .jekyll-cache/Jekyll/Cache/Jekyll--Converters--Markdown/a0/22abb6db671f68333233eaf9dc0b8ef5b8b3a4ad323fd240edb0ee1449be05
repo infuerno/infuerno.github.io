@@ -1,0 +1,27 @@
+I"�<h2 id="the-need-for-automation">The Need for Automation</h2>
+
+<p>Create templates and publish in service catalogs for someone else to deploy</p>
+
+<ul>
+  <li><code class="highlighter-rouge">Get-Process | Sort-Object</code></li>
+  <li><code class="highlighter-rouge">Get-Process | Where-Object processname -eq "notepad" | Stop-Process</code></li>
+  <li><code class="highlighter-rouge">Invoke-Command -ComputerName fileserver -ScriptBlock { Get-EventLog -LogName Security -Newest 10 }</code></li>
+</ul>
+
+<h2 id="using-powershell-with-azure">Using PowerShell with Azure</h2>
+
+<p>PowerShell uses “least cognitive distance” naming convention, with all commands in the form Verb-Noun format</p>
+
+<ul>
+  <li><code class="highlighter-rouge">Get-Command -Module AzureRM.RedisCache</code></li>
+  <li><code class="highlighter-rouge">Get-Command -Verb Get</code></li>
+  <li><code class="highlighter-rouge">Get-Command -Noun Package</code> - useful for nuget management (or even <code class="highlighter-rouge">Get-Command -Module PackageManagement</code>)</li>
+  <li><code class="highlighter-rouge">Get-Module</code> - shows the PowerShell modules currently loaded</li>
+  <li><code class="highlighter-rouge">Get-Module -ListAvailable</code> - available on the system (not necessarily loaded)</li>
+  <li><code class="highlighter-rouge">Get-Module -ListAvailable | Where name -like 'microsoft*' | % { Get-Command -Module $_ }</code></li>
+</ul>
+
+<p>The <code class="highlighter-rouge">AzureRM</code> module is really just a wrapper around all the <code class="highlighter-rouge">AzureRM.*</code> modules.\</p>
+
+<p>Modules are loaded dynamically as and when commands are used.</p>
+:ET

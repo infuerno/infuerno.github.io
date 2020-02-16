@@ -1,0 +1,114 @@
+I"�<h2 id="assignment">Assignment</h2>
+<p>The conditional assignment operator  <code class="highlighter-rouge">||=</code> can be used to assign something only if currently not assigned. It’s made up of the OR <code class="highlighter-rouge">||</code> logical operator and the normal <code class="highlighter-rouge">=</code> assignment operator.</p>
+
+<h2 id="conditions">Conditions</h2>
+<p><code class="highlighter-rouge">unless</code> - opposite to <code class="highlighter-rouge">if</code>, tend not to use with else</p>
+
+<h3 id="tenary-operator">Tenary operator</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>today = "Monday"
+puts today == "Thursday" ? "time to go home" : "not yet"
+</code></pre></div></div>
+
+<h2 id="loops">Loops</h2>
+<p><code class="highlighter-rouge">for</code> is not used much in Ruby, though <code class="highlighter-rouge">for i in (1..10)</code> is useful.</p>
+
+<p>Since most iterations involve an array or hash of items, the <code class="highlighter-rouge">each</code> keyword is much more useful.
+When using iterators, the variable name of the iterated item (the <strong>index variable</strong>) is <strong>within</strong> the loop, whether using brackets or <code class="highlighter-rouge">do</code> and <code class="highlighter-rouge">end</code>.</p>
+
+<p><code class="highlighter-rouge">[1,3,5,7,9].each { |odd| puts odd * 2 }</code></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[1,3,5,7,9].each do |odd|
+  puts odd * 2
+end
+</code></pre></div></div>
+
+<p>Other useful looping constructs:
+<code class="highlighter-rouge">5.times</code>, <code class="highlighter-rouge">1.upto(5)</code>, <code class="highlighter-rouge">5.downto(1)</code></p>
+
+<p><code class="highlighter-rouge">break</code> and <code class="highlighter-rouge">next</code> are all useful ad hoc constructs e.g. <code class="highlighter-rouge">next if i % 2 == 0</code> to skip even numbers
+<code class="highlighter-rouge">redo</code> repeats the current iteration e.g. <code class="highlighter-rouge">redo if i == 2</code>
+<code class="highlighter-rouge">retry</code>  starts the whole loop from the start e.g. <code class="highlighter-rouge">retry if i == 2</code></p>
+
+<h2 id="arrays-and-hashes">Arrays and Hashes</h2>
+<p>Initialise an array of strings using the <code class="highlighter-rouge">%w</code> shortcut: <code class="highlighter-rouge">a = %w{ ant bee cat dog elk }</code>
+By default hash lookups return <code class="highlighter-rouge">nil</code> (which is falsey) when indexed by a key it doesn’t contain. The default can be changed when the hash is created e.g. <code class="highlighter-rouge">Hash.new(0)</code>. In this way you can combine a look up with e.g. an increment without having to check for existence first.
+Hashes are also commonly used as a way to have named parameters in functions.
+<code class="highlighter-rouge">&lt;&lt;</code> is useful instead of <code class="highlighter-rouge">.push</code> and <code class="highlighter-rouge">+=</code> with arrays and strings respectively.
+<code class="highlighter-rouge">collect</code>  method to act on every element of an array e.g.  <code class="highlighter-rouge">doubled_fibs = fibs.collect { |i| i*2 }</code> or use <code class="highlighter-rouge">collect!</code> to modify in place.
+<code class="highlighter-rouge">.select</code> can select a subset of a hash based on a block.
+<code class="highlighter-rouge">.each_key</code> and <code class="highlighter-rouge">.each_value</code> can be used to iterate over only keys or values (in this case you ONLY get the keys or the values to play with).</p>
+
+<h2 id="symbols">Symbols</h2>
+<p>Symbols pop up in a lot of places in Ruby, but they’re primarily used either as hash keys or for referencing method names. 
+When initialising hashes, a shorthand is possible from:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>movies = {
+    :clockwork_orange =&gt; "Alex de Large goes large",
+    :withnail_and_i =&gt; "Is that soup?",
+}
+</code></pre></div></div>
+<p>to:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>movies = {
+    clockwork_orange: "Alex de Large goes large",
+    withnail_and_i: "Is that soup?",
+}
+</code></pre></div></div>
+
+<h3 id="benchmarking-symbol-lookup-time">Benchmarking symbol lookup time</h3>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>require 'benchmark'
+
+string_AZ = Hash[("a".."z").to_a.zip((1..26).to_a)]
+symbol_AZ = Hash[(:a..:z).to_a.zip((1..26).to_a)]
+
+string_time = Benchmark.realtime do
+  100_000.times { string_AZ["r"] }
+end
+
+symbol_time = Benchmark.realtime do
+  100_000.times { symbol_AZ[:r] }
+end
+
+puts "String time: #{string_time} seconds."
+puts "Symbol time: #{symbol_time} seconds."
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">.respond_to?</code> with a method name using a symbol is better than checking if a variable is of a certain type. Ruby is less concerned about what kind of thing an object is and only really cares about what method calls it responds to. e.g. <code class="highlighter-rouge">age.respond_to?(:next)</code></p>
+
+<h2 id="blocks">Blocks</h2>
+<p>Define methods which can accept blocks by using the <code class="highlighter-rouge">yield</code> keyword in the method.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def my_each(arr)
+    arr2 = Array.new
+    for item in arr
+        arr2 &lt;&lt; yield(item)
+    end
+    arr2
+end
+
+my_each([1,2,3,4,5]) { |n| n*2 }
+</code></pre></div></div>
+
+<h2 id="procs">Procs</h2>
+<p>Just as you can save a piece of code as a method and then reuse it, you can do the same thing with blocks so you don’t have to keep defining them whenever you want to use one. To save a block and reference it, use a <strong>proc</strong>.</p>
+
+<p>To create a proc use <code class="highlighter-rouge">Proc.new</code> e.g. <code class="highlighter-rouge">cube = Proc.new { |x| x ** 3 }</code></p>
+
+<h3 id="symbols-and-procs">Symbols and procs</h3>
+<p>(TODO understand what this is doing)</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>strings = ["1", "2", "3"]
+nums = strings.map(&amp;:to_i)
+==&gt; [1,2,3]
+</code></pre></div></div>
+
+<h2 id="lambdas">Lambdas</h2>
+<p>A lambda is just like a proc, except it cares about the number of arguments it gets and it returns to its calling method rather than returning immediately.</p>
+
+<h2 id="modules">Modules</h2>
+<p>Modules are a way to group related code and classes. Can additionally store classes, methods and constants (doesn’t make sense for variables). Main purpose is to separate in differently named spaces “name spacing”. The <code class="highlighter-rouge">::</code> scope resolution operator is used to refer to qualify something with its namespace.</p>
+
+<ul>
+  <li>Use <code class="highlighter-rouge">Math::PI</code> to reference PI in the Math module.</li>
+  <li><code class="highlighter-rouge">require ‘date’</code> may be needed if the module is not included by default</li>
+  <li><code class="highlighter-rouge">include Math</code>  to bring all the Math module’s methods, classes etc into the current namespace, so the namespace doesn’t need prepending. This is called a <code class="highlighter-rouge">mixin</code></li>
+  <li>Can utilise this to define various methods in a module and then mix them straight into a class instance without redefining them all again.</li>
+  <li>Mix modules into the class itself using <code class="highlighter-rouge">extend</code>.</li>
+</ul>
+:ET

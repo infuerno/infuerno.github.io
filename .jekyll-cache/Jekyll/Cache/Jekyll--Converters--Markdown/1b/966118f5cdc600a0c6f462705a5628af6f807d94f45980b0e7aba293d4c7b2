@@ -1,0 +1,19 @@
+I"F<h3 id="references">References</h3>
+<ul>
+  <li>Forum: https://www.manning.com/books/classic-computer-science-problems-in-python</li>
+  <li>Not a beginning Python book, instead check: The Quick Python Book, 3rd edition, by Naomi Ceder (Manning, 2018)</li>
+  <li>Source code: https://github.com/davecom/ClassicComputerScienceProblemsInPython</li>
+</ul>
+
+<h3 id="book-overview">Book overview</h3>
+<ul>
+  <li>Chapter 1: Problem solving techniques</li>
+  <li>Chapter 2: Search problems</li>
+  <li>Chapter 3: Solving problems of limited domains with constraints e.g. eight queens problem</li>
+  <li>Chapter 4: Graph algorithms - build graph structure, use to solve several classic optimisation problems</li>
+  <li>Chapter 5: Genetic algorithms - useful for solving problems not solvable by other algorithms in a timely manner</li>
+  <li>Chapter 6: K-means clustering - clustering technique which is easy to understand and implement and has broad applications</li>
+  <li>Chapter 7: Neural networks - overview</li>
+  <li>Chapter 8: Adversarial search in two-player perfect information games</li>
+</ul>
+:ET

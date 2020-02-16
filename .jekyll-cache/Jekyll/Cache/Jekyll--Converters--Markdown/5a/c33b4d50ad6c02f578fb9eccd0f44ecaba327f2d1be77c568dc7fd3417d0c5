@@ -1,0 +1,21 @@
+I"ú<h2 id="malloc">Malloc</h2>
+
+<p>Malloc allocates memory and returns the address of the first byte of that memory. It is on the onus of the caller to remember how much memory was requested.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int* count = malloc(sizeof(int));         // for an int
+char* message = malloc(50 * sizeof(char)) // for a message that will be maximum 50 chars
+</code></pre></div></div>
+
+<h2 id="memory-layout">Memory layout</h2>
+
+<p>Memory layout of a running program is comprised of different areas.</p>
+
+<ol>
+  <li>Text - the area which holds the running program</li>
+  <li>Initialised data</li>
+  <li>Uninitialised data</li>
+  <li>Heap</li>
+  <li>Stack</li>
+  <li>Environment variables</li>
+</ol>
+:ET

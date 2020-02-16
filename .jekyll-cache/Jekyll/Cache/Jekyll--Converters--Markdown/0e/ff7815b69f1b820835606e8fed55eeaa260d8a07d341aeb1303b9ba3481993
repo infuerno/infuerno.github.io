@@ -1,0 +1,275 @@
+I":9<h2 id="learning-the-shell">Learning the Shell</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">df</code> - free disk space</li>
+  <li><code class="highlighter-rouge">free</code> - free memory</li>
+  <li><code class="highlighter-rouge">date</code> - current date</li>
+  <li><code class="highlighter-rouge">cal</code> - show a calendar</li>
+</ul>
+
+<p>User prompt ends with <code class="highlighter-rouge">$</code>, super user prompt ends with <code class="highlighter-rouge">#</code></p>
+
+<h3 id="common-ls-options">Common ls Options</h3>
+<p>Option | Long Option | Description
+—|—|—
+-a | –all | all files, including hidden
+-d | –directory | with -l show details about the directory rather than its contents
+-F | –classify | append an indicator character to end of each item (e.g. forward slash if name is a directory).
+-h | –human-readable | with -l display file sizes in human-readable format rather than in bytes
+-l | | long format
+-r | –reverse | display results in reverse order
+-S | | sort results by file size
+-t | | sort by modification time</p>
+
+<h3 id="fields-in-long-listing">Fields in long listing</h3>
+
+<p>-rw-r–r– 1 root root 453764 2012-04-03 11:05 oo-welcome.odt</p>
+
+<p>1 = File’s number of hard links (often 1)
+root = user who owns the file
+root = group who owns the file
+453764 = size in bytes
+2012-04-03 11:05 = last modified date</p>
+
+<h3 id="directories-found-on-linux-systems">Directories Found on Linux Systems</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Directory</th>
+      <th>Comments</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>/</td>
+      <td>root directory</td>
+    </tr>
+    <tr>
+      <td>/bin</td>
+      <td>binaries for the system to boot and run</td>
+    </tr>
+    <tr>
+      <td>/boot</td>
+      <td>Linux kernel (/boot/vmlinuz), initial RAM disk image (drivers needed at boot time), boot loader</td>
+    </tr>
+    <tr>
+      <td>/dev</td>
+      <td>list of all devices</td>
+    </tr>
+    <tr>
+      <td>/etc</td>
+      <td>system wide config files, shell scripts for starting system files</td>
+    </tr>
+    <tr>
+      <td>/lib</td>
+      <td>shared library files for core system programs</td>
+    </tr>
+    <tr>
+      <td>/lost+found</td>
+      <td>used in partial recovery situations, usually empty</td>
+    </tr>
+    <tr>
+      <td>/media</td>
+      <td>mount point for CD drives etc</td>
+    </tr>
+    <tr>
+      <td>/mnt</td>
+      <td>older systems manual mount point for removable drives</td>
+    </tr>
+    <tr>
+      <td>/opt</td>
+      <td>optional software</td>
+    </tr>
+    <tr>
+      <td>/proc</td>
+      <td>virtual file system maintained by the kernel - not a real files system - but all files are readable</td>
+    </tr>
+    <tr>
+      <td>/root</td>
+      <td>home directory for the root account</td>
+    </tr>
+    <tr>
+      <td>/sbin</td>
+      <td>system binaries</td>
+    </tr>
+    <tr>
+      <td>/tmp</td>
+      <td>temporary files</td>
+    </tr>
+    <tr>
+      <td>/usr</td>
+      <td>all programs and support files used by regular users</td>
+    </tr>
+    <tr>
+      <td>/usr/bin</td>
+      <td>binaries installed by the linux distro - usually 1000s of programs</td>
+    </tr>
+    <tr>
+      <td>/usr/lib</td>
+      <td>shared libraries for /usr/bin</td>
+    </tr>
+    <tr>
+      <td>/usr/local</td>
+      <td>system wide, but usually not via the linux distro, but via a sys admin user e.g. /usr/local/bin is where programs compiled from source usually go</td>
+    </tr>
+    <tr>
+      <td>/usr/sbin</td>
+      <td>more system binaries (TODO what is the difference between here and /sbin?)</td>
+    </tr>
+    <tr>
+      <td>/usr/share</td>
+      <td>shared data for programs in /usr/bin e.g. default config files, icons</td>
+    </tr>
+    <tr>
+      <td>/usr/share/doc</td>
+      <td>documentatino</td>
+    </tr>
+    <tr>
+      <td>/var</td>
+      <td>storage for data which is likely to change e.g. logs, databases, email</td>
+    </tr>
+    <tr>
+      <td>/var/log</td>
+      <td>log files - /var/log/messages is important</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="wildcards">Wildcards</h3>
+
+<ul>
+  <li><code class="highlighter-rouge">*</code> any character</li>
+  <li><code class="highlighter-rouge">?</code> any single character</li>
+  <li><code class="highlighter-rouge">[characters]</code> any character in set ‘characters’</li>
+  <li><code class="highlighter-rouge">[!characters]</code> any character NOT in set ‘characters’</li>
+  <li><code class="highlighter-rouge">[[:class]]</code> any character of the specified class e.g. <code class="highlighter-rouge">[:alnum]</code>, <code class="highlighter-rouge">[:alpha]</code>, <code class="highlighter-rouge">[:digit]</code>, <code class="highlighter-rouge">[:lower]</code>, <code class="highlighter-rouge">[:upper]</code></li>
+</ul>
+
+<h3 id="manipulating-files">Manipulating files</h3>
+<h4 id="cp"><code class="highlighter-rouge">cp</code></h4>
+
+<ul>
+  <li><code class="highlighter-rouge">cp -a item1 item2</code> additionally copy attributes including ownership and permissions (usually copies take on the default attributes of the user performing the copy)</li>
+  <li><code class="highlighter-rouge">cp -u item1 item2</code> copy only files which don’t exist or are newer</li>
+  <li><code class="highlighter-rouge">cp -i item1 item2</code> interactive</li>
+  <li><code class="highlighter-rouge">cp -r item1 item2</code> recursive</li>
+  <li><code class="highlighter-rouge">cp -v item1 item2</code> verbose</li>
+  <li><code class="highlighter-rouge">cp file1 file2 dir1</code> copy file1 and file2 to dir1 (dir1 must exist)</li>
+  <li><code class="highlighter-rouge">cp dir1/* dir2</code> all files in dir1 are copied to dir2 (dir2 must exist)</li>
+  <li><code class="highlighter-rouge">cp -r dir1 dir2</code> recursively copy files in dir1 to dir2
+    <ul>
+      <li>IMPORTANT if dir2 exists, dir1 will be copied within it, if dir2 doesn’t exist it will be created and will hold the same contents as dir1</li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="mv"><code class="highlighter-rouge">mv</code></h4>
+
+<ul>
+  <li><code class="highlighter-rouge">mv dir1 dir2</code> move dir1 and its contents to dir2
+    <ul>
+      <li>IMPORTANT if dir2 doesn’t exists, dir1 will effectively be renamed dir2</li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="rf"><code class="highlighter-rouge">rf</code></h4>
+
+<ul>
+  <li><code class="highlighter-rouge">rf -f</code> ignore nonexistent files and do not prompt - TODO what does this mean?</li>
+</ul>
+
+<h3 id="commands">Commands</h3>
+
+<p>A command is one of:</p>
+<ul>
+  <li>an executable binary or script</li>
+  <li>a command built into the shell itself e.g. <code class="highlighter-rouge">cd</code> is a bash <em>shell builtin</em></li>
+  <li>a shell function - minature shell scripts incorporated into the environment</li>
+  <li>
+    <p>an alias</p>
+  </li>
+  <li><code class="highlighter-rouge">type</code> shows which of the 4 a particular command is e.g. <code class="highlighter-rouge">type cd</code> gives <code class="highlighter-rouge">cd is a shell builtin</code></li>
+  <li><code class="highlighter-rouge">which</code> shows the location of an executable (doesn’t necessarily work for shell builtins)</li>
+  <li><code class="highlighter-rouge">help</code> help command for shell builtins e.g. <code class="highlighter-rouge">help cd</code></li>
+  <li><code class="highlighter-rouge">--help</code> often supported by executable programs to show similar usage information e.g. <code class="highlighter-rouge">mkdir --help</code></li>
+  <li><code class="highlighter-rouge">man</code> display a commands man page - if no section is specified the first section available is shown - most likely section 1 - to show a specific section use e.g. <code class="highlighter-rouge">man 5 passwd</code> - man pages are stored in <code class="highlighter-rouge">/usr/share/man</code> under the appropriate section diretory
+  Section | Contents
+  —|—
+  1 | User commands
+  2 | Programming interfaces for kernel system calls
+  3 | Programming interfaces to the C library
+  4 | Special files such as device nodes and drivers
+  5 | File formats e.g. <code class="highlighter-rouge">man 5 passwd</code>
+  6 | Games and amusements such as screensavers
+  7 | Miscellaneous
+  8 | System administrator commands e.g. <code class="highlighter-rouge">man mount</code></li>
+  <li><code class="highlighter-rouge">apropos</code> search man titles and descriptions for a keyword or similar term (<code class="highlighter-rouge">man -k</code> does the same thing)</li>
+  <li><code class="highlighter-rouge">whatis</code> matches man titles and descirption for a keyword exactly</li>
+  <li><code class="highlighter-rouge">info</code> GNU alternative to <code class="highlighter-rouge">man</code> e.g. <code class="highlighter-rouge">info ls</code> - tree-structured - most commands are in the coreutils.info</li>
+  <li><code class="highlighter-rouge">alias name='string'</code> set up an alias - remove with <code class="highlighter-rouge">unalias</code> - <code class="highlighter-rouge">alias</code> on its own lists all defined aliases</li>
+</ul>
+
+<h3 id="io-redirection">I/O Redirection</h3>
+
+<p><code class="highlighter-rouge">stdout</code>, <code class="highlighter-rouge">stderr</code> and <code class="highlighter-rouge">stdin</code> can be thought of as files where the output for <code class="highlighter-rouge">stdout</code> and <code class="highlighter-rouge">stderr</code> is by default connected to the screen and the input for <code class="highlighter-rouge">stdin</code> is, by default, connected to the keyboard. These can be redirected using I/O redirection.</p>
+
+<ul>
+  <li><code class="highlighter-rouge">ls -l /usr/bin &gt; ls-output.txt</code> redirects stdout to a file (if any errors these still go to stderr, which by default is still printed to the screen - in this case the file will be created or truncated before the error happens since &gt; replaces content rather than appending content)</li>
+  <li><code class="highlighter-rouge">&gt;&gt;</code> appends content e.g. <code class="highlighter-rouge">ls -l /usr/bin &gt;&gt; ls-output.txt</code></li>
+  <li>File descriptors can alternatively be used to redirect stdin, stdout and stderr (and is the only way to redirect stderr). These are 0, 1 and 2 respectively. <code class="highlighter-rouge">2&gt;</code> redirects stderr e.g. <code class="highlighter-rouge">ls -l /usr/idontexist 2&gt; ls-error.txt</code></li>
+  <li><code class="highlighter-rouge">2&gt;&amp;1</code> redirects stderr to file descriptor 1 i.e. stdout so <code class="highlighter-rouge">ls -l /bin/usr &gt; ls-output.txt 2&gt;&amp;1</code> will redirect stdout to a file and then stderr to the same destination i.e. also a file</li>
+  <li><code class="highlighter-rouge">&amp;&gt;</code> shorthand for <code class="highlighter-rouge">2&gt;&amp;1</code> (recent versions of bash only)</li>
+  <li><code class="highlighter-rouge">2&gt; /dev/null</code> to discard anything sent to stderr</li>
+  <li><code class="highlighter-rouge">cat</code> concatenates files and can be used with redirection to rejoin files which have been split e.g. <code class="highlighter-rouge">cat movie.00* &gt; movie.mp4</code> (crucially for this wildcards expand in sorted order)</li>
+  <li><code class="highlighter-rouge">cat</code> without any arguments uses stdin - ctrl-d (EOF) to terminate</li>
+  <li><code class="highlighter-rouge">&lt;</code> redirects stdin e.g. <code class="highlighter-rouge">cat &lt; lazy-dog.txt</code> redirects the file lazy-dog.txt to stdin with the result that <code class="highlighter-rouge">cat</code> prints the contents of the file (<code class="highlighter-rouge">cat</code> uses stdin when no arguments are passed)</li>
+  <li><code class="highlighter-rouge">|</code> pipes the standard output of one command to the standard input of another command
+    <ul>
+      <li>e.g. <code class="highlighter-rouge">ls -l /usr/bin | less</code></li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">uniq</code> removes duplicates from a <code class="highlighter-rouge">sort</code>ed list</li>
+  <li><code class="highlighter-rouge">uniq -d</code> only displays duplicates from a <code class="highlighter-rouge">sort</code>ed list</li>
+  <li><code class="highlighter-rouge">wc</code> prints line, word and byte counts (all 3, tab seperated)
+    <ul>
+      <li>without arguments uses stdin (so often used at the end of a pipeline to count things)</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">grep pattern [files...]</code> where pattern is a regex
+    <ul>
+      <li>option <code class="highlighter-rouge">-i</code> ignores case</li>
+      <li>option <code class="highlighter-rouge">-v</code> prints lines which DON’T match</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">tail -f [file]</code> to tail a file real time</li>
+  <li><code class="highlighter-rouge">tee</code> reads from stdin and redirects to stdout AND files (hence a T on the pipeline)
+    <ul>
+      <li>e.g. <code class="highlighter-rouge">ls /usr/bin | tee ls.txt | grep zip</code> will capture the output of <code class="highlighter-rouge">ls /usr/bin</code> to a file as well as passing it into <code class="highlighter-rouge">grep zip</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="configuration-and-the-environment">Configuration and the Environment</h2>
+
+<h3 id="a-gentle-introduction-to-vi">A Gentle Introduction to VI</h3>
+
+<ul>
+  <li>Most commands can be prefixed with a number e.g. <code class="highlighter-rouge">5j</code> to move down 5 lines</li>
+  <li><code class="highlighter-rouge">u</code> undo</li>
+  <li><code class="highlighter-rouge">a</code> append after end of word</li>
+  <li><code class="highlighter-rouge">A</code> append to end of current line</li>
+  <li><code class="highlighter-rouge">o</code> open a line below the current line</li>
+  <li><code class="highlighter-rouge">O</code> open a line above the current line</li>
+  <li><code class="highlighter-rouge">G</code> go to the last line in the document</li>
+  <li><code class="highlighter-rouge">dd</code> cut the current line</li>
+  <li><code class="highlighter-rouge">dw</code> cut to start of next word</li>
+  <li><code class="highlighter-rouge">d$</code> cut to end of line</li>
+  <li><code class="highlighter-rouge">d0</code> cut to beginning of line</li>
+  <li><code class="highlighter-rouge">p</code> paste after current line</li>
+  <li><code class="highlighter-rouge">P</code> paste before current line</li>
+  <li><code class="highlighter-rouge">yy</code> ‘yank’ the current line (i.e. copy) - then similar combinations to cut</li>
+</ul>
+
+:ET

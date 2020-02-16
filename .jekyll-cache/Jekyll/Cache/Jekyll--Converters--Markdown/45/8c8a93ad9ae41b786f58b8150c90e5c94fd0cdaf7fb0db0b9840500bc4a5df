@@ -1,0 +1,168 @@
+I"�(<h2 id="basic-html-and-css">Basic HTML and CSS</h2>
+
+<h3 id="import-a-google-font">Import a google font</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'&gt;
+</code></pre></div></div>
+
+<h3 id="make-circular-images-with-border-radius">Make circular images with border-radius</h3>
+
+<p>Use the css: <code class="highlighter-rouge">border-radius: 50%;</code></p>
+
+<h3 id="button-tags">Button tags</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;button type='submit'&gt;Submit&lt;/button&gt;
+</code></pre></div></div>
+
+<h3 id="required">Required</h3>
+
+<p>With HTML5 use a <code class="highlighter-rouge">required</code> attribute to ensure a field is completed</p>
+
+<h3 id="radio-buttons">Radio buttons</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;label&gt;
+  &lt;input type="radio" name="indoor-outdoor"&gt;outdoor
+&lt;/label&gt;
+&lt;label&gt;
+  &lt;input type="radio" name="indoor-outdoor"&gt;indoor
+&lt;/label&gt;
+</code></pre></div></div>
+
+<h2 id="responsive-design-with-bootstrap">Responsive Design with Bootstrap</h2>
+
+<p><code class="highlighter-rouge">img-responsive</code> class to make images responsive
+<code class="highlighter-rouge">text-center</code> to center text e.g. a heading
+<code class="highlighter-rouge">btn</code> class on a button
+<code class="highlighter-rouge">btn-block</code> class on a button to change display to block
+<code class="highlighter-rouge">row</code> class on a div to arrange elements in rows
+<code class="highlighter-rouge">col-xxx</code> class on a div to arrange elements in columns inside of rows e.g. <code class="highlighter-rouge">col-xs-4</code> to take up 4 parts of a 12 col layout
+<code class="highlighter-rouge">text-primary</code> class to set a primary colour
+<code class="highlighter-rouge">&lt;i class="fa fa-thumbs-up"&gt;&lt;/i&gt;</code> to use font awesome to add “like” icon image
+<code class="highlighter-rouge">&lt;i class="fa fa-info-circle"&gt;&lt;/i&gt;</code> for an info circle
+<code class="highlighter-rouge">&lt;i class="fa fa-trash"&gt;&lt;/i&gt;</code> for a trash can
+<code class="highlighter-rouge">&lt;i class="fa fa-paper-plane"&gt;&lt;/i&gt;</code> for a paper plane</p>
+
+<h2 id="jquery">jQuery</h2>
+
+<h3 id="get-started-with-jquery">Get Started with jQuery</h3>
+
+<p>Script tags are not self-closing and should have a type attribute: <code class="highlighter-rouge">&lt;script type="text/javascript" src="script.js"&gt;&lt;/script&gt;</code></p>
+
+<h4 id="selectors">Selectors</h4>
+
+<p><code class="highlighter-rouge">$()</code> is used to target jQuery e.g. <code class="highlighter-rouge">$(document)</code> to target the HTML document using jQuery, and <code class="highlighter-rouge">$(document).ready();</code> to take some action when the HTML document is ready.</p>
+
+<h4 id="functions">Functions</h4>
+
+<p>Add an anonymous function to be executed on document.ready e.g. <code class="highlighter-rouge">$(document).ready(function() { alert("ready"); });</code></p>
+
+<p>Target other elements and call functions on them as required e.g.:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$(document).ready(function() {
+    $('div').mouseenter(function() {
+        $('div').fadeTo('slow', 1); 
+    });
+});
+</code></pre></div></div>
+
+<h4 id="jquery-variables">jQuery variables</h4>
+
+<p>The <code class="highlighter-rouge">$</code> can be added to the front of any variable name to indicate a $ object e.g. $div = $(‘div’)</p>
+
+<h4 id="compound-selectors">Compound selectors</h4>
+
+<p>Select multiple elements as in css using comma seperated lists e.g. <code class="highlighter-rouge">$('p, li')</code> to select both <code class="highlighter-rouge">p</code> and <code class="highlighter-rouge">li</code> elements.</p>
+
+<h4 id="this"><code class="highlighter-rouge">this</code></h4>
+
+<p>The <code class="highlighter-rouge">this</code> keyword generally refers to the jQuery object you are currently doing something with. So when using event handlers e.g. click(), mouseenter(), <code class="highlighter-rouge">$(this)</code> will target the target of the eventhandler event.</p>
+
+<h3 id="harness-dynamic-html">Harness Dynamic HTML</h3>
+
+<h4 id="elements">Elements</h4>
+
+<p>HTML elements can be created using strings e.g. <code class="highlighter-rouge">$("&lt;h1&gt;hello world&lt;/h1&gt;")</code> creates a new <code class="highlighter-rouge">h1</code> element.</p>
+
+<ul>
+  <li><code class="highlighter-rouge">append()</code>, <code class="highlighter-rouge">prepend()</code>, <code class="highlighter-rouge">appendTo()</code> and <code class="highlighter-rouge">prependTo</code> can be used to insert new elements into the document</li>
+  <li><code class="highlighter-rouge">before()</code>, <code class="highlighter-rouge">after()</code> are also options e.g. <code class="highlighter-rouge">$('div#one').after('&lt;p&gt;yo&lt;/p&gt;');</code></li>
+  <li>Existing elements can also be moved using <code class="highlighter-rouge">before()</code> and <code class="highlighter-rouge">after()</code></li>
+  <li><code class="highlighter-rouge">empty()</code> removes all content from an element</li>
+  <li><code class="highlighter-rouge">remove()</code> removes the element itself</li>
+</ul>
+
+<h4 id="attributes">Attributes</h4>
+
+<ul>
+  <li><code class="highlighter-rouge">addClass()</code> and <code class="highlighter-rouge">removeClass()</code> add and remove classes from elements and <code class="highlighter-rouge">toggleClass()</code> adds or removes as req</li>
+  <li><code class="highlighter-rouge">height()</code> and <code class="highlighter-rouge">width()</code> are css attributes with their own methods for altering values (since commonly used)</li>
+  <li><code class="highlighter-rouge">css()</code> can be used to alter any css property passing the property name and value as parameters e.g. <code class="highlighter-rouge">$('p').css('background-color', 'red')</code></li>
+  <li>These methods can all be chained</li>
+</ul>
+
+<h4 id="content">Content</h4>
+
+<p><code class="highlighter-rouge">.html()</code> can be used to both get and set the content of elements
+<code class="highlighter-rouge">.val()</code> is used to get the value of form elements e.g. <code class="highlighter-rouge">$('input:checkbox:checked').val();</code></p>
+
+<h3 id="listen-for-jquery-events">Listen for jQuery Events</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$(document).ready(function() {
+    $('thingToTouch').event(function() {
+        $('thingToAffect').effect();
+    });
+});
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">on()</code> jQuery parses the DOM on document load, so dynamically elements aren’t necessarily found. The <code class="highlighter-rouge">on()</code> event handler is a general purpose event handler taking the event, selector and action as inputs.</p>
+
+    <p>$(document).on(‘click’, ‘.item’, function() {
+      $(this).remove();
+  });</p>
+  </li>
+  <li><code class="highlighter-rouge">click()</code></li>
+  <li><code class="highlighter-rouge">dblclick()</code></li>
+  <li>The <code class="highlighter-rouge">hover()</code> event can take two parameters, the first one for the action done on hover, the second for the action done when no longer hovering.</li>
+  <li>Some HTML elements can have <code class="highlighter-rouge">focus()</code> when someone clicks or tabs to them e.g. textarea and input. Use the <code class="highlighter-rouge">focus()</code> event to apply actions when an element gets focus e.g. adding an outline colour to an input field.</li>
+  <li><code class="highlighter-rouge">keydown()</code> takes an optional parameter <code class="highlighter-rouge">key</code> which holds the key which was pressed. Note: focus needs to be on the current HTML document</li>
+</ul>
+
+<h3 id="trigger-jquery-effects">Trigger jQuery Effects</h3>
+
+<ul>
+  <li><code class="highlighter-rouge">animate()</code> takes, two parameters: the animation to perform and the time in which to do it.
+e.g. <code class="highlighter-rouge">('img').animate({left: "-=10px"}, 'fast');</code></li>
+  <li><code class="highlighter-rouge">effect()</code> [requires jQueryUI] takes an initial parameter to indicate the effect e.g. explode, bounce, slide. Depending on the effect further parameters are required to describe the effect e.g. <code class="highlighter-rouge">$('div').effect('bounce', {times:3}, 500);</code></li>
+  <li><code class="highlighter-rouge">accordion()</code> can be use to expand and collapse inner panels. Additional parameters can be passed to change the default behaviour e.g. <code class="highlighter-rouge">$("#menu").accordion({collapsible: true, active: false});</code></li>
+  <li><code class="highlighter-rouge">draggable()</code> can be called on any element to allow it to be dragged around the page</li>
+  <li><code class="highlighter-rouge">resizable()</code> once called allows you to resize an element</li>
+  <li><code class="highlighter-rouge">selectable()</code> allows child elements to have the appearance of being ‘selected’</li>
+  <li><code class="highlighter-rouge">sortable()</code> allows child elements to be ‘sorted’</li>
+</ul>
+
+<h2 id="javascript">JavaScript</h2>
+
+<h3 id="functions-1">Functions</h3>
+
+<p>Functions can be defined in one of two ways:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var divideByThree = function (number) {
+    return number / 3;
+};
+
+function divideByThree(number) {
+    return number / 3;
+}
+</code></pre></div></div>
+
+<p>The second <em>function declaration</em> will be parsed prior to running the code, so can be placed anywhere in the file, whereas the first function will by parsed inline, so must come before any usage. (See this reference: <a href="http://eloquentjavascript.net/03_functions.html">http://eloquentjavascript.net/03_functions.html</a>)</p>
+
+<p>Local variables used inside function MUST be declared using the <code class="highlighter-rouge">var</code> keyword, otherwise they will use a global variable of the same name if this exists in the global scope.</p>
+
+<p><code class="highlighter-rouge">Math.random()</code> produces a random number between 0 and 1</p>
+
+<h3 id="for-loops">For loops</h3>
+
+:ET

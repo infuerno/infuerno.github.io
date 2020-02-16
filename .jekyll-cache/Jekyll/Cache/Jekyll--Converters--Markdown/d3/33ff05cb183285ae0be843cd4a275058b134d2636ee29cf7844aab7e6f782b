@@ -1,0 +1,250 @@
+I"�1<h2 id="injection">Injection</h2>
+
+<h2 id="xss">XSS</h2>
+
+<h3 id="output-encode-for-the-correct-context">Output encode for the correct context</h3>
+<p>Ensure strings are output encoded correctly to mitigate XSS risks. Different outputs need to be encoded differently. Different outputs are required for: CSS, HTML, HTML attribute, HTML form URL, JavaScript, LDAP distinguished name, LDAP filter, URL, URL path, XML, XML attribute.</p>
+
+<p>For example <i>Lager</i> is encoded in the following different ways:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Context</th>
+      <th>Encoded String</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>HTML</td>
+      <td>&lt;i&gt;Lager&lt;/i&gt;</td>
+    </tr>
+    <tr>
+      <td>JavaScript</td>
+      <td>\x3ci\x3eLager\x3c\x2fi\x3e</td>
+    </tr>
+    <tr>
+      <td>CSS</td>
+      <td>\00003Ci\00003ELager\00003C\00002F</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="antixss-framework">AntiXss Framework</h3>
+
+<p>In .NET applications the AntiXss framework contains some useful functions for output encoding HTML (in the <code class="highlighter-rouge">System.Web.Security.AntiXss</code> namespace)</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var searchTerm = Request.QueryString["q"];
+uxSearchTerm.Text = AntiXssEncoder.HtmlEncode(searchTerm, true); // use named entities
+</code></pre></div></div>
+
+<p>In order to output encode untrused data for the JavaScript context an additional library from NuGet is required also called AntiXss (also contains HTML encoders for pre 4.5 users)</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;script type="text/javascript"&gt;
+    var q =  &lt;% Microsoft class="Security Application Encoder JavaScriptEncoder(Request.QueryString["q"]) %&gt;
+&lt;/script&gt;
+</code></pre></div></div>
+
+<h3 id="automatic-output-encoding">Automatic output encoding</h3>
+
+<p>In ASP.NET web forms, the first example above, the label control’s text attribute did not implement output encoding. This had to be added explicitly. However some controls and attributes do automatically include output encoding. Test this by outputting e.g. <i>Lager</i> and check if it is encoded correctly or not.</p>
+
+<p>In ASP.NET MVC the razor view engine automatically HTML encodes all output by default. The HtmlHelper (<code class="highlighter-rouge">@Html.Label("&lt;i&gt;Lager&lt;/i&gt;")</code>) also encodes output. In order to stop the output encoding you need to use the Raw Html Helper (<code class="highlighter-rouge">@Html.Raw("&lt;i&gt;Lager&lt;/i&gt;")</code>)</p>
+
+<h3 id="request-validation">Request validation</h3>
+
+<p>Explicitly whitelist data using a regex.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (!Regex.IsMatch(searchTerm, @"^[\p{L} \.\-]+$")) {
+    throw new ApplicationException("Search term not allowed");
+}
+</code></pre></div></div>
+
+<p>ASP.NET by default uses RequestValidation which checks all untrused data for XSS. This can be configured in the web.config in the pages element:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;pages validateRequest="false" /&gt;
+</code></pre></div></div>
+
+<p>On occasion, you may wish to POST html tags e.g. in a rich text editor. You can turn it off at the page level if necessary using <code class="highlighter-rouge">ValidateRequest="false"</code> in the page declaration of the code behind. (requestValidationMode needs to be set to 2.0 for this to work.)</p>
+
+<p>As of .NET 4.5 the validation can only be turned off per control, but not per page. To do this:</p>
+<ol>
+  <li>Ensure requestValidationMode ( attribute of <system.web><httpRuntime> ) is set to 4.5</httpRuntime></system.web></li>
+  <li>On the individual control set <code class="highlighter-rouge">ValidateRequestMode</code> attribute to <code class="highlighter-rouge">Disabled</code></li>
+</ol>
+
+<p>Additionally to access potentially dangerous query string requests use <code class="highlighter-rouge">Request.Unvalidated.QueryString</code>. In this way you can bespoke the request handling.</p>
+
+<p>In ASP.NET MVC the <code class="highlighter-rouge">[AllowHtml]</code> attribute can be used to decorate the field in a model to e.g. allow special characters like <code class="highlighter-rouge">&lt;</code> and <code class="highlighter-rouge">&gt;</code> in a password field.</p>
+
+<p>IMPORTANT. Always code as though request validation doesn’t exist.</p>
+
+<h3 id="reflected-xss-v-persisted-xss">Reflected XSS v Persisted XSS</h3>
+
+<p>So far all XSS examples have been reflected XSS. However, there may be persistant XSS in the database. In order to mitigate the risk of this running on the page, all data should be output encoded (e.g. using AntiXss.HtmlEncode at bind time)</p>
+
+<h3 id="browser-behaviour">Browser behaviour</h3>
+
+<p>Different browsers may have their own defences against XSS. For example IE will post a message “Internet Explorer has modified this page to help prevent cross-site scripting” in the event of a potentially dangerous payload.” This behaviour can be controlled via the use of custom headers e.g. in the web.config of the application.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;system.webServer&gt;
+    &lt;httpProtocol&gt;
+        &lt;customHeaders&gt;
+            &lt;clear/&gt;
+            &lt;add name="X-XSS-Protection" value="0"&gt;
+        &lt;/customHeaders&gt;
+    &lt;/httpProtocol&gt;
+&lt;/system.webServer&gt;
+</code></pre></div></div>
+
+<h3 id="payload-obfuscation">Payload obfuscation</h3>
+
+<p>In order to…</p>
+
+<h2 id="broken-authentication-and-session-management">Broken Authentication and Session Management</h2>
+
+<h3 id="dont-store-session-ids-in-the-url">Don’t store session IDs in the URL</h3>
+
+<p>When session id are stored in the URL, the session can easily be hijacked by sharing in the URL e.g. sending a link in an email, from proxy logs, from a browser history
+Never have sensitive data in the URL even over HTTPS requests.
+Usual method is to store the session id in a cookie - if cookies aren’t enabled in the browser, this is a big security risk for session persistence.</p>
+
+<h4 id="aspnet-session-persistence-options">ASP.NET Session Persistence options</h4>
+
+<p>UseUri				Always use the URL regardless of device support
+UseCookies			Always use cookies regardless of device support
+UseDeviceProfile	ASP.NET determines if cookies are <em>supported</em> (which won’t work if they have been disabled)
+AutoDetect			ASP.NET determins if cookies are <em>enabled</em></p>
+
+<h3 id="dont-roll-your-own">Don’t roll your own</h3>
+
+<p>Developers frequently build custom authentication and session management schemes. Since building this correctly is hard, these often have flaws. Finding the flaws can be difficult since each implemenation is unique.</p>
+
+<h4 id="aspnet-membership-provider">ASP.NET Membership provider</h4>
+
+<p>With a blank application and a blank database, all that is required is to add the database details to the web.config and the application will automatically create the necessary tables on first run.</p>
+
+<p>With such a ready and easy to use authentication system, there is no need to create your own.</p>
+
+<h3 id="session-and-forms-timeout">Session and Forms timeout</h3>
+
+<ul>
+  <li>Session timeout is 20 minutes by default (just persists state between requests)</li>
+  <li>Forms timeout is 30 minutes by default (involves authentication) - BUT the VS templates set it to 2 days</li>
+  <li>Forms can have:
+    <ul>
+      <li>a <em>sliding expiration</em> (default) which means they will timeout x minutes after the last request</li>
+      <li>a <em>fixed expiration</em> which means they will alwasys be timed out after a certain amount of time</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="other-broken-authentication-patterns">Other broken authentication patterns</h3>
+
+<ul>
+  <li>Credentials should always be stored in a cryptographically secure way</li>
+  <li>Robust minimum passwords</li>
+  <li>Never send a password by email</li>
+  <li>Protect session id cookies (e.g. ensure no XSS possibility, use HTTPS)</li>
+</ul>
+
+<h2 id="insecure-direct-object-references">Insecure direct object references</h2>
+
+<p>Scenario: web application which asks you to log in and then uses your username via an insecure web service to retrieve personal details. Using Fiddler to inspect any traffic shows a simple REST service with a query parameter of first name. Enumerating possible first names leads to other existing users and possible to retrieve their personal details.</p>
+
+<p>Often exploited by someone who is already authenticated, but trying to access someone else’s details.
+Often exploited through automation and brute force.</p>
+
+<h3 id="implement-correct-access-controls">Implement correct access controls</h3>
+
+<p>This is 95% of the problem and is the main solution.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (User.Identity.Name != userNameRequested)
+{
+	throw new ApplicationException("Not authorised");
+}
+
+// useful to have the functionality to be able to pass in the username (e.g. may be called by admin also)
+if (User.Identity.Name != userNameRequested &amp;&amp; !User.IsInRole("Admin"))
+{
+	throw new ApplicationException("Not authorised");
+}
+</code></pre></div></div>
+
+<h3 id="implement-a-indirect-object-reference-map">Implement a indirect object reference map</h3>
+
+<p>Numberous ways to store the map. Good for banks, but may be overkill for an average line of business web application. Are there multiple web front ends? Performance overhead?</p>
+
+<p>Important principles:</p>
+<ul>
+  <li>The map is temporary</li>
+  <li>The map is user specific</li>
+  <li>The indirect reference is random</li>
+</ul>
+
+<p>Using session state automatically satifies the first two principles.</p>
+
+<p>Example class to implement an indirect object map using string extension methods.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public static class IndirectMap
+{
+	public static string GetIndirectRef(this string directRef)
+	{
+		var map = (Dictionary&lt;string, string&gt;)HttpContext.Current.Session["Map"];
+		return map == null ? AddDirectRef(directRef) : map[directRef];
+	}
+
+	public static string GetDirectRef(this string indirectRef)
+	{
+		var map = HttpContext.Current.Session["Map"];
+		if (map == null)
+		{
+			throw new ApplicationException("No map found");
+		}
+		return ((Dictionary&lt;string, string&gt;)map)[indirectRef];
+	}
+
+	private static string AddDirectRef(string directRef)
+	{
+
+		var indirectRef = HttpServerUtility.UrlEncode(buff);
+
+		var map = (Dictionary&lt;string, string&gt;)HttpContext.Current.Session["Map"];
+		if (map == null)
+		{
+			map = new Dictionary&lt;string, string&gt;();
+		}
+		map.Add(new DicionaryEntry&lt;string, string&gt; {directRef, indirectRef});
+		map.Add(new DicionaryEntry&lt;string, string&gt; {indirectRef, directRef});
+
+		return indirectRef;
+	}
+}
+</code></pre></div></div>
+
+<h3 id="obfuscation-via-discoverable-surrogate-keys">Obfuscation via discoverable surrogate keys</h3>
+
+<p>Natural keys like names are vulnerable to enumeration, as are integers which can be easily enumerated. Keys like GUIDs are not easy to obfuscate, so although a direct reference are very difficult to enumerate. However this is only “security through obscurity”. Importantly access controls are still required.</p>
+
+<h2 id="cross-site-request-forgery-csrf--xsrf">Cross-site Request Forgery (CSRF / XSRF)</h2>
+
+<h3 id="example">Example</h3>
+
+<p><a href="https://nakedsecurity.sophos.com/2012/10/01/hacked-routers-brazil-vb2012/">https://nakedsecurity.sophos.com/2012/10/01/hacked-routers-brazil-vb2012/</a></p>
+
+<h3 id="tasks">Tasks</h3>
+
+<ol>
+  <li>Download and run http://csrf application</li>
+  <li>Submit an update status request and study main POST request in browser network tools, find the authentication cookie and the status update</li>
+  <li>Download http://evilsite and browse to http://evilsite/Winner.html</li>
+  <li>Check back in the csrf application and notice that the evilsite has managed to trick the user into unknowingly submit a status update to the csrf site</li>
+  <li>Study the evilsite submission via the browser network tools to understand how this happened.</li>
+  <li>Notice also that the status update includes a link to evilsite. This has been rendered as HTML due to a lack of output encoding. This will propogate the attack further</li>
+</ol>
+
+<ul>
+  <li>URL encode the whole query string</li>
+  <li>Use a service like bit.ly or tinyurl</li>
+</ul>
+:ET

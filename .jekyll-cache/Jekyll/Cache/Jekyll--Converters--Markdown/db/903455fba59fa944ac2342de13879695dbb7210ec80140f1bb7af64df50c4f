@@ -1,0 +1,27 @@
+I"&<h2 id="overview">Overview</h2>
+
+<ul>
+  <li>Acceptance tests are from a business point of view</li>
+  <li>Written in a non technical format</li>
+  <li>Pass or fail - no middle ground</li>
+  <li>Helps definte what “done” means</li>
+</ul>
+
+<h3 id="features">Features</h3>
+
+<h3 id="scenarios">Scenarios</h3>
+
+<h3 id="scenario-steps">Scenario Steps</h3>
+
+<p>Given: Set up initial state
+When: Perform action
+Then: End state</p>
+
+<h3 id="data-tables">Data Tables</h3>
+
+<ul>
+  <li>Useful for replacing multiple steps in the same scenario (e.g. multiple given steps). In this instance when the code is generated a paramter is generated which makes the datatable available to the test</li>
+  <li>Useful for creating Scenario Outline to generate multiple Scenarios. Placeholders are use in the steps</li>
+</ul>
+
+:ET
