@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Pluralsight - C# Generics"
+title: "Pluralsight: C# Generics"
 ---
 ## Generic Delegates
 
