@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Essential Docker for ASP.NET Core MVC"
+title: "Freeman: Essential Docker for ASP.NET Core MVC"
 ---
 
 ## Quick Reference

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Terraform - Getting Started - Azure"
+title: "Terraform: Getting Started - Azure"
 ---
 ## Resources
 

@@ -173,3 +173,5 @@ We DO need to ensure that CSLA membership principal is instantiated properly fro
 
 Use the Membership Roles Provider with Windows Authentication.
 Screens to administer will still remain within MABO (along with Q1, Q2)
+
+

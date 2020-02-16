@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Pluralsight - Microsoft Azure for .NET Developers - Building Secure Services and Applications"
+title: "Pluralsight: Microsoft Azure for .NET Developers - Building Secure Services and Applications"
 ---
 ## Software Containers
 

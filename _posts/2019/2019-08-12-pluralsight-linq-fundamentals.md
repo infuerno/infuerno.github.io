@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Pluralsight - LINQ Fundamentals"
+title: "Pluralsight: LINQ Fundamentals"
 ---
 ### References
 

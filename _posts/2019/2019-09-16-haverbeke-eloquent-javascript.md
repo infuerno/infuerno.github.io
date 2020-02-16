@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Eloquent JavaScript"
+title: "Haverbeke: Eloquent JavaScript"
 ---
 # Introduction
 
