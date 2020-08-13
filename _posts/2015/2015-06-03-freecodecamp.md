@@ -5,6 +5,24 @@ tags: [notes, courses]
 ---
 ## Basic HTML and CSS
 
+### Radio buttons
+
+```html
+<label><input type="radio" name="indoor-outdoor" value="indoor" checked> Indoor</label>
+<label><input type="radio" name="indoor-outdoor" value="outdoor"> Outdoor</label>
+```
+
+* Use the `name` attribute to group radio buttons
+* Use the `value` attribute to use this as the value when POSTing the form (default is simply `on`) e.g. `indoor-outdoor=indoor`
+
+### Checkboxes
+
+```html
+<label><input type="checkbox" name="personality" checked> Loving</label>
+<label><input type="checkbox" name="personality"> Lazy</label>
+<label><input type="checkbox" name="personality"> Energetic</label>
+```
+
 ### Import a google font 
 
     <link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
@@ -21,14 +39,87 @@ Use the css: `border-radius: 50%;`
 
 With HTML5 use a `required` attribute to ensure a field is completed
 
-### Radio buttons
+### CSS variables
 
-    <label>
-      <input type="radio" name="indoor-outdoor">outdoor
-    </label>
-    <label>
-      <input type="radio" name="indoor-outdoor">indoor
-    </label>
+Available inside the selector specified AND that selectors decendants. Therefore often defined in the `:root` element (a psuedo selector which matches the root element, usually `html`). Can be overriden by redefining further down e.g. within a media query
+
+```css
+:root {
+    --penguin-size: 300px;
+}
+@media (max-width: 350px) {
+    :root {
+        --penguin-size: 200px;
+    }
+}
+```
+
+* Define: `--penguin-skin: grey;`
+* Use: `background: var(--penguin-beak);`
+* Use with fallback: `background: var(--penguin-beak, orange);` (useful for debugging)
+* For compatibility with browsers which don't implement variables, good pratice to specify a fallback color explicitly using normal syntax
+
+### position: absolute
+
+One nuance with absolute positioning is that it will be locked relative to its closest positioned ancestor. If you forget to add a position rule to the parent item, (typically done using `position: relative;`), the browser will keep looking up the chain and ultimately default to the body tag.
+
+### position: fixed
+
+One key difference between the fixed and absolute positions is that an element with a fixed position won't move when the user scrolls.
+
+### z-index
+
+Elements are drawn on top of each other as the HTML is parsed.
+
+* Must be an integer
+* 0 z-index is implicitly applied 
+* Add a positive `z-index` to keep earlier elements in the DOM on top of later elements 
+* Add a negative `z-index` to keep later elements in the DOM underneath earlier elements
+
+### margin: auto
+
+Centre a div on the page using `margin: auto`
+
+### repeating-linear-gradient()
+
+```
+background: repeating-linear-gradient(
+  45deg,
+  yellow 0px,
+  yellow 40px,
+  black 40px,
+  black 80px
+);
+```
+
+### transform
+
+* `transform: scale(2);`
+* `transform: skewX(24deg);`
+
+### CSS animations
+
+* Define name and duration on an element `animation-name: wat; animation-duration: 5s`
+* Define keyframes for a given animation:
+
+```
+@keyframes wat {
+    0% { width: 20px; }
+    100% { width: 40px; }
+}
+```
+
+* If only 100% is specified, 0% is assumed as the current state
+* Keep the effect of the animation after it has finished: `animation-fill-mode: forwards;`
+* Elements must have `position` explicitly set to apply movement animations
+* Specify number of iterations using: `animation-iteration-count` to e.g `3` or `infinite`
+* `animation-timing-function` is used to specify the easing
+    - `ease` (default) - starts slowly, speeds up, slows down again
+    - `ease-out` - fast at the beginning, slows down
+    - `ease-in` - slow at the beginning, speeds up
+    - `linear` - constant speed
+    - `cubic-bezier(0.25, 0.25, 0.75, 0.75)` to apply a bezier curve for better control
+    - `cubic-bezier(0.311, 0.441, 0.444, 1.649)` for juggling motion (y value can be > 1)
 
 ## Responsive Design with Bootstrap
 

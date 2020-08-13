@@ -2,12 +2,14 @@
 layout: post
 title: "Ruby Cheatsheet"
 ---
+
 ## Strings and Regular Expressions
 
 `"string"`, `%Q{string}` use double quotes for interpolation, %Q lets you have double quotes in your interpolated string
 `'string'`, `%q{string}` use single quotes for everything else (faster)
 
 `'a@b.com' =~ /(.*)@(.*)\.com$/i` to match a string against a regex
+
 - `i` ignore case
 - if no match, value is false
 - if match, value is non-false, and $1..$n capture groups
@@ -24,7 +26,7 @@ title: "Ruby Cheatsheet"
 
 ## Classes and Inheritance
 
-```
+```ruby
 class SavingsAccount < Account # inheritance
   # constructor used when SavingsAccount.new(...) called
   def initialize(balance=0) # optional argument
@@ -51,6 +53,4 @@ end
 
 ### Accessors
 
-`attr_accessor`, `attr_reader` and `attr_writer` save having to write explicit getters and setters in the case these methods don't do anything interesting. These are examples of *metaprogramming* in Ruby in that the keyword constructs are replaced by actual getters and setters at run time.
-
-
+`attr_accessor`, `attr_reader` and `attr_writer` save having to write explicit getters and setters in the case these methods don't do anything interesting. These are examples of _metaprogramming_ in Ruby in that the keyword constructs are replaced by actual getters and setters at run time.
