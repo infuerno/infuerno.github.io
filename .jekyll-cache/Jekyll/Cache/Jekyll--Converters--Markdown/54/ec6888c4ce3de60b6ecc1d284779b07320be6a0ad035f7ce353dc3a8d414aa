@@ -1,4 +1,0 @@
-I"<<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Containers are an alternative to virtual machines because instead of booting an entire machine inside of another one, containers section off processes to make them think they are in their own little world.
-</code></pre></div></div>
-
-:ET

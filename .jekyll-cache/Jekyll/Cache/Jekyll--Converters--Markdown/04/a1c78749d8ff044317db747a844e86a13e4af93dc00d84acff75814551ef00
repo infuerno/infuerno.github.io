@@ -1,9 +1,0 @@
-I";<h2 id="graphics-basics">Graphics Basics</h2>
-<h3 id="raster-vs-vector">Raster vs Vector</h3>
-<h4 id="raster">Raster</h4>
-<p>Made up of lots of pixels
-Does not retain appearance when zooming in 
-Depends on resolution (e.g. dpi)
-Images for the web only need to be 72dpi
-Images for print need at least 150-300dpi</p>
-:ET
