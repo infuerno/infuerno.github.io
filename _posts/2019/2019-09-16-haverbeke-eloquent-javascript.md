@@ -3,7 +3,7 @@ layout: post
 title: "Haverbeke: Eloquent JavaScript"
 ---
 
-# Introduction
+## Introduction
 
 > We think we are creating the system for our own purposes. We believe we are making it in our own image... But the computer is not really like us. It is a projection of a very slim part of ourselves: that portion devoted to logic, order, rule, and clarity.
 > &mdash; <cite>Ellen Ullman, Close to the Machine: Technophilia and its Discontents</cite>
@@ -13,7 +13,7 @@ title: "Haverbeke: Eloquent JavaScript"
 
 Programming, it turns out, is hard. You're buidling your own maze, in a way, and you might just get lost in it. Without care, a programs size and complexity will grow out of control, confusing even the person who created it.
 
-## Overview
+### Overview
 
 - Chapters 1-12: JavaScript language
   - 1-4: Control structures, functions, data structures
@@ -30,13 +30,13 @@ Programming, it turns out, is hard. You're buidling your own maze, in a way, and
   - 20: Node.js
   - 21: **Project** Skill Sharing Website
 
-# Chapter 1. Values, Types, and Operators
+## Chapter 1. Values, Types, and Operators
 
-## Numbers
+### Numbers
 
 JavaScript uses 64 bits to store values of type `number`. Still need to worry about overflow, but only with huge numbers. Floating point arithmetic is still approximate. There are 3 special number types: `Infinity`, `-Infinity` and `NaN`.
 
-## Interpolation
+### Interpolation
 
 Backtick-quoted strings, usually called template literals, can do a few more tricks. Apart from being able to span lines, they can also embed other values.
 
@@ -46,24 +46,24 @@ Backtick-quoted strings, usually called template literals, can do a few more tri
 
 When you write something inside `${}` in a template literal, its result will be computed, converted to a string, and included at that position. The example produces “half of 100 is 50”.
 
-## `null` and `undefined`
+### `null` and `undefined`
 
 - Two special values, `null` and `undefined`, are used to denote the absence of a meaningful value. They are themselves values, but carry no information.
 - Many operations in the language that don’t produce meaningful values (detailed later) yield `undefined` simply because they have to yield **some** value.
 - The difference in meaning between `undefined` and `null` is an accident of JavaScript’s design, and it doesn’t matter most of the time. In cases where you actually have to concern yourself with these values, I recommend treating them as mostly interchangeable.
 
-## Automatic type conversion
+### Automatic type conversion
 
 JavaScript goes out of its way to understand almost anything you give it including automatic type conversion when operating on two or more types of different values. When using `==` to compare different types, JavaScript uses a complicated and confusing set of rules to determine what to do. Use `===` to avoid automatic type conversion.
 
-# Chapter 2. Program Structure
+## Chapter 2. Program Structure
 
-## Expressions and Statements
+### Expressions and Statements
 
 Expressions are fragments of code which produce values e.g. `22`, `"psycho"`, `(22)`, `typeof 22`, `3 + 4`
 Statements combine expressions. The simplist statements are just expressions followed by a `;` e.g. `1;`, `false;`
 
-## Bindings
+### Bindings
 
 Imagine bindings (or variables) as tentacles, rather than boxes.
 
@@ -79,19 +79,19 @@ A binding name may include dollar signs `$` or underscores `_` but no other punc
 
 When creating a binding produces an unexpected syntax error, first check if trying to define a reserved word.
 
-## The Environment
+### The Environment
 
 The collection of bindings and their values which exist at a given time is the **environment**. Many of these values of of type `function`. Executing a function = "invoke" it, "call" it or "apply" it.
 
-## Blocks
+### Blocks
 
 `{` and `}` can be used to group any number of statements into a **block**.
 
-## Capitalization
+### Capitalization
 
 Most bindings use Lower Camel Case e.g. `fuzzyLittleTurtle`. Constructor functions use Camel Case e.g. `Number`.
 
-# Chapter 3. Functions
+## Chapter 3. Functions
 
 A function is just a regular binding where the **value** is a function.
 
@@ -107,7 +107,7 @@ console.log(square(4));
 - A function immediately returns on encountering the `return` keyword, giving the value to the code which called the function.
 - `undefined` is returned if a return value is not specified OR if there is no `return`.
 
-## Scopes
+### Scopes
 
 - A binding defined outside of a function or block is a **global** binding
 - A binding created for function parameters or defined within a function is a **local** binding
@@ -117,13 +117,13 @@ console.log(square(4));
 - Multiple degress of locality exist when functions and blocks are created within other functions and blocks (i.e. nested)
 - Lexical scoping: the set of bindings visible inside a block (or function) is determined by the place of that block **in the program text**
 
-## Declaration notation
+### Declaration notation
 
 - A shorter way of declaring a function, using `function` keyword at the start
 - Doesn't require a semi-colon after the declaration
 - Almost the same, except that they are logically **moved** to the top of their scope
 
-## Arrow notation
+### Arrow notation
 
 ```javascript
 const square1 = (x) => {
@@ -132,13 +132,13 @@ const square1 = (x) => {
 const square2 = (x) => x * x;
 ```
 
-## Parameters
+### Parameters
 
 - If too many arguments are passed, extra ones are ignored
 - If too few, the remaining are set to `undefined`
 - Using `=` gives a default value in the case it is not specified
 
-## Closures
+### Closures
 
 Closures are possible because:
 
@@ -181,7 +181,7 @@ console.log(twice(5)); // → 10
 
 Thinking about programs like this takes some practice. A good mental model is to think of function values as containing both the code in their body and the environment in which they are created. When called, the function body sees the environment in which it was created, not the environment in which it is called.
 
-## Functions and side-effects
+### Functions and side-effects
 
 Functions can be roughly divided into those that are called for their side effects and those that are called for their return value. (Though it is definitely also possible to both have side effects and return a value.)
 
@@ -190,12 +190,12 @@ A **pure** function is a specific kind of value-producing function that:
 - has no side effects
 - doesn’t rely on side effects from other code (e.g. doesn't use global variables)
 
-# Chapter 4. Objects and Arrays
+## Chapter 4. Objects and Arrays
 
 > On two occasions I have been asked, ‘Pray, Mr. Babbage, if you put into the machine wrong figures, will the right answers come out?’ [...] I am not able rightly to apprehend the kind of confusion of ideas that could provoke such a question.
 > &mdash; <cite>Charles Babbage, Passages from the Life of a Philosopher (1864)</cite>
 
-## Properties
+### Properties
 
 - Almost all JavaScript values have properties (with the exception of `null` and `undefined`)
 - Both `value.x` and `value[x]` access a property on value
@@ -205,7 +205,7 @@ A **pure** function is a specific kind of value-producing function that:
 - Elements in an array are stored as the array’s properties, using numbers as property names (and therefore must use square bracket notation)
 - Properties that contain functions are generally called methods of the value they belong to, as in “toUpperCase is a method of a string”.
 
-## Objects
+### Objects
 
 - Values of the type `object` are arbitrary collections of properties
 - One way to create an object is by using braces as an expression
@@ -221,7 +221,7 @@ let day1 = {
 - `Object.keys` returns an array of strings, the object’s property names e.g. `Object.keys(day1)` gives `["squirrel", "events"]`
 - `Object.assign` copies all properties from one object into another e.g. `Object.assign(day1, {weather: "cloudy", moon: "full"})`
 
-## Arrays
+### Arrays
 
 Arrays are simply a kind of object specialized for storing sequences of things, with extra methods available
 
@@ -233,25 +233,25 @@ Arrays are simply a kind of object specialized for storing sequences of things, 
 - `slice` returns a sub section of an array e.g. `arr.slice(2, 4)` (use `slice()` to copy the whole array)
 - `concat` glues arrays together to create a new array (similar to `+` for strings)
 
-## Strings
+### Strings
 
 - `indexOf` can search for more than one letter (unlike arrays)
 - `padStart`, `trim`
 - `split`, `join`
 - `repeat` e.g. `"ha".repeat(3) // hahaha`
 
-## Rest parameters
+### Rest parameters
 
 - To accept any number of arguments, add `...` before the last argument e.g. `function max(...numbers)` a.k.a. the **rest parameter**
 - The rest parameter gathers up all remaining parameters and binds them to an array
 - Use `...` to _call_ a function with an array and automagically "spread" the array out into the arguments e.g. `let numbers = [5, 1, 7]; console.log(max(...numbers));` - "spreading" out the array into the function call
 
-## Destructuring
+### Destructuring
 
 - Use destructuring to assign more meaningful variable names directly to elements in an array parameter using `[]` e.g. `function phi([n00, n01, n10, n11])`
 - Destructure objects using `{}` e.g. `let {name} = {name: "Faraji", age: 23}; // "Faraji"`
 
-# Chapter 5. Higher-Order Functions
+## Chapter 5. Higher-Order Functions
 
 - Functions that operate on other functions, either by taking them as arguments or by returning them, are called higher-order functions (term is from mathematics where there is more difference between a "function" and a "value")
 - Allow abstracting over _actions_ (not just _values_)
@@ -275,13 +275,13 @@ console.log(greaterThan10(11));
   - `some` tests whether any element in an array passes a given predicate function
   - `findIndex` finds the position of the first element passing a given predicate function
 
-# Chapter 6. The Secret Life of Objects
+## Chapter 6. The Secret Life of Objects
 
-## Encapsulation
+### Encapsulation
 
 - Javascript objects do not have the concept of `public` and `private` (YET), however it is customary for private variables to be prefixed with `_`.
 
-## Methods
+### Methods
 
 - `Methods` are object properties which hold function values
 - When a method needs access something on the object it was called on, it can use the binding `this` (in effect, passed into the method is a special way).
@@ -314,7 +314,7 @@ normalise.call({ coords: [1, 2, 3] }, (length: 5));
 // -> [0, 0.4, 0.6]
 ```
 
-## Prototypes
+### Prototypes
 
 Most objects in JavaScript also have a `prototype`, an informal take on the OO concept of classes. Functions derive from `Function.prototype`, array from `Array.prototype` and these prototypes as well as objects derive from `Object.prototype`
 
@@ -329,7 +329,7 @@ killerRabbit.type = "killer";
 killerRabbit.speak("SKRREEE");
 ```
 
-### Constructor Functions
+#### Constructor Functions
 
 Special functions - use `Object.create` - ensure all mandatory properties are initialised.
 
@@ -356,11 +356,11 @@ let weirdRabbit = new Rabbit("weird");
 
 Constructors (and all functions actually) automatically get a property name `prototype`, to which you can add further functionality e.g. the function `speak`.
 
-### Pre ES6
+#### Pre ES6
 
 JavaScript classes are constructor functions with a prototype property and are written as such.
 
-### Post ES6
+#### Post ES6
 
 Same, but with easier syntax.
 
@@ -377,10 +377,191 @@ class Rabbit {
 let blackRabbit = new Rabbit('black');
 ```
 
-## Maps
+### Maps
 
 Since all objects derive from `Object.prototype` and inherit several default methods e.g. `toString`, this can be problematic when requiring a map type object where the ONLY properties you want are those which have been explicitly defined.
 
 The JavaScript `Map` class solves this. Methods `get` and `set` can be used to set keys and retrieve values.
 
-## Getter, Setters and Statics
+### Getter, Setters and Statics
+
+## Chapter 8. Bugs and Errors
+
+## Chapter 9. Regular Expressions
+
+> Some people, when confronted with a problem think 'I know, I'll use regular expressions.' Now they have two problems.
+> &mdash; <cite>Jamie Zawinski</cite>
+
+- Define using literal value `/abc/` or a constructor `new RegExp("abc")`
+- If defining using the latter backslashes need escaping e.g. `/\d+/` but `new RegExp("\\d+")`
+- If defining using the former forward slashes need to be escaped e.g. `new RegExp("a/b")` but `/a\/b/`
+
+### Useful methods
+
+#### .test() on RegExp
+
+`.test()` on `RegExp` when passed a string, returns a boolean e.g. `/abc/.test("abcdef")` returns `true`
+
+Subexpressions are grouped using `()` and are treated as a **single element** e.g. `/boo+(hoo+)+/i.test("Boohoooohoohoooo"` returns `true`
+
+#### .exec() on RegExp
+
+`.exec()` on `RegExp` returns a "match" object. Either `null` if not found OR an `Array` of the matches, with some extra properties including `index` containing where the match was found (and also the properties `input` and `groups`)
+
+#### .match() on String
+
+`.match()` on `String` is the equivalent of `.exec()` on `RegExp`
+
+#### .replace() on String
+
+This `String` method can take either `String`s or `RegExp`s for the first argument. The second argument can additionally use the `$1`, `$2` group substitutions (use `$&` for the whole match).
+
+```javascript
+console.log("Liskov, Barbara\nMcCarthy, John\nWadler, Philip".replace(/(\w+), (\w+)/g, "$2 $1"));
+// → Barbara Liskov
+//   John McCarthy
+//   Philip Wadler
+```
+
+A function can alternatively be passed as the second arguments
+
+```javascript
+let s = "the cia and fbi";
+console.log(s.replace(/\b(fbi|cia)\b/g, (str) => str.toUpperCase()));
+// → the CIA and FBI
+```
+
+#### .search() on String
+
+Similar to `indexOf`, but using regular expressions instead e.g. `" word".search(/\S/)` gives `2`
+
+### The Date class
+
+- `new Date()` - today's date
+- `new Date(2009, 11, 9)` - date for 9th **December** 2009 (**months** are zero based)
+- Timestamps are stored as the number of milliseconds since 1/1/1970. Use `getTime()` to get this number e.g. `new Date().getTime()` gives `1598619753764`
+- Negative numbers are used for dates prior to 1970
+- `Date()` constructor called with a single argument is treated as ticks
+
+### Example using regex, groups and destructuring to parse variables from a string
+
+```javascript
+function getDate(string) {
+  let [_, month, day, year] = /(\d{1,2})-(\d{1,2})-(\d{4})/.exec(string);
+  return new Date(year, month - 1, day);
+}
+console.log(getDate("1-30-2003"));
+// → Thu Jan 30 2003 00:00:00 GMT+0100 (CET)
+```
+
+### Matching and Backtracking
+
+The reg ex parsing engine looks for a match in the string checking from the first character then the second and so on. When there are choices (using `|`) or wildcard operators (`*`, `+`) and the initial pass doesn't yield a match, the engine has to backtrack and try a second way (the second branch, or less greedy using of `*`).
+
+Some regular expressions and string combinations can be written such that ** a lot** backtracking occurs and can yield performance issues.
+e.g. `"0101010101010101010101010101".match(/([01]+)+b/)` never matches and takes about 5 seconds to return `null`. The time to complete is doubled for each number added to the string.
+
+### Greed
+
+Due to the mechanics of matching, `+`, `*`, `?` and `{}` are **greedy** by default, i.e. they match as much as they can and backtrack from there.
+
+Using a following `?` makes these operators **nongreedy** i.e. `+?`, `*?`. This is often what is wanted in the first place.
+
+**When using a repetition operator consider the nongreedy variant first.**
+
+### The `lastIndex` property
+
+This `lastIndex` property is set on a `RegExp` object where the `global` or `sticky` flag is true AND the `exec` method is used. It keeps track of where the next match will be checked from when `exec` is called a second or subsequent time.
+
+This can be useful OR lead to bugs.
+
+#### Looping over matches
+
+```javascript
+let input = "A string with 3 numbers in it... 42 and 88.";
+let number = /\b\d+\b/g;
+let match;
+while ((match = number.exec(input))) {
+  console.log("Found", match[0], "at", match.index);
+}
+// -> Found 3 at 14
+// -> Found 42 at 33
+// -> Found 88 at 40
+```
+
+#### Source of bugs
+
+```javascript
+let pattern = /abc/g;
+console.log(pattern.exec("abc in the summer"));
+// -> [ 'abc', index: 0, input: 'abcdefabc', groups: undefined ]
+console.log(pattern.lastIndex);
+// -> 3
+console.log(pattern.exec("abc in the winter"));
+// -> null
+```
+
+### International Characters
+
+Regular expressions in JavaScript work with code units NOT actual characters. So 🍎 which is composed of two code units behaves unexpectedly.
+
+```javascript
+console.log(/🍎{3}/.test("🍎🍎🍎"));
+// -> false - only the second code unit has the {3} applied, so the test fails
+```
+
+Use `/u` to treat Unicode characters correctly.
+
+```javascript
+console.log(/🍎{3}/u.test("🍎🍎🍎"));
+// -> true
+```
+
+### Summary
+
+| regex      | meaning                                      |
+| ---------- | -------------------------------------------- |
+| `/abc/`    | A sequence of characters                     |
+| `/[abc]/`  | Any character from a set of characters       |
+| `/[^abc]/` | Any character not in a set of characters     |
+| `/[0-9]/`  | Any character in a range of characters       |
+| `/x+/`     | One or more occurrences of the pattern x     |
+| `/x+?/`    | One or more occurrences, nongreedy           |
+| `/x*/`     | Zero or more occurrences                     |
+| `/x?/`     | Zero or one occurrence                       |
+| `/x{2,4}/` | Two to four occurrences                      |
+| `/(abc)/`  | A group                                      |
+| `/a        | b                                            | c/` | Any one of several patterns |
+| `/\d/`     | Any digit character                          |
+| `/\w/`     | An alphanumeric character ("word character") |
+| `/\s/`     | Any whitespace character                     |
+| `/./`      | Any character except newlines                |
+| `/\b/`     | A word boundary                              |
+| `/^/`      | Start of input                               |
+| `/$/`      | End of input                                 |
+
+## Chapter 10. Modules
+
+Modules are used to break programs into smaller pieces. Each module should specify its dependencies and its own interface. In a similar way to objects, they expose some functionality publically and keep the rest private.
+
+Relationships between modules are called dependencies.
+
+### CommonJS modules
+
+Until 2015, there was no official module system in JavaScript so improvised systems emerged using functions to create local scopes and objects to represent interfaces.
+
+CommonJS is the most widely used of these. The main concept is a function `require` which is called with a string of the name of the dependency e.g. `require("ordinal")`. The string is treated as a path. The file system will be searched in obvious places to find a file or folder with the same name e.g. `ordinal.js` (or `index.js` by default if a folder is used instead - can be changed in `package.json`). Strings starting `./`, `../` or just `/` can also be used.
+
+The following steps are taken when requiring a module:
+
+- Resolving: Find the absolute path of the file
+- Loading: Determine the type of the file content
+- Wrapping: Give the file its private scope. This is what makes both the require and module objects local to every file we require
+- Evaluating: This is what the VM eventually does with the loaded code
+- Caching: When the file is required again, the same steps are not repeated
+
+A `module` object is the result of requiring a file in this way. The `module` object has a special property `exports`, itself an object which can be used to expose properties of the module e.g. `exports.id = "hello world";`. The `module.exports` object is returned by the `require` function.
+
+To export functions etc from a module, define on the `exports` object e.g. `exports.formatDate = function(date, format) {...}`
+
+### ES6 modules
