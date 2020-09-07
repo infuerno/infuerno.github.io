@@ -2,7 +2,6 @@ _site
 .sass-cache
 .jekyll-cache
 .jekyll-metadata
-vendor
 .DS_Store
 
 # Ignore the drafts folder, for wip posts
