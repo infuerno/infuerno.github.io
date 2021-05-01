@@ -1,3 +1,8 @@
+---
+layout: post
+title: "Frontend Masters: Bianca Gandolpho Javascript from Fundamentals to Functional JS v2"
+---
+
 m/bgando/exercises-fundamentals-2-functional
 
 ### Other Courses
