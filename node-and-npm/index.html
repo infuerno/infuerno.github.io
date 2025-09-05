@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Test-Driven Infrastructure With Chef</title>
+		<title>Node and npm</title>
 		<meta name="description" content="There are 18 different shades of British Standard Toast">
 		<meta name="generator" content="Eleventy v3.1.2">
 		
@@ -385,174 +385,6 @@ table th {
 
 table td {
 	border: 1px solid var(--color-gray-20);
-}
-/**
- * okaidia theme for JavaScript, CSS and HTML
- * Loosely based on Monokai textmate theme by http://www.monokai.nl/
- * @author ocodia
- */
-
-code[class*="language-"],
-pre[class*="language-"] {
-	color: #f8f8f2;
-	background: none;
-	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
-	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-	font-size: 1em;
-	text-align: left;
-	white-space: pre;
-	word-spacing: normal;
-	word-break: normal;
-	word-wrap: normal;
-	line-height: 1.5;
-
-	-moz-tab-size: 4;
-	-o-tab-size: 4;
-	tab-size: 4;
-
-	-webkit-hyphens: none;
-	-moz-hyphens: none;
-	-ms-hyphens: none;
-	hyphens: none;
-}
-
-/* Code blocks */
-pre[class*="language-"] {
-	padding: 1em;
-	margin: .5em 0;
-	overflow: auto;
-	border-radius: 0.3em;
-}
-
-:not(pre) > code[class*="language-"],
-pre[class*="language-"] {
-	background: #272822;
-}
-
-/* Inline code */
-:not(pre) > code[class*="language-"] {
-	padding: .1em;
-	border-radius: .3em;
-	white-space: normal;
-}
-
-.token.comment,
-.token.prolog,
-.token.doctype,
-.token.cdata {
-	color: #8292a2;
-}
-
-.token.punctuation {
-	color: #f8f8f2;
-}
-
-.token.namespace {
-	opacity: .7;
-}
-
-.token.property,
-.token.tag,
-.token.constant,
-.token.symbol,
-.token.deleted {
-	color: #f92672;
-}
-
-.token.boolean,
-.token.number {
-	color: #ae81ff;
-}
-
-.token.selector,
-.token.attr-name,
-.token.string,
-.token.char,
-.token.builtin,
-.token.inserted {
-	color: #a6e22e;
-}
-
-.token.operator,
-.token.entity,
-.token.url,
-.language-css .token.string,
-.style .token.string,
-.token.variable {
-	color: #f8f8f2;
-}
-
-.token.atrule,
-.token.attr-value,
-.token.function,
-.token.class-name {
-	color: #e6db74;
-}
-
-.token.keyword {
-	color: #66d9ef;
-}
-
-.token.regex,
-.token.important {
-	color: #fd971f;
-}
-
-.token.important,
-.token.bold {
-	font-weight: bold;
-}
-.token.italic {
-	font-style: italic;
-}
-
-.token.entity {
-	cursor: help;
-}
-/*
- * New diff- syntax
- */
-
-pre[class*="language-diff-"] {
-	--eleventy-code-padding: 1.25em;
-	padding-left: var(--eleventy-code-padding);
-	padding-right: var(--eleventy-code-padding);
-}
-.token.deleted {
-	background-color: hsl(0, 51%, 37%);
-	color: inherit;
-}
-.token.inserted {
-	background-color: hsl(126, 31%, 39%);
-	color: inherit;
-}
-
-/* Make the + and - characters unselectable for copy/paste */
-.token.prefix.unchanged,
-.token.prefix.inserted,
-.token.prefix.deleted {
-	-webkit-user-select: none;
-	user-select: none;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	padding-top: 2px;
-	padding-bottom: 2px;
-}
-.token.prefix.inserted,
-.token.prefix.deleted {
-	width: var(--eleventy-code-padding);
-	background-color: rgba(0,0,0,.2);
-}
-
-/* Optional: full-width background color */
-.token.inserted:not(.prefix),
-.token.deleted:not(.prefix) {
-	display: block;
-	margin-left: calc(-1 * var(--eleventy-code-padding));
-	margin-right: calc(-1 * var(--eleventy-code-padding));
-	text-decoration: none; /* override del, ins, mark defaults */
-	color: inherit; /* override del, ins, mark defaults */
 }</style>
 		
 	</head>
@@ -572,41 +404,12 @@ pre[class*="language-diff-"] {
 
 		<main id="main">
 			<heading-anchors>
-				
-
-
-<h1 id="test-driven-infrastructure-with-chef">Test-Driven Infrastructure With Chef</h1>
-
-<ul class="post-metadata">
-	<li><time datetime="2015-06-02">02 June 2015</time></li>
+				<ul>
+<li><code>npm list -g --depth=0</code> lists all top-level packages with versions</li>
+<li><code>npm list -g --parseable --depth=0</code> lists with paths</li>
+<li><code>npm init -y</code> start a node project with all the defaults</li>
 </ul>
 
-<h2 id="references">References</h2>
-<ul>
-<li>&lt;Ruby quick reference by Ryan Davis|<a href="http://zenspider.com/Languages/Ruby/QuickRef.html">http://zenspider.com/Languages/Ruby/QuickRef.html</a>&gt;</li>
-<li>&lt;<a href="http://www.infrastructures.org">www.infrastructures.org</a>&gt;</li>
-<li>History of Ruby <a href="http://bit.ly/18FHd3p">http://bit.ly/18FHd3p</a></li>
-</ul>
-<h2 id="the-philosophy-of-test-driven-infrastructur">The Philosophy of Test-Driven Infrastructur</h2>
-<p>Need to ensure that infrastructure code is written with the same care as application code including coding standards, reviews and testing.
-Robert C. Martin in, Clean Code: A Handbook of Agile Software Craftsmanship - first do no harm. Ensure that by taking action you are not making the situation worse.</p>
-<ul>
-<li>Functional harm: introducing bugs</li>
-<li>Structural harm: making software harder to change</li>
-</ul>
-<p>Testing takes time, so it is important to automate it. Writing good tests for code is hard, so it is also important to write code which is easy to test.</p>
-<h2 id="an-introduction-to-ruby">An Introduction to Ruby</h2>
-<p>Everything is an object, even <code>nil</code>.
-There are 4 main identifiers:</p>
-<ul>
-<li>variables (of which there are 4 types: local - begin with lowercase or underscore, instance - begin with <code>@</code>, class - begin with <code>@@</code>, global - begin with <code>$</code> and have cryptic names e.g. <code>$!</code> - exception object)</li>
-<li>constants - begin with uppercase</li>
-<li>keywords</li>
-<li>methods - can end in <code>?</code>, <code>!</code> or <code>=</code> and also possible to have methods called e.g. <code>[]</code> or <code>&lt;=&gt;</code></li>
-</ul>
-
-<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/2015/05/23/learn-chef-windows/">Learn Chef Windows</a></li><li class="links-nextprev-next">Next →<br><a href="/2015/06/03/freecodecamp/">FreeCodeCamp</a></li>
-</ul>
 
 			</heading-anchors>
 		</main>
@@ -617,7 +420,7 @@ There are 4 main identifiers:</p>
 			</p>
 		</footer>
 
-		<!-- This page `/2015/06/02/test-driven-infrastructure-with-chef/` was built on 2025-09-05T01:35:40.166Z -->
+		<!-- This page `/node-and-npm/` was built on 2025-09-05T01:35:40.176Z -->
 		<script type="module" src="/dist/xbxy_EL6cU.js"></script>
 	</body>
 </html>
