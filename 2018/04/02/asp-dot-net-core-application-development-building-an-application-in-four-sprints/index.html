@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>ASP.NET Core Application Development: Building an application in four sprints</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="asp-net-core-application-development-building-an-application-in-four-sprints">ASP.NET Core Application Development: Building an application in four sprints</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2018-04-02">02 April 2018</time></li>
+</ul>
+
+<h1 id="part-1-alpine-ski-house">Part 1: Alpine Ski House</h1>
+<h2 id="references">References</h2>
+<ul>
+<li>Example project: <a href="https://github.com/AspNetMonsters/AlpineSkiHouse">https://github.com/AspNetMonsters/AlpineSkiHouse</a></li>
+</ul>
+<h2 id="chapter-1-how-we-got-here">Chapter 1: How we got here</h2>
+<h3 id="asp-net-mvc"><a href="http://ASP.NET">ASP.NET</a> MVC</h3>
+<h4 id="editor-and-view-templates">Editor and View templates</h4>
+<p>The power of user controls not initially available in MVC, but rectified by the introduction of <strong>editor and view templates</strong>. Fantasic and underused. Allows you to assign a template to a view in a model. When Razor needs to show an editor or view for a particular field, checks for a special template.</p>
+<pre><code>@Html.DisplayFor(model =&gt; model.StartDate)
+@Html.EditorFor(model =&gt; model.StartDate)
+</code></pre>
+<p>Either defined by convention OR by annotating a field in the model with a UIHint</p>
+<h4 id="filters">Filters</h4>
+<p>A filter is an annotation either to a controller or an action method and can intercept and change any request, adding or updating data or changing the flow of the request. Often used by security e.g. <code>[Authorize]</code>.</p>
+<h4 id="middleware">Middleware</h4>
+<p>Middleware, built on the OWIN standard, largely replaces custom IIS modules.</p>
+<h3 id="web-api">Web API</h3>
+<ul>
+<li>Initially used WCF with a set of rational default, but subsequently morphed into vanilla Web API project</li>
+<li>Very similar to MVC project, but with Views and other UI elements missing. Action names in Controllers correspond to HTTP verbs e.g. Get() and Post().</li>
+<li>Like WCF, supports self hosting, so possible to bin deploy.</li>
+<li>One of the first open source projects from Microsoft</li>
+<li>Much of the functionality is mirrored in <a href="http://ASP.NET">ASP.NET</a> MVC, can bend MVC controllers to perform as Web API</li>
+<li>Can by used alongside <a href="http://ASP.NET">ASP.NET</a> MVC in the same project</li>
+</ul>
+<h3 id="asp-net-core"><a href="http://ASP.NET">ASP.NET</a> Core</h3>
+<ul>
+<li>Next evolution</li>
+<li>Not only open source, but developed using GitHub. See <a href="https://github.com/aspnet/home">https://github.com/aspnet/home</a></li>
+<li>Far more reaching modernization effort designed to make <a href="http://ASP.NET">ASP.NET</a> competitive with other popular web frameworks e.g. Node, Elixr, Go</li>
+<li>Goes hand in hand with modernisation efforts on .NET runtime: .NET Core</li>
+<li>Worthy of at least one book!!!</li>
+</ul>
+<h2 id="chapter-2-influences">Chapter 2: Influences</h2>
+<h3 id="rails">Rails</h3>
+<ul>
+<li>Rails emerged from the 37 signals company in the early 2000s, used to build Basecamp and open sourced by its creators</li>
+<li>Revolutionary at the time, despite MVC being a pattern from the 70s</li>
+<li>Highly opinionated using convention over configuration which <a href="http://ASP.NET">ASP.NET</a> also utilised e.g.
+<ul>
+<li>any public method returning an <code>ActionResult</code> is a public endpoint</li>
+<li><code>Index</code> method is default route for a controller</li>
+<li><code>View</code> method without arguments uses naming rules to locate .cshtml file to render</li>
+</ul>
+</li>
+<li>Routing was fundamental to Rails - flexible URLs</li>
+<li><code>ActiveRecord</code> models which were used from UI to database</li>
+</ul>
+<h3 id="node-js">Node.js</h3>
+<ul>
+<li>Event-driven, multi-platform, single-threaded runtime for JavaScript</li>
+<li>Many tools in <a href="http://ASP.NET">ASP.NET</a> core build process actually use Node</li>
+<li>Influential in the development of <a href="http://ASP.NET">ASP.NET</a>’s web socket implementation, SignalR
+<ul>
+<li>popularised the idea of server push and WebSockets for real time communication using <code>socket.io</code> package</li>
+</ul>
+</li>
+</ul>
+<h3 id="angular-and-react">Angular and React</h3>
+<h3 id="open-source">Open source</h3>
+<h3 id="owin">OWIN</h3>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2018/02/28/pluralsight-what-every-developer-must-know-about-https/">Pluralsight: What Every Developer Must Know About HTTPS</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2018/04/29/pluralsight-understanding-owin-and-katana/">Pluralsight: Understanding OWIN and Katana</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2018/04/02/asp-dot-net-core-application-development-building-an-application-in-four-sprints/` was built on 2025-09-05T01:23:56.887Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

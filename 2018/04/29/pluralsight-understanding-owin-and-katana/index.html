@@ -1,0 +1,867 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Pluralsight: Understanding OWIN and Katana</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="pluralsight-understanding-owin-and-katana">Pluralsight: Understanding OWIN and Katana</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2018-04-29">29 April 2018</time></li>
+</ul>
+
+<h2 id="what-is-owin">What is OWIN?</h2>
+<p>Open Web Interface for .NET</p>
+<pre><code>OWIN defines a standard interface between .NET web servers and web applications - www.owin.org
+</code></pre>
+<p>Abstract away the web server in a well defined way, so that web applications can be built to the abstraction and don’t care which web server they are running on. .NET web applications were nearly always hosted on IIS (except e.g. <a href="http://ASP.NET">ASP.NET</a> Web API or Nancy FX).</p>
+<p>In OWIN, the web server has been abstracted away to simply a dictionary and a delegate. Usually called the environment dictionary, or <code>AppFunc</code> and defined:</p>
+<p><code>using AppFunc = Func&lt;IDictionary&lt;string, object&gt;, Task&gt;</code></p>
+<p>Referencing it as <code>AppFunc</code> makes it easier throughout the code. The dictionary passed to the delegate includes all the information from the HttpRequest. Additionally the web server may expose functionality to the web application by inserting a delegate into the dictionary. The return <code>Task</code> is used to tell the server when the application has finished processing the request (so everything is asynchronous).</p>
+<p><code>var f = new AppFunc(environment =&gt; { return Task.FromResult(null); })</code></p>
+<h3 id="the-parts-of-owin">The Parts of OWIN</h3>
+<p>Host
+: A process of some sort, SomeProcess.exe, which hosts all the other parts - a console app, windows server or even IIS - an is responsible for starting everything up.</p>
+<p>Server
+: Accepts incoming HTTP requests and returns HTTP responses (in IIS the host and server are in effect the same thing). Passes the request to the application using the AppFunc.</p>
+<p>Pipeline of Middlewares
+: A piece of middleware is code through which the request passes to and from the application. Can inspect and modify the incoming request and outgoing response (similar to HTTP module idea)</p>
+<p>Application
+: Responsible for generating the response (similar to HTTP handler idea)</p>
+<p>Web Framework
+: Often used to abstract away the pipeline of middlewares and application. In OWIN, a set of self-contained OWIN middlewares, plugging into the OWIN pipleline which expose a set of APIs for a developer to work with.</p>
+<h3 id="the-flow">The Flow</h3>
+<p>The HTTP request is sent from the client, translated to the environment dictionary (along with a stream to hold the response, and another dictionary for the response headers), passed through the middleware to the application. The application generates a response, sets any response headers and THEN starts writing the response to the response stream.</p>
+<p>The server is set up to be notified of the first write to the response stream. When it notices this, it crafts an HTTP response with the headers specified and sends it back to the client. The connection is kept open while the rest of the response is written to the stream and sent to the client.</p>
+<p>The last middleware in the pipleline is passed the environment dictionary by the application, and the dictionary is returned back up the pipeline. The middlewares at this point CANNOT modify the response headers and can only append to the response stream. Finally the server receives the Task from the AppFunc, finalises the response to the client and closes the connection.</p>
+<h3 id="environment-dictionary-keys">Environment Dictionary Keys</h3>
+<p>All prefixed with <code>owin.</code> to help avoid being overwritten by any custom keys e.g. <code>owin.RequestPath</code>, <code>owin.RequestBody</code>, <code>owin.ResponseStatusCode</code>. An <code>owin.Version</code> field defines the version supported by the server in case the application needs to check feature availability. The <code>server.OnSendingHeaders</code> key allows registering a callback just before the server sends the response headers back to the client to allow modifying the headers.</p>
+<p>(See <a href="http://owin.org/html/spec/owin-1.0.html">http://owin.org/html/spec/owin-1.0.html</a> for full list)</p>
+<h3 id="katana">Katana</h3>
+<p>Katana is an implementation of OWIN including other useful functionality. Developer friendly APIs.</p>
+<h2 id="building-a-simple-owin-pipeline">Building a simple OWIN pipeline</h2>
+<ol>
+<li>Create empty MVC web application</li>
+<li><code>Install-Package Microsoft.Owin.Host.SystemWeb</code> - required to host an OWIN pipeline inside <a href="http://ASP.NET">ASP.NET</a> (also installs <code>Microsoft.Owin</code> - the Katana OWIN implementation as well as a package called <code>Owin</code>)</li>
+<li>Create an entry point using <code>Startup.cs</code> and a method with signature <code>public static void Configuration(IAppBuilder app)</code> (if called anything else, need to be marked up with attributes / app settings).</li>
+<li><code>IAppBuilder</code> is used to add middlewares to the OWIN pipeline using the <code>app.Use()</code> method.</li>
+</ol>
+<pre><code>public static void Configuration(IAppBuilder app)
+{
+    // ctx is an IOwinContext (wrapper around the environment dict), next is another delegate Func&lt;Task&gt;, a Task should be returned
+    app.Use(async (ctx, next) =&gt; {
+        await ctx.Response.WriteAsync(&quot;HelloWorld&quot;);
+    });
+}
+</code></pre>
+<p>Note: In VS 2015 add the <code>async</code> keyword, or the <code>return Task</code> statement to get intellisense. <code>ctx.Response</code> is a shortcut</p>
+<h2 id="creating-middleware-with-owin">Creating middleware with OWIN</h2>
+<p>Delegate based middleware (such as above) can be packaged up for reuse by encapsulating in their own classes. One way is to create a class inheriting from a base class called <code>Microsoft.Owin.OwinMiddleware</code> - however this is Katana specific. Instead simply use the <code>AppFunc</code> pattern thus:</p>
+<pre><code>using AppFunc = Func&lt;IDictionary&lt;string, object&gt;, Task&gt;;
+public class MyMiddleware
+{
+    AppFunc _next;
+    public MyMiddleware(AppFunc next)
+    {
+        _next = next;
+    }
+
+    // create a way for this middleware to be invoked
+    // mark with the async keyword, so we don't need to manually take care of returning a task
+    public async Task Invoke(IDictionary&lt;string, object&gt; environment)
+    {
+        // ctx not supplied by default - could alternatively just use (string)environemnt[&quot;owin.RequestPath&quot;]
+        var ctx = new OwinContext(environment); 
+
+        Debug.WriteLine(&quot;Incoming request: &quot; + ctx.Request.Path);
+        await _next(environment);
+        Debug.WriteLine(&quot;Outgoing response: &quot; + ctx.Request.Path);
+    }
+}
+</code></pre>
+<p>In Startup.cs just use <code>app.Use&lt;MyMiddleware&gt;();</code> to add to pipeline. Add an options class with properties for anything that can be configured e.g. <code>MyMiddlewareOptions</code>…</p>
+<pre><code>public class MyMiddlewareOptions
+{
+    public Action&lt;IOwinContext&gt; OnIncomingRequest { get; set; }
+    public Action&lt;IOwinContext&gt; OnOutgoingResponse { get; set; }
+}
+</code></pre>
+<p>Add to middleware by adding a second parameter to the middleware’s constructor e.g. <code>public MyMiddleware(AppFunc next, MyMiddlewareOptions options)</code>. Store this globally and set a default behaviour (if required) in the case any options are null.</p>
+<p>In the <code>Startup</code> class, update <code>app.Use&lt;MyMiddleware&gt;()</code> to include the options required e.g.</p>
+<pre><code>app.Use&lt;MyMiddleware&gt;(new MyMiddlewareOptions()
+{
+    OnIncomingRequest = (ctx) =&gt;
+    {
+        var watch = new Stopwatch();
+        watch.Start();
+        ctx.Environment[&quot;DebugStopwatch&quot;] = watch;
+    },
+    OnOutgoingResponse = (ctx) =&gt;
+    {
+        var watch = (Stopwatch)ctx.Environment[&quot;DebugStopwatch&quot;];
+        watch.Stop();
+        Debug.WriteLine(&quot;Time elapsed: &quot; + watch.ElapsedMilliseconds + &quot; ms&quot;);
+    }
+});
+</code></pre>
+<p>Create an extensions method for an app.UseXXX experience which in turn calls the <code>app.Use&lt;T&gt;()</code> method. Potentially use the namespace of the original class being overloaded to aid intellisense.</p>
+<pre><code>namespace Owin
+{
+    public static class MyMiddlewareExtensions
+    {
+        public static void UseMyMiddleware(this IAppBuilder app, MyMiddlewareOptions options)
+        {
+            if (options == null)
+                options = new MyMiddlewareOptions();
+            app.Use&lt;MyMiddleware&gt;(options);
+        }
+    }
+}
+</code></pre>
+<h2 id="integrating-frameworks">Integrating Frameworks</h2>
+<p>Only certain frameworks will be able to integrate as an OWIN middleware e.g. Nancy FX or <a href="http://ASP.NET">ASP.NET</a> Web API. MVC is not available as OWIN middleware due to its dependency on IIS (although <a href="http://ASP.NET">ASP.NET</a>, MVC and Katana work well together and is a very common way to deploy Katana).</p>
+<h3 id="nancy-fx">Nancy FX</h3>
+<p><code>Install-Package Nancy.Owin</code> to install the Nancy FX framework.</p>
+<p>Create a new module which inherits from <code>NancyModule</code>. The <code>NancyModule</code> base class contains a dictionary for each of the HTTP verbs. Register routes to the dictionary along with the delegate which will handle the request e.g. <code>Get[&quot;/nancy&quot;] = x =&gt; { return &quot;Hello world!&quot;;}</code></p>
+<p>By default Nancy will now process all requests and any middleware after it in the pipeline will not get a chance to execute. Using the <code>app.Map()</code> method isn’t helpful since Nancy bases its routing on the OWIN environment variable <code>owin.RequestPath</code> and ignores the <code>owin.RequestPathBase</code> value (populated by the Map method). Instead use the <code>NancyOptions</code> to provide a delegate to the PerformPassThrough action to route all requests on through the pipeline in the case of a NotFound from Nancy.</p>
+<h3 id="asp-net-web-api"><a href="http://ASP.NET">ASP.NET</a> Web API</h3>
+<p><code>Install-Package Microsoft.AspNet.WebApi.Owin</code> to install <a href="http://ASP.NET">ASP.NET</a> web API.</p>
+<ol>
+<li>Create a new controller, inheriting from <code>ApiController</code></li>
+<li>Add a method returning <code>IHttpActionResult</code></li>
+<li>Mark up the method with the <code>[HttpGet]</code> attribute if the method is not called <code>Get</code>, markup the class and / or methods with <code>[Route]</code> or <code>[RoutePrefix]</code> attributes if the class name doesn’t correspond to the URL.</li>
+<li>Add the WebApi to the middleware pipeline having called the <code>MapHttpAttributeRoutes</code> on the configuration to the middleware to ensure all routes specified will be delivered by this middleware.</li>
+</ol>
+<pre><code>var config = new HttpConfiguration();
+config.MapHttpAttributeRoutes();
+app.UseWebApi(config);
+</code></pre>
+<h3 id="asp-net-mvc"><a href="http://ASP.NET">ASP.NET</a> MVC</h3>
+<p>MVC acts as the application at the end of the middleware pipeline.</p>
+<p><code>Install-Package Microsoft.AspNet.Mvc</code></p>
+<ol>
+<li>Create a new controller, inheriting from System.Web.Mvc.Controller</li>
+<li>Add an action method with return type <code>ActionResult</code> with body <code>return View();</code></li>
+<li>Create a corresponding view</li>
+<li>Add <code>@inherits System.Web.Mvc.WebViewPage</code> at the top of the view due to the usual wire up code missing from the web.config having added the NuGet packages manually</li>
+<li>In Application_Start within Global.asax.cs, add a default route:</li>
+</ol>
+<pre><code>RouteTable.Routes.MapRoute(name: &quot;Default&quot;, 
+   url: &quot;{controller}/{action}&quot;, 
+   defaults: new {controller = &quot;Home&quot;, action = &quot;Index&quot;} );
+</code></pre>
+<ol start="6">
+<li>Ensure that requests which are handled can pass through the middleware pipeline to be handed off to <a href="http://ASP.NET">ASP.NET</a> MVC.</li>
+</ol>
+<h2 id="securing-owin-pipelines">Securing OWIN Pipelines</h2>
+<p>Katana is most commonly used to integrate authentication into web applications. Most Microsoft written authentication is currently being implemented as Katana middleware.</p>
+<h3 id="securing-aspnet-mvc">Securing ASPNET MVC</h3>
+<p>Add cookie authentication middleware to the pipeline.</p>
+<pre><code>app.UseCookieAuthentication(new CookieAuthenticationOptions()
+{
+    AuthenticationType = &quot;ApplicationCookie&quot;,
+    LoginPath = new Microsoft.Owin.PathString(&quot;/Auth/Login&quot;)
+});
+</code></pre>
+<p>Authenticate the user with whatever method is required, create an identify for the user and then sign in the user using the new identity.</p>
+<pre><code>// create a new object which represents the user who just logged in
+// lots of overloads for ClaimsIdentity, but will use the overload which takes a
+// string AuthenticationType needs to match the authentication we have chosen to use
+var identity = new ClaimsIdentity(&quot;ApplicationCookie&quot;);
+identity.AddClaims(new List&lt;Claim&gt;{
+    new Claim(ClaimTypes.NameIdentifier, model.UserName),
+    new Claim(ClaimTypes.Name, model.UserName)
+});
+// sign in the user
+HttpContext.GetOwinContext().Authentication.SignIn(identity);
+</code></pre>
+<p>Add logout using <code>HttpContext.GetOwinContext().Authentication.SignOut()</code></p>
+<h3 id="securing-nancy">Securing Nancy</h3>
+<ol>
+<li>First <code>Install-Package Nancy.MSOwinSecurity</code></li>
+<li>Add the following line to the module constructor: <code>this.RequiresMSOwinAuthentication()</code></li>
+<li>To write out e.g. the user’s name, use <code>Context.GetMSOwinUser().Identity.Name</code></li>
+</ol>
+<h3 id="accessing-the-logged-in-user-details-from-middleware">Accessing the logged in user details from middleware</h3>
+<pre><code>app.Use(async (ctx, next) =&gt; {
+    if (ctx.Authentication.User.Identity.IsAuthenticated)
+        Debug.WriteLine(&quot;User&quot; + ctx.Authentication.User.Identity.Name);
+    else
+        Debug.WriteLine(&quot;User not authenticated&quot;);
+    await next();
+});
+</code></pre>
+<h2 id="integrating-social-media-authentication">Integrating Social Media Authentication</h2>
+<h3 id="setup">Setup</h3>
+<p>Twitter doesn’t accept localhost logins, so modify the hosts file to add a dummy host entry pointing to 127.0.0.1 and configure the application to run in IIS to utilise the host name.</p>
+<h3 id="adding-facebook-authentication">Adding Facebook Authentication</h3>
+<p><a href="https://developers.facebook.com/apps">https://developers.facebook.com/apps</a></p>
+<ol>
+<li><code>Install-Package Microsoft.Owin.Security.Facebook</code></li>
+<li>Add middleware including AppId, AppSecret and SignInAsAuthenticationType as “ApplicationCookie” to ensure that by signing in to facebook, they are in effect signed into the app. It would be more usual to use a seperate cookie to log the user in and then in a seperate step transfer the user from being a socially logged in user to be a proper web application user.</li>
+<li>Add a <code>LoginFacebook</code> action on the <code>Auth</code> controller:</li>
+</ol>
+<pre><code>    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties()
+    {
+        RedirectUri = &quot;/secret&quot;,
+    }, &quot;Facebook&quot;);
+
+    // this HttpUnauthorizedResult will be picked up by the cookie authentication middleware
+    // which will create the challenge and send it to the browser
+    return new HttpUnauthorizedResult();
+</code></pre>
+<ol start="3">
+<li>Set up application in Facebook, setting redirect url to <a href="https://air-2013.local:4433/signin-facebook">https://air-2013.local:4433/signin-facebook</a></li>
+<li>Add “Login to facebook” link to redirect to the LoginFacebook action method</li>
+</ol>
+<h3 id="adding-twitter-authentication">Adding Twitter Authentication</h3>
+<p>Add in as for facebook.</p>
+<p>To ease the adding of multiple links to the login page, add a <code>List&lt;AuthenticationDescription&gt; AuthProviders</code> property to the <code>LoginModel</code> and set it using:</p>
+<pre><code>model.AuthProviders = HttpContext.GetOwinContext()
+    .Authentication.GetAuthenticationTypes(x =&gt; !String.IsNullOrWhiteSpace(x.Caption))
+    .ToList();
+</code></pre>
+<p>Then on the view, iterate around these to write out links for each:</p>
+<pre><code>    @foreach(var provider in Model.Providers)
+    {
+        &lt;div&gt;
+            @Html.ActionLink(&quot;Login with &quot; + provider.Caption, &quot;SocialLogin&quot;, new {id = provider.AuthenticationType})
+        &lt;/div&gt;
+    }
+</code></pre>
+<h2 id="hosting-an-owin-pipeline">Hosting an OWIN Pipeline</h2>
+<h3 id="hosting-in-a-console-application">Hosting in a console application</h3>
+<p>Note MVC can’t be self hosted, since it is not OWIN compatible.</p>
+<ol>
+<li>Create a console app</li>
+<li><code>Install-Package Microsoft.Owin.Selfhost</code></li>
+<li>Add a <code>Starup</code> class with a <code>Configuration</code> method and add required middleware</li>
+<li>Use instructions from readme.txt to add server start up to the <code>Main</code> method</li>
+</ol>
+<pre><code>using (WebApp.Start&lt;Startup&gt;(&quot;http://localhost:12345&quot;))
+{
+    Console.WriteLine(&quot;Listening to 12345&quot;);
+    Console.WriteLine(&quot;Press any key to end ...&quot;);
+    Console.ReadLine();
+}
+</code></pre>
+<ol start="5">
+<li>Serve static files using <code>Install-Package Microsoft.Owin.StaticFiles</code> and add it to the pipeline: <code>app.UseStaticFiles()</code> (need to ensure files are where the server expects to find them e.g. set the Build Action to Copy to Output)</li>
+</ol>
+<h3 id="hosting-in-memory-for-unit-testing">Hosting in memory for Unit Testing</h3>
+<ol>
+<li>Create a unit test project, update a test method signature to return <code>async Task</code> rathern than void</li>
+<li>Reference the project you want to test</li>
+<li><code>Install-Package Microsoft.Owin.Testing</code></li>
+<li>Copy in the boilerplate code from the readme.txt, replacing the inline pipeline implementation with the type of the Startup class in the other project e.g. <code>Startup</code> and adding an appropriate assert statement</li>
+<li>(optional) Refactor the creation of the server to a helper method:</li>
+</ol>
+<pre><code>private async Task&lt;T&gt; CallServer&lt;T&gt;(Func&lt;HttpClient, Task&lt;T&gt;&gt; callback)
+{
+    using (var server = TestServer.Create&lt;Startup&gt;())
+    {
+        return await callback(server.HttpClient);
+    }
+}
+</code></pre>
+<p>with example usage:</p>
+<pre><code>[Test]
+public async Task OwinReturnsCorrectContentTypeOnRequestToJpg()
+{
+    var contentType = await CallServer(async client =&gt;
+    {
+        var response = await client.GetAsync(&quot;/xhost-a-very-dangerous-program.png&quot;);
+        return response.Content.Headers.ContentType.MediaType;
+
+    });
+    Assert.AreEqual(&quot;image/png&quot;, contentType);
+}
+</code></pre>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2018/04/02/asp-dot-net-core-application-development-building-an-application-in-four-sprints/">ASP.NET Core Application Development: Building an application in four sprints</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2018/05/12/pluralsight-asp-dot-net-mvc-4-fundamentals/">Pluralsight: ASP.NET MVC 4 Fundamentals</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2018/04/29/pluralsight-understanding-owin-and-katana/` was built on 2025-09-05T01:23:56.887Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

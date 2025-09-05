@@ -1,0 +1,714 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Pluralsight: Git Fundamentals</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="pluralsight-git-fundamentals">Pluralsight: Git Fundamentals</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2016-06-15">15 June 2016</time></li>
+</ul>
+
+<h2 id="history">History</h2>
+<ul>
+<li>1st Generation - single file</li>
+<li>2nd Generation - multiple file - centralized e.g. SVN, TFS</li>
+<li>3rd Generation - works on change sets - distributed e.g. Git, Hg, Bazaar, BitKeeper</li>
+</ul>
+<h2 id="configuring-git">Configuring Git</h2>
+<h3 id="config-files">Config files</h3>
+<ul>
+<li>System configuration using <code>git config --system</code> stored in /etc/gitconfig</li>
+<li>User configuration using <code>git config --global</code> stored in ~/.gitconfig</li>
+<li>Repo configuration using <code>git config</code> stored in .git/config in each repo</li>
+</ul>
+<h3 id="commands">Commands</h3>
+<ul>
+<li><code>git config --list</code> to see all configs</li>
+<li><code>git config --global --list</code> to see <strong>global</strong> configurations</li>
+<li><code>git config --list --show-origin</code> list configs with location of file where specified</li>
+<li><code>git config --global user.name &quot;Claire Furney&quot;</code> to configure the user name</li>
+<li><code>git config --global core.editor vim</code></li>
+<li><code>git config --global help.autocorrect 1</code> to configure fuzzy matching on git commands</li>
+<li><code>git config --global color.ui auto</code></li>
+<li><code>git config --global core.autocrlf input</code> can be one of <code>true|false|input</code> (generally set to <code>true</code> on Win and <code>input</code> on Mac OSX)</li>
+<li><code>git config --global alias.lga &quot;log --graph --oneline --all --decorate&quot;</code></li>
+</ul>
+<p>More specific override more general, so you can override certain settings just for a particular repo.</p>
+<h2 id="working-locally-with-git">Working Locally with Git</h2>
+<ul>
+<li><code>git init</code> - initialise a new repo</li>
+<li><code>git add README.txt</code> - add a new file to be staged for commit</li>
+<li><code>git add -u</code> - stage any updated files (will notice updates or deletes, any files it already knows about)</li>
+<li><code>git add -A</code> - add all files including any untracked ones (careful not to add anything you don’t want tracked)</li>
+<li><code>git log</code> - to show commit history</li>
+<li><code>git diff dd6819a..a15ec6b</code> - to diff two commits</li>
+<li><code>git diff HEAD~1..HEAD</code> to diff the penultimate commit (HEAD~1) and the latest commit (HEAD)</li>
+</ul>
+<p>By staging and commiting in two parts, you can stage and commit different unrelated changes separately.</p>
+<p>Use <code>rm</code> or <code>mv</code> as normal to delete or rename files, stage any changes and commit them, Git will recognise renames as such.</p>
+<ul>
+<li><code>git checkout README.txt</code> will by default checkout the HEAD version of a file and overwrite any local changes</li>
+<li><code>git reset --head</code> will checkout all changes from HEAD, overwriting any local changes</li>
+<li><code>git reset --soft HEAD~1</code> will checkout the HEAD~1 commit with the latest changes previously committed staged</li>
+<li><code>git reset --hard HEAD</code> will checkout the HEAD~1 commit and lose all previously committed changes</li>
+<li><code>git clean</code> cleans up a working copy and removes any unstaged files</li>
+<li><code>git clean -n</code> shows what if information</li>
+<li><code>git clean -f</code> forces the clean</li>
+</ul>
+<h2 id="working-remotely-with-git">Working Remotely with Git</h2>
+<ul>
+<li><code>git log --oneline</code> shows commit messages on one line</li>
+<li><code>git log --oneline | wc -l</code> pipes this into <code>wc</code> to count the number of commit messages (<code>-l</code> = number of lines)</li>
+<li><code>git log --oneline --graph</code> to show a simple graph of branches</li>
+<li><code>git log --oneline --all --decorate</code> to show any tags, labels</li>
+<li><code>git log origin/master</code> to show the logs</li>
+<li><code>git shortlog</code> shows commits by author</li>
+<li><code>git shortlog -sne</code> shows summary (no commit msgs), numerically by number of commits, emails included</li>
+<li><code>git show HEAD</code> to show details of the last commit, use HEAD~1 or HEAD~10 or just the sha hash to show other commits</li>
+<li><code>git remote</code> to show your remotes</li>
+<li><code>git remote -v</code> to show the details of the remotes</li>
+<li><code>git reflog</code> to show the log of where HEAD has been pointing</li>
+</ul>
+<h3 id="git-protocols">Git Protocols</h3>
+<ul>
+<li>http(s) on ports 80 and 443 e.g. <a href="https://github.com/jquery/jquery.git">https://github.com/jquery/jquery.git</a> - read/write; password for auth</li>
+<li>git protocol on port 9418 e.g. git://github.com/jquery/jquery.git - read only; anonymous only</li>
+<li>ssh on port 22 e.g. <a href="mailto:git@github.com">git@github.com</a>:jquery/jquery.git - read/write; ssh keys for auth
+file e.g. /Users/claire/repos/jquery - read/write; local only</li>
+</ul>
+<h3 id="branches">Branches</h3>
+<p>Branches are simply labels on the sha1 commits, but following along with more recent commits.</p>
+<ul>
+<li><code>git branch</code> shows the local branches</li>
+<li><code>git branch -r</code> shows the remote branches</li>
+<li><code>git branch -v</code></li>
+<li><code>git remote add [remote-alias] [remote-url]</code> if you use the ssh version it will be able to push without creds if ssh keys have been set up</li>
+<li><code>git fetch</code></li>
+<li><code>git merge origin/master</code> merge from origin/master in to current local branch - get a message fast-forward, then no merging / commiting needed to be done and git was able to just move the HEAD pointer to the latest commit</li>
+<li><code>git pull</code> will only work if you have already specified an upstream remote tracking branch</li>
+<li><code>git pull origin master</code> if you haven’t specified the upstream branch - same as git fetch &amp;&amp; git merge origin/master</li>
+<li><code>git remote rm origin</code> to remove a configured remote</li>
+<li><code>git branch feature1</code> to create a new feature1 branch</li>
+<li><code>git checkout feature1</code> to switch to it</li>
+<li><code>git checkout -b feature2</code> to create a new branch and switch to it</li>
+<li><code>git branch fix1 a15ec6b</code> to create a branch of a particular commit, and then <code>git checkout fix1</code></li>
+<li><code>git branch -m fix1 bug1234</code> to rename a branch</li>
+</ul>
+<h3 id="tags">Tags</h3>
+<p>Tags are labels on the sha1 commits which never change (unlike branches).</p>
+<ul>
+<li><code>git tag v1.0</code></li>
+<li><code>git tag -a v1.0</code> to add a message</li>
+<li><code>git tag -s v1.0</code> to sign a tag</li>
+</ul>
+<h3 id="stash">Stash</h3>
+<p>Useful way as a temporary holding area for changes you don’t want to commit to a branch, but you don’t want to lose.</p>
+<ul>
+<li><code>git stash</code> to rollback any uncommitted changes on the current branch and stash those changes</li>
+<li><code>git stash list</code> to list current stashes</li>
+<li><code>git stash apply</code> to reapply the uncommitted changes from the stash, stash stays in stash list</li>
+<li><code>git stash pop</code> to reapply the uncommitted changes from the stash, stash is removed from stash list</li>
+<li><code>git stash drop</code> to drop things from the stash list</li>
+<li><code>git stash branch feature3</code> to create a branch from a stash, stash is popped</li>
+</ul>
+<h3 id="merging">Merging</h3>
+<ul>
+<li><code>git merge feature1</code> will merge the feature1 branch in the the current local branch</li>
+<li><code>git mergetool</code> to resolve any merge conflicts</li>
+<li><code>git diff --cached</code> compare the repo to the staging area</li>
+</ul>
+<h3 id="rebasing">Rebasing</h3>
+<ul>
+<li><code>git rebase master</code> rebase your changes on top of master - useful after pulling in any recent repo changes to master. If there are any conflicts with this, then run <code>git mergetool</code> to resolve these</li>
+<li><code>git rebase --continue</code> to retry the rebase</li>
+</ul>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2016/05/16/pluralsight-getting-started-with-entity-framework-6/">Pluralsight: Getting Started with Entity Framework 6</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2016/12/03/pluralsight-architecting-azure-solutions/">Pluralsight: Architecting Azure Solutions (70-534): Infrastructure and Networking</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2016/06/15/pluralsight-git-fundamentals/` was built on 2025-09-05T01:23:56.885Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

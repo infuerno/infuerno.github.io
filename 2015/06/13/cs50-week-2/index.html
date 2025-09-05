@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>CS50 - Week 2</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="cs50-week-2">CS50 - Week 2</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2015-06-13">13 June 2015</time></li>
+</ul>
+
+<h2 id="bitwise-operators">Bitwise operators</h2>
+<p>| is Bitwise OR which will give you the result of &quot;or&quot;ing each bit of two ints, chars etc
+&amp; is Bitwise AND and will give you the result of &quot;and&quot;ing each bit of two ints, chars etc</p>
+<p>Upper case letter | 32 = lower case letter (i.e. 0s in every column except 32)
+Lower case letter &amp; ~32 = upper case letter (i.e. 1s in every column except 32 - where ~32 = 256 - 32)</p>
+<h2 id="command-line-arguments">Command line arguments</h2>
+<p>Main can be initialised with 2 parameters, <code>argc</code> and <code>char* argv[]</code>.</p>
+<p><code>argc</code> contains the number of arguments in including the command itself e.g. for <code>mv here there</code>, argc will be 3. <code>char* arg[]</code> will contain these arguments: <code>mv</code>, <code>here</code>, <code>there</code> and finally NULL or <code>\0</code>.</p>
+<h2 id="arrays">Arrays</h2>
+<p>There are two different ways to declare arrays:</p>
+<pre><code>// VERSION 1 (bracket-type array)
+int x[N];
+
+// VERSION 2 (pointer-type array)
+int *x = malloc(sizeof(int) * N); 
+</code></pre>
+<ul>
+<li>The first creates the array on the stack, the second on the heap, with a variable x on the stack which holds the address of the assigned area on the heap.</li>
+<li>The first since its on the stack be automatically deallocated. The second won’t be and <code>free</code> must be explicitly called.</li>
+<li>The bracket array isn’t actually a variable, its just a symbol - a kind of constant which the compiler chooses for you. So you can’t increment the bracket array, but you can call e.g. x++ on the pointer array.</li>
+<li><code>sizeof</code> the bracket array will return the size of the big block of memory on the stack, but <code>sizeof</code> the pointer array will return the size of the variable x itself (e.g. 4 bytes)</li>
+<li>The bracket array can be initialised using shortcut notation <code>int x[] = {1,2,3,4};</code></li>
+</ul>
+<h2 id="redirecting-and-pipes">Redirecting and Pipes</h2>
+<pre><code>./hello &gt; file.txt              # redirects stdout to the file and overwrite previous contents
+./hello &gt;&gt; file.txt             # appends to previous contents
+./hello &gt; /dev/null             # discards the data
+./hello &lt; file.txt              # redirects stdin and provides input to the program from the contents of file.txt
+./hello &lt; file.txt &gt; file2.txt  # redirect both stdin and stdout
+./hello | ./redirect            # the output of hello is piped as the input to redirect
+cat students.txt                # cat reads a file and outputs the contents to stdout
+</code></pre>
+<h2 id="encryption-algorithms">Encryption Algorithms</h2>
+<h3 id="caesar-cipher">Caesar Cipher</h3>
+<p>This encrypts data by transposing each character by a set number of places e.g. with a key of 1: A becomes B, B becomes C, hello becomes ifmmp etc. There are only 25 possible keys which need to be tried in order to crack the cipher.</p>
+<h3 id="vigenere-cipher">Vigenere Cipher</h3>
+<p>This cipher is a polyalphabetic cipher which uses two or more cipher alphabets to encrypt the data which means that the letters are shifted by different amounts, dependent on a word or phrase as the encryption key.</p>
+<p><a href="http://www.counton.org/explorer/codebreaking/vigenere-cipher.php">http://www.counton.org/explorer/codebreaking/vigenere-cipher.php</a></p>
+<h3 id="rsa">RSA</h3>
+<p>Both ciphers above use the same key to both encrypt and decrypt the data. These are know as <em>symmetric</em> key algorithms. This means that the sender and receiver need to have agreed on the key upfront. But then how do they establish this key in the first place. The secret key would also need to be encrypted and decrypted.</p>
+<p>RSA uses a pair of keys, the public key and the private key. The public key is used to encrypt a message and the private key to decrypt a message. For two parties wanting to communicate, they both need their own set of keys. This is <em>assymetric</em> key cryptography.</p>
+<p>To generate the two keys, we first start with 2 large prime numbers. The public key uses the product of these primes, but not the primes themselves. Since it is computationally difficult to factor numbers, it is difficult for an attacker to work out the two primes which make up the product and thereby decipher the message.</p>
+<h4 id="two-prime-numbers">Two prime numbers</h4>
+<p>Generate two prime numbers by generating large numbers over and over again and then testing if they are probably prime. It is recommended that these numbers are at least 10^24 bits i.e. over 300 decimal digits.</p>
+<p>p = 23, q = 43</p>
+<h4 id="private-and-public-keys">Private and public keys</h4>
+<p>First calculate <code>n</code> and <code>m</code> thus:</p>
+<p>n = p * q = 23 * 43 = 989
+m = (p - 1) * (q - 1) = 22 * 42 = 924</p>
+<p>We now need another number <code>e</code> which is relatively prime to <code>m</code> and less than <code>m</code>. Two numbers are relatively prime (or co-prime) if their only common factor is 1. In practice <code>e</code> is commonly the prime number 65537, as long as this isn’t a factor of <code>m</code>.</p>
+<p><code>e</code> = 5</p>
+<p>Finally we need a number <code>d</code> such that <code>de = 1(mod m)</code>. 1(mod 924) = 925 = 1849 etc. 925 / 5 = 185. So <code>d</code> = 185.</p>
+<p>Public key is the pair (e, n) which is (5, 989).
+Private key is the pair (d, n) which is (185, 989).</p>
+<p>Notice that the original two primes do not feature in either the private or public keys.</p>
+<h4 id="encrypting">Encrypting</h4>
+<p>To encrypt a message we need to break it into parts less than <code>n</code> in size and then encrypt each part.</p>
+<p>chunk = message ^ e (mod  n)</p>
+<p>So if we want to encrypt <code>CS50</code> we can take the ascii values of C, S, 5, 0 i.e. 67, 83, 53, 48.
+Encrypting them gives e.g. for C: 67 ^ 5 (mod 989) = 1,350,125,107 mod 989 = 658</p>
+<h4 id="decrypting">Decrypting</h4>
+<p>message = (chunk ^ d) (mod n)</p>
+<p>So e.g. (658 ^ 185) (mod 989) = 67 [<em>how do we calculate this ??</em>]</p>
+<h4 id="critique">Critique</h4>
+<p>Since the message first needs to be broken down into chunks, this can be quite expensive. If we need to encrypt a large message it is common to use a mixture of symmetric key cryptography and assymetric key cryptography to make it secure but performant.</p>
+<p>AES using symmetric key cryptography and uses RSA to send the key between the two systems</p>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2015/06/11/pluralsight-smash-into-vim/">Pluralsight - Smash into Vim</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2015/06/13/pluralsight-web-debugging-by-example/">Pluralsight - Web Debugging by Example</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2015/06/13/cs50-week-2/` was built on 2025-09-05T01:23:56.883Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

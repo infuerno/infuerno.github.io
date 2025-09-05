@@ -1,0 +1,802 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>FreeCodeCamp</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="freecodecamp">FreeCodeCamp</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2015-06-03">03 June 2015</time></li>
+	<li><a href="/infuerno.github.io/tags/notes/" class="post-tag">notes</a>, </li>
+	<li><a href="/infuerno.github.io/tags/courses/" class="post-tag">courses</a></li>
+</ul>
+
+<h2 id="basic-html-and-css">Basic HTML and CSS</h2>
+<h3 id="radio-buttons">Radio buttons</h3>
+<pre class="language-html" tabindex="0"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>radio<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>indoor-outdoor<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>indoor<span class="token punctuation">"</span></span> <span class="token attr-name">checked</span><span class="token punctuation">></span></span> Indoor<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>radio<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>indoor-outdoor<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>outdoor<span class="token punctuation">"</span></span><span class="token punctuation">></span></span> Outdoor<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span></code></pre>
+<ul>
+<li>Use the <code>name</code> attribute to group radio buttons</li>
+<li>Use the <code>value</code> attribute to use this as the value when POSTing the form (default is simply <code>on</code>) e.g. <code>indoor-outdoor=indoor</code></li>
+</ul>
+<h3 id="checkboxes">Checkboxes</h3>
+<pre class="language-html" tabindex="0"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>checkbox<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>personality<span class="token punctuation">"</span></span> <span class="token attr-name">checked</span><span class="token punctuation">></span></span> Loving<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>checkbox<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>personality<span class="token punctuation">"</span></span><span class="token punctuation">></span></span> Lazy<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>checkbox<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>personality<span class="token punctuation">"</span></span><span class="token punctuation">></span></span> Energetic<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span></code></pre>
+<h3 id="import-a-google-font">Import a google font</h3>
+<pre><code>&lt;link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'&gt;
+</code></pre>
+<h3 id="make-circular-images-with-border-radius">Make circular images with border-radius</h3>
+<p>Use the css: <code>border-radius: 50%;</code></p>
+<h3 id="button-tags">Button tags</h3>
+<pre><code>&lt;button type='submit'&gt;Submit&lt;/button&gt;
+</code></pre>
+<h3 id="required">Required</h3>
+<p>With HTML5 use a <code>required</code> attribute to ensure a field is completed</p>
+<h3 id="css-variables">CSS variables</h3>
+<p>Available inside the selector specified AND that selectors decendants. Therefore often defined in the <code>:root</code> element (a psuedo selector which matches the root element, usually <code>html</code>). Can be overriden by redefining further down e.g. within a media query</p>
+<pre class="language-css" tabindex="0"><code class="language-css"><span class="token selector">:root</span> <span class="token punctuation">{</span>
+    <span class="token property">--penguin-size</span><span class="token punctuation">:</span> 300px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token atrule"><span class="token rule">@media</span> <span class="token punctuation">(</span><span class="token property">max-width</span><span class="token punctuation">:</span> 350px<span class="token punctuation">)</span></span> <span class="token punctuation">{</span>
+    <span class="token selector">:root</span> <span class="token punctuation">{</span>
+        <span class="token property">--penguin-size</span><span class="token punctuation">:</span> 200px<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<ul>
+<li>Define: <code>--penguin-skin: grey;</code></li>
+<li>Use: <code>background: var(--penguin-beak);</code></li>
+<li>Use with fallback: <code>background: var(--penguin-beak, orange);</code> (useful for debugging)</li>
+<li>For compatibility with browsers which don’t implement variables, good pratice to specify a fallback color explicitly using normal syntax</li>
+</ul>
+<h3 id="position-absolute">position: absolute</h3>
+<p>One nuance with absolute positioning is that it will be locked relative to its closest positioned ancestor. If you forget to add a position rule to the parent item, (typically done using <code>position: relative;</code>), the browser will keep looking up the chain and ultimately default to the body tag.</p>
+<h3 id="position-fixed">position: fixed</h3>
+<p>One key difference between the fixed and absolute positions is that an element with a fixed position won’t move when the user scrolls.</p>
+<h3 id="z-index">z-index</h3>
+<p>Elements are drawn on top of each other as the HTML is parsed.</p>
+<ul>
+<li>Must be an integer</li>
+<li>0 z-index is implicitly applied</li>
+<li>Add a positive <code>z-index</code> to keep earlier elements in the DOM on top of later elements</li>
+<li>Add a negative <code>z-index</code> to keep later elements in the DOM underneath earlier elements</li>
+</ul>
+<h3 id="margin-auto">margin: auto</h3>
+<p>Centre a div on the page using <code>margin: auto</code></p>
+<h3 id="repeating-linear-gradient">repeating-linear-gradient()</h3>
+<pre><code>background: repeating-linear-gradient(
+  45deg,
+  yellow 0px,
+  yellow 40px,
+  black 40px,
+  black 80px
+);
+</code></pre>
+<h3 id="transform">transform</h3>
+<ul>
+<li><code>transform: scale(2);</code></li>
+<li><code>transform: skewX(24deg);</code></li>
+</ul>
+<h3 id="css-animations">CSS animations</h3>
+<ul>
+<li>Define name and duration on an element <code>animation-name: wat; animation-duration: 5s</code></li>
+<li>Define keyframes for a given animation:</li>
+</ul>
+<pre><code>@keyframes wat {
+    0% { width: 20px; }
+    100% { width: 40px; }
+}
+</code></pre>
+<ul>
+<li>If only 100% is specified, 0% is assumed as the current state</li>
+<li>Keep the effect of the animation after it has finished: <code>animation-fill-mode: forwards;</code></li>
+<li>Elements must have <code>position</code> explicitly set to apply movement animations</li>
+<li>Specify number of iterations using: <code>animation-iteration-count</code> to e.g <code>3</code> or <code>infinite</code></li>
+<li><code>animation-timing-function</code> is used to specify the easing
+<ul>
+<li><code>ease</code> (default) - starts slowly, speeds up, slows down again</li>
+<li><code>ease-out</code> - fast at the beginning, slows down</li>
+<li><code>ease-in</code> - slow at the beginning, speeds up</li>
+<li><code>linear</code> - constant speed</li>
+<li><code>cubic-bezier(0.25, 0.25, 0.75, 0.75)</code> to apply a bezier curve for better control</li>
+<li><code>cubic-bezier(0.311, 0.441, 0.444, 1.649)</code> for juggling motion (y value can be &gt; 1)</li>
+</ul>
+</li>
+</ul>
+<h2 id="responsive-design-with-bootstrap">Responsive Design with Bootstrap</h2>
+<p><code>img-responsive</code> class to make images responsive
+<code>text-center</code> to center text e.g. a heading
+<code>btn</code> class on a button
+<code>btn-block</code> class on a button to change display to block
+<code>row</code> class on a div to arrange elements in rows
+<code>col-xxx</code> class on a div to arrange elements in columns inside of rows e.g. <code>col-xs-4</code> to take up 4 parts of a 12 col layout
+<code>text-primary</code> class to set a primary colour
+<code>&lt;i class=&quot;fa fa-thumbs-up&quot;&gt;&lt;/i&gt;</code> to use font awesome to add “like” icon image
+<code>&lt;i class=&quot;fa fa-info-circle&quot;&gt;&lt;/i&gt;</code> for an info circle
+<code>&lt;i class=&quot;fa fa-trash&quot;&gt;&lt;/i&gt;</code> for a trash can
+<code>&lt;i class=&quot;fa fa-paper-plane&quot;&gt;&lt;/i&gt;</code> for a paper plane</p>
+<h2 id="jquery">jQuery</h2>
+<h3 id="get-started-with-jquery">Get Started with jQuery</h3>
+<p>Script tags are not self-closing and should have a type attribute: <code>&lt;script type=&quot;text/javascript&quot; src=&quot;script.js&quot;&gt;&lt;/script&gt;</code></p>
+<h4 id="selectors">Selectors</h4>
+<p><code>$()</code> is used to target jQuery e.g. <code>$(document)</code> to target the HTML document using jQuery, and <code>$(document).ready();</code> to take some action when the HTML document is ready.</p>
+<h4 id="functions">Functions</h4>
+<p>Add an anonymous function to be executed on document.ready e.g. <code>$(document).ready(function() { alert(&quot;ready&quot;); });</code></p>
+<p>Target other elements and call functions on them as required e.g.:</p>
+<pre><code>$(document).ready(function() {
+    $('div').mouseenter(function() {
+        $('div').fadeTo('slow', 1); 
+    });
+});
+</code></pre>
+<h4 id="jquery-variables">jQuery variables</h4>
+<p>The <code>$</code> can be added to the front of any variable name to indicate a $ object e.g. $div = $(‘div’)</p>
+<h4 id="compound-selectors">Compound selectors</h4>
+<p>Select multiple elements as in css using comma seperated lists e.g. <code>$('p, li')</code> to select both <code>p</code> and <code>li</code> elements.</p>
+<h4 id="this"><code>this</code></h4>
+<p>The <code>this</code> keyword generally refers to the jQuery object you are currently doing something with. So when using event handlers e.g. click(), mouseenter(), <code>$(this)</code> will target the target of the eventhandler event.</p>
+<h3 id="harness-dynamic-html">Harness Dynamic HTML</h3>
+<h4 id="elements">Elements</h4>
+<p>HTML elements can be created using strings e.g. <code>$(&quot;&lt;h1&gt;hello world&lt;/h1&gt;&quot;)</code> creates a new <code>h1</code> element.</p>
+<ul>
+<li><code>append()</code>, <code>prepend()</code>, <code>appendTo()</code> and <code>prependTo</code> can be used to insert new elements into the document</li>
+<li><code>before()</code>, <code>after()</code> are also options e.g. <code>$('div#one').after('&lt;p&gt;yo&lt;/p&gt;');</code></li>
+<li>Existing elements can also be moved using <code>before()</code> and <code>after()</code></li>
+<li><code>empty()</code> removes all content from an element</li>
+<li><code>remove()</code> removes the element itself</li>
+</ul>
+<h4 id="attributes">Attributes</h4>
+<ul>
+<li><code>addClass()</code> and <code>removeClass()</code> add and remove classes from elements and <code>toggleClass()</code> adds or removes as req</li>
+<li><code>height()</code> and <code>width()</code> are css attributes with their own methods for altering values (since commonly used)</li>
+<li><code>css()</code> can be used to alter any css property passing the property name and value as parameters e.g. <code>$('p').css('background-color', 'red')</code></li>
+<li>These methods can all be chained</li>
+</ul>
+<h4 id="content">Content</h4>
+<p><code>.html()</code> can be used to both get and set the content of elements
+<code>.val()</code> is used to get the value of form elements e.g. <code>$('input:checkbox:checked').val();</code></p>
+<h3 id="listen-for-jquery-events">Listen for jQuery Events</h3>
+<pre><code>$(document).ready(function() {
+    $('thingToTouch').event(function() {
+        $('thingToAffect').effect();
+    });
+});
+</code></pre>
+<ul>
+<li>
+<p><code>on()</code> jQuery parses the DOM on document load, so dynamically elements aren’t necessarily found. The <code>on()</code> event handler is a general purpose event handler taking the event, selector and action as inputs.</p>
+<p>$(document).on(‘click’, ‘.item’, function() {
+$(this).remove();
+});</p>
+</li>
+<li>
+<p><code>click()</code></p>
+</li>
+<li>
+<p><code>dblclick()</code></p>
+</li>
+<li>
+<p>The <code>hover()</code> event can take two parameters, the first one for the action done on hover, the second for the action done when no longer hovering.</p>
+</li>
+<li>
+<p>Some HTML elements can have <code>focus()</code> when someone clicks or tabs to them e.g. textarea and input. Use the <code>focus()</code> event to apply actions when an element gets focus e.g. adding an outline colour to an input field.</p>
+</li>
+<li>
+<p><code>keydown()</code> takes an optional parameter <code>key</code> which holds the key which was pressed. Note: focus needs to be on the current HTML document</p>
+</li>
+</ul>
+<h3 id="trigger-jquery-effects">Trigger jQuery Effects</h3>
+<ul>
+<li><code>animate()</code> takes, two parameters: the animation to perform and the time in which to do it.
+e.g. <code>('img').animate({left: &quot;-=10px&quot;}, 'fast');</code></li>
+<li><code>effect()</code> [requires jQueryUI] takes an initial parameter to indicate the effect e.g. explode, bounce, slide. Depending on the effect further parameters are required to describe the effect e.g. <code>$('div').effect('bounce', {times:3}, 500);</code></li>
+<li><code>accordion()</code> can be use to expand and collapse inner panels. Additional parameters can be passed to change the default behaviour e.g. <code>$(&quot;#menu&quot;).accordion({collapsible: true, active: false});</code></li>
+<li><code>draggable()</code> can be called on any element to allow it to be dragged around the page</li>
+<li><code>resizable()</code> once called allows you to resize an element</li>
+<li><code>selectable()</code> allows child elements to have the appearance of being ‘selected’</li>
+<li><code>sortable()</code> allows child elements to be ‘sorted’</li>
+</ul>
+<h2 id="javascript">JavaScript</h2>
+<h3 id="functions-2">Functions</h3>
+<p>Functions can be defined in one of two ways:</p>
+<pre><code>var divideByThree = function (number) {
+    return number / 3;
+};
+
+function divideByThree(number) {
+    return number / 3;
+}
+</code></pre>
+<p>The second <em>function declaration</em> will be parsed prior to running the code, so can be placed anywhere in the file, whereas the first function will by parsed inline, so must come before any usage. (See this reference: <a href="http://eloquentjavascript.net/03_functions.html">http://eloquentjavascript.net/03_functions.html</a>)</p>
+<p>Local variables used inside function MUST be declared using the <code>var</code> keyword, otherwise they will use a global variable of the same name if this exists in the global scope.</p>
+<p><code>Math.random()</code> produces a random number between 0 and 1</p>
+<h3 id="for-loops">For loops</h3>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2015/06/02/test-driven-infrastructure-with-chef/">Test-Driven Infrastructure With Chef</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2015/06/04/beeminder/">Beeminder</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2015/06/03/freecodecamp/` was built on 2025-09-05T01:23:56.883Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

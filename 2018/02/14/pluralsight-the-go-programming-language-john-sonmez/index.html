@@ -1,0 +1,845 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Pluralsight: The Go Programming Language, John Sonmez</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="pluralsight-the-go-programming-language-john-sonmez">Pluralsight: The Go Programming Language, John Sonmez</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2018-02-14">14 February 2018</time></li>
+</ul>
+
+<h2 id="overview">Overview</h2>
+<ul>
+<li>Compiled - down to machine code
+<ul>
+<li>Fast compile times, mainly due again to simplicity</li>
+</ul>
+</li>
+<li>Garbage Collected - no performance hit - latency free</li>
+<li>Concurrent - passing data instead of sharing data</li>
+<li>Static
+<ul>
+<li>Efficient like a static language, ease of use like a dynamic language - achieved by keeping Go very simple</li>
+<li>Type safe and memory safe - an int is always an int - can’t point to the wrong memory location</li>
+</ul>
+</li>
+<li>No inheritance - often better to use composition over inheritance</li>
+<li>No generic programming (currently…)</li>
+<li>No assertions (developer crutch)</li>
+<li>No method overloading - makes it faster to compile</li>
+<li>Go Interfaces - implicitly implemented</li>
+<li>No classes - only user defined types</li>
+<li>Systems level language - but otherwise not really similar to C and C++</li>
+</ul>
+<h3 id="references">References</h3>
+<ul>
+<li><a href="https://github.com/nsf/gotris/blob/master/gotris.go">https://github.com/nsf/gotris/blob/master/gotris.go</a></li>
+<li><a href="https://golang.org">https://golang.org</a></li>
+</ul>
+<h3 id="text-editors">Text Editors</h3>
+<ul>
+<li><a href="http://go-ide.com">http://go-ide.com</a></li>
+<li><a href="http://go-lang.cat-v.org/text-editors/">http://go-lang.cat-v.org/text-editors/</a></li>
+</ul>
+<h3 id="development-setup">Development setup</h3>
+<ul>
+<li>$GOROOT is an environment variable set by the installer</li>
+<li>$GOPATH is set to ~/go by default, but can be overidden - root of your go workspace</li>
+<li><code>go run hello.go</code> will run the given file</li>
+<li><code>go build hello.go</code> will create an executable in the current directory</li>
+<li><code>go install hello</code> will create an executable in the <code>bin</code> directory</li>
+</ul>
+<h2 id="variables-types-and-pointers">Variables, Types and Pointers</h2>
+<p><a href="http://golang.org/ref/spec">http://golang.org/ref/spec</a></p>
+<ul>
+<li>
+<p>Basic Types:</p>
+<ul>
+<li>bool</li>
+<li>string</li>
+<li>int, int8, int16, int32, int64 - int size depends on the architecture e.g. 32bit on 32bit machine - int and int32 are not compatible</li>
+<li>uint, uint8, uint16, uint32, uint64, uintptr</li>
+<li>byte (uint8) - byte and uint8 ARE compatible</li>
+<li>rune (int32), like char</li>
+<li>float32, float64</li>
+<li>complex64, complex128</li>
+</ul>
+</li>
+<li>
+<p>Other Types:</p>
+<ul>
+<li>Array, Slice, Struct, Pointer (points to a memory address), Function (can be stored, passed, treated just like any other data type), Interface, Map (key, value pair), Channel (used for communication between go routines)</li>
+</ul>
+</li>
+</ul>
+<h3 id="variables">Variables</h3>
+<ul>
+<li><code>var message string</code> where the type is declared after the variable name</li>
+<li><code>var a, b, c int</code> to declare multiple variables of the same type</li>
+<li><code>var message string = &quot;hello&quot;</code> to initialise at the same time as declaration</li>
+<li><code>var a, b, c int = 1, 2, 3</code> to initialise multiple variables</li>
+<li><code>var a, message, c, flag = 1, &quot;hello&quot;, 3, true</code> go infers types if not specified</li>
+<li><code>a, message, c, flag := 1, &quot;hello&quot;, 3, true</code> can shortcut initialisation using <code>:=</code> inside a <code>func</code></li>
+</ul>
+<h3 id="pointers">Pointers</h3>
+<ul>
+<li>A pointer is a variable which contains the memory address of another variable</li>
+<li>The type of a pointer refers to the type which the pointer points to e.g. ‘pointer to a int’, ‘pointer to a string’</li>
+<li>Even though these pointers will all hold addresses, a pointer is always scoped to a particular type and can’t change</li>
+<li>Any parameters which are passed to functions in Go are copied
+<ul>
+<li>ints will be passed by value and changes to the variable inside the function will NOT effect the value of the original int</li>
+<li>pointers to ints are also passed by value and copied, but will nevertheless still point to the same memory location as before and dereferencing and changing the value will change the value of the int the pointer is pointing to</li>
+</ul>
+</li>
+</ul>
+<h3 id="user-defined-types">User Defined Types</h3>
+<ul>
+<li><code>type Salutation string</code> the user defined type ‘Saluation’ is simply a string - methods could then be added to the Saluation type (see later)</li>
+</ul>
+<pre><code>// capital S means this type is publically visible
+type Saluation struct { 
+    name string 
+    greeting string
+} 
+
+func main() {
+        var x Salutation = Salutation {&quot;bob&quot;, &quot;hyas&quot;} // OR
+        var x = Salutation {&quot;bob&quot;, &quot;hyas&quot;} // OR
+        x := Salutation {&quot;bob&quot;, &quot;hyas&quot;}
+}
+
+</code></pre>
+<h3 id="constants">Constants</h3>
+<ul>
+<li><code>const PI = 3.14</code></li>
+<li><code>const Language = &quot;GO&quot;</code></li>
+</ul>
+<pre><code>// here A would be equal to 0, B to 1 and C to 2
+const (
+    A = iota
+    B = iota
+    C = iota
+    D // don't need to repeat after the first one
+)
+
+</code></pre>
+<h2 id="functions">Functions</h2>
+<ul>
+<li>Multiple return values - in other languages you often need to choose between throwing an exception or returning an error code. If you choose to return an error code, you often can’t return anything else, but in Go you can return multiple values.</li>
+<li>Functions are treated just like any other type: pass them into other functions, declare as variables, return from functions - similar to delegates in C# or JavaScript functions</li>
+<li>Go supports function literals - declaring a function inside another function, remembers the context of that other function - aka closure</li>
+<li>Parameter types are writen after the parameter name e.g. <code>CreateMessage(name string)</code></li>
+<li>If all parameters are of the same type, as in variable declaration, just specify at the end e.g. <code>CreateMessage(name, greeting string)</code></li>
+<li>Specify a return type after the parameters e.g. <code>CreateMessage(name, greeting string) string</code></li>
+<li>If returning multiple values specify multiple types in brackets e.g. <code>CreateMessage(name, greeting string) (string, string)</code>. Return both types together</li>
+<li>Assign return types thus <code>message, alternative := CreateMessage(&quot;bob&quot;, &quot;hello&quot;)</code></li>
+<li>If you don’t need all the return types, then Go will complain if you assign to a variable, but then don’t use it. Instead use <code>_</code> e.g. <code>_, alternative := CreateMessage(&quot;bob&quot;, &quot;hello&quot;)</code></li>
+<li>The return values can also be named in the function declaration - simply set the vars inside the message body and then return with the keyword by itself i.e. <code>return</code></li>
+</ul>
+<h3 id="variadic-functions">Variadic functions</h3>
+<ul>
+<li>A function which has a variable number of parameters of a certain type</li>
+<li>Specified using <code>...</code> e.g. <code>CreateMessage(name string, greeting ...string)</code></li>
+<li>Use <code>len(greeting)</code> to find the length of a slice</li>
+</ul>
+<h3 id="function-types">Function types</h3>
+<ul>
+<li>Functions can be passed just as any other type e.g. <code>Greet(s Salutation, do func(string)</code> where the function passed for the second parameter would have to be a function which took a single string parameter with no return type</li>
+<li>The function type can also be declared e.g. <code>type Printer func(string) ()</code> where the empty final brackets indicate no return type. Now the method signature for <code>Greet</code> can be <code>Greet(s Salutation, do Printer)</code></li>
+</ul>
+<h3 id="closures">Closures</h3>
+<p>A function which returns a function</p>
+<pre><code>func CreatePrintFunction(custom string) Printer {
+    return func(m string) {
+        fmt.Println(m + custom)
+    }
+}
+</code></pre>
+<p>This is a closure since the function which is returned has the <code>custom</code> variable hard coded in its definition, yet it can be changed each time the outer function itself is called</p>
+<p>Examples of function usage (advanced): <a href="https://golang.org/doc/codewalk/functions/">https://golang.org/doc/codewalk/functions/</a></p>
+<h2 id="branching">Branching</h2>
+<ul>
+<li><code>if</code> statements can have an optional assignment e.g. <code>if x := 1; isFormal { ...</code> which is scoped to the if statement</li>
+<li><code>switch</code> statements
+<ul>
+<li>do not fall through by default - so no need for break statements - use <code>fallthrough</code> keyword to override (will fallthrough to next statement even if case doesn’t match)</li>
+<li>can have a list of matches e.g. <code>case &quot;Joe&quot;, &quot;Mary&quot; : prefix = &quot;Dr&quot;</code></li>
+<li>don’t something to switch on, cases can be an expression e.g. instead of <code>switch name { ...</code> just have <code>switch { ...</code> where each case statement now has to be boolean e.g. <code>case name == &quot;Joe&quot;, name == &quot;Mary&quot;</code>  - cleaner than lots of if…else…else statements</li>
+<li>can switch on types rather than the value of a variable e.g. <code>switch x.(type)</code> will switch on the type of x, test using <code>case int:</code> etc</li>
+</ul>
+</li>
+</ul>
+<h2 id="loops">Loops</h2>
+<ul>
+<li><code>for</code> is the only loop - by leaving omitting optional elements can recreate <strong>while</strong> loops and can recreate <strong>foreach</strong> loops using range</li>
+<li><code>for condition { ...</code> where condition is evaulated each time and the loop continues while true = while loop</li>
+<li><code>for init; cond; post { ...</code> usual for loop</li>
+<li><code>for { ...</code> is also valid, effectively an infinite loop you’d have to break out of</li>
+<li><code>break</code> and <code>continue</code> keywords work as expected</li>
+<li><code>for a, b := range collection</code> allows you to iterate over a collection without having to index into the collection. For strings, arrays and slices <code>a</code> is the index and <code>b</code> is the item in the collection. Works for:
+<ul>
+<li>array or slice</li>
+<li>string - over each <code>rune</code> in a <code>string</code></li>
+<li>map - over each key value pair e.g. <code>for key, value := range myMap { ..</code></li>
+<li>channel - waiting for data - communication between threads or Go routines</li>
+</ul>
+</li>
+</ul>
+<p><a href="http://golang.org/doc/effective_go.html#for">http://golang.org/doc/effective_go.html#for</a>
+<a href="http://golang.org/ref/spec#For_statements">http://golang.org/ref/spec#For_statements</a></p>
+<h2 id="maps">Maps</h2>
+<ul>
+<li>Data structure which maps keys to values - called dictionaries in some languages - key must be unique</li>
+<li>Reference types</li>
+<li>Keys must have the equality operator defined (most do, but maps and slices don’t)</li>
+<li>Maps are not thread safe - avoid using maps concurrently</li>
+<li>Declare using <code>var myMap map[string]string</code> where <code>[string]</code> denotes the type of the key and <code>string</code> the type of the value</li>
+<li>Initialise using <code>make</code> e.g. <code>myMap = make(map[string]string)</code> to allocate memory for it</li>
+<li>Can alternatively be declared, initialised and defined in one statement:</li>
+</ul>
+<pre><code>myMap := map[string]string {
+    &quot;Bob&quot;: &quot;Mr&quot;,
+    &quot;Jane&quot;: &quot;Mrs&quot;,
+}
+</code></pre>
+<ul>
+<li>Operations on maps include:
+<ul>
+<li>insert or update e.g. <code>myMap[&quot;BoB&quot;] = &quot;Mr&quot;</code></li>
+<li>delete e.g. <code>delete(myMap, &quot;Bob&quot;)</code> - works fine even if the key doesn’t exist</li>
+<li>check for existence - optional assignment in <code>if</code> statement can be used: <code>if prefix, exists := myMap[&quot;Bob&quot;]; exists { ...</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="arrays">Arrays</h2>
+<ul>
+<li>Fixed size</li>
+<li>The size and the type of elements stored are both part of the array’s <strong>type</strong> - this means that to use an array for a paramter it would need to be of the specific size AND type to compile</li>
+<li>Array is zeroed when defined e.g. if array of ints, values are set to 0</li>
+<li>Value type</li>
+</ul>
+<h2 id="slices">Slices</h2>
+<ul>
+<li>Fixed size - but can be reallocated with append</li>
+<li>Type is slice of underlying type - length is not part of the type (unlike arrays)</li>
+<li>A slice effectively wraps an array and is in effect a pointer to an array</li>
+<li>Reference type which points to an array</li>
+<li>Use <code>make</code> to initialise otherwise nil - specify length (and optionally capacity) e.g. <code>var slice []int = make([]int, 3)</code></li>
+<li>Can declare, initialise and define at the same time e.g. <code>slice := []int {1, 2, 3, 4, 5}</code></li>
+<li>Common to slice a slice e.g. <code>slice = slice[1:2]</code> specifying start index inclusively and end index exclusively
+<ul>
+<li>can omit the start index or the end index e.g. <code>slice[:3]</code></li>
+</ul>
+</li>
+<li>Append elements to a slice using <code>append</code> e.g. <code>slice = append(slice, 7)</code>
+<ul>
+<li>can append multiple elements e.g. <code>slice = append(slice, 7, 8, 9)</code></li>
+<li>can append a slice by ‘expanding’ it e.g. <code>slice = append(slice, slice...)</code></li>
+</ul>
+</li>
+<li>Delete the nth element using append e.g. <code>slice = append(slice[:n], slice[n:]...)</code> (no delete function)</li>
+</ul>
+<h2 id="methods">Methods</h2>
+<ul>
+<li>There are no classes in Go, only structs. Methods (cf functions) declare what type they can operate as well as having parameters and return types, like functions</li>
+<li>Methods can only be created on named types - though can simply redefine e.g. an int as a named type e.g. <code>type myInt int</code></li>
+<li>Methods can also operate on pointers to named types - in this way the underlying type can be modified (can’t be modified if the method is defined on the type itself)</li>
+</ul>
+<h2 id="interfaces">Interfaces</h2>
+<ul>
+<li>Don’t need to specify that a named type “implements” an interface</li>
+<li>Just need to ensure all the methods specified on the interface are defined and implemented</li>
+<li>An empty interface is one that doesn’t specify an methods that need implementing - every type will effectively then implement this interface</li>
+</ul>
+<h2 id="concurrency">Concurrency</h2>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2018/02/03/william-e-shotts-jr-the-linux-command-line-no-starch-press/">William E. Shotts, Jr.: The Linux Command Line, No Starch Press</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2018/02/20/coursera-google-it-support-professional-certificate-operating-systems-and-you-becoming-a-power-user/">Coursera: Google IT Support Professional Certificate, Operating Systems and You, Becoming a Power User</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2018/02/14/pluralsight-the-go-programming-language-john-sonmez/` was built on 2025-09-05T01:23:56.887Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

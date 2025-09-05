@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Google Cloud Training: GCP Essentials</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="google-cloud-training-gcp-essentials">Google Cloud Training: GCP Essentials</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2019-06-25">25 June 2019</time></li>
+</ul>
+
+<p><a href="https://google.qwiklabs.com/quests/23">https://google.qwiklabs.com/quests/23</a></p>
+<h1 id="a-tour-of-qwiklabs-and-the-google-cloud-platform">A Tour of Qwiklabs and the Google Cloud Platform</h1>
+<p>A <strong>GCP Project</strong> is an organizing entity for your Google Cloud resources. It often contains resources and services e.g. a pool of virtual machines, a set of databases, and a network that connects them with one another. Projects also contain settings and permissions, which specify security rules and who has access to what resources.</p>
+<ul>
+<li>More information on all GCP services: <a href="https://cloud.google.com/docs/overview/cloud-platform-services#top_of_page">https://cloud.google.com/docs/overview/cloud-platform-services#top_of_page</a></li>
+<li>API Design Guide: <a href="https://cloud.google.com/apis/design/">https://cloud.google.com/apis/design/</a> - used internally by Google and published to help everyone</li>
+<li>APIs Explorer: <a href="https://developers.google.com/apis-explorer/#p/">https://developers.google.com/apis-explorer/#p/</a> - browse all APIs easily</li>
+</ul>
+<h1 id="creating-a-virtual-machine">Creating a Virtual Machine</h1>
+<h3 id="activate-google-cloud-shell">Activate Google Cloud Shell</h3>
+<p><strong>Google Cloud Shell</strong> is a virtual machine that is loaded with development tools. It offers a persistent 5GB home directory and runs on the Google Cloud. Google Cloud Shell provides command-line access to your GCP resources. See: <a href="https://cloud.google.com/sdk/gcloud">https://cloud.google.com/sdk/gcloud</a></p>
+<h3 id="understanding-regions-and-zones">Understanding Regions and Zones</h3>
+<p>A region is a specific geographical location where you can run your resources. Each region has one or more zones. Resources that live in a zone are referred to as <strong>zonal</strong> resources. Virtual machine instances and persistent disks live in a zone. To attach a persistent disk to a virtual machine instance, both resources must be in the same zone. Similarly, if you want to assign a static IP address to an instance, the instance must be in the same region as the static IP. See: <a href="https://cloud.google.com/compute/docs/regions-zones/">https://cloud.google.com/compute/docs/regions-zones/</a></p>
+<h3 id="ssh">SSH</h3>
+<p>See: <a href="https://cloud.google.com/compute/docs/instances/connecting-to-instance">https://cloud.google.com/compute/docs/instances/connecting-to-instance</a></p>
+<ol>
+<li>Create new configuration for authentication: <code>gcloud config configurations create qwiklabs-gcp-8fa25fcdb0d890b7</code></li>
+<li>Initialise configuration: <code>gcloud init</code> and choose 1 to reinitialize</li>
+<li>SSH using <code>gcloud compute ssh gcelab2 --zone us-central1-c</code></li>
+</ol>
+<h3 id="create-a-vm">Create a VM</h3>
+<ul>
+<li><code>gcloud compute instances create gcelab2 --machine-type n1-standard-2 --zone us-central1-c</code></li>
+<li><code>gcloud compute instances create --help</code></li>
+<li><code>gcloud config set compute/zone</code> - set default zone to save entering each time</li>
+<li><code>gcloud config set compute/region</code> - set default region</li>
+</ul>
+<h1 id="getting-started-with-cloud-shell-and-gcloud">Getting Started with Cloud Shell &amp; gcloud</h1>
+<ul>
+<li>List configurations: <code>gcloud config list</code></li>
+<li>List of all possible configurations: <code>gcloud config list --all</code></li>
+<li>Make a bucket: <code>gsutil mb gs://unique-name-hippo</code></li>
+<li>List buckets (etc): <code>gsutil ls</code></li>
+<li>Copy a file to a bucket: <code>gsutil cp test.dat gs://unique-name-hippo</code></li>
+</ul>
+<h1 id="kubernetes-engine-qwik-start">Kubernetes Engine: Qwik Start</h1>
+<p>The Google Kubernetes Engine (GKE) environment consists of multiple machines (specifically Google Compute Engine instances) grouped together to form a container cluster.</p>
+<ul>
+<li><a href="https://cloud.google.com/container-registry/">https://cloud.google.com/container-registry/</a> - google container registry</li>
+<li><a href="https://console.cloud.google.com/gcr/images/google-samples/GLOBAL">https://console.cloud.google.com/gcr/images/google-samples/GLOBAL</a> - samples inc hello-app</li>
+</ul>
+<p>A cluster consists of at least one cluster master machine and multiple worker machines called nodes.</p>
+<ul>
+<li>Create a cluster: <code>gcloud container clusters create [CLUSTER-NAME]</code></li>
+<li>Get credentials for the cluster: <code>gcloud container clusters get-credentials [CLUSTER-NAME]</code></li>
+</ul>
+<p>The <strong>Deployment</strong> object is used for deploying stateless applications like web servers.</p>
+<ul>
+<li>Creates a new Deployment <code>hello-server</code> from the <code>hello-app</code> container image: <code>kubectl run hello-server --image=gcr.io/google-samples/hello-app:1.0 --port 8080</code></li>
+<li>Inspect a deployment: <code>kubectl get deployment hello-server</code></li>
+</ul>
+<p>The <strong>Service</strong> object define rules and load balancing for accessing your application from the Internet</p>
+<ul>
+<li>creates a Service to expose the application to external traffic: <code>kubectl expose deployment hello-server --type=&quot;LoadBalancer&quot;</code> (creates a Compute Engine load balancer for the container)</li>
+<li>Inspect a service: <code>kubectl get service hello-server</code></li>
+<li>Clean up: <code>gcloud container clusters delete [CLUSTER-NAME]</code></li>
+</ul>
+<h1 id="set-up-network-and-http-load-balancers">Set Up Network and HTTP Load Balancers</h1>
+<ul>
+<li>Network load balancer (L3) see: <a href="https://cloud.google.com/compute/docs/load-balancing/network/">https://cloud.google.com/compute/docs/load-balancing/network/</a></li>
+<li>HTTP load balancer (L7) see: <a href="https://cloud.google.com/compute/docs/load-balancing/http/">https://cloud.google.com/compute/docs/load-balancing/http/</a></li>
+</ul>
+<p>First need to create a cluster of machines. This can be achieve using <strong>instance templates</strong>.</p>
+<ul>
+<li>Create a <code>startup.sh</code> script to install nginx and alter the default index.html to display the hostname</li>
+<li>Create an instance template: <code>gcloud compute instance-templates create nginx-template --metadata-from-file startup-script=startup.sh</code></li>
+<li>Create a <strong>target pool</strong>: <code>gcloud compute target-pools create nginx-pool</code></li>
+<li>Create a managed instance group using the instance template:</li>
+</ul>
+<pre><code>gcloud compute instance-groups managed create nginx-group \
+         --base-instance-name nginx \
+         --size 2 \
+         --template nginx-template \
+         --target-pool nginx-pool
+</code></pre>
+<ul>
+<li>Configure a firewall to access the machines on port 80:</li>
+</ul>
+<h3 id="network-load-balancer">Network Load Balancer</h3>
+<p>Allows load balancing based on IP protocol data e.g. address, port, protocol type. Additional options at packet level available which isn’t available for HTTP load balancing.</p>
+<pre><code>gcloud compute forwarding-rules create nginx-lb \
+         --region us-central1 \
+         --ports=80 \
+         --target-pool nginx-pool
+</code></pre>
+<ul>
+<li>List the forwarding rules to see the LB IP address: <code>gcloud compute forwarding-rules list</code></li>
+</ul>
+<h3 id="http-load-balancer">HTTP Load Balancer</h3>
+<p><img src="https://cloud.google.com/load-balancing/images/basic-http-load-balancer.svg" alt="Basic HTTP Load Balancer"></p>
+<p>Allows load balancing based on URL routes. Requests are always routed the the instance closest to the user.</p>
+<ul>
+<li>Create a health check: <code>gcloud compute http-health-checks create http-basic-check</code> to verify instances are responding to HTTP traffic</li>
+<li>Define an HTTP service and map a port name to the correct port for the instance group: <code>gcloud compute instance-groups managed set-named-ports nginx-group --named-ports http:80</code></li>
+<li>Create a backend service and add the instance group to the backend service</li>
+<li>Create a URL map to map all incoming requests to all the instances</li>
+<li>Create an HTTP proxy to route requests to the URL map</li>
+<li>Create a global forwarding rule to route incoming requests to the proxy</li>
+</ul>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2019/06/25/google-cloud-certification-challenge-professional-cloud-architect/">Google Cloud Certification Challenge - Professional Cloud Architect</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2019/06/26/google-cloud-training-baseline-infrastructure/">Google Cloud Training - Baseline: Infrastructure</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2019/06/25/google-cloud-training-gcp-essentials/` was built on 2025-09-05T01:23:56.888Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

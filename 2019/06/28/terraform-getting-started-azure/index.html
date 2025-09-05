@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Terraform: Getting Started - Azure</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="terraform-getting-started-azure">Terraform: Getting Started - Azure</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2019-06-28">28 June 2019</time></li>
+</ul>
+
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://learn.hashicorp.com/terraform/?track=azure#azure">https://learn.hashicorp.com/terraform/?track=azure#azure</a></li>
+<li><a href="https://shell.azure.com/">https://shell.azure.com/</a> - online shell</li>
+<li><a href="https://www.terraform.io/docs/providers/azurerm/">https://www.terraform.io/docs/providers/azurerm/</a> - Azure RM provider documentation</li>
+<li><a href="https://github.com/terraform-providers/terraform-provider-azurerm/blob/master/CHANGELOG.md">https://github.com/terraform-providers/terraform-provider-azurerm/blob/master/CHANGELOG.md</a> - release log for Azure provider</li>
+</ul>
+<h1 id="install-terraform">Install Terraform</h1>
+<ul>
+<li>Download from <a href="https://www.terraform.io/downloads.html">https://www.terraform.io/downloads.html</a></li>
+<li>Unzip to e.g. C:\Tools</li>
+<li>Add to PATH</li>
+</ul>
+<h1 id="create-configuration">Create Configuration</h1>
+<ul>
+<li><code>provider</code> block configures the provider - can use Azure and AWS in the same file - common practice - full list of providers: <a href="https://www.terraform.io/docs/providers/index.html">https://www.terraform.io/docs/providers/index.html</a> (A LOT!!)</li>
+<li><code>resource</code> block requires type and name (used to reference the resource later in the configuration)</li>
+</ul>
+<h1 id="build-infrastructure">Build Infrastructure</h1>
+<ul>
+<li><code>terraform init</code> automatically downloads providers - set TF_DATA_DIR to download plugins / state etc to non working directory: <a href="https://www.terraform.io/docs/commands/environment-variables.html#tf_data_dir">https://www.terraform.io/docs/commands/environment-variables.html#tf_data_dir</a></li>
+<li><code>terraform apply</code> generates and displays the execution plan (without saving)</li>
+<li><code>terraform plan</code> generates an execution plan</li>
+<li><code>terraform state list</code> list resources</li>
+<li><code>terraform state show [xxx]</code> shows the current state for [xxx] - this contains very important information - required for terraform to know about the current state - consider using remote state (<a href="https://www.terraform.io/docs/state/remote.html">https://www.terraform.io/docs/state/remote.html</a>)</li>
+</ul>
+<h1 id="change-infrastructure">Change Infrastructure</h1>
+<ul>
+<li><code>terraform apply</code> apply any new changes in .tf file to the infrastructure</li>
+<li><code>terraform show</code> to see current state of the infrastructure</li>
+</ul>
+<h1 id="deploy-infrastructure">Deploy Infrastructure</h1>
+<ul>
+<li><code>terraform destroy</code> destroys all elements in the infrastructure (as though all resources were removed from the .tf file had been blanked out)</li>
+</ul>
+<h1 id="resource-dependencies">Resource Dependencies</h1>
+<ul>
+<li>Interpolation syntax allows referencing other values. Use <code>${}</code> e.g. <code>${aws_instance.web.id}</code>.</li>
+<li>Format is usually: <code>TYPE.NAME.ATTRIBUTE</code></li>
+<li>If a resource is countable (has the <code>count</code> attribute set), reference individual resources by index e.g. <code>${aws_instance.web.0.id}</code></li>
+<li>Get a list using the splat syntax e.g. <code>${aws_instance.web.*.id}</code></li>
+<li>See: <a href="https://www.terraform.io/docs/configuration-0-11/interpolation.html">https://www.terraform.io/docs/configuration-0-11/interpolation.html</a></li>
+<li>Terraform will automatically work out dependencies by studying the resource attributes used in interpolation expressions. Thus it can determine the correct order in which to create resources. This is the PRIMARY way to inform Terraform of these dependencies - use where possible.</li>
+</ul>
+<h1 id="provision">Provision</h1>
+<p>Terraform provisioners help you do additional setup and configuration when a resource is created or destroyed. You can move files, run shell scripts, and install software.</p>
+<ul>
+<li>DO NOT USE instead of configuration management tool to maintain state and configuration for existing resources. Use chef, ansible, DSC.</li>
+<li>Consider Packer for creating custom images where the image is managed as code as an alternative approach</li>
+<li>Provisioners are defined on resources, usually new resources just being provisioned</li>
+<li>Nevertheless, the <code>null_resource</code> is available (which also allows the <code>depends_on</code> attribute to help control flow)</li>
+<li>Provisioners are only run during CREATE or DESTROY - but NOT UPDATE (either create OR destroy OR both). e.g. <code>when = &quot;destroy&quot;</code>.</li>
+<li>If provisioning fails the resources will be marked <code>taint</code>ed. They will be destroyed and recreated on the next <code>apply</code>.</li>
+</ul>
+<h1 id="input-variables">Input Variables</h1>
+<ul>
+<li>Variables are specified and can be given default values in a file <code>variables.tf</code></li>
+<li>Variable values can be set from another file either <code>terraform.tfvars</code> or <code>*.auto.tfvars</code> (or specify using <code>-var-file</code>), or from command line <code>-var</code> for relevant commands (<code>plan</code>, <code>apply</code>, <code>refresh</code>)</li>
+<li>For secrets create a secrets file locally and use <code>-var-file</code> to load it</li>
+<li>Multiple files can be specified e.g. <code>terraform apply -var-file='secret.tfvars' -var-file='production.tfvars'</code></li>
+<li>Environment variables of the value <code>TF_VAR_name</code> will be read e.g. <code>TF_VAR_location</code> to set the value of <code>location</code></li>
+<li>Variable type can be string, list, map</li>
+<li>Lists can specify type either implicitly or explicitly e.g. <code>variable &quot;cidrs&quot; { default = [] }</code> or <code>variable &quot;cidrs&quot; { type = &quot;list&quot; }</code></li>
+<li>Maps can be defined implicitly by specifying a default value which is a map, using <code>default = {}</code>, or explicitly</li>
+<li>Apply variables from a map using the <code>lookup</code> function e.g. <code>sku = &quot;${lookup(var.sku, var.location)}&quot;</code> or <code>${var.sku[&quot;uksouth&quot;]}</code></li>
+</ul>
+<h1 id="output-variables">Output Variables</h1>
+<ul>
+<li>Use to output information and data resulting from the infrastructure provisioning e.g. IP addresses</li>
+<li>Define e.g.</li>
+</ul>
+<pre><code>`output &quot;ip&quot; {
+  value = &quot;${azurerm_public_ip.publicip.ip_address}&quot;
+}`
+</code></pre>
+<ul>
+<li>Automatically printed following <code>terraform apply</code></li>
+<li>Can additionally be queried using <code>terraform output [output-var-name]</code></li>
+</ul>
+<h1 id="modules">Modules</h1>
+<p>Terraform modules are self-contained packages of Terraform configurations that are managed as a group. Modules are used to create reusable components, improve organization, and to treat pieces of infrastructure as a black box. e.g. <code>network</code> module, <code>compute</code> module.</p>
+<ul>
+<li>As with resource blocks, a module block requires a name</li>
+<li>The only mandatory attribute is source, the location of the module in e.g. the official Terraform Registry, a private registry, directly from Git, Mercurial, HTTP or local files</li>
+<li>Following the addition of modules, rerun <code>terraform init</code> to retrieve modules. <code>-upgrade</code> checks for any newer versions of existing modules and providers</li>
+<li>Module outputs are often used as the input to other modules using <code>${module.NAME.OUTPUT}</code></li>
+</ul>
+<h1 id="remote-state-storage">Remote State Storage</h1>
+<p>Supports team based workflows via remote backends.</p>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2019/06/28/google-cloud-training-security-and-identity-fundamentals/">Google Cloud Training: Security &amp; Identity Fundamentals</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2019/07/27/pluralsight-angular-getting-started/">Pluralsight: Angular Getting Started</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2019/06/28/terraform-getting-started-azure/` was built on 2025-09-05T01:23:56.889Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

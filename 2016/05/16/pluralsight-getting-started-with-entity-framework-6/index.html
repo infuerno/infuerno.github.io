@@ -1,0 +1,838 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Pluralsight: Getting Started with Entity Framework 6</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="pluralsight-getting-started-with-entity-framework-6">Pluralsight: Getting Started with Entity Framework 6</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2016-05-16">16 May 2016</time></li>
+</ul>
+
+<h2 id="notes">Notes</h2>
+<ul>
+<li>Latest version is EF 6.4 (release Dec 2019)</li>
+<li>EF 6.3 upwards can be used in EF Core applications (why would you?)</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li>O’Reilly: Programming Entity Framework by Julie Lerman</li>
+<li>O’Reilly: Programming Entity Framework Code First by Julie Lerman</li>
+<li>O’Reilly: Programming Entity Framework DBContext by Julie Lerman</li>
+<li><a href="https://www.mikee.se/posts/migrating_from_ef6_to_ef_core">https://www.mikee.se/posts/migrating_from_ef6_to_ef_core</a></li>
+<li>Pluralsight: EF6 Ninja Edition</li>
+<li>Pluralsight: Querying the Entity Framework</li>
+<li>Pluralsight: Practical LINQ by Deborah Kurata</li>
+</ul>
+<h2 id="overview">Overview</h2>
+<ul>
+<li>EF is an ORM.</li>
+<li>It simplifies the effort when going from objects in software to relational data in the database.</li>
+<li>Other ORMs often require that the domain classes mirror the database tables.
+EF provides more flexibility to define <strong>mappings</strong> between domain classes and database tables (can override defaults easily).</li>
+<li>EF uses the LINQ to Entities syntax so developers can use a consistent and strongly typed query language regardless of the database being targetted. This is written again the domain objects NOT the database schema. LINQ can also be used to query e.g. in memory objects so uses a syntax in common with LINQ to Objects.</li>
+<li>Although the database is abstracted away, still need to understand the nuances of tracking as well as patterns for working in disconnected applications</li>
+<li>EF6 can be used with .NET 4.</li>
+<li>EF7 is supported on client side on devices.</li>
+</ul>
+<h3 id="basic-ef-workflow">Basic EF Workflow</h3>
+<ul>
+<li>Start with the domain classes -&gt; use EF’s DbContext API to wrap those classes into a <strong>model</strong> -&gt; Express and execute queries using LINQ to Entities -&gt; EF builds equivalent SQL -&gt; Executes againsts database -&gt; Transforms results back into model -&gt; Modify data in model -&gt; EF Save Changes -&gt; EF determines and executes SQL</li>
+<li>Mapping to views as well as tables is supported</li>
+<li>Executing SPs is also supported if EF can’t create efficiently performing SQL or if the query is too hard to express with LINQ.</li>
+<li>This is a high level overview of the <em>default</em> workflow.</li>
+</ul>
+<h3 id="model-options">Model options</h3>
+<ol>
+<li>EDMX Model - Visual model defined using a designer in VS -&gt; this creates an XML file, the EDMX -&gt; the designer then generates classes from the EDMX</li>
+<li>Code-based Model - model directly written in code</li>
+</ol>
+<p>If an EDMX exists, EF reads this and generates an in memory model. This in memory model is the representation of how the domain classes map to the database tables
+Instead if a model in code exists, EF will use its Code First API to generate the same in memory model
+Having generated the in memory model everything following is the same.</p>
+<h3 id="model-creation-options">Model Creation options</h3>
+<ol>
+<li><strong>Database First with EDMX</strong>. Reverse engineer from an existing database to EDMX. EDMX is updateable when the database schema is updated. (Can also reverse engineer to Code, but this is a one way process. Really just a different way to start with a Code-First approach).</li>
+<li><strong>Model First with EDMX</strong>. Use the designer to write the model (EDMX) and then generate the database. However, you can migrate the database by changing the model.</li>
+<li><strong>Code First</strong> (most popular). Either write from scratch or reverse engineer a database. EF then has the option to determine the model and the database schema and then create the SQL to create the database. This allows generation of migrations to migrate the database when models or mappings change. Using code, EF uses conventions to infer the database schema, but mappings can be used to override the conventions.</li>
+</ol>
+<h3 id="architecture">Architecture</h3>
+<p>Using a DBContext, EF defines which domain objects it will work with in a particular model.
+There may be more than one DBContext defined model.
+EF logic is written and executed in a data logic layer, e.g. queries and calls to SaveChanges. The DBContext then executes queries, tracks changes, performs updates etc, triggered by the code in the data logic layer
+The domain objects and other business logic code does not need to be aware of EF at all. Only the data logic layer needs a reference to the EntityFramework.dll</p>
+<h3 id="ef7">EF7</h3>
+<p>Complete rewrite.
+Not backwards compatible.
+Different features e.g. no EDMX model.</p>
+<h2 id="creating-a-code-based-model-and-database">Creating a Code Based Model and Database</h2>
+<ol>
+<li>Create a domain project and domain classes e.g. <code>Ninja</code>, <code>Clan</code>, <code>NinjaEquipment</code></li>
+<li>Create a datamodel project. Create a dbcontext e.g. <code>NinjaContext</code> by inheriting from <code>System.Data.Entity.DbContext</code>. This will orchestrate all the interactions with the database.</li>
+<li>When defining a <code>DbContext</code>, need to define what <code>DbSet</code>s are in the model. Add a <code>DbSet</code> for each type that will be maintained by the DbContext. The <code>DbSet</code> IS a repository (repository pattern) and is responsible for maintaining an in memory collection of types. Queries are performed by way of the DbSets. These entities can then be queried and persisted directly. It is possible to have entities in the model which aren’t part of a DbSet which are reached by relationships to entities which are in a <code>DbSet</code> [ADVANCED].</li>
+</ol>
+<p>At runtime, .NET will check the class definitions of all classes included in the <code>DbSet</code>s in the <code>DbContext</code> and infer a model as well as infer how that model relates to a database schema.
+Use Entity Framework Power Tools to view the same model in advance (right click on context file for menu).</p>
+<p>Where there are “foreign keys” defined between domain classes via explicit integer keys, EF will create an 1 to 1 or 1 to many relationship. However if the relationship is via a class which could be nullable, this will be created as a 0 to 1 or 0 to many relationship by default. Use Fluent API in your EF DbContext to sort out, or add the <code>[Required]</code> attribute to your domain classes.</p>
+<p>NOTE. Not having explicity FK <code>int</code> relationships can become a problem when using EF with disconnected web apps.</p>
+<h3 id="code-first-database-creation-and-migrations">Code First database creation and migrations</h3>
+<p>There are a number of ways to migrate a database from the model.
+Some are automated and happen at runtime - useful for running unit tests.
+Design time Code First migrations feature gives the most consistency and control.
+The Migrations API can detect changes between the model and an existing database, describe these schema changes and then generate the equivalent SQL.</p>
+<p>Issue the <code>Enable-Migrations</code> command in the package manager console. This creates a folder called Migrations and a <code>Configuration.cs</code> class.</p>
+<p>There are 3 steps to migrating the database:</p>
+<ol>
+<li>Define / update the model</li>
+<li>Create the migration file: <code>Add-Migration Initial</code></li>
+<li>Apply to the database
+<ul>
+<li><code>Update-Database -Script</code> will simply show the script to be run on update</li>
+<li><code>Update-Database -Verbose</code> will run the migration on the database, giving verbose output</li>
+</ul>
+</li>
+</ol>
+<p>By default the database will be created locally using mssqllocaldb using the namespace and context names to name the database</p>
+<h2 id="using-ef-to-interact-with-the-database">Using EF to interact with the database</h2>
+<ul>
+<li>CRUD</li>
+<li>Working with graphs of related data</li>
+<li>Projection queries</li>
+</ul>
+<h3 id="database-initialisation">Database initialisation</h3>
+<p>Control the initialisation of the database e.g Create if not exists or turn off in <code>OnModelCreating</code>: <code>Database.SetInitializer(new NullDatabaseInitializer&lt;NinjaContext&gt;());</code></p>
+<pre class="language-xml" tabindex="0"><code class="language-xml">  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>appSettings</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>add</span> <span class="token attr-name">key</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>DatabaseInitializerForType Pluralsight.Ef6gs.Ninja.DataModel.NinjaContext, Pluralsight.Ef6gs.Ninja.DataModel<span class="token punctuation">"</span></span>
+         <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Disabled<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>appSettings</span><span class="token punctuation">></span></span></code></pre>
+<p>See: <a href="https://www.entityframeworktutorial.net/code-first/database-initialization-strategy-in-code-first.aspx">https://www.entityframeworktutorial.net/code-first/database-initialization-strategy-in-code-first.aspx</a></p>
+<h3 id="log-generated-sql">Log generated SQL</h3>
+<p>ctx.Database.Log = Console.WriteLine;</p>
+<h3 id="triggering-queries-to-execute">Triggering queries to execute</h3>
+<ul>
+<li>Use a LINQ “execution method” e.g. <code>query.ToList()</code></li>
+<li>Enumerate a query e.g. <code>foreach(var ninja in query)</code> - NOTE database connection will be open UNTIL the last record is read - often better to ensure control and explicitly call e.g. <code>ToList()</code></li>
+</ul>
+<h3 id="updates-in-disconnected-applications">Updates in disconnected applications</h3>
+<ul>
+<li>Pluralsight: EF in the Enterprise much more info on disconnected applications including established patterns</li>
+</ul>
+<pre class="language-csharp" tabindex="0"><code class="language-csharp"><span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> ctx <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">NinjaContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  context<span class="token punctuation">.</span>Ninjas<span class="token punctuation">.</span><span class="token function">Attach</span><span class="token punctuation">(</span>ninja<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// tell EF about the entity - actually this part is not required when using the following line</span>
+  context<span class="token punctuation">.</span><span class="token function">Entry</span><span class="token punctuation">(</span>ninja<span class="token punctuation">)</span><span class="token punctuation">.</span>State <span class="token operator">=</span> EntityState<span class="token punctuation">.</span>Modified<span class="token punctuation">;</span>
+  context<span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// this will update EVERY property (unlike connected apps where EF knows which properties have changed)</span>
+<span class="token punctuation">}</span></code></pre>
+<h3 id="useful-dbset-methods">Useful DbSet methods</h3>
+<ul>
+<li>
+<p><code>ctx.Ninjas.Find(1)</code> - used with the id value. Will query in memory EF tracked entities first</p>
+</li>
+<li>
+<p><code>ctx.Ninjas.SqlQuery(&quot;exec GetNinjas&quot;)</code> - since this is a method of <code>DbSet</code> it expects THAT entity type to be returned. Still need a LINQ execution method e.g. <code>ToList()</code> to retrieve. String can be a SQL query or exec with an SP.</p>
+</li>
+<li>
+<p>Alt database method: <code>ctx.Database.ExecuteSqlCommand(&quot;exec DeleteNinjaById {0}&quot;, id)</code></p>
+</li>
+</ul>
+<h3 id="deletes-in-disconnected-applications">Deletes in disconnected applications</h3>
+<ul>
+<li>Call <code>ctx.Ninjas.Remove(ninja)</code> to delete a ninja. This will throw an exception in disconnected apps where a new context has been instantiated</li>
+<li><code>ctx.Ninjas.Attach(ninja); ctx.Ninjas.Remove(ninja);</code> works.</li>
+<li><code>ctx.Entry(ninja).State = EntityState.Deleted</code> also works</li>
+</ul>
+<h3 id="inserting-related-data">Inserting related data</h3>
+<p>Adding child objects to a parent object when the parent object is already tracked by EF will result in the child objects ALSO being tracked by EF AND having the same state.</p>
+<p>If the child objects are already known to EF, their state will be retained.</p>
+<pre class="language-csharp" tabindex="0"><code class="language-csharp">ctx<span class="token punctuation">.</span>Ninjas<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>ninja<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// will automatically be tracked by EF despite not being explicitly added to the context</span>
+ninja<span class="token punctuation">.</span>EquipmentOwned<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">NinjaEquipment</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>Name <span class="token operator">=</span> <span class="token string">"Muscles"</span><span class="token punctuation">,</span> Type <span class="token operator">=</span> EquipmentType<span class="token punctuation">.</span>Tool<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ninja<span class="token punctuation">.</span>EquipmentOwned<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">NinjaEquipment</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>Name <span class="token operator">=</span> <span class="token string">"Sword"</span><span class="token punctuation">,</span> Type <span class="token operator">=</span> EquipmentType<span class="token punctuation">.</span>Weapon<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>In this example, EF will initially insert the first Ninja and then do a SELECT to get the ID of the newly inserted record. It will use this ID to insert the 2 equipment records. The 4 SQL queries are done in a single transaction and a single connection.</p>
+<h3 id="loading-related-data">Loading related data</h3>
+<h4 id="eager-loading">Eager loading</h4>
+<p>Useful if you know you want to get all related records.</p>
+<ul>
+<li>using <code>Include</code> e.g. <code>ctx.Ninjas.Include(n =&gt; n.EquipmentOwned).FirstOrDefault(n =&gt; n.Name == &quot;Jun&quot;)</code></li>
+</ul>
+<h4 id="explicit-loading">Explicit loading</h4>
+<p>Useful if you only want to get a few related records.</p>
+<pre class="language-csharp" tabindex="0"><code class="language-csharp">  <span class="token class-name"><span class="token keyword">var</span></span> ninja <span class="token operator">=</span> ctx<span class="token punctuation">.</span>Ninjas<span class="token punctuation">.</span><span class="token function">FirstOfDefault</span><span class="token punctuation">(</span>n <span class="token operator">=></span> n<span class="token punctuation">.</span>Name <span class="token operator">==</span> <span class="token string">"jun"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  ctx<span class="token punctuation">.</span><span class="token function">Entry</span><span class="token punctuation">(</span>ninja<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Collection</span><span class="token punctuation">(</span>n <span class="token operator">=></span> n<span class="token punctuation">.</span>EquipmentOwned<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Load</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h4 id="lazy-loading">Lazy loading</h4>
+<p>WARNING: use with caution.</p>
+<p>If you mark a navigation propery with the keyword <code>virtual</code> then properties can be lazy loaded simply by referencing a child object. However if iterating data and referencing child properties this MAY result in a call to the database for each child property (rather than just one call up front when using <code>Include</code>).</p>
+<pre class="language-csharp" tabindex="0"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Ninja</span>
+<span class="token punctuation">{</span>
+    <span class="token comment">// ...</span>
+    <span class="token keyword">public</span> <span class="token keyword">virtual</span> <span class="token return-type class-name">List<span class="token punctuation">&lt;</span>NinjaEquipment<span class="token punctuation">></span></span> EquipmentOwned <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+
+<span class="token class-name"><span class="token keyword">var</span></span> ninja <span class="token operator">=</span> ctx<span class="token punctuation">.</span>Ninjas<span class="token punctuation">.</span><span class="token function">FirstOrDefault</span><span class="token punctuation">(</span>n <span class="token operator">=></span> n<span class="token punctuation">.</span>Name <span class="token operator">==</span> <span class="token string">"Mai"</span> <span class="token operator">&amp;&amp;</span> n<span class="token punctuation">.</span>Id <span class="token operator">!=</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// at this point the EquipmentOwned count is 0</span>
+Console<span class="token punctuation">.</span><span class="token function">WriteLine</span><span class="token punctuation">(</span><span class="token interpolation-string"><span class="token string">$"</span><span class="token interpolation"><span class="token punctuation">{</span><span class="token expression language-csharp">ninja<span class="token punctuation">.</span>Name</span><span class="token punctuation">}</span></span><span class="token string"> owns </span><span class="token interpolation"><span class="token punctuation">{</span><span class="token expression language-csharp">ninja<span class="token punctuation">.</span>EquipmentOwned<span class="token punctuation">.</span>Count</span><span class="token punctuation">}</span></span><span class="token string">"</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// checking the SQL queries made shows an extra SELECT in order to get the count</span></code></pre>
+<h4 id="projection-queries">Projection queries</h4>
+<p>Use projections to return subsets of properties of related entities. From related objects can request the whole object OR aggregate properties e.g. Count of a collection type.</p>
+<pre class="language-csharp" tabindex="0"><code class="language-csharp"><span class="token comment">// selects all EquipmentOwned objects</span>
+<span class="token class-name"><span class="token keyword">var</span></span> ninjas <span class="token operator">=</span> ctx<span class="token punctuation">.</span>Ninjas
+    <span class="token punctuation">.</span><span class="token function">Select</span><span class="token punctuation">(</span>n <span class="token operator">=></span> <span class="token keyword">new</span> <span class="token punctuation">{</span>n<span class="token punctuation">.</span>Name<span class="token punctuation">,</span> n<span class="token punctuation">.</span>EquipmentOwned<span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">ToList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// selects aggregates for EquipmentOwned objects</span>
+<span class="token comment">// since Clan is a single object CAN select single properties</span>
+<span class="token class-name"><span class="token keyword">var</span></span> ninjas <span class="token operator">=</span> ctx<span class="token punctuation">.</span>Ninjas
+    <span class="token punctuation">.</span><span class="token function">Select</span><span class="token punctuation">(</span>n <span class="token operator">=></span> <span class="token keyword">new</span> <span class="token punctuation">{</span>n<span class="token punctuation">.</span>Name<span class="token punctuation">,</span> EquipmentCount <span class="token operator">=</span> n<span class="token punctuation">.</span>EquipmentOwned<span class="token punctuation">.</span>Count<span class="token punctuation">,</span> ClanName <span class="token operator">=</span> n<span class="token punctuation">.</span>Clan<span class="token punctuation">.</span>Name<span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">ToList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>Projections usually return anonymous types</p>
+<h2 id="using-ef-in-your-applications">Using EF in your applications</h2>
+<pre><code>public interface IModificationHistory {
+  DateTime DateCreated { get; set; }
+  DateTime DateModified { get; set; }
+  bool IsDirty { get; set; }
+
+</code></pre>
+<ul>
+<li>All domain classes will implement the <code>IModificationHistory</code> interface</li>
+<li>IsDirty will not be persisted and will be ignored in <code>OnModelCreating</code>
+<ul>
+<li><code>builder.Types().Configure(c =&gt; c.Ignore(&quot;IsDirty));</code> // not in EF Model, EF Queries, EF Updates</li>
+</ul>
+</li>
+<li>Override <code>SaveChanges()</code> to update the DateCreated and DateModified fields in one place</li>
+</ul>
+<pre class="language-csharp" tabindex="0"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> <span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">foreach</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> history <span class="token keyword">in</span> <span class="token keyword">this</span><span class="token punctuation">.</span>ChangeTracker<span class="token punctuation">.</span><span class="token function">Entries</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">Where</span><span class="token punctuation">(</span>e <span class="token operator">=></span> e<span class="token punctuation">.</span>Entity <span class="token keyword">is</span> <span class="token class-name">IModificationHistory</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>e<span class="token punctuation">.</span>State <span class="token operator">==</span> EntityState<span class="token punctuation">.</span>Added
+      <span class="token operator">||</span> e<span class="token punctuation">.</span>State <span class="token operator">==</span> EntityState<span class="token punctuation">.</span>Modified<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">Select</span><span class="token punctuation">(</span>e <span class="token operator">=></span> e<span class="token punctuation">.</span>EntityState <span class="token keyword">as</span> <span class="token class-name">IModificationHistory</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      history<span class="token punctuation">.</span>DateModified <span class="token operator">=</span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>history<span class="token punctuation">.</span>DateCreated <span class="token operator">==</span> DateTime<span class="token punctuation">.</span>Minvalue<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        history<span class="token punctuation">.</span>DateCreated <span class="token operator">=</span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token class-name"><span class="token keyword">int</span></span> result <span class="token operator">=</span> <span class="token keyword">base</span><span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">foreach</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> history <span class="token keyword">in</span> <span class="token keyword">this</span><span class="token punctuation">.</span>ChangeTracker<span class="token punctuation">.</span><span class="token function">Entries</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">Where</span><span class="token punctuation">(</span>e <span class="token operator">=></span> e<span class="token punctuation">.</span>Entity <span class="token keyword">is</span> <span class="token class-name">IModificationHistory</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">Select</span><span class="token punctuation">(</span>e <span class="token operator">=></span> e<span class="token punctuation">.</span>EntityState <span class="token keyword">as</span> <span class="token class-name">IModificationHistory</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        history<span class="token punctuation">.</span>IsDirty <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span> <span class="token comment">// relevant for connected applications</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<h3 id="ef-with-asp-net-mvc-and-webapi-applications">EF with <a href="http://ASP.NET">ASP.NET</a> MVC and WebAPI applications</h3>
+<ul>
+<li>Short lived context - one per repository method</li>
+<li>Different queries for specific purposes - since disconnected should only grab the actual data needed for that query - no sense in grabbing anything extra</li>
+<li><code>AsNoTracking()</code> liberally used - super important performance pattern. Note cannot use with <code>Find()</code></li>
+<li>FK properties from a child object back to a parent object can cause issues e.g. <code>NinjaEquipment</code> has a <code>Ninja</code> property, but no NinjaId property.</li>
+</ul>
+<pre class="language-csharp" tabindex="0"><code class="language-csharp"><span class="token comment">// without an FK property</span>
+<span class="token comment">// have to additionally pass in the ninja ID as well as initially get the ninja from the database</span>
+<span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">SaveNewEquipment</span><span class="token punctuation">(</span><span class="token class-name">NinjaEquipment</span> equipment<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">int</span></span> ninjaId<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">using</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> context <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">NinjaContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> ninja <span class="token operator">=</span> context<span class="token punctuation">.</span><span class="token function">Find</span><span class="token punctuation">(</span>ninjaId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    ninja<span class="token punctuation">.</span>EquipmentOwned<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>equipment<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    context<span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// again without the FK property</span>
+<span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">SaveUpdatedEquipment</span><span class="token punctuation">(</span><span class="token class-name">NinjaEquipment</span> equipment<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">int</span></span> ninjaId<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">using</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> context <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">NinjaContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// get the whole object graph from the database</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> equipmentWithNinja <span class="token operator">=</span> context<span class="token punctuation">.</span>Equipment<span class="token punctuation">.</span><span class="token function">Include</span><span class="token punctuation">(</span>n <span class="token operator">=></span> n<span class="token punctuation">.</span>Ninja<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">FirstOrDefault</span><span class="token punctuation">(</span>e <span class="token operator">=></span> e<span class="token punctuation">.</span>Id <span class="token operator">==</span> equipment<span class="token punctuation">.</span>Id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// update the fields on equipment</span>
+    context<span class="token punctuation">.</span><span class="token function">Entry</span><span class="token punctuation">(</span>equipmentWithNinja<span class="token punctuation">)</span><span class="token punctuation">.</span>CurrentValues<span class="token punctuation">.</span><span class="token function">SetValues</span><span class="token punctuation">(</span>equipment<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    context<span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2016/04/14/code-school-staying-sharp-with-angular-js/">CodeSchool - Staying sharp with Angular.JS</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2016/06/15/pluralsight-git-fundamentals/">Pluralsight: Git Fundamentals</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2016/05/16/pluralsight-getting-started-with-entity-framework-6/` was built on 2025-09-05T01:23:56.885Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

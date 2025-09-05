@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Pluralsight: ASP.NET MVC 4 Fundamentals</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="pluralsight-asp-net-mvc-4-fundamentals">Pluralsight: ASP.NET MVC 4 Fundamentals</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2018-05-12">12 May 2018</time></li>
+</ul>
+
+<h3 id="references">References</h3>
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/whitepapers/mvc4-release-notes">https://docs.microsoft.com/en-us/aspnet/whitepapers/mvc4-release-notes</a></li>
+<li>HTTP Fundamentals Pluralsight course</li>
+</ul>
+<h3 id="keyboard-shortcuts">Keyboard shortcuts</h3>
+<ul>
+<li>Select multiple rows, hold down Alt and start typing</li>
+</ul>
+<h3 id="curl-options">Curl options</h3>
+<ul>
+<li>-X specify method</li>
+<li>-V verbose e.g. show request and response headers being sent / received in full</li>
+<li>-H specify headers e.g. -H “Accept: application/json”</li>
+</ul>
+<h2 id="introduction-to-asp-net-mvc-4-part-1">Introduction to <a href="http://ASP.NET">ASP.NET</a> MVC 4 Part 1</h2>
+<ul>
+<li>Entity framework can do efficient change tracking by adding additional features to your objects IF you make the properties virtual.</li>
+<li>Abstraction for the data source of <code>IDepartmentDataSource</code> with getters of type <code>IQueryable&lt;T&gt;</code>. In the actual db context class, the implementation of these methods can simply return the <code>DbSet&lt;T&gt;</code> properties</li>
+<li>Use DI in the controller e.g. StructureMap - initialise scoped to a particular request</li>
+</ul>
+<pre><code>public class DepartmentDb : DatabaseContext, IDepartmentDataSource
+{
+    public DbSet&lt;Employee&gt; Employees { get; set; }
+    public DbSet&lt;Department&gt; Departments { get; set; }
+
+    public IQueryable&lt;Employee&gt; IDepartmentDataSource.Employees { get { return Employees; }}
+    public IQueryable&lt;Department&gt; IDepartmentDataSource.Departments { get { return Departments; }}
+}
+</code></pre>
+<ul>
+<li><code>Enable-Migrations</code> - creates a Migrations folder and add a <code>Configuration.cs</code> class</li>
+<li>To override the database connection properties, specify the name of the Connection String in the call to the parent DbContext constructor e.g. <code>: base(&quot;DefaultConnection&quot;)</code></li>
+</ul>
+<h2 id="introduction-to-asp-net-mvc-4-part-2">Introduction to <a href="http://ASP.NET">ASP.NET</a> MVC 4 Part 2</h2>
+<ul>
+<li>View models are more secure to decouple the information received from the user from the inforamtion saved to the database to combat “over posting” or “mass assignment”.</li>
+<li>Add data attributes to the view model to control the display e.g <code>[Required]</code>, <code>[HiddenInput(DisplayValue=false)]</code>, <code>[DataType(DataType.Date)]</code></li>
+<li>Add a <code>Save</code> method to the context’s interface which will simply call EF’s <code>SaveChanges</code> method for the real interface implementation</li>
+</ul>
+<h2 id="the-asp-net-webapi">The <a href="http://ASP.NET">ASP.NET</a> WebAPI</h2>
+<ul>
+<li>Can be self hosted, but using a console project and <code>Install-Package Microsoft.AspNet.WebApi.SelfHost</code></li>
+<li>API controllers need to inherit from <code>ApiController</code> rather than <code>Controller</code></li>
+<li>Will handle verbs GET, POST, PUT, DELETE by default. Other methods available via <code>[AcceptVerbs]</code>. Looks at the start of an action name.</li>
+<li>If you try to send a DELETE request to particular web servers, it may not be able to handle it and will return a message “File or directory does not exist on the server” e.g. IIS Express
+<ul>
+<li>to reconfigure IIS Express to accept other verbs, go to C:\Users\Claire\Documents\IISExpress\config\applicationhost.config - check for key <code>ExtensionlessUrl-Integrated-4.0</code> - by default only GET, HEAD, POST and DEBUG are specified. Add PUT and DELETE to the list. Save and try again.</li>
+</ul>
+</li>
+</ul>
+<h3 id="content-negotiation">Content negotiation</h3>
+<ul>
+<li>Simple objects are returned (rather than action results or view results in MVC). The format of the response will depend on “content negotiation”.</li>
+<li>The <code>Accept</code> header in the request asks for the content in a particular format e.g. <code>image/png</code> (other headers exist to specify lanuage, encoding and character set)</li>
+<li>Set breakpoint at start of action method, go to intermediate window: <code>GlobalConfiguration</code> and then <code>GlobalConfiguration.Configuration</code> and finally <code>GlobalConfiguration.Configuration.Formatters</code> to show the 4 default formatters. Objects returned are turned into specific representations by one of these formatters.</li>
+</ul>
+<h3 id="parameter-binding">Parameter binding</h3>
+<ul>
+<li>
+<p>Also different to MVC</p>
+</li>
+<li>
+<p>For primitive types, the WebAPI runtime will look in the URL and query string, but NOT in the message body by default</p>
+<ul>
+<li>Add the <code>[FromBody]</code>  attribute in front of the type e.g. <code>public void Post([FromBody]string value) { ... }</code></li>
+</ul>
+</li>
+<li>
+<p>For complex types, these are expected to be in the body of a request e.g. a PUT or a POST</p>
+</li>
+<li>
+<p>The content-type of the request will determine which formatter is chosen to parse the body</p>
+<ul>
+<li>Pass the body to curl using -d e.g. curl <a href="http://localhost:5000/api/videos/">http://localhost:5000/api/videos/</a> -X POST -d “=scott”</li>
+<li>For single parameters just use an <code>=</code> sign (as above), for complex objects, e.g. <code>id=1&amp;title=mvc4</code> would work for an object with an id and a title (using the Form encoded data formatter)</li>
+</ul>
+</li>
+<li>
+<p><code>db.Configuration.ProxyCreationEnabled = false;</code> - proxy creation helps with change tracking and lazy loading - but no reason to enable this for an API if you are getting data from the database and immediately sending to the client OR receiving data from the client and immediately saving to the database.</p>
+</li>
+<li>
+<p>The default <code>_Layout.cshtml</code> contains a <code>@RenderSection(&quot;scripts&quot;, required: false)</code> at the bottom of the page, so each pages can specify custom scripts or inlude script tags if required.</p>
+</li>
+<li>
+<p>Can use the razor syntax within JS to form URLs e.g. <code>var apiUrl = '@Url.RouteUrl(&quot;DefaultApi&quot;, new { httproute=&quot;&quot;, controller=&quot;videos&quot; })</code> - the <code>httproute</code> property doesn’t have to be set to anything, but must be present in order for the runtime to correctly resolve the route to the controller</p>
+</li>
+<li>
+<p>Useful to set up a global AJAX error handler so that if anything at all goes wrong AJAXwise, an alert can be displayed to aid debugging: <code>$(document).ajaxError(function (event, xhr) { alert(xhr.status + &quot;:&quot; + xhr.statusText); });</code></p>
+</li>
+<li>
+<p><code>throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));</code> to return a 404 from an API</p>
+</li>
+<li>
+<p><code>$(document).on(&quot;click&quot;, &quot;.editVideo&quot;, editVideo)</code> - using the jQuery <code>on</code> method, you can wire up objects that don’t yet exist</p>
+</li>
+<li>
+<p><code>db.Entry(video).State = EntityState.Modified</code> to update an existing entry followed by <code>db.SaveChanges()</code></p>
+</li>
+</ul>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2018/04/29/pluralsight-understanding-owin-and-katana/">Pluralsight: Understanding OWIN and Katana</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2018/05/16/asynchronous-programming-succinctly/">Asynchronous Programming Succinctly</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2018/05/12/pluralsight-asp-dot-net-mvc-4-fundamentals/` was built on 2025-09-05T01:23:56.887Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

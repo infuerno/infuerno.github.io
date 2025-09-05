@@ -1,0 +1,1326 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Microsoft Azure: AZ-204: Developing Solutions for Microsoft Azure</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="microsoft-azure-az-204-developing-solutions-for-microsoft-azure">Microsoft Azure: AZ-204: Developing Solutions for Microsoft Azure</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2020-10-25">25 October 2020</time></li>
+</ul>
+
+<h2 id="learning-path-create-serverless-applications">Learning Path: Create serverless applications</h2>
+<h3 id="azure-services-for-automating-business-processes">Azure services for automating business processes</h3>
+<p>Business processes modelled in software are known as <strong>workflows</strong>. Azure includes 4 different technolgies to implement workflows which integrate different systems:</p>
+<ol>
+<li>Logic Apps - design first for IT pros and developers - over 200 connectors</li>
+<li>Microsoft Power Automate - build on top of logic apps - design first for non technical staff</li>
+<li>WebJobs - continuous or triggered (schedule or manually) - code written in script or .NET using WebJobs SDK - only technology that permits developers to control retry policies - useful if deploying an Azure App Service anyway</li>
+<li>Azure functions - cost effective if using the consumption plan</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th> </th>
+<th>Azure WebJobs</th>
+<th>Azure Functions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Supported languages</td>
+<td>C# if you are using the WebJobs SDK</td>
+<td>C#, Java, JavaScript, PowerShell, etc.</td>
+</tr>
+<tr>
+<td>Automatic scaling</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Development and testing in a browser</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Pay-per-use pricing</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Integration with Logic Apps</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Package managers</td>
+<td>NuGet if you are using the WebJobs SDK</td>
+<td>Nuget and NPM</td>
+</tr>
+<tr>
+<td>Can be part of an App Service application</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Provides close control of JobHost</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h3 id="azure-functions">Azure Functions</h3>
+<ul>
+<li>Azure Functions support package managers e.g. NPM, NuGet</li>
+<li>Functions are “event driven”, only running in response to an event</li>
+<li>Execution timeout is strict e.g. 5 minutes or 2.5 minutes when requiring an HTTP response</li>
+<li>Durable Functions - an option called Durable Functions allows you to orchestrate the executions of multiple functions without any timeout</li>
+<li>Execution frequency - while scaling, only one function app instance can be created every 10 seconds, for up to 200 total instances (each instance can service multiple concurrent executions). Different types of triggers have different scaling requirements, so research your choice of trigger and investigate its limits.</li>
+<li>Azure Functions use a storage account to log function executions, managing execution triggers. On a consumption plan the function code and configuration are also stored here.</li>
+</ul>
+<h4 id="serverless">Serverless</h4>
+<p>Serverless doesn’t mean there are no servers - it just means the developer doesn’t have to worry about servers. Instead, a cloud provider such as Azure, manages servers.</p>
+<h4 id="bindings">Bindings</h4>
+<p>The power of Azure Functions comes mainly from the integrations that it offers with a range of data sources and services, which are defined with bindings. With bindings, developers interact with other data sources and services without worrying about how the data flows to and from their function.</p>
+<ul>
+<li>Bindings are a declarative way to connect data and services to your function.</li>
+<li>Each binding has a direction code reads data from input bindings and writes data to output bindings</li>
+<li>Each function can have zero or more bindings to manage the input and output data processed by the function.</li>
+<li>A trigger is a special type of input binding that has the additional capability of initiating execution</li>
+<li>Every Azure Function must have exactly one trigger associated with it. If you want to use multiple triggers, you must create multiple functions.</li>
+<li>Unlike a trigger, a function can have multiple input and output bindings.</li>
+</ul>
+<p>Possible bindings: <a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-triggers-bindings?tabs=csharp#supported-bindings">https://docs.microsoft.com/en-us/azure/azure-functions/functions-triggers-bindings?tabs=csharp#supported-bindings</a></p>
+<h5 id="binding-configuration">Binding configuration</h5>
+<p>Bindings require at least 3 properties:</p>
+<ol>
+<li>Name - Defines the function parameter through which data is accessed. For example, in a queue input binding, this is the name of the function parameter that receives the queue message content.</li>
+<li>Type - Identifies the type of binding, i.e., the type of data or service we want to interact with.</li>
+<li>Direction - Indicates the direction data is flowing, i.e., is it an input or output binding?</li>
+</ol>
+<p>Additionally, most binding types also need a fourth property:</p>
+<ol start="4">
+<li>Connection - Provides the name of an app setting key that contains the connection string. Bindings use connection strings stored in app settings to keep secrets out of the function code. This makes your code more configurable and secure.</li>
+</ol>
+<p>Depending on the binding type, other properties may be required e.g. <code>path</code> property in a blob storage trigger.</p>
+<p>Bindings are defined in the <code>function.json</code> configuration file.</p>
+<h5 id="binding-expressions">Binding expressions</h5>
+<p>A binding expression is specialized text in <code>function.json</code>, function parameters, or code that is evaluated when the function is invoked to yield a value.</p>
+<p>Most expressions are identified by wrapping them in curly braces except app setting binding expressions which are wrapped in percent signs. e.g. <code>%Environment%/newblob.txt</code></p>
+<h3 id="triggers">Triggers</h3>
+<ul>
+<li>Timer triggers require 2 things:
+<ol>
+<li>Timestamp parameter name - an identifier to access the parameter in code</li>
+<li>CRON schedule - <code>{second} {minute} {hour} {day} {month} {day of the week}</code> e.g. every 5 minutes = 0 <code>*/5 * * * *</code></li>
+</ol>
+</li>
+<li>Blob storage triggers define a path e.g. <code>samples-workitems/{name}</code> - here the container name is <code>samples-workitmes</code> which the trigger will monitor.</li>
+<li>Add a filter e.g. <code>samples-workitems/{name}.png</code> to limit which files trigger the function</li>
+</ul>
+<h3 id="durable-functions">Durable Functions</h3>
+<p>Durable Functions enable performing long-lasting, stateful operations. Azure provides the infrastructure for maintaining state information, so they can be used to orchestrate a long-running workflow. This is useful when there is a manual approval process in the middle of custom business logic.</p>
+<ul>
+<li>Azure functions are stateless</li>
+<li>Durable functions can retain state between function calls</li>
+<li>Can chain functions together e.g. fan in, fan out pattern - call multiple functions in parallel and the combine all results</li>
+<li>Can orchestrate and coordinate functions</li>
+</ul>
+<h4 id="function-types">Function Types</h4>
+<ul>
+<li><strong>Client</strong> functions - trigger / entry point</li>
+<li><strong>Orchestrator</strong> functions - use code to describe how actions are Implemented</li>
+<li><strong>Action</strong> functions - basic units of work</li>
+</ul>
+<h4 id="application-patterns">Application Patterns</h4>
+<p>Also see: <a href="https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=csharp">https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=csharp</a></p>
+<ul>
+<li>Function chaining - coordinate a chain of activities</li>
+<li>Fan in / fan out - call multiple activities in parallel</li>
+<li>Async HTTP APIs - HTTP trigger a long running process, return redirect to endpoint which can be polled to learn when process has finished</li>
+<li>Monitor - recurring process in a workflow - e.g. poll for a change in state</li>
+<li>Human interation - a process which requires manual intervention</li>
+</ul>
+<h4 id="install-an-npm-package-to-a-function">Install an NPM package to a function</h4>
+<p>Function &gt; App Service Editor &gt; Console &gt; wwwroot &gt; <code>touch package.json</code> &gt; <code>open package.json</code> &gt; create a barebones <code>package.json</code> &gt; save &gt; console &gt; <code>npm install durable-functions</code> &gt; Overview &gt; Restart function</p>
+<h4 id="timers">Timers</h4>
+<p>Use durable timers in orchestrator functions instead of the setTimeout() and setInterval() functions.</p>
+<p>Create a durable timer by calling the createTimer() method of the DurableOrchestrationContext. This method returns a task that resumes on a specified date and time.</p>
+<pre><code>const df = require(&quot;durable-functions&quot;);
+const moment = require(&quot;moment&quot;);
+
+module.exports = df.orchestrator(function*(context) {
+    for (let i = 0; i &lt; 10; i++) {
+        const deadline = moment.utc(context.df.currentUtcDateTime).add(i, 'd');
+        yield context.df.createTimer(deadline.toDate());
+        yield context.df.callActivity(&quot;SendReminder&quot;);
+    }
+});
+</code></pre>
+<p>Always use currentUtcDateTime to obtain the current date and time, instead of Date.now or Date.UTC.</p>
+<h3 id="azure-functions-core-tools">Azure Functions Core Tools</h3>
+<p>Tools to develop functions locally and push to Azure.</p>
+<ul>
+<li>Generate the files and folders needed to develop functions locally</li>
+<li>Run functions locally to test and debug them</li>
+<li>Publish functions to Azure</li>
+</ul>
+<p>Other Functions development tools, such as the Functions-related features in Visual Studio and the Azure Functions extension for Visual Studio Code, are built on top of the Core Tools.</p>
+<ul>
+<li>A <strong>function app</strong> is a collection of functions which share the same configuration.</li>
+<li>A <strong>function project</strong> is used to develop a function app locally.</li>
+<li>All functions need to have the correct configuration files. Use code generation from the core tools rather than writing from scratch.
+<ul>
+<li><code>func init</code> creates a new function project with a <code>host.json</code> and <code>local.settings.json</code> (only applies to locally running functions)</li>
+<li><code>func new</code> creates a new function</li>
+<li><code>func start</code> to start the functions runtime locally for testing functions</li>
+<li><code>func start &amp;&gt; ~/output.txt &amp;</code> to start function in the background (useful from within Azure cloud shell)</li>
+<li><code>pkill func</code> to stop the background process</li>
+<li><code>func azure functionapp publish &lt;app_name&gt;</code> to publish the function to azure - NOTE will DELETE any existing functions</li>
+</ul>
+</li>
+</ul>
+<h3 id="structure-of-an-azure-function">Structure of an Azure Function</h3>
+<ul>
+<li>An Azure Function is implemented as a static class</li>
+<li>The class provides a static, asynchronous method named <code>Run</code>, which acts as the entry point for the function</li>
+<li>Parameters passed to the function provide the context for the trigger (e.g. <code>HttpRequest</code> for an HTTP trigger)</li>
+<li>Attributes of the <code>HttpTrigger</code> attribute define access level and accepted HTTP methods.</li>
+</ul>
+<pre class="language-csharp" tabindex="0"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">Function1</span>
+<span class="token punctuation">{</span>
+  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">FunctionName</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"Function1"</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+  <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task<span class="token punctuation">&lt;</span>IActionResult<span class="token punctuation">></span></span> <span class="token function">Run</span><span class="token punctuation">(</span>
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">HttpTrigger</span><span class="token attribute-arguments"><span class="token punctuation">(</span>AuthorizationLevel<span class="token punctuation">.</span>Anonymous<span class="token punctuation">,</span> <span class="token string">"get"</span><span class="token punctuation">,</span> <span class="token string">"post"</span><span class="token punctuation">,</span> Route <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span> <span class="token class-name">HttpRequest</span> req<span class="token punctuation">,</span>
+    <span class="token class-name">ILogger</span> log<span class="token punctuation">)</span>
+  <span class="token punctuation">{</span>
+    log<span class="token punctuation">.</span><span class="token function">LogInformation</span><span class="token punctuation">(</span><span class="token string">"C# HTTP trigger function processed a request."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token class-name"><span class="token keyword">string</span></span> name <span class="token operator">=</span> req<span class="token punctuation">.</span>Query<span class="token punctuation">[</span><span class="token string">"name"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+    <span class="token class-name"><span class="token keyword">string</span></span> requestBody <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">StreamReader</span><span class="token punctuation">(</span>req<span class="token punctuation">.</span>Body<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ReadToEndAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name"><span class="token keyword">dynamic</span></span> data <span class="token operator">=</span> JsonConvert<span class="token punctuation">.</span><span class="token function">DeserializeObject</span><span class="token punctuation">(</span>requestBody<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    name <span class="token operator">=</span> name <span class="token operator">??</span> data<span class="token punctuation">?.</span>name<span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> name <span class="token operator">!=</span> <span class="token keyword">null</span>
+        <span class="token punctuation">?</span> <span class="token punctuation">(</span>ActionResult<span class="token punctuation">)</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">OkObjectResult</span><span class="token punctuation">(</span><span class="token interpolation-string"><span class="token string">$"Hello, </span><span class="token interpolation"><span class="token punctuation">{</span><span class="token expression language-csharp">name</span><span class="token punctuation">}</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+        <span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">BadRequestObjectResult</span><span class="token punctuation">(</span><span class="token string">"Please pass a name on the query string or in the request body"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<h4 id="function-apps">Function Apps</h4>
+<p>A Function App is the context under which an Azure Function runs. They specify:</p>
+<ul>
+<li>The operating system / runtime</li>
+<li>Resources available e.g. memory, computing</li>
+</ul>
+<h3 id="signalr">SignalR</h3>
+<p>SignalR is an abstraction for a series of technologies that allows apps to enjoy two-way communication between the client and server. It handles connection management automatically, and allows broadcasting messages to all connected clients simultaneously, as well as sending messages to specific clients. The connection between the client and server is persistent, unlike a classic HTTP connection, which is re-established for each communication.</p>
+<p>A key benefit of the abstraction provided by SignalR is the way it supports “transport” fallbacks. A transport is method of communicating between the client and server. SignalR connections begin with a standard HTTP request. As the server evaluates the connection, the most appropriate communication method (transport) is selected. Transports are chosen depending on the APIs available on the client.</p>
+<p>For clients that support HTML 5, the WebSockets API transport is used by default. If the client doesn’t support WebSockets, then SignalR falls back to Server Sent Events (also known as EventSource). For older clients, Ajax long polling or Forever Frame (IE only) is used to mimic a two-way connection.</p>
+<h4 id="update-polling-app-to-use-signalr">Update polling app to use SignalR</h4>
+<p>The web client uses the SignalR client SDK to establish a connection to the server. By convention the connection is retrieved via a function name <code>negotiate</code>.</p>
+<ul>
+<li>Create an Azure Function with an HTTP trigger and add a SignalR inbound binding</li>
+<li>The connection info on the inbound binding is returned to the client with the HTTP response</li>
+<li>Create an Azure Function triggered by changes to Azure Cosmos DB</li>
+<li>Add the <code>feedPollDelay</code> setting - the function actually still polls Azure Cosmos DB!!!</li>
+<li>Add a SignalR output binding to this function to return updated stocks info (I guess the hubName must match that used in <code>negotiate</code>)</li>
+<li>Add code to the function to return stocks information from cosmosdb to SignalR, formatted as required for SignalR API</li>
+<li>Update the web application to add a reference to the signalr.js SDK on a CDN</li>
+<li>Update the JS app to no longer poll on a timer, but instead to set up a SignalR connection</li>
+</ul>
+<h3 id="azure-api-management">Azure API Management</h3>
+<p>Functions can be added to Azure API Management to be presented to users as part of a single API.</p>
+<h2 id="learning-path-connect-your-services-together">Learning Path: Connect your services together</h2>
+<p>Azure provides several technologies tto communicate more reliably, including:</p>
+<ul>
+<li>Storage queues</li>
+<li>Event Hubs</li>
+<li>Event Grid</li>
+<li>Service Bus</li>
+</ul>
+<h3 id="events-or-messages">Events or Messages</h3>
+<ul>
+<li>Messages contain the actual data. The sender has an expectation that the data will be received and processed</li>
+<li>Events are lightweight notifications which don’t include the data, just the location. Additionally the sender has no expectations</li>
+<li>Events can be unrelated OR part of a series of related ordered series</li>
+<li>Components sending events are <strong>publishers</strong>, receivers are <strong>subscribers</strong></li>
+</ul>
+<h3 id="messaging-solutions">Messaging solutions</h3>
+<h4 id="azure-queue-storage">Azure Queue Storage</h4>
+<p>Queue storage uses Azure Storage to store large numbers of messages that can be securely accessed using a simple REST-based interface. Queues can contain millions of messages, limited only by the capacity of the storage account that owns it.</p>
+<h4 id="azure-service-bus-queues">Azure Service Bus Queues</h4>
+<p>Service Bus is a message broker system intended for enterprise applications. Apps often have multiple communication protocols, different data contracts, higher security requirements.</p>
+<h4 id="azure-service-bus-topics">Azure Service Bus Topics</h4>
+<p>Topics are like queues, but can have multiple subscribers. Internally, topics use queues. When you post to a topic, the message is copied and dropped into the queue for each subscription.</p>
+<h4 id="azure-service-bus-relays">Azure Service Bus Relays</h4>
+<p>Performs synchronous two-way communication between applicaition, but DOESN’T have a temporary storage mechanism. Use to cross problematic network boundaries.</p>
+<h4 id="delivery-guarantees">Delivery guarantees</h4>
+<ul>
+<li><strong>At Least Once Delivery</strong> - will be delivered to at least one component, but may be delivered more than once</li>
+<li><strong>At Most Once Delivery</strong> - messages may not arrive, but no chance it will be delivered twice. “Automatic duplicate detection”.</li>
+<li><strong>FIFO</strong> - is the order guaranteed? If this is critical ensure FIFO delivery</li>
+</ul>
+<h4 id="transactional-support">Transactional support</h4>
+<p>If multiple messages must either succeed OR fail, then ensure transactions are supported. e.g. Order is sent AND credit card is billed.</p>
+<h4 id="which-to-choose">Which to choose</h4>
+<p>Use Storage queues when you want a simple and easy-to-code queue system. For more advanced needs, use Service Bus queues. If you have multiple destinations for a single message, but need queue-like behavior, use topics.</p>
+<p>Service Bus Queues support:</p>
+<ul>
+<li>At-Most-Once delivery guarantee</li>
+<li>At-Least-Once also supported</li>
+<li>FIFO guarantee</li>
+<li>Transactions</li>
+<li>Receiving messages without polling a queue</li>
+<li>Providing a role-based access model to the queues</li>
+<li>Larger message sizes: up to 256KB (standard) up to 1MB (premium)</li>
+<li>Ability to publish and consume batches of messages.</li>
+</ul>
+<p>Queue storage supports:</p>
+<ul>
+<li>Only smaller message sizes, 64KB maximum</li>
+<li>Queues larger than 80GB</li>
+<li>An audit trail of messages that pass through the queues</li>
+</ul>
+<p>Though distributed components can communicate directly, enhance reliability by using Azure Service Bus or Azure Event Grid.</p>
+<h4 id="implementating-service-bus-queues">Implementating Service Bus Queues</h4>
+<ul>
+<li>Use NuGet package <code>Microsoft.Azure.ServiceBus</code> and class <code>QueueClient</code> for interacting with queues.</li>
+<li>An endpoint and an access key is required by both source and destination components - combined to form a <code>ConnectionString</code></li>
+<li>Using <code>QueueClient.SendAsync()</code> ensures adding message to queues are asynchronous</li>
+</ul>
+<h5 id="sending-messages-to-queues">Sending messages to queues</h5>
+<pre class="language-csharp" tabindex="0"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> queueClient <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">QueueClient</span><span class="token punctuation">(</span>TextAppConnectionString<span class="token punctuation">,</span> <span class="token string">"PrivateMessageQueue"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">string</span></span> message <span class="token operator">=</span> <span class="token string">"Sure would like a large pepperoni!"</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">var</span></span> encodedMessage <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Message</span><span class="token punctuation">(</span>Encoding<span class="token punctuation">.</span>UTF8<span class="token punctuation">.</span><span class="token function">GetBytes</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">await</span> queueClient<span class="token punctuation">.</span><span class="token function">SendAsync</span><span class="token punctuation">(</span>encodedMessage<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h5 id="receiving-messages-from-queues">Receiving messages from queues</h5>
+<pre class="language-csharp" tabindex="0"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> queueClient <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">QueueClient</span><span class="token punctuation">(</span>TextAppConnectionString<span class="token punctuation">,</span> <span class="token string">"PrivateMessageQueue"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+queueClient<span class="token punctuation">.</span><span class="token function">RegisterMessageHandler</span><span class="token punctuation">(</span>MessageHandler<span class="token punctuation">,</span> messageHandlerOptions<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// within the MessageHandler method, process message and then call</span>
+<span class="token keyword">await</span> queueClient<span class="token punctuation">.</span><span class="token function">CompleteAsync</span><span class="token punctuation">(</span>message<span class="token punctuation">.</span>SystemProperties<span class="token punctuation">.</span>LockToken<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h4 id="implementing-service-bus-topics">Implementing Service Bus Topics</h4>
+<ul>
+<li>Use NuGet package <code>Microsoft.Azure.ServiceBus</code> and class <code>TopicClient</code> for sending to topics and <code>SubscriptionClient</code> for subscribing to a Topic.</li>
+<li>Use filters to subscribe only to certain message e.g. a StoreId
+<ul>
+<li>Boolean filters - all or nothing</li>
+<li>SQL filters - similar to WHERE in SQL “a condition”</li>
+<li>Correlation filters - <strong>how is this different to a SQL filter?</strong> “a set of conditions”</li>
+</ul>
+</li>
+</ul>
+<h5 id="sending-messages-to-topics">Sending messages to topics</h5>
+<pre class="language-csharp" tabindex="0"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> topicClient <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">TopicClient</span><span class="token punctuation">(</span>TextAppConnectionString<span class="token punctuation">,</span> <span class="token string">"GroupMessageTopic"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">string</span></span> message <span class="token operator">=</span> <span class="token string">"Cancel! I can't believe you use canned mushrooms!"</span><span class="token punctuation">;</span>
+<span class="token class-name"><span class="token keyword">var</span></span> encodedMessage <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Message</span><span class="token punctuation">(</span>Encoding<span class="token punctuation">.</span>UTF8<span class="token punctuation">.</span><span class="token function">GetBytes</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">await</span> topicClient<span class="token punctuation">.</span><span class="token function">SendAsync</span><span class="token punctuation">(</span>encodedMessage<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h5 id="subscribing-to-topics">Subscribing to topics</h5>
+<pre class="language-csharp" tabindex="0"><code class="language-csharp">subscriptionClient <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">SubscriptionClient</span><span class="token punctuation">(</span>ServiceBusConnectionString<span class="token punctuation">,</span> <span class="token string">"GroupMessageTopic"</span><span class="token punctuation">,</span> <span class="token string">"NorthAmerica"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+subscriptionClient<span class="token punctuation">.</span><span class="token function">RegisterMessageHandler</span><span class="token punctuation">(</span>MessageHandler<span class="token punctuation">,</span> messageHandlerOptions<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// within the MessageHandler method, process message and then call</span>
+<span class="token keyword">await</span> subscriptionClient<span class="token punctuation">.</span><span class="token function">CompleteAsync</span><span class="token punctuation">(</span>message<span class="token punctuation">.</span>SystemProperties<span class="token punctuation">.</span>LockToken<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h4 id="implementing-storage-queues">Implementing Storage Queues</h4>
+<ul>
+<li>Queues are only available as part of Azure general-purpose storage accounts (v1 or v2) NOT Blob storage accounts</li>
+<li>The Access tier setting (shown for StorageV2 accounts - cool or hot) applies only to Blob storage and does not affect queues</li>
+<li>Choose a location close to source or destination (or preferably both)</li>
+<li>Use secure transfer if sensitive information will be sent</li>
+<li>Use NuGet package <code>WindowsAzure.Storage</code>
+<ul>
+<li><code>CloudStorageAccount</code> represents your Azure storage account</li>
+<li><code>CloudQueueClient</code> represents Azure Queue storage</li>
+<li><code>CloudQueue</code> represents one of your queue instances</li>
+<li><code>CloudQueueMessage</code> represents a message</li>
+</ul>
+</li>
+</ul>
+<h4 id="creating-the-queue-sending-a-message-receiving-a-message">Creating the queue, sending a message, receiving a message</h4>
+<pre class="language-csharp" tabindex="0"><code class="language-csharp"><span class="token class-name">CloudStorageAccount</span> account <span class="token operator">=</span> CloudStorageAccount<span class="token punctuation">.</span><span class="token function">Parse</span><span class="token punctuation">(</span>connectionString<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">CloudQueueClient</span> client <span class="token operator">=</span> account<span class="token punctuation">.</span><span class="token function">CreateCloudQueueClient</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">CloudQueue</span> queue <span class="token operator">=</span> client<span class="token punctuation">.</span><span class="token function">GetQueueReference</span><span class="token punctuation">(</span><span class="token string">"myqueue"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// sender application should always be responsible for creating the queue</span>
+<span class="token keyword">await</span> queue<span class="token punctuation">.</span><span class="token function">CreateIfNotExistsAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// send a message</span>
+<span class="token class-name"><span class="token keyword">var</span></span> message <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">CloudQueueMessage</span><span class="token punctuation">(</span><span class="token string">"your message here"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">await</span> queue<span class="token punctuation">.</span><span class="token function">AddMessageAsync</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// receive a message</span>
+<span class="token class-name">CloudQueueMessage</span> message <span class="token operator">=</span> <span class="token keyword">await</span> queue<span class="token punctuation">.</span><span class="token function">GetMessageAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>message <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token comment">// process the message</span>
+    <span class="token comment">// ...</span>
+    <span class="token keyword">await</span> queue<span class="token punctuation">.</span><span class="token function">DeleteMessageAsync</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<h3 id="azure-event-grid">Azure Event Grid</h3>
+<p>Good for a publisher with many subscribers e.g. upload a music file, notify any potentially interested subscribers.</p>
+<p>Azure Event Grid is a fully-managed event routing service running on top of Azure Service Fabric. It distributes events from different sources (blob storage, media services) to differnt handlers (functions, webhooks).</p>
+<h4 id="terminology">Terminology</h4>
+<p>An <strong>event</strong> occurs at an <strong>event source</strong> e.g. Azure Storage is the event source for “blob created” events. An event publisher is the user or organisation who publishes the events e.g. Microsoft. the terms publisher and event source are often used interchangeably.</p>
+<p>The source publishes it to a <strong>topic</strong>. Topics are created for groups of different categories of events e.g. user events and orders events. System topics are provided by Azure and can be subscribed to (not shown in a subscription). Custom topics are for applications and for third parties (visible in the subscription).</p>
+<p>The events are routed according to <strong>subscriptions</strong> and sent to <strong>event handlers</strong> or subscribers.</p>
+<p><picture><source type="image/avif" srcset="/infuerno.github.io/2020/10/25/microsoft-azure-az-204-developing-solutions-for-microsoft-azure/_EMrveDf7n-570.avif 570w"><source type="image/webp" srcset="/infuerno.github.io/2020/10/25/microsoft-azure-az-204-developing-solutions-for-microsoft-azure/_EMrveDf7n-570.webp 570w"><img loading="lazy" decoding="async" src="/infuerno.github.io/2020/10/25/microsoft-azure-az-204-developing-solutions-for-microsoft-azure/_EMrveDf7n-570.png" alt="Azure Event Grid" width="570" height="359"></picture></p>
+<p>Many different Azure services can generate events.</p>
+<p>Events are JSON messages with a particular format.</p>
+<pre class="language-json" tabindex="0"><code class="language-json"><span class="token punctuation">[</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">"topic"</span><span class="token operator">:</span> string<span class="token punctuation">,</span>
+    <span class="token property">"subject"</span><span class="token operator">:</span> string<span class="token punctuation">,</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> string<span class="token punctuation">,</span>
+    <span class="token property">"eventType"</span><span class="token operator">:</span> string<span class="token punctuation">,</span>
+    <span class="token property">"eventTime"</span><span class="token operator">:</span> string<span class="token punctuation">,</span>
+    <span class="token property">"data"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+      object-unique-to-each-publisher
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">"dataVersion"</span><span class="token operator">:</span> string<span class="token punctuation">,</span>
+    <span class="token property">"metadataVersion"</span><span class="token operator">:</span> string
+  <span class="token punctuation">}</span>
+<span class="token punctuation">]</span></code></pre>
+<h4 id="reasons-to-choose-event-grid">Reasons to choose Event Grid</h4>
+<ul>
+<li>simple</li>
+<li>has advanced filtering</li>
+<li>fan out - subscribe to an unlimited number of endpoints</li>
+<li>reliable - retries delivery for up to 24 hours</li>
+<li>pay per event</li>
+</ul>
+<h3 id="azure-event-hubs">Azure Event Hubs</h3>
+<p>Useful for handling a massive number of events e.g. millions of events per second. Optimised for extremely high throughput, a large number of publishers, subscribers and resiliency.</p>
+<p>As events are received, they are divided into <strong>partitions</strong> or buffers. By default events stay in the buffers for 24 hours if subscribers are not yet ready to receive them. Events can be sent immediatey to Azure Data Lake or Blob storage for immediate persistence. Events publishers can be authorised with tokens.</p>
+<p>An event is a small packet of information (a datagram) that contains a notification. Events can be published individually, or in batches, but a single publication (individual or batch) can’t exceed 1 MB.</p>
+<p>Event publishers are any app or device that can send out events using either HTTPS or AMQP 1.0.</p>
+<p>Event subscribers are apps that use one of two supported programmatic methods to receive and process events from an Event Hub. Either:</p>
+<ol>
+<li><code>EventHubReceiver</code> - A simple method that provides limited management options</li>
+<li><code>EventProcessorHost</code> - Built on top of <code>EventHubReceiver</code> providing a simpler interface with some automated options e.g. distribute multiple instances across partitions</li>
+</ol>
+<p>Multiple <strong>consumer groups</strong> can be used if required to process the events and provide different views.</p>
+<p>Pricing: Basic, Standard, and Dedicated - differing in terms of supported connections, number of consumer groups and throughput. Defined at the Event Hub namespace level. Configure different hubs for different throughput requirements.</p>
+<h4 id="reasons-to-choose-event-hub">Reasons to choose Event Hub</h4>
+<ul>
+<li>supports authenticating a large number of publishers</li>
+<li>streams of events need to be saved to Blob Storage or Data Lake</li>
+<li>you need aggregation or analytics on the event stream</li>
+<li>reliable messaging or resiliency</li>
+</ul>
+<h2 id="learning-path-store-data-in-azure">Learning Path: Store data in Azure</h2>
+<ul>
+<li>“Azure Storage”: Azure Blobs, Azure Files, Azure Queues, and Azure Tables</li>
+<li>A storage account groups these 4 services together and applies various settings including: location, performance (standard - normal HDD; premium - faster SSD), replication, access tier (hot or cold)</li>
+<li>May need multiple storage accounts for different business activities which require different attributes</li>
+<li>StorageV2 allows all storage types; Storage and Blob are both legacy types</li>
+<li>Storage account names must be GLOBALLY UNIQUE (not just your resource group or subscription)</li>
+<li>A single Azure subscription can host up to 200 storage accounts, each of which can hold 500 TB of data</li>
+<li>Data is automatically encrypted with 256-bit AES cypher</li>
+<li>Storage Analytics service logs record each request in real time and can be searched</li>
+<li>VHDs for VMs are encrypted using Azure Disk Encryption (<strong>BitLocker</strong> for Windows images, <strong>dm-crypt</strong> for Linux). Azure Key Vault stores the keys automatically to help control and manage the disk-encryption keys and secrets.</li>
+</ul>
+<h3 id="azure-blobs">Azure Blobs</h3>
+<p>There are 3 kinds of blobs:</p>
+<ol>
+<li>Block blobs - text or binary files designed to be read from beginning to end e.g. images - files larger than 100MB must be uploaded in “blocks”</li>
+<li>Page blobs - random access blobs - usually for backing storage for VHDs</li>
+<li>Append blobs - similar to block blobs, but optimized for append e.g. logging</li>
+</ol>
+<p>Standard pattern using continuation tokens to get all resources:</p>
+<pre class="language-csharp" tabindex="0"><code class="language-csharp"><span class="token class-name">BlobContinuationToken</span> continuationToken <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+<span class="token class-name">BlobResultSegment</span> resultSegment <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+
+<span class="token keyword">do</span>
+<span class="token punctuation">{</span>
+    resultSegment <span class="token operator">=</span> <span class="token keyword">await</span> container<span class="token punctuation">.</span><span class="token function">ListBlobsSegmentedAsync</span><span class="token punctuation">(</span>continuationToken<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// Do work here on resultSegment.Results</span>
+
+    continuationToken <span class="token operator">=</span> resultSegment<span class="token punctuation">.</span>ContinuationToken<span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span class="token keyword">while</span> <span class="token punctuation">(</span>continuationToken <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<ul>
+<li>Code defensively, use leases to managed concurrent blob access. Use streams instead of in memory structures like byte arrays or strings.</li>
+</ul>
+<p>CODE BELOW FROM: git clone <a href="https://github.com/MicrosoftDocs/mslearn-store-data-in-azure.git">https://github.com/MicrosoftDocs/mslearn-store-data-in-azure.git</a></p>
+<pre class="language-csharp" tabindex="0"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Generic</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>IO</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Threading<span class="token punctuation">.</span>Tasks</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">Microsoft<span class="token punctuation">.</span>Extensions<span class="token punctuation">.</span>Options</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Linq</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">Microsoft<span class="token punctuation">.</span>WindowsAzure<span class="token punctuation">.</span>Storage</span><span class="token punctuation">;</span>
+<span class="token keyword">using</span> <span class="token namespace">Microsoft<span class="token punctuation">.</span>WindowsAzure<span class="token punctuation">.</span>Storage<span class="token punctuation">.</span>Blob</span><span class="token punctuation">;</span>
+
+<span class="token keyword">namespace</span> <span class="token namespace">FileUploader<span class="token punctuation">.</span>Models</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BlobStorage</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IStorage</span></span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token class-name">AzureStorageConfig</span> storageConfig<span class="token punctuation">;</span>
+
+        <span class="token keyword">public</span> <span class="token function">BlobStorage</span><span class="token punctuation">(</span><span class="token class-name">IOptions<span class="token punctuation">&lt;</span>AzureStorageConfig<span class="token punctuation">></span></span> storageConfig<span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>storageConfig <span class="token operator">=</span> storageConfig<span class="token punctuation">.</span>Value<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">public</span> <span class="token return-type class-name">Task</span> <span class="token function">Initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            <span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token function">GetContainerReference</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> container<span class="token punctuation">.</span><span class="token function">CreateIfNotExistsAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+       <span class="token comment">// The stream-based upload code shown here is more efficient than reading the file into a byte array</span>
+       <span class="token comment">// before sending it to Azure Blob storage. However, the ASP.NET Core IFormFile technique you use to</span>
+       <span class="token comment">// get the file from the client is not a true end-to-end streaming implementation, and is only</span>
+       <span class="token comment">// appropriate for handling uploads of small files.</span>
+        <span class="token keyword">public</span> <span class="token return-type class-name">Task</span> <span class="token function">Save</span><span class="token punctuation">(</span><span class="token class-name">Stream</span> fileStream<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> name<span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            <span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token function">GetContainerReference</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name"><span class="token keyword">var</span></span> blockBlob <span class="token operator">=</span> container<span class="token punctuation">.</span><span class="token function">GetBlockBlobReference</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> blockBlob<span class="token punctuation">.</span><span class="token function">UploadFromStreamAsync</span><span class="token punctuation">(</span>fileStream<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">public</span> <span class="token keyword">async</span> <span class="token return-type class-name">Task<span class="token punctuation">&lt;</span>IEnumerable<span class="token punctuation">&lt;</span><span class="token keyword">string</span><span class="token punctuation">></span><span class="token punctuation">></span></span> <span class="token function">GetNames</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            <span class="token class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">string</span><span class="token punctuation">></span></span> names <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">List<span class="token punctuation">&lt;</span><span class="token keyword">string</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token function">GetContainerReference</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">BlobContinuationToken</span> continuationToken <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+            <span class="token class-name">BlobResultSegment</span> resultSegment <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">do</span>
+            <span class="token punctuation">{</span>
+                resultSegment <span class="token operator">=</span> <span class="token keyword">await</span> container<span class="token punctuation">.</span><span class="token function">ListBlobsSegmentedAsync</span><span class="token punctuation">(</span>continuationToken<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment">// Get the name of each blob.</span>
+                names<span class="token punctuation">.</span><span class="token function">AddRange</span><span class="token punctuation">(</span>resultSegment<span class="token punctuation">.</span>Results<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">OfType</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>ICloudBlob<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Select</span><span class="token punctuation">(</span>b <span class="token operator">=></span> b<span class="token punctuation">.</span>Name<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                continuationToken <span class="token operator">=</span> resultSegment<span class="token punctuation">.</span>ContinuationToken<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">while</span> <span class="token punctuation">(</span>continuationToken <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">return</span> names<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">public</span> <span class="token return-type class-name">Task<span class="token punctuation">&lt;</span>Stream<span class="token punctuation">></span></span> <span class="token function">Load</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> name<span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            <span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token function">GetContainerReference</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> container<span class="token punctuation">.</span><span class="token function">GetBlobReference</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">OpenReadAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">private</span> <span class="token return-type class-name">CloudBlobContainer</span> <span class="token function">GetContainerReference</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            <span class="token class-name"><span class="token keyword">var</span></span> account <span class="token operator">=</span> CloudStorageAccount<span class="token punctuation">.</span><span class="token function">Parse</span><span class="token punctuation">(</span>storageConfig<span class="token punctuation">.</span>ConnectionString<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name"><span class="token keyword">var</span></span> client <span class="token operator">=</span> account<span class="token punctuation">.</span><span class="token function">CreateCloudBlobClient</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> client<span class="token punctuation">.</span><span class="token function">GetContainerReference</span><span class="token punctuation">(</span>storageConfig<span class="token punctuation">.</span>FileContainerName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<h3 id="azure-files">Azure Files</h3>
+<p>Files shares using SMB for e.g. multiple VMs to access shared files, storing log files etc</p>
+<h3 id="azure-queues">Azure Queues</h3>
+<p>Use queues to loosely connect parts of an appication together.</p>
+<h2 id="learning-path-deploy-a-website-with-azure-virtual-machines">Learning Path: Deploy a website with Azure virtual machines</h2>
+<ul>
+<li>Azure reserves the first four addresses and the last address in each subnet for its use.</li>
+<li>Types of VM:
+<ul>
+<li>General-purpose VMs with a balanced CPU-to-memory ratio e.g. low to medium traffic web servers</li>
+<li>Compute optimised VMs with a high CPU-to-memory ratio e.g. medium traffic web servers, batch processors, application servers, network appliances</li>
+<li>Memory optimised VMs with a high memory-to-CPU ratio e.g. database servers, caches, in-memory analytics</li>
+<li>Storage optimised VMs with a high disk throughput and IO e.g. database servers</li>
+<li>GPU VMs</li>
+<li>High performance computes</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>What?</th>
+<th>Typical tasks</th>
+<th>Sizes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>General use computing/web</td>
+<td>Testing and development, small to medium databases, or low to medium traffic web servers</td>
+<td>B, Dsv3, Dv3, DSv2, Dv2</td>
+</tr>
+<tr>
+<td>Heavy computational tasks</td>
+<td>Medium traffic web servers, network appliances, batch processes, and application servers</td>
+<td>Fsv2, Fs, F</td>
+</tr>
+<tr>
+<td>Large memory usage</td>
+<td>Relational database servers, medium to large caches, and in-memory analytics</td>
+<td>Esv3, Ev3, M, GS, G, DSv2, Dv2</td>
+</tr>
+<tr>
+<td>Data storage and processing</td>
+<td>Big data, SQL, and NoSQL databases that need high disk throughput and I/O</td>
+<td>Ls</td>
+</tr>
+<tr>
+<td>Heavy graphics rendering or video editing …</td>
+<td>… as well as model training and inferencing (ND) with deep learning</td>
+<td>NV, NC, NCv2, NCv3, ND</td>
+</tr>
+<tr>
+<td>High-performance computing (HPC)</td>
+<td>Your workloads need the fastest and most powerful CPU virtual machines with optional high-throughput network interfaces</td>
+<td>H</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>VMs can be resized while running if the new size is available in the same cluster (needs a reboot)</li>
+<li>VMs can be resized to any size if stopped and deallocated</li>
+</ul>
+<h3 id="azure-automation-services">Azure Automation Services</h3>
+<p>Instead of using PowerShell, Azure CLI etc to manage VMs, may using higher-level services such as Azure Automation Services to help operate from a higher level.</p>
+<p>Allows automating frequent, time-consuming, and error-prone management tasks</p>
+<h4 id="process-automation">Process Automation</h4>
+<p>If a VM is monitored for a specific error event, process automation allows setting up watcher tasks that can respond to events that may occur in the datacenter.</p>
+<h4 id="configuration-management">Configuration Management</h4>
+<p>Used to track software updates that become available for the OS. Microsoft Endpoint Configuration Manager is used to manage a company’s PC, servers, and mobile devices. Extend this support to Azure VMs with Configuration Manager.</p>
+<h4 id="update-management">Update Management</h4>
+<p>Manage updates and patches for VMs. Assess the status of available updates, schedule installation, review deployment results to verify updates were applied successfully. Update management incorporates services that provide process and configuration management. Enable update management for a VM directly from the Azure Automation account. Can also allow update management for a single virtual machine from the virtual machine pane in the portal.</p>
+<h3 id="manage-availability">Manage availability</h3>
+<ul>
+<li>An <strong>availability set</strong> is a set of VMs which are not all upgraded at the same time. These VMs should perform identical functionalities and have the same software installed.</li>
+<li>Create availability sets and deploy VMs to them</li>
+<li>For VMs in an Availability Set, Azure guarantees to spread them across <strong>Fault Domains</strong> and <strong>Update Domains</strong></li>
+<li>A <strong>Fault Domain</strong> is equivalent to a rack which may fail. The first two VMs in an Availability Set are deployed to 2 different Fault Domains.</li>
+</ul>
+<p><picture><source type="image/avif" srcset="/infuerno.github.io/2020/10/25/microsoft-azure-az-204-developing-solutions-for-microsoft-azure/-xJ07VNKRN-507.avif 507w"><source type="image/webp" srcset="/infuerno.github.io/2020/10/25/microsoft-azure-az-204-developing-solutions-for-microsoft-azure/-xJ07VNKRN-507.webp 507w"><img loading="lazy" decoding="async" src="/infuerno.github.io/2020/10/25/microsoft-azure-az-204-developing-solutions-for-microsoft-azure/-xJ07VNKRN-507.png" alt="Fault Domains" width="507" height="291"></picture></p>
+<ul>
+<li>Azure <strong>Site Recovery</strong> allows replication of virtual or physical machines from a primary location to a secondary location; it keeps your workloads available in an outage.</li>
+<li><strong>Azure Backup</strong> is a backup as a service offering that protects physical or virtual machines no matter where they reside: on-premises or in the cloud. It utilizes several components that you download and deploy to each computer you want to back up.</li>
+</ul>
+<h3 id="install-an-ssh-key-on-an-existing-linux-vm">Install an SSH key on an existing Linux VM</h3>
+<p><code>ssh-copy-id -i ~/.ssh/id_rsa.pub azureuser@myserver</code></p>
+<h3 id="some-linux-commands">Some linux commands</h3>
+<ul>
+<li><code>ls -la /</code> to show the root of the disk</li>
+<li><code>ps -l</code> to show all the running processes</li>
+<li><code>dmesg</code> to list all the kernel messages</li>
+<li><code>lsblk</code> to list all the block devices - here you will see your drives</li>
+</ul>
+<h3 id="initialize-the-extra-data-disk">Initialize the extra data disk</h3>
+<ul>
+<li>Identify the disk e.g. using <code>lsblk</code></li>
+<li>Create a new primary partition: <code>(echo n; echo p; echo 1; echo ; echo ; echo w) | sudo fdisk /dev/sdc</code></li>
+<li>Write a filesystem: <code>sudo mkfs -t ext4 /dev/sdc1</code></li>
+<li>Mount the drive to the file system: <code>sudo mkdir /data &amp;&amp; sudo mount /dev/sdc1 /data</code></li>
+</ul>
+<h3 id="check-status-of-service-e-g-apache">Check status of service e.g. Apache</h3>
+<p><code>sudo systemctl status apache2 --no-pager</code></p>
+<h2 id="learning-path-manage-resources-in-azure">Learning Path: Manage resources in Azure</h2>
+<p>There are3 approaches to deploying cloud resources: public, private and hybrid cloud
+<picture><source type="image/avif" srcset="/infuerno.github.io/2020/10/25/microsoft-azure-az-204-developing-solutions-for-microsoft-azure/tayH7-V4kC-326.avif 326w"><source type="image/webp" srcset="/infuerno.github.io/2020/10/25/microsoft-azure-az-204-developing-solutions-for-microsoft-azure/tayH7-V4kC-326.webp 326w"><img loading="lazy" decoding="async" src="/infuerno.github.io/2020/10/25/microsoft-azure-az-204-developing-solutions-for-microsoft-azure/tayH7-V4kC-326.png" alt="" width="326" height="134"></picture></p>
+<h3 id="private-cloud">Private cloud</h3>
+<ul>
+<li>Not the same as simply an on premise data centre</li>
+<li>Uses an abstraction platform to provide cloud-like services such as Kubernetes clusters or a complete cloud environment like <strong>Azure Stack</strong>.</li>
+</ul>
+<h3 id="hybrid-cloud">Hybrid cloud</h3>
+<ul>
+<li>Useful if already have on premises infrastructure or have highly sensitive data not willing to store off site</li>
+<li>Could use hybrid for migration approach or for segmenting to keep the sensitive data private or for getting bursts of compute when local resources maxxed out</li>
+</ul>
+<h3 id="azure-cli">Azure CLI</h3>
+<ul>
+<li><code>az find [term]</code> e.g. <code>az find blob</code> to show hints of most popular commands</li>
+<li><code>az group list --output table</code> - list resources groups output as a table</li>
+<li><code>az group list --query &quot;[?name == 'batman']&quot;</code> - filtered by name
+<ul>
+<li>NOTE. The query is formatted using JMESPath,a standard query language for JSON requests. Learn more at <a href="https://jmespath.org/">https://jmespath.org/</a>.</li>
+</ul>
+</li>
+</ul>
+<h3 id="azure-powershell">Azure PowerShell</h3>
+<ul>
+<li>
+<p><code>Get-Help Get-ChildItem -detailed</code> to show the help file for a cmdlet</p>
+</li>
+<li>
+<p><code>Get-Module</code> list loaded modules</p>
+<ul>
+<li>Note. In October 2018 the AzureRM module was replaced with the Az module. The Az module ships with backwards compatibility with the AzureRM module so the <code>-AzureRM</code> cmdlet format should work. Nevertheless should transition to the Az module and use the -Az commands going forward.</li>
+</ul>
+</li>
+<li>
+<p><code>Install-Module -Name Az -AllowClobber -SkipPublisherCheck</code> install the Az module (requires elevated session)</p>
+</li>
+<li>
+<p><code>Update-Module -Name Az</code> to update the module if already installed</p>
+</li>
+<li>
+<p><code>Import-Module Az</code> to load the Az module (by default only core modules are loaded)</p>
+</li>
+<li>
+<p><code>Connect-AzAccount</code> to login</p>
+</li>
+<li>
+<p><code>Get-AzContext</code> to show which subscription is active</p>
+</li>
+<li>
+<p><code>Select-AzSubscription -SubscriptionId '53dde41e-916f-49f8-8108-558036f826ae'</code> to set a different subscription as active</p>
+</li>
+</ul>
+<h3 id="manage-costs">Manage costs</h3>
+<p>Total Cost of Ownership Calculator: <a href="https://azure.microsoft.com/en-gb/pricing/tco/calculator/">https://azure.microsoft.com/en-gb/pricing/tco/calculator/</a></p>
+<ol>
+<li>Define workloads of current on premise solution: Servers, Databases, Storage, Networking</li>
+<li>Adjust assumptions: software licenses, electricity, IT administration</li>
+</ol>
+<h3 id="resource-groups">Resource Groups</h3>
+<ul>
+<li>Resource groups cannot be nested</li>
+<li>Tags on resource groups do not apply to any of the contained resources</li>
+<li>Only certain resources can be moved between resource groups: <a href="https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/move-support-resources">https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/move-support-resources</a></li>
+<li>Use the Azure REST API: <code>validate move</code> e.g.</li>
+</ul>
+<pre><code>POST https://management.azure.com/subscriptions/&lt;your-subscription-id&gt;/resourceGroups/&lt;your-source-group&gt;/validateMoveResources?api-version=2019-05-10
+Authorization: Bearer &lt;your-access-token&gt;
+Content-type: application/json
+</code></pre>
+<p>with the following JSON body</p>
+<pre><code>{
+ &quot;resources&quot;: [&quot;&lt;your-resource-id-1&gt;&quot;, &quot;&lt;your-resource-id-2&gt;&quot;, &quot;&lt;your-resource-id-3&gt;&quot;],
+ &quot;targetResourceGroup&quot;: &quot;/subscriptions/&lt;your-subscription-id&gt;/resourceGroups/&lt;your-target-group&gt;&quot;
+}
+</code></pre>
+<p>Alternatively submit using Azure CLI:</p>
+<pre><code>az rest --method post /
+   --uri https://management.azure.com/subscriptions/{subscriptionId}/resourceGroups/&lt;your-source-group&gt;/validateMoveResources?api-version=2019-05-10 /
+   --body &quot;{\&quot;resources\&quot;: [\&quot;&lt;your-resource-id-1&gt;\&quot;, \&quot;&lt;your-resource-id-2&gt;\&quot;, \&quot;&lt;your-resource-id-3&gt;\&quot;], \&quot;targetResourceGroup\&quot;: \&quot;/subscriptions/&lt;your-subscription-id&gt;/resourceGroups/&lt;your-target-group&gt;\&quot;}&quot;
+</code></pre>
+<h2 id="learning-path-deploy-a-website-to-azure-with-azure-app-service">Learning Path: Deploy a website to Azure with Azure App Service</h2>
+<h3 id="install-dotnet-cli-in-the-cloud-shell">Install <code>dotnet</code> cli in the cloud Shell</h3>
+<pre><code>wget -q -O - https://dot.net/v1/dotnet-install.sh | bash -s -- --version 3.1.102
+export PATH=&quot;~/.dotnet:$PATH&quot;
+echo &quot;export PATH=~/.dotnet:\$PATH&quot; &gt;&gt; ~/.bashrc
+</code></pre>
+<h3 id="manual-deployment">Manual deployment</h3>
+<ul>
+<li><code>git push</code> to the appropriate git repo for your web app</li>
+<li><code>az webapp up</code> packages the app and deploys it (can also create a new web app if necessary)</li>
+<li><code>az webapp deployment source config-zip</code> send zip of files to an app service (can also use curl to access zip deploy)</li>
+</ul>
+<pre><code>dotnet publish -o pub
+cd pub
+zip -r site.zip *
+az webapp deployment source config-zip \
+    --src site.zip \
+    --resource-group learn-c5f54c43-2def-448d-b6b8-25db523f586f \
+    --name &lt;your-app-name&gt;
+</code></pre>
+<!-- - Prepare your development environment for Azure development
+- Host a web application with Azure App service
+- Publish a web app to Azure with Visual Studio
+- Stage a web app deployment for testing and rollback by using App Service deployment slots
+- Scale an App Service web app to efficiently meet demand with App Service scale up and scale out
+- Deploy and run a containerized web app with Azure App Service -->
+<h2 id="learning-path-secure-your-cloud-data">Learning Path: Secure your cloud data</h2>
+<ul>
+<li>Security, responsibility, and trust in Azure</li>
+<li>Top 5 security items to consider before pushing to production</li>
+<li>Configure security policies to manage data</li>
+<li>Secure your Azure Storage account</li>
+<li>Configure and manage secrets in Azure Key Vault</li>
+<li>Secure your Azure resources with role-based access control (RBAC)</li>
+<li>Secure your Azure SQL Database</li>
+</ul>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2020/08/02/dotnet-conf-microservices-workshop/">.NET Conf Microservices 2020 - Workshop</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2021/01/10/fem-complete-intro-to-react-v5/">Frontend Masters: Complete Intro to React v5</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2020/10/25/microsoft-azure-az-204-developing-solutions-for-microsoft-azure/` was built on 2025-09-05T01:23:56.890Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

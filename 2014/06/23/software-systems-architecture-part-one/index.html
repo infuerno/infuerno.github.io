@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Software Systems Architecture Part One</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="software-systems-architecture-part-one">Software Systems Architecture Part One</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2014-06-23">23 June 2014</time></li>
+</ul>
+
+<h2 id="chapter-1-introduction">Chapter 1: Introduction</h2>
+<ul>
+<li>Primary focus is on architecture as a service to stakeholders</li>
+<li>Views are important to represent an architecture’s complexity in a way stakeholders can understand</li>
+<li>Architecture must also define how a system provides required quality properties (scalability, resistence) as well as the structure by using perspectives</li>
+</ul>
+<h3 id="stakeholders">Stakeholders</h3>
+<p>Stakeholders are the people affected by a system. These are not just the various different end users, but also managers with reporting requirements, IT support staff etc.
+Stakeholders need to be clearly identified.</p>
+<h3 id="views">Views</h3>
+<p>An architectural view is a description of <em>one aspect</em> of a system’s architecture. By showing an architecture via a number of distinct views the complexity can be understood, defined and communicated by selecting only certain aspects.
+Template views, called architectural viewpoints, help to develop the views required by a specific architecture.</p>
+<h3 id="perspectives">Perspectives</h3>
+<p>Non-functional requirements = quality properties = cross cutting concerns are also important. Includes performance, security, availability, supportability, scalability etc.
+The <em>architectural perspective</em> is analogous to a viewpoint, but addresses quality properties rather than a certain aspect of the structure.</p>
+<h2 id="chapter-2-software-architecture-concepts">Chapter 2: Software Architecture Concepts</h2>
+<p>This chapter defines some of the core concepts:</p>
+<ul>
+<li>software architecture</li>
+<li>architectural elements</li>
+<li>stakeholders</li>
+<li>architectural descriptions</li>
+</ul>
+<h3 id="software-architecture">Software Architecture</h3>
+<p>Compture system = software + hardware
+Architecture = set of fundamental properties of its elements and relationships + principles of design and evolution</p>
+<h4 id="system-elements-and-relationships">System elements and relationships</h4>
+<p>Elements are the architecturally significant pieces that constitute a system (e.g. modules, components, partitions, subsystems).</p>
+<p>Static structure = organisation of design time elements:</p>
+<ul>
+<li>software elements e.g. programs, oo classes, database sps</li>
+<li>data elements e.g. classes, db tables, data files</li>
+<li>hardware elements e.g. computers, network</li>
+</ul>
+<p>Dynamic structure = organisation of run time elements, how the system works, how the system responds to stimuli. May be expressed by:</p>
+<ul>
+<li>flows of information</li>
+<li>execution of tasks (sequentially or in parallel)</li>
+<li>changes to data</li>
+</ul>
+<p>For an example of the difference between a static structure and a dynamic structure, imagine a server / client architecture. In a static structure, there is just one client. In a dynamic structure they may be multiple instances of the client, and also explanations of how the client becomes active or inactive (e.g. user logging in, logging out)</p>
+<h4 id="fundamental-system-properties">Fundamental system properties</h4>
+<p>Manifested in two different ways:</p>
+<ol>
+<li>Externally visible behaviour (what the system does) - external interactions form a similar set to dynamic structure considerations</li>
+<li>Quality properties (how the system does it)</li>
+</ol>
+<p>A <em>candidate architecture</em> is a particular arrangement of static and dynamic structures which has the potential to exhibit the two types of system properties.</p>
+<h4 id="principles-of-design-and-evolution">Principles of design and evolution</h4>
+<p>A well structured and maintainable system has a consistent implementation with system wide conventions.
+<em>Principles</em> are required to guide the system’s design and evolution.</p>
+<h3 id="architectural-elements">Architectural Elements</h3>
+<p>As above, an (architectural) element  is a piece from which systems are built. They should possess:</p>
+<ul>
+<li>Set of responsibilities</li>
+<li>Boundary</li>
+<li>Set of interfaces</li>
+</ul>
+<h3 id="stakeholders-2">Stakeholders</h3>
+<p>Software development is driven by the requirements of the users. This includes:</p>
+<ul>
+<li>End users of the system</li>
+<li>People who build the system</li>
+<li>Testers</li>
+<li>Operators</li>
+<li>People who have to support and repair the system</li>
+<li>People who enhance the system</li>
+<li>People who pay for the system</li>
+</ul>
+<p>Some stakeholders are not interested in their role, so part of an architects role is to engage and galvanise all stakeholders.
+Engaging with stakeholders, especially in the beginning, is often a process of discovery as well as capture. Many will not yet know what their requirements are.
+Stakeholders requirements often conflict and an agreeable compromise has to be found.</p>
+<h3 id="architectural-descriptions">Architectural Descriptions</h3>
+<p>A set of products which document an architecture in a way its stakeholders can understand. A description must show the essence and the detail at the same time.
+The architect writes the AD and is also one of its major users as a memory aid, a basis for analysis, a record of decisions etc.</p>
+<h3 id="further-reading">Further Reading</h3>
+<p>Bass, Clements and Kazman - Software Architecture in Practice: <a href="http://www.informit.com/store/software-architecture-in-practice-9780321815736">http://www.informit.com/store/software-architecture-in-practice-9780321815736</a>
+Shaw and Garlan - Introduction to Software Architecture: <a href="https://www.cs.cmu.edu/afs/cs/project/vit/ftp/pdf/intro_softarch.pdf">https://www.cs.cmu.edu/afs/cs/project/vit/ftp/pdf/intro_softarch.pdf</a>
+Fairbanks - Just Enough Software Architecure:
+Gorton - Essential Software Architecure:</p>
+<p>Magazine: <a href="http://www.crosstalkonline.org/">http://www.crosstalkonline.org/</a></p>
+<h2 id="chapter-3-viewpoints-and-views">Chapter 3: Viewpoints and Views</h2>
+<p>It is not possible to capture the functional features and quality properties in a single comprehensible model understandable to its stakeholders.
+A complex system is more effectively described by a set of interrelated views.</p>
+<h3 id="architectural-views">Architectural Views</h3>
+<p>An architectural view shows only certain aspects or elements, relevant to a particular concern or the concerns of a particular set of stakeholders.
+The following should be considered when deciding what to include in a view:</p>
+<ul>
+<li>View scope - static, runtime? how elements are deployed? how elements intercommunicate?</li>
+<li>Element types - what architectural elements are you trying to show? individual servers? entire network segments?</li>
+<li>Audience - one stakeholder, a broad groups of stakeholders?</li>
+<li>Audience expertise</li>
+<li>Scope of concerns</li>
+<li>Level of detail</li>
+</ul>
+<p>Only include information which:</p>
+<ol>
+<li>Helps explain the architecture to the stakeholders</li>
+<li>Demonstrates how the architecture satisfies their concerns</li>
+</ol>
+<h3 id="viewpoints">Viewpoints</h3>
+<p>A viewpoint is a collection of patterns and templates to construct one type of view. It is akin to a class which is the blueprint used to construct an object. An AD based on viewpoints and views will include a number of views conforming to a specific viewpoint.</p>
+<p>When developing a view, whether or not you are using  a formally defined viewpoint, be clear the concerns the view is addressing, the types of elements it presents and who the viewpoint is aimed at.</p>
+<h3 id="the-benefits-of-using-viewpoints-and-views">The Benefits of using Viewpoints and Views</h3>
+<ul>
+<li>Seperation of concerns</li>
+<li>Communication with stakeholders</li>
+<li>Management of complexity</li>
+<li>Improved developer focus</li>
+</ul>
+<h3 id="viewpoint-pitfalls">Viewpoint Pitfalls</h3>
+<ul>
+<li>Inconsistency - it is largely a manual process to ensure all views are consistent</li>
+<li>Fragmentation - each view is expensive to create and maintain and may be confusing if only showing one aspect, so views may be elimated or combined to reduce overhead and enhance understandability (without going too far the other way)</li>
+</ul>
+<h3 id="our-viewpoint-catalog">Our Viewpoint Catalog</h3>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2014/05/23/test-driven-infrastructure-with-chef/">Test Driven Infrastructure With Chef</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2014/06/30/oreilly-software-architecture-fundamentals/">Oreilly Software Architecture Fundamentals</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2014/06/23/software-systems-architecture-part-one/` was built on 2025-09-05T01:23:56.881Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

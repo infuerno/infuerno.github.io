@@ -1,0 +1,1192 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Pluralsight: Building applications with ASP.NET MVC 4</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="pluralsight-building-applications-with-asp-net-mvc-4">Pluralsight: Building applications with ASP.NET MVC 4</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2018-01-17">17 January 2018</time></li>
+</ul>
+
+<h2 id="shortcuts">Shortcuts</h2>
+<ul>
+<li>Ctrl + . - to activate the contextual menu to e.g. add missing using statements</li>
+<li>F12 - go to implementation</li>
+<li>F9 - set a breakpoint</li>
+<li>Ctrl K, C - comment out code</li>
+<li>Ctrl K, D - format code</li>
+<li>Ctrl . - implement an interface</li>
+</ul>
+<h2 id="introduction-to-asp-net-mvc-4">Introduction to <a href="http://ASP.NET">ASP.NET</a> MVC 4</h2>
+<ul>
+<li>The MVC 4 Visual Studio project templates use HTML5 by default.</li>
+<li><code>&lt;meta charset=&quot;utf-8&quot;</code> is added (necessary to <a href="https://www.html5in24hours.com/meta-charset-protects-against-hackers/">avoid some XSS vulnerabilities</a>) - place as the first element within <code>&lt;head&gt;</code>.</li>
+<li><code>&lt;meta name=&quot;viewport&quot;</code> tag is also added - important for mobile devices - tells the device that the site has been designed to work on a mobile device, so don’t assume it needs e.g. 900px</li>
+<li>modernizr.js ensures old browsers work fine with new HTML5 tags</li>
+<li>MVC Framework runs on the core <a href="http://ASP.NET">ASP.NET</a> runtime - been around for 10 years - stable, secure - HTTP modules / handlers / caching / diagnostics</li>
+<li><code>ViewBag</code> is a dynamically typed object in C# - add any property and it will be available to the view to pull out and display</li>
+<li><code>@</code> tells the razor view engine that here is a C# expression - evaluate it and write the results into the response at this point</li>
+<li><code>@model</code> directive (uses lowercase ‘m’) to inform the view about the model e.g. <code>@model OdeToFood.Models.AboutModel</code></li>
+<li><code>@Model</code> (uppercase ‘M’) is then a strongly typed object available on the view</li>
+</ul>
+<h2 id="controllers-in-asp-net-mvc-4">Controllers in <a href="http://ASP.NET">ASP.NET</a> MVC 4</h2>
+<h3 id="routes-and-controllers">Routes and Controllers</h3>
+<p>The routing engine is a core part of <a href="http://ASP.NET">ASP.NET</a> - it isn’t tied to the MVC framework, you can use the routing engine to route requests for <a href="http://ASP.NET">ASP.NET</a> web forms, MVC services, any type of resource.</p>
+<p>The routing engine is given a “map” to follow using the MapRoute API to specify: friendly name; pattern; default parameters. After the request passes through the routing engine, a <code>RouteData</code> data structure is populated with the details and available throughout the request not only to the MVC framework but also in controllers and views.</p>
+<pre><code>RouteData.Values[&quot;controller&quot;]
+RouteData.Values[&quot;action&quot;]
+RouteData.Values[&quot;id&quot;]
+</code></pre>
+<p>The order in which routes are added to the global route collection is significant. The first route the URL matches, wins.</p>
+<p>If there is a file on the file system matching the URL, then the MVC framework doesn’t interfere.
+However some virtual .axd files which don’t really exist can be troublesome, so for this it explicity ignore in the <code>RegisterRoutes</code> method. i.e. <code>routes.IgnoreRoute(&quot;{resource}.axd/{*pathInfo)&quot;</code></p>
+<h3 id="action-and-parameters">Action and Parameters</h3>
+<ul>
+<li><code>return Content(&quot;hello&quot;)</code> will literally return content rather than using any views</li>
+<li>Any public method added to a controller is potentially addressable (don’t add any public methods that you don’t expect to be called via a URL)</li>
+<li>If you add a parameter to an action, the MVC framework will do everything it can to populate it for you, looking all around the request at routing data (parsed from the URL), query string, POSTed form values.</li>
+<li><code>Server</code> is a property which is inherited on the controller to get to server type utilties including <code>Server.HtmlEncode</code> (razor view engine encodes automatically)</li>
+</ul>
+<h3 id="action-results">Action Results</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Framework Behaviour</th>
+<th>Producing Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ContentResult</td>
+<td>Returns a literal string</td>
+<td>Content</td>
+</tr>
+<tr>
+<td>EmptyResult</td>
+<td>No response</td>
+<td></td>
+</tr>
+<tr>
+<td>FileContentResult / FilePathResult / FileStreamResult</td>
+<td>Returns the contents of a file</td>
+<td>File</td>
+</tr>
+<tr>
+<td>HttpUnauthorizedResult</td>
+<td>Returns an HTTP 403 status</td>
+<td></td>
+</tr>
+<tr>
+<td>JavaScriptResult</td>
+<td>Returns a script to execute</td>
+<td>JavaScript</td>
+</tr>
+<tr>
+<td>JsonResult</td>
+<td>Returns data in a JSON format</td>
+<td>Json</td>
+</tr>
+<tr>
+<td>RedirectResult</td>
+<td>Redirects the client to a new URL</td>
+<td>Redirect</td>
+</tr>
+<tr>
+<td>RedirectToRouteResult</td>
+<td>Redirect to another action, or another controller’s action</td>
+<td>RedirectToRoute / RedirectToAction</td>
+</tr>
+<tr>
+<td>ViewResult / PartialViewResult</td>
+<td>Response is the responsibility of the view engine</td>
+<td>View / PartialView</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>All class names derive from <code>ActionResult</code></li>
+</ul>
+<h3 id="action-selectors">Action Selectors</h3>
+<p><code>ActionName</code> selector attributes decorate public action methods and alter the name by which the action can be invoked. The below method is now invoked using <code>Modify</code> and can’t be invoked using <code>Edit</code>.</p>
+<pre><code>[ActionName(&quot;Modify&quot;)]
+[HttpPost]
+public ActionResult Edit(string departmentName)
+{
+	// ...
+}
+</code></pre>
+<p><code>AcceptVerbs</code> selector attributes specify the HTTP verb which is allowed to invoke an action e.g. <code>[HttpPost]</code></p>
+<h3 id="action-filters">Action Filters</h3>
+<p>Action filter attributes apply pre and post processing to an action, to add cross cutting logic - logic which needs to execute across multiple actions without duplicating code.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OutputCache</td>
+<td>Cache the output of a controller</td>
+</tr>
+<tr>
+<td>ValidateInput</td>
+<td>Turn off request validation and allow dangerous input</td>
+</tr>
+<tr>
+<td>Authorize</td>
+<td>Restrict an action to authorized users or roles</td>
+</tr>
+<tr>
+<td>ValidateAntiForgeryToken</td>
+<td>Helps prevent cross site request forgeries</td>
+</tr>
+<tr>
+<td>HandleError</td>
+<td>Can specify a view to render in the event of an unhandled exception</td>
+</tr>
+</tbody>
+</table>
+<p>Action filters can be applied at the method level, the class level OR the global level via FilterConfig.RegisterGlobalFilters e.g. the HandleError attribute. This uses the Error.cshtml view by default (when CustomErrors are on) - configured to use this by default.</p>
+<p>Custom action filters can be created by creating a class which inherits from <code>ActionFilterAttribute</code>. There are 4 main methods availble to override:</p>
+<ol>
+<li><code>OnActionExecuting</code> - look at the request before an action executes</li>
+<li><code>OnActionExecuted</code> - after the action method executes</li>
+<li><code>OnResultExecuting</code> - before the result is executed</li>
+<li><code>OnResultExecuted</code> - after a result is executed.</li>
+</ol>
+<p>These action filters are very powerful - change the environment, change results, change parameters. In each method, the filter context@ holds different information relevant to that particular scenario e.g. parameters</p>
+<h2 id="razor-views">Razor Views</h2>
+<ul>
+<li>There are 2 view engines registered by default in the MVC runtime: web forms engine and razor view engine</li>
+<li>Razor will automatically html encode any output sent through the <code>@</code> sign
+<ul>
+<li><code>@Html.Raw</code> will override this</li>
+</ul>
+</li>
+</ul>
+<h3 id="code-expressions">Code Expressions</h3>
+<ul>
+<li><code>@item.Rating / 10</code> is an implicit expression - razor will evaluate the first part, but then print out <code>/ 10</code> lterally</li>
+<li><code>@(item.Rating / 10)</code> is an explicit expression - razor will evaluate the whole thing</li>
+<li><code>R@item.Rating</code> will not be interpreted correctly, but treated as literal text - need to explicity say <code>R@(item.Rating)</code>. On the other hand <code>@item.City, @item.Country</code> is interpreted as expected</li>
+<li>Email addresses will be output literally without issue, but twitter handles e.g. <code>@infurnex</code> will need to be escaped i.e. <code>@@infurnex</code></li>
+<li>The razor view is good at working out what is markup and what is C# code, but a literal string not within tags may be treated incorrectly as C# code e.g. “Review”. To ensure this is treated as literal text use <code>@:Review</code></li>
+<li>Use <code>@{ ... }</code> for code blocks. The expressions are only valuated and not written at all.</li>
+</ul>
+<h3 id="layout-views">Layout Views</h3>
+<ul>
+<li>Two special methods: <code>@RenderBody()</code> and <code>@RenderSection()</code> - allows normal views to plug in their content to specific locations in the layout.</li>
+<li><code>_Layout.cshtml</code> - conventionally starts with an underscore to denote not a primary content view</li>
+<li><code>_ViewStart.cshtml</code> - sets which layout to use via a <code>Layout</code> property - convention with the razor view engine - if you have this file, it will be executed before the view is rendered. Can have multiple <code>_ViewStart.cshtml</code> files which work in a hierarchy e.g. one in the root of the Views folder, then one inside a subfolder for to be used for a subset of Views</li>
+<li>Set <code>Layout = null</code> in your <code>_ViewStart.cshtml</code> if you don’t want to use a layout view</li>
+<li><code>@RenderSection(&quot;featured&quot;, required: false)</code> can be included in a layout view and then specified within regular views using <code>@section featured{ .... }</code></li>
+</ul>
+<h3 id="html-helpers">HTML Helpers</h3>
+<ul>
+<li>Makes it easy to create small blocks of HTML. There are helpers to create inputs, links, validation messages, labels and more.</li>
+<li>Mainly intelligent e.g. <code>@Html.EditorFor()</code> will emit an <code>&lt;input type=&quot;text&quot;/&gt;</code> for strings and <code>&lt;input type=&quot;checkbox&quot;/&gt;</code> for booleans</li>
+<li>All methods are available from the <code>Html</code> property that a view inherits</li>
+<li><code>Html.ActionLink(&quot;Edit&quot;, &quot;Edit&quot;, new { id = item.ID }&quot;</code> will render a link with text “Edit” pointing to the Edit action, and will pass an anoymous object along to the routing engine, which will construct the URL intelligently, working out where to put the id value into the URL e.g. <code>/Reviews/Edit/3</code></li>
+<li><code>Html.BeginForm()</code> will emit a form tag. With no additional params, the action will be the same URL we came from, with method POST.</li>
+<li><code>Html.HiddenFor(model =&gt; model.Id)</code> emits a hidden input field</li>
+<li><code>Html.LabelFor(model + model.Name)</code> emits a label field with a <code>for</code> attribute, useful for accessibility</li>
+<li>These methods will also populate the <code>id</code> and <code>name</code> attributes to match the property name of the model - necessary for the way the MVC framework tries to populate properties based on convention</li>
+<li><code>data-</code> attributes are also added, used for client side validation</li>
+<li>Model binding - happens when parameters are used in an action request as well as when using <code>TryUpdateModel(model)</code> method</li>
+<li>Other useful helpers: <code>CheckBoxFor</code>, <code>Display</code> helpers, <code>Name</code> helpers, <code>RouteLink</code> helpers, <code>ValidationMessageFor</code></li>
+<li>Custom helpers are useful - if lots of logic in the view, think about a custom helper</li>
+</ul>
+<h3 id="partial-views">Partial Views</h3>
+<ul>
+<li>Partial views allow:
+<ul>
+<li>simplifing a view by splitting up the functionality among a view and one or more partial views</li>
+<li>reusing code across multiple views</li>
+<li>delegating work to another controller</li>
+</ul>
+</li>
+<li>Name usually starts with an <code>_</code> e.g. <code>_Review.cshtml</code></li>
+<li>Rendered using <code>Html.Partial(&quot;_Review&quot;, item)</code> where item is the model - this method can only be passed the current model, or part of the current model</li>
+<li>The location of the partial view file will determine which pages are allowed to use it</li>
+<li>Use <code>Html.Action</code> when rendering something not part of the current model e.g. render a partial outside of the normal context of that partial e.g. on the layout page to show the best review. This method issues a subrequest which calls another controller action independently e.g. <code>Html.Action(&quot;BestReview&quot;, &quot;Reviews&quot;)</code> to call the <code>BestReview</code> action on the <code>Reviews</code> controller</li>
+<li><code>return PartialView(&quot;_Review&quot;, bestReview);</code> from this controller to render the partial view</li>
+<li>Add attribute <code>[ChildActionOnly]</code> so that this action cannot be called directly via a URL</li>
+</ul>
+<h2 id="working-with-data-part-1">Working with Data (Part 1)</h2>
+<p>Schema first - existing database - graphical designer in VS, imports schema and generates classes needed to manipulate the schema - thereafter change the database and update the schema and the model
+Model first - use the graphical designer to draw a model - EF generates both the classes and the database schema
+Code first - write classes - EF uses these to generate the database schema using conventions (which can be overridden)</p>
+<ul>
+<li>Need model classes - express relationships between them e.g. <code>Restaurant</code> model contains <code>ICollection&lt;RestaurantReview&gt; Reviews</code>, correspondingly <code>RestaurantReview</code> has an <code>int RestaurantId</code> property</li>
+<li>Need class to interact with the database derived from <code>DbContext</code>, this class has strongly typed <code>DbSet</code> properties e.g. <code>DbSet&lt;Restaurant&gt; Restaurants</code> and <code>DbSet&lt;RestaurantReview&gt; Reviews</code> (this latter could be retrieved via the Restaurant object, but this allows for more complex scenarios)</li>
+<li>Can now instantiate the db context derived class e.g. <code>var _db = new OdeToFoodDb();</code></li>
+<li>Since this is a disposable resource, should also override the Dispose method in a controller and call Dispose on the db context derived object. Cleaning up as soon as possible is good practice.</li>
+</ul>
+<pre><code>protected override void Dispose(bool disposing) {
+    if (_db != null) _db.Dispose();
+    base.Dispose(disposing);
+}
+</code></pre>
+<ul>
+<li>Now in the action method, can get the resturants from the database e.g. <code>var model = _db.Restaurants.ToList();</code></li>
+<li>In the view, define the model as <code>@model IEnumerable&lt;OdeToFood.Models.Restaurant&gt;</code></li>
+<li>If EF can’t find an existing database it will just create one. If there are no specified connection strings anywhere, it will use the default instance of LocalDB and create the database with the fully qualified name of the DbContext.</li>
+<li>To explicity define the location of the database, pass the connection string into the constructor of the DbContext base class e.g. <code>public OdeToFoodDb() : base(&quot;server=.; initial catalog=odetofood; integrated security=true&quot;) { }</code></li>
+<li>Better still, reference the connection string by name from a config file: <code>public OdeToFoodDb() : base(&quot;name=OdeToFoodDbConnection&quot;) { }</code></li>
+<li>EF migrations can not only sync changes, but also populate with seed data</li>
+<li><code>Enable-Migrations -ContextTypeName OdeToFoodDb</code> - will create <code>Configuration.cs</code> and an initial migration file</li>
+<li>Within the new Configuration class, <code>AutomaticMigrationsEnabled</code> flag is set to false by default, but useful to set to true for initial development</li>
+<li>The Seed method can be used to add reference data, will be called after each migration to the latest version</li>
+<li>Use the AddOrUpdate() method to ensure duplicates aren’t added e.g. <code>context.Restaurants.AddOrUpdate(r =&gt; r.Name, new Resturant() { ...}, etc )</code></li>
+<li>Can configure the application to automatically apply updates</li>
+<li>Can explicity use <code>Update-Database -Verbose</code> via the package manager console</li>
+<li>To update the database with the model having made model changes:
+<ul>
+<li>Either create a migration script and run it (migration.cs file in the project)</li>
+<li>OR simply update the database (requires <code>AutomaticMigrationsEnabled</code> set to TRUE) (will not create an explicit migration.cs code file)</li>
+</ul>
+</li>
+<li>EF keeps track of which migration scripts have been applied, which haven’t and which order they need to be applied (in <code>_MigrationHistory</code>)</li>
+</ul>
+<h3 id="linq">LINQ</h3>
+<p>Two different styles:</p>
+<ul>
+<li>Comprehension Query Syntax: <code>var model = from r in _db.Restaurants where r.country == &quot;USA&quot; orderby r.Name select r;</code>
+<ul>
+<li>Starts with the <code>from</code> keyword</li>
+<li>Introduces a range variable, e.g. <code>r</code> which can be used throughout the rest of the query</li>
+<li>Keywords for filtering, grouping, joining and projecting e.g. <code>where</code>, <code>orderby</code>, <code>select</code></li>
+</ul>
+</li>
+<li>Extension Methods Syntax: <code>var model = _db.Restaurants.Where(r =&gt; r.Country == &quot;USA&quot;).OrderBy(r =&gt; r.Name).Skip(10).Take(10);</code>
+<ul>
+<li>here you can also use <code>Skip()</code> and <code>Take()</code> methods here</li>
+</ul>
+</li>
+</ul>
+<p>There are numerous extension methods available</p>
+<ul>
+<li>101 LINQ Samples on MSDN: <a href="http://code.msdn.microsoft.com/101-linq-samples-3fb9811b">http://code.msdn.microsoft.com/101-linq-samples-3fb9811b</a></li>
+<li>LinqPad: <a href="http://www.linqpad.net">http://www.linqpad.net</a> - comes with 100s of samples</li>
+<li>Pluralsight courses</li>
+</ul>
+<p>Use a projection to create a new anonymous type with the exact fields required e.g.</p>
+<pre><code>var model = from r in _db.Restaurants where r.country == &quot;USA&quot; orderby r.Name
+    select new { r.Id, r.Name, r.City, r.Country, NumberOfReviews = r.Reviews.Count() };
+</code></pre>
+<p>Passing this to the view is difficult since it is an anonymous type. Instead create a view model object with these fields and create an instance of this type instead.</p>
+<p>Alternative syntax using Extension Methods Syntax:</p>
+<pre><code>var model = _db.Restaurants.Where(r =&gt; r.Country == &quot;USA&quot;).OrderBy(r =&gt; r.Name)
+    .Select(r =&gt; new { r.Id, r.Name, r.City, r.Country, NumberOfReviews = r.Reviews.Count() });
+</code></pre>
+<p>To filter using a parameter which may be null use: <code>.Where(searchTerm == null || r.Country.StartsWith(searchTerm))</code></p>
+<h2 id="working-with-data-part-2">Working with Data (Part 2)</h2>
+<ul>
+<li>The <code>Find</code> method of a DbSet object allows you to search on the primary key</li>
+</ul>
+<h3 id="listing-reviews">Listing Reviews</h3>
+<ul>
+<li><code>Html.ActionLink()</code> method has various overloads:
+<ul>
+<li><code>Html.ActionLink(&quot;LinkText&quot;, &quot;ActionName&quot;, new { id=item.Id })</code></li>
+<li><code>Html.ActionLine(&quot;LinkText&quot;, &quot;ActionName&quot;, &quot;ControllerName&quot;, new { id=item.Id }, null)</code> to specify a different controller (if you forget the last parameter, the override with <code>htmlAttributes</code> for the last parameter, not <code>routeValues</code> will be chosen)</li>
+<li>the <code>htmlAttributes</code> parameter allows you to specify extra attributes e.g. <code>target=&quot;_blank&quot;</code> i.e. <code>new { target=&quot;_blank&quot; }</code></li>
+</ul>
+</li>
+<li>By default in a controller you would expect any <code>id</code> parameter to relate to the entity for this controller. <code>public ActionResult Index([Bind(Prefix=&quot;id&quot;)] int restaurantId)</code> will allow the parameter to be bound called <code>id</code> and keep this simple in views and routes, but also make it explicit that this is not the id of a review, but the id of a restaurant in the actual controller.</li>
+<li>EF doesn’t load up associated child collections automatically</li>
+<li>Adding the keyword <code>virtual</code> to the model definition of the child collection e.g. <code>public virtual ICollection&lt;RestaurantReview&gt; Reviews { get; set; }</code>. A wrapper will now be created to intercept calls to the Reviews property to ensure these are now loaded via a second call to the database. Two queries instead of one may be a worry - if so read this on eager loading: <a href="http://msdn.microsoft.com/en-US/data/jj574232">http://msdn.microsoft.com/en-US/data/jj574232</a></li>
+</ul>
+<h3 id="creating-a-review">Creating a Review</h3>
+<ul>
+<li>Update the ActionLink for create to pass in the restaurant id - will be added to the query string, since no matching route</li>
+<li>Add an <code>[HttpGet]</code> create action which takes in this id and returns an empty view</li>
+<li>The default action of the form will post back to the same URL, so with therefore have the restaurantId in the query string still</li>
+<li>The default scaffolded view uses <code>@using (Html.BeginForm())</code> - the form implements IDisposable, so any resources are disposed of immediately, not really important here, but could be</li>
+<li>The <code>[HttpPost]</code> create action will have a parameter of <code>RestaurantReview</code> which will be populated automatically from both the POST form and the restaurant id in the query string
+<ul>
+<li>first check the model is valid: <code>if (ModelState.IsValid)</code>, if it isn’t just return the same view</li>
+<li>add the new review to the reviews collection e.g. <code>_db.Reviews.Add(review)</code></li>
+<li>save it to the database e.g. <code>_db.SaveChanges()</code></li>
+<li>then return to a different view where the new entity can be seen (e.g. index view)</li>
+</ul>
+</li>
+</ul>
+<h3 id="editing-a-review">Editing a Review</h3>
+<ul>
+<li>Edit link is provided on a list page by the default scaffolding</li>
+<li>In the <code>[HttpGet]</code> <code>Edit()</code> method, the id is passed in, use <code>Find</code> to retrieve this review and pass to the view</li>
+<li>Need hidden fields for both the review id and the restaurant id</li>
+<li>Similar to create, the model is passed the action, <code>ModelState.IsValid</code> is checked and the same model returned to the view if not</li>
+<li>The DbContext <code>Entry</code> API tells EF that we want to start tracking an entity, set to the state to modified i.e. <code>_db.Entry(review).State = EntityState.Modified</code></li>
+<li>Save changes and redirect back to an index view</li>
+</ul>
+<h3 id="security-implications-of-model-binding">Security implications of model binding</h3>
+<ul>
+<li>Overposting or Mass assignment is the automatic model binding which will grab everything from everywhere possible to try to populate the model, potentially</li>
+<li>For more information <a href="http://odetocode.com/blogs/scott/archive/2012/03/11/complete-guide-to-mass-assignment-in-asp-net-">http://odetocode.com/blogs/scott/archive/2012/03/11/complete-guide-to-mass-assignment-in-asp-net-</a></li>
+<li>Not the best, but one of the easiest is to use the <code>Bind</code> attribute on an action method e.g. <code>public ActionResult Edit([Bind(Exclude=&quot;ReviewerName&quot;)] RestaurantReview review)</code> (can also use <code>Include</code>)</li>
+<li>Another approach is to use a ViewModel</li>
+</ul>
+<h3 id="validation-annotations">Validation Annotations</h3>
+<ul>
+<li>Use data binding attributes e.g. <code>[Range(1,10)]</code>, <code>[Required]</code>, <code>[StringLength(1024)]</code></li>
+<li>Other attributes include regex, comparing two properties, remote validations (calls back to the server as a user types in)</li>
+<li>After adding data annotations EF recognises that the schema is now out of date with the model</li>
+<li><code>Update-Database -Verbose</code> to update the schema - may fail if e.g. column previously had no length and now given a limit - use <code>Update-Database -Verbose -Force</code> to force the update</li>
+<li>Validations run on both server side and client side</li>
+<li>Also data attributes to influence the display e.g. <code>[Display(Name=&quot;User Name&quot;)]</code>, <code>[DisplayFormat(NullDisplayText=&quot;anonymous&quot;)]</code> - this latter only affects the display - NOT the database’</li>
+</ul>
+<h3 id="custom-validations">Custom Validations</h3>
+<ul>
+<li>Write custom validation attributes when you want to apply to multiple models (write a class which derives from <code>ValidationAttribute</code>)</li>
+<li>Only happens on the server by default unless you write client side validation too</li>
+<li>Alternative is for your model to implement <code>IValidatableObject</code> and write the <code>Validate</code> method body. Here you have access to the whole model. Validation errors will be displayed where the <code>Html.ValidationSummary(true)</code> tag is included on the view. Changing the parameter to false will display ALL errors.</li>
+</ul>
+<h2 id="ajax-and-asp-net-mvc">AJAX and <a href="http://ASP.NET">ASP.NET</a> MVC</h2>
+<ul>
+<li><code>_references.js</code>, <code>xxx.intellisense.js</code> - for intellisense</li>
+<li><code>xxx.unobtrusive...js</code> - authored by the MVC team, serve as a bridge between <a href="http://ASP.NET">ASP.NET</a> MVC and jQuery. Need the <code>unobtrusive</code> scripts for some of the client side validation to work - it takes metadata which is emitted by HTML helpers (e.g. EditorFor) and feeds the data into the jQuery validations</li>
+<li><code>@Scripts.Render(&quot;~/bundles/modernizr&quot;)</code> will emit the correct HTML to include the modernizr libraries (need to be at the top of the page)</li>
+<li><code>@Scripts.Render(&quot;~/bundles/jquery&quot;)</code> included at the bottom of the page (as most script files should be)</li>
+<li><code>@Scripts.Render()</code> and <code>@Styles.Render()</code> give minified bundles of JS and CSS respectively - the <a href="http://ASP.NET">ASP.NET</a> bundling feature can bundle scripts together at runtime</li>
+<li><code>BundleConfig.RegisterBundles(BundleCollection bundles)</code> is called from the <code>Application_Start()</code> in <code>Global.asax.cs</code>
+<ul>
+<li>the <code>{version}</code> tag will substitute for a version number so you can update js libraries without changing C# code</li>
+</ul>
+</li>
+<li>Bundling and minification only happens in release mode i.e. <code>&lt;compilation debug=&quot;true&quot;/&gt;</code> in the web.config</li>
+</ul>
+<h3 id="ajax-helpers">AJAX Helpers</h3>
+<ul>
+<li>Where <code>Html.BeginForm()</code> makes a synchronous request to the server, <code>Ajax.BeginForm()</code> makes an asynchronous request to the server to redraw just a portion of the screen. The <code>AjaxOptions</code> object passed in, tells the helper which part of the page to update.</li>
+<li><code>Install-Package Microsoft.jQuery.Unobtrusive.Ajax</code> to install the ajax JavaScript files and add it to an appropriate bundle.</li>
+</ul>
+<pre><code>@using(Ajax.BeginForm(new AjaxOptions(HttpMethod=&quot;get&quot;, InsertionMode = InsertionMode.Replace, UpdateTargetId = &quot;restaurantList&quot;)) {
+    &lt;input type=&quot;search&quot; name=&quot;searchTerm&quot;/&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;Search By Name&quot; /&gt;
+}
+&lt;div id=&quot;restaurantList&quot;&gt; ... &lt;/div&gt;
+</code></pre>
+<p>Just by itself this will draw a page within a page. To correct this, first put the <code>&lt;div id=&quot;restaurantList&quot;&gt; ... &lt;/div&gt;</code> inside a partial view e.g. <code>_Restaurants.cshtml</code> and add the <code>@model</code> directive to strongly type it. The controller will then need to decide to either return the whole page view e.g. <code>Index.cshtml</code> or just the partial. In the controller add:</p>
+<pre><code>if (Request.IsAjaxPartial()) {
+    return PartialView(&quot;_Restaurants&quot;, model);
+}
+return View(model);
+</code></pre>
+<h3 id="behind-the-scenes">Behind the scenes</h3>
+<ul>
+<li>MVC provides 3 AJAX features out of the box: <code>Ajax.BeginForm()</code>, <code>Ajax.ActionLink()</code> and client side validation.</li>
+<li>These 3 features all use an approach called <strong>unobtrusive</strong> javascript which uses the HTML 5 data-* attributes to inject javascript into the page. Without javascript enabled, all features continue to work using server side functionality instead.</li>
+<li>Instead of using the built in features of e.g. <code>Ajax.BeginForm()</code>, a similar technique can be written from scratch</li>
+<li><code>@Url.Action(&quot;Index&quot;)</code> is helpful to generate the URL to the Index action</li>
+</ul>
+<h3 id="autocomplete">Autocomplete</h3>
+<ul>
+<li>New action on the controller e.g. <code>public ActionResult Autocomplete(string term)</code> (documentation for jQuery uses the name <code>term</code> for the parameter) which queries the database, get any restaurants starting with <code>term</code> and projects each one into a new anonymous llobject with property called <code>label</code> containing the name of the restaurant.</li>
+<li>Then <code>return Json(model, JsonRequestBehaviour.AllowGet);</code> to return results in JSON</li>
+<li>Wire this up on the element needing autocomplete, e.g. the searchTerm <code>&lt;input /&gt;</code> tag using a data-* attribute e.g. <code>data-otf-autocomplete=&quot;@Url.Action(&quot;Autocomplete&quot;)&quot;</code></li>
+<li>Then write the JavaScript to implement this:
+<ul>
+<li>add the javascript to each element using a function <code>$(&quot;input[data-otf-autocomplete]&quot;).each(createAutocomplete);</code></li>
+<li>the <code>createAutocomplete</code> function will
+<ul>
+<li>get the input in question, wrap in jQuery using <code>$()</code> e.g. <code>$input = $(this)</code></li>
+<li>construct an options object which at a minimum has a <code>source</code> property - the URL to get the data from</li>
+<li>finally call the jQuery autocomplete function on the input object e.g. <code>$input.autocomplete(options)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>The option <code>select</code> can define a function which will be invoked when the element in the drop down list is selected. In this way, when selecting the options, you can also trigger the search at the same time.</li>
+</ul>
+<h3 id="paging">Paging</h3>
+<ul>
+<li>Using <code>PagedList.Mvc</code> NuGet package (which in turn depends on package <code>PagedList</code>)</li>
+<li>Adds extension methods for LINQ, HTML helpers and a PagedList.css</li>
+<li>In the controller:
+<ul>
+<li>Add a new integer parameter to the Action called page with a default value of 1 e.g. <code>, int page = 1)</code></li>
+<li>Convert the regular list received from EF to a <code>PagedList</code> using the extension method <code>ToPagedList(page, 10)</code>, specifying the page and the size</li>
+</ul>
+</li>
+<li>In the UI:
+<ul>
+<li>Update the model declaration from <code>IEnumerable</code> to <code>IPagedList</code></li>
+<li>To avoid fully qualifying each type, add the namespaces following to the web.config <strong>in the Views folder</strong></li>
+<li>Add a call the HTML helper <code>@Html.PagedListPager(Model, page =&gt; Url.Action(&quot;Index&quot;, new { page }), PagedListRenderOptions.MinimalWithItemCountText</code>
+<ul>
+<li>lamda expression which given a page will return the URL to go to that page. The PagedListPager will pass the page</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Add the PagedList.css to a bundle</li>
+</ul>
+</li>
+</ul>
+<p>To convert the paging from a full post back to partial post backs using JavaScript, as with search we could wire up an event on the anchor tags. However this is part of the HTML in the partial view which gets rerendered each time we search, so they would have to be rewired with every partial page load. Instead wire up the event to something outside of this section e.g. the <code>main-content</code> div, specifying how to filter the events:</p>
+<p><code>$(&quot;.main-content&quot;).on(&quot;click&quot;, &quot;.pagedList a&quot;, getPage)</code></p>
+<p>The <code>getPage</code> function has been written to be generic:</p>
+<pre><code>var getPage = function() {
+    var $a = $(this); // wrap the 'a' with jQuery so we can
+    var options = {
+        url: $a.attr(&quot;href&quot;),
+        data: $(&quot;form&quot;).serialize(), // add the form vars to the request so anything in the search box is taken into account
+        type: &quot;get&quot;
+    };
+    $.ajax(options).done(function(data)) {
+        var target = $a.parents(&quot;div.pagedList&quot;).attr(&quot;data-otf-target&quot;); // generic way of doing this
+        $(target).replaceWith(data);
+    });
+    return false;
+}
+</code></pre>
+<h2 id="security-and-asp-net-mvc">Security and <a href="http://ASP.NET">ASP.NET</a> MVC</h2>
+<h3 id="authentication">Authentication</h3>
+<p>There are 3 ways to identify a user in <a href="http://ASP.NET">ASP.NET</a>:</p>
+<ol>
+<li>Forms authentication - the website provides a page with an input form, user enters username and password, application checks password - relies on cookies and SSL</li>
+<li>OpenID / OAuth - rely on a third party to authenticate the user and then tell you who they are</li>
+<li>Windows authentication - also know as “Integrated Auth”, for intranets</li>
+</ol>
+<h4 id="windows-authentication">Windows Authentication</h4>
+<ul>
+<li>Changing VS generated forms authentication over to windows authentication is possible, but messy. Best to start again!</li>
+<li>IE will not work with “localhost” off the bat until you add localhost to the intranet sites list</li>
+</ul>
+<h4 id="forms-authentication">Forms Authentication</h4>
+<ul>
+<li><a href="http://ASP.NET">ASP.NET</a> with forms authentication configured will automatically redirect to the configured login page if a user tries to access a restricted page</li>
+<li><a href="http://ASP.NET">ASP.NET</a> sets an authentication cookie to track users authentication status</li>
+<li>In <a href="http://ASP.NET">ASP.NET</a> MVC 4 - project template automatically includes controllers, views and models.
+<ul>
+<li>The controller makes use of a class called <code>WebSecurity</code> from a Microsoft library named WebMatrix.</li>
+<li><code>WebSecurity</code> in turn talks to a component called <code>SimpleMembershipProvider</code></li>
+</ul>
+</li>
+<li>You can customise the information stored about a particular user
+<ul>
+<li>Inside the Filters folder - <code>InitializeSimpleMembershipAttribute.cs</code> - forms auth is initialised in a lazy manner in case you don’t want to use forms auth</li>
+<li>If you do want to use this, you can move the call to <code>WebSecurity.InitializeDatabaseConnection(...)</code> to the <code>Application_Start()</code> method and delete the filter</li>
+<li>Also, you may want to change the <code>AccountModels.cs</code> file.
+<ul>
+<li>Inside this file, there is a <code>UsersContext</code> class, which gives access to the <code>UsersProfile</code> table. However this table can simply be added to the <code>DbContext</code> for the application instead.</li>
+<li>Additionally move the <code>UserProfile.cs</code> file into the models folder and customise as required e.g. <code>string FavouriteRestaurant</code></li>
+<li>Add the <code>DbSet&lt;UserProfile&gt;</code> to your existing DbContext class</li>
+<li>Remove the <code>[InitializeSimpleMembership]</code> attribute fromt the <code>AccountController</code> class</li>
+<li>Change any existing references to the generated DbContext to the existing DbContext class</li>
+<li>Run <code>Update-Database</code> to create the <code>UserProfile</code> table (implicit migrations enabled)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>The database tables created and used by WebSecurity are prefixed with <code>webspages_</code>: <code>webpages_Membership</code>, <code>webpages_OAuthMembership</code>, <code>webpages_Roles</code>, <code>webpages_UsersInRoles</code></li>
+</ul>
+<h3 id="authorisation">Authorisation</h3>
+<h4 id="seeding-membership">Seeding Membership</h4>
+<ul>
+<li>Either SQL or use the <code>SimpleMembershipProvider</code> APIs (more robust) in the <code>Seed()</code> method</li>
+</ul>
+<pre><code>    WebSecurity.InitializeDatabaseConnection( ... )
+    var roles = (SimpleRoleProvider)Roles.Provider; // use to check and create roles
+    var membership = (SimpleMembershipProvider)Membership.Provider; // used to check and create users
+
+    // add actual data checks and insert
+</code></pre>
+<ul>
+<li>This will not work out of the box in library project rather than a real web project. Requires some configuration in the web.config. Explicitly configure the <code>&lt;roleManager .../&gt;</code> and the <code>&lt;membership .../&gt;</code>, clearing any previously configured providers and adding the simple membership ones</li>
+<li><code>User.Identity.Name</code> to get a user’s username</li>
+<li><code>User.IsInRole(&quot;admin&quot;)</code> to check role membership</li>
+</ul>
+<h3 id="cross-site-request-forgery-csrf-c-serf">Cross Site Request Forgery CSRF (C-Serf)</h3>
+<ul>
+<li>This happens when a user who is authenticated on a particular application e.g. facebook to clicks on a link. This page then submits a form to facebook doing something malicious. Can also be used to send all cookies via javascript etc.</li>
+<li>In order to prevent this, need to ensure the user is clicking on a form that has been served to them by the correct web server</li>
+<li>In <a href="http://ASP.NET">ASP.NET</a> MVC this is achieved via an <code>AntiForgeryToken</code>.
+<ul>
+<li>On the form submit action add the attribute <code>[ValidateAntiForgeryToken</code> - this checks a <code>__RequestVerificationToken</code> field (which doesn’t exist by default)</li>
+<li>Add the verification token to the form using <code>Html.AntiForgeryToken()</code> somewhere on the form - this generates a cryptographically significant value is added both to the form and a cookie. It needs to match on both the form and in the cookie for MVC to allow the request. This works since browsers don’t allow one site to set cookies for a different site</li>
+</ul>
+</li>
+</ul>
+<h3 id="openid-oauth">OpenID / OAuth</h3>
+<ul>
+<li>OIDC support is added to MVC via an open source project called DotNetOpenAuth: <a href="http://www.dotnetopenauth.net">http://www.dotnetopenauth.net</a></li>
+<li>The <code>RegisterAuth()</code> method inside the <code>AuthConfig</code> class has various blocks of commented out code to register - most require some kind of configuration on the 3rd party, but otherwise support is out of the box</li>
+<li>Can either log in with an external account OR a local account - if you already have a local account, but now wish to link an external account, that is possible on the default “Manage Account” page</li>
+</ul>
+<h2 id="asp-net-mvc-infrastructure"><a href="http://ASP.NET">ASP.NET</a> MVC Infrastructure</h2>
+<h3 id="caching">Caching</h3>
+<ul>
+<li><code>[OutputCache]</code> action filter will cache action results e.g. <code>[OutputCache(Duration=60, VaryByParam=&quot;none&quot;)]</code> (where duration is specified in seconds)</li>
+<li>Best strategory for caching is first gather metrics to know where caching would best be utilised</li>
+<li>Can also be used on child actions - so parts of the page can be cached, but not the whole page</li>
+<li>Other settings include:
+<ul>
+<li><code>VaryByParam</code> will default to ‘*’ caching for every permutation possible (which is usually what is wanted), “none” would always return the same results, “name1;name2” to vary by named parameters</li>
+<li><code>Location</code> defaults to anywhere - cached on the server, and the client can also cache the result, but can be more specific</li>
+<li><code>VaryByHeader</code> vary on a header e.g. <code>Accept-Language</code> to ensure cached English text is not returned to a browser requesting the page in German</li>
+<li><code>VaryByCustom</code> - override a method on Global.asax to create a custom caching logic</li>
+<li><code>SqlDependency</code> - cache until data in a sql server table changes - not widely used - restrictions on type of SQL query can be used</li>
+</ul>
+</li>
+<li>Be careful if there are AJAX calls to populate content on the page - the response which will be cached may or may not be the full page and if the content is fetched differently the second time, this could lead to strange results. <code>VaryByHeader</code> can be used to vary with the <code>X-Requested-With</code> header which is different for AJAX requests
+<ul>
+<li>be aware that some browsers won’t treat these any differently, additionally adding <code>Location = OutputCacheLocation.Server</code> fixes this</li>
+<li>Alternatively can use a different action for the AJAX request</li>
+</ul>
+</li>
+<li>Difficult to predict cache duration in development - put into production - add load - make adjustments - to help there is a <code>CacheProfile</code> attribute which names a profile which can then be defined in config (<code>&lt;system.web&gt;&lt;caching&gt; ...</code>) - central place for all values to be defined as well as ability to update in production</li>
+</ul>
+<h3 id="localisation-and-culture">Localisation and Culture</h3>
+<ul>
+<li>Two settings:
+<ul>
+<li><code>Thread.CurrentCulture</code> impacts fomatting e.g. for dates and currencies</li>
+<li><code>Thread.CurrentUICulture</code> impacts resource loading</li>
+</ul>
+</li>
+<li>Properties can be set manually if the UI allows the user to select this manually OR <a href="http://ASP.NET">ASP.NET</a> can set these for you via the <code>Accept-Language</code> header - configured in web.config - <code>&lt;system.web&gt;&lt;globalization culture=&quot;auto&quot; uiCulture=&quot;auto&quot;/&gt;&lt;/system.web&gt;</code></li>
+<li>A resource file e.g. Strings.resx can have a localized version e.g. Strings.es.resx. The Build Action will be Embedded Resource by default.</li>
+<li>Resouces files can live within the web project, or a seperate library - simply add a .resx file - change the access modifier (drop down at the top of the resx editor) from internal to public - razor views are compiled into a different assembly than the web project and without the resx being public, they can’t be seen by the views</li>
+<li>Data annotations can also use resources e.g. <code>[Required]</code> on a property would become <code>[Required(ErrorMessageResourceType=typeof(OdeToFood.Resources), ErrorMessageResourceString=&quot;RestaurantNameRequiredErrorMessage&quot;])</code></li>
+</ul>
+<h3 id="diagnostics">Diagnostics</h3>
+<ul>
+<li><a href="http://ASP.NET">ASP.NET</a> Health Monitoring - use <code>&lt;healthMonitorying enabled=&quot;true&quot;&gt;&lt;rules&gt;&lt;add ...</code> - in the machine level web.config inside C:\windows\microsoft.net\framework\v4…\config\
+<ul>
+<li>Built in providers are the event log, sql server and wmi</li>
+<li><code>&lt;eventMappings/&gt;</code> section groups different types of events into buckets</li>
+<li><code>&lt;rules/&gt;</code> section adds mappings between events and providers - by default “All Errors” and “Failure Audits Default” go the the Event log</li>
+</ul>
+</li>
+<li>log4net</li>
+<li>elmah</li>
+<li>P&amp;P Application Logging Block</li>
+</ul>
+<h2 id="unit-testing-with-asp-net-mvc">Unit Testing with <a href="http://ASP.NET">ASP.NET</a> MVC</h2>
+<h2 id="deployment-and-configuration">Deployment and Configuration</h2>
+<h3 id="configuration-files">Configuration Files</h3>
+<ul>
+<li>XML files control environment settings: Authentication, Compilation, Connections, Cryptography, Custom Errors</li>
+<li>Hierarchical - lower level settings can (if not locked down) override higher level settings
+<ul>
+<li><code>machine.config</code> (settings for all .NET applications)</li>
+<li>Machine level <code>web.config</code> (settings for all <a href="http://ASP.NET">ASP.NET</a> applications)</li>
+<li>Parent’s <code>web.config</code> - if the application is deployed underneath another application</li>
+<li><code>web.config</code> - inside the root of the application and optionally inside subfolders e.g. the <code>Views</code> folder</li>
+</ul>
+</li>
+</ul>
+<p>The <code>machine.config</code> and machine level <code>web.config</code> are in C:\Windows\Microsoft.NET\Framework\v4.0.30319\Config.
+The <code>Views</code>’s folders <code>web.config</code> contains a FileNotFound handler which returns a 404 if anyone tries to request a view file directly in the URL (rather than going via a controller).</p>
+<h3 id="hosting">Hosting</h3>
+<p>MVC compiles to a DLL and requires a host process to execute, to deliver HTTP requests to the logic inside the dll.
+w3wp.exe - per app pool</p>
+<h3 id="preparation-for-deployment">Preparation for Deployment</h3>
+<ul>
+<li>Turn automatic migrations off again <code>AutomaticMigrationsEnabled = &quot;false&quot;</code></li>
+<li>Delete the original migration script</li>
+<li>Delete the database</li>
+<li>Get rid of any test data seed creations</li>
+<li><code>Add-Migration InitialCreate</code></li>
+<li>Set the migrations to run automatically on deployment - can either do via code or configuration, example code below:</li>
+</ul>
+<pre class="language-csharp" tabindex="0"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Data<span class="token punctuation">.</span>Entity<span class="token punctuation">.</span>Migrations</span><span class="token punctuation">;</span>
+
+<span class="token class-name"><span class="token keyword">var</span></span> migrator <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">DbMigrator</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">Configuration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// Configuration is in the Migrations folder</span>
+migrator<span class="token punctuation">.</span><span class="token function">Update</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2018/01/06/jon-skeet-csharp-in-depth/">Jon Skeet: C# In Depth 4th Edition</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2018/01/18/qa-architecting-microsoft-azure-solutions/">QA: Architecting Microsoft Azure Solutions</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2018/01/17/pluralsight-building-applications-with-asp-dot-net-mvc-4/` was built on 2025-09-05T01:23:56.886Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

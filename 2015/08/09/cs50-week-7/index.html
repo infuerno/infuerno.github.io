@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>CS50 - Week 7</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="cs50-week-7">CS50 - Week 7</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2015-08-09">09 August 2015</time></li>
+</ul>
+
+<p>07557267417
+QDGxqQ2K</p>
+<h2 id="ip-internet-protocol">IP - Internet Protocol</h2>
+<p>Method for addressing every computer on the internet.
+DNS - Domain Name Server - has mapping of URLs to IP addresses and vice versa. Use <code>nslookup</code> to query DNS.</p>
+<h2 id="tcp-transmission-communication-protocol">TCP - Transmission Communication Protocol</h2>
+<p>Method for sending information between computers on the internet with reliabiity that whole message will be delivered. It will also divide the message into multiple segments.</p>
+<h2 id="http">HTTP</h2>
+<p>Protocol which web browers use to talk to web servers.</p>
+<p>GET / HTTP/1.1
+Host: <a href="http://www.google.com">www.google.com</a>
+…</p>
+<p>HTTP/1.1 200 OK
+Content-Type: text/html
+…</p>
+<h2 id="php-syntax">PHP Syntax</h2>
+<ul>
+<li>
+<p>Use the following to demarquate php code to be interpreted by the php interpreter.</p>
+  
+</li>
+<li>
+<p>All variables start with a dollar sign e.g. <code>$x = 4;</code> <code>$s = &quot;hello&quot;;</code></p>
+</li>
+<li>
+<p>Types are implicit, not explicit</p>
+</li>
+<li>
+<p>Functions are declared using the <code>function</code> keyword e.g. <code>function f() { ... }</code></p>
+</li>
+<li>
+<p>Functions do not specify a return type and can return different types at run time as required</p>
+</li>
+<li>
+<p>Declare arrays using e.g. <code>$a = array(1, 2, 3);</code> <code>$a = [1, 2, 3];</code> <code>$a = [];</code></p>
+</li>
+<li>
+<p>Declare associative arrays using e.g. <code>$h = [&quot;a&quot; =&gt; &quot;apple&quot;, &quot;b&quot; =&gt; &quot;banana&quot;];</code> <code>$h = [];</code></p>
+</li>
+<li>
+<p>Add a new element to an array using e.g. <code>$a[] = 4;</code></p>
+</li>
+<li>
+<p>Add a new element to an associate array using e.g. <code>$h[&quot;c&quot;] = &quot;cat&quot;;</code></p>
+</li>
+<li>
+<p>The function <code>count</code> returns the number of elements in an array e.g. <code>count($a);</code></p>
+</li>
+<li>
+<p>Single or double quotes can be used for creating strings</p>
+</li>
+<li>
+<p>The dot operator concatenates strings e.g. <code>$n = 5; $s = 'n is '.$n;</code></p>
+</li>
+<li>
+<p>Single or double quotes can be used in the example above.</p>
+</li>
+<li>
+<p>Variables are interpreted when used in double quoted strings e.g. <code>&quot;n is $n&quot;</code> will become <code>&quot;n is 5&quot;</code></p>
+</li>
+<li>
+<p>Variables are not interpreted when using single quotes e.g. <code>'n is $n'</code> still remain <code>&quot;n is $n&quot;</code></p>
+</li>
+<li>
+<p>To include values of arrays in strings use {} e.g. <code>&quot;{h['c']}&quot;</code> would give “cat”</p>
+</li>
+<li>
+<p><code>foreach</code> loops are useful in php. Note the order of elements in the declaration</p>
+  
+</li>
+<li>
+<p><code>require_once</code> copies the contents of one file into another file</p>
+<p>require_once(<strong>DIR</strong> . “/math.php”);
+print(add(1, 2) . “\n”);</p>
+</li>
+<li>
+<p><strong>DIR</strong> is a special constant for the current directory, so this file is in the same directory as <code>math.php</code></p>
+</li>
+</ul>
+<h2 id="css">CSS</h2>
+<ul>
+<li>A <code>CSS rule</code> is usually a <code>selector</code> followed by <code>declarations</code> to determine the style</li>
+<li><code>Combinators</code> let you join multiple <code>simple selectors</code></li>
+<li>Simple selectors include:
+<ul>
+<li>ID selectors i.e. #</li>
+<li>tag selectors e.g. h1</li>
+<li>class selectors e.g. .box</li>
+<li>attribute selectors e.g. [type=“radio”] to target e.g. <input type="radio"></li>
+<li>pseudoselectors for specificing styling when interations occur e.g. h1:hover</li>
+</ul>
+</li>
+<li>Combinators include:
+<ul>
+<li>whitespace for children</li>
+<li>commas to distinguish selectors</li>
+<li><code>&gt;</code> for direct children only</li>
+<li><code>~</code> for sibling elements</li>
+<li><code>+</code> for the one sibling which comes directly after another element</li>
+</ul>
+</li>
+</ul>
+<h2 id="html">HTML</h2>
+<p>Not a programming language, a markup language.</p>
+<h2 id="php">PHP</h2>
+<p>Find in your environment the interpreter for php</p>
+<pre><code>#!/usr/bin/env php
+</code></pre>
+<p>Print out post variables using</p>
+<pre><code>&lt;?php print_r($_POST); ?&gt;
+</code></pre>
+<p>Where <code>print_r</code> is a recursive print function and <code>$_POST</code> is a special variable, a super global, which holds the post variables. They can be indexed into using square brackets e.g. <code>$_POST[&quot;name&quot;]</code>. The function <code>empty</code> can be used to check if a variable has a function e.g. <code>empty($_POST[&quot;name&quot;])</code></p>
+<p>To send email use:</p>
+<pre><code>require(&quot;libphp-phpmailer/class.phpmailer.php&quot;);
+
+$mail = new PHPMailer();
+$mail-&gt;IsSMTP();
+$mail-&gt;Host =&quot;smtp.fas.harvard.edu&quot;;
+$mail-&gt;Port = 587;
+$mail-&gt;SMTPSecure = &quot;tls&quot;;
+
+$mail-&gt;SetFrom(&quot;jharvard@cs50.harvard.edu&quot;);
+$mail-&gt;AddAddress(&quot;jharvard@cs50.harvard.edu&quot;);
+$mail-&gt;Subject(&quot;Registration&quot;);
+$mail-&gt;Body = 
+    &quot;This person just registered:\n\n&quot; .
+    &quot;Name: &quot; . $_POST[&quot;name&quot;] . &quot;\n&quot;;
+
+if ($mail-&gt;Send() == false)
+{
+    die($mail-&gt;ErrInfo);
+}
+</code></pre>
+<h3 id="superglobals">Superglobals</h3>
+<p>$_COOKIE
+$_GET
+$_POST
+$_SERVER
+$_SESSION
+…</p>
+<h3 id="sessions">Sessions</h3>
+<p>Sessions need to be started before they can be used.</p>
+<pre><code>session_start();
+if (isset($_SESSION[&quot;counter&quot;]))
+{
+    $counter = $_SESSION[&quot;counter&quot;];
+}
+else
+{
+    $counter = 0;
+}
+
+// increment counter
+$_SESSION[&quot;counter&quot;] = $counter + 1;
+</code></pre>
+<h3 id="parameters-to-functions">Parameters to functions</h3>
+<p>You can pass in arbitrary key value pairs to functions where the key indicates the name of an argument and the value indicates the value to pass for that argument. E.g.</p>
+<pre><code>renderHeader([&quot;title&quot; =&gt; &quot;CS50&quot;]);
+</code></pre>
+<p>and the square brackets incidate that an associative array is being passed in, so multiple values are possible. E.g.</p>
+<pre><code>renderHeader([&quot;title&quot; =&gt; &quot;CS50&quot;, &quot;week&quot; =&gt; 0]);
+</code></pre>
+<p>The definition of this function may be:</p>
+<pre><code>function renderHeader($data = [])
+{
+    extract($data); 
+}
+</code></pre>
+<p>where <code>extract($data)</code> takes all the keys and creates variables for them.</p>
+<h3 id="misc">Misc</h3>
+<ul>
+<li><code>htmlspecialchars($title)</code> is a special function which renders any dangerous characters harmless.</li>
+<li>Use <code>&lt;?= ... ?&gt;</code> as a shortcut to <code>&lt;?php print ... ?&gt;</code></li>
+<li><code>===</code> compares operands values <em>and</em> types whereas <code>==</code> only compares values. So e.g. an empty array will evaluate to false so <code>[] == false</code> will be <code>true</code> whereas <code>[] === false</code> will be <code>false</code>.</li>
+</ul>
+<h3 id="file-permissions">File permissions</h3>
+<ul>
+<li>PHP files should have <code>600</code> so that you (and the webserver) can read and write to it (visitors should not be able to see php files, only the result of executing them) - for security reasons, php web pages are interpreted by “you” (using suPHP and Apache on the appliance)</li>
+<li>Non PHP files should have <code>644</code> so that you can read and write, others can read and execute</li>
+<li>Directories should have <code>711</code> so that you can read, write and execute and everyone else can only execute</li>
+</ul>
+<h2 id="stocks">Stocks</h2>
+<h3 id="what-are-stocks">What are stocks?</h3>
+<p>A stock is a share in the ownership of a company. Stock = Shares = Equity. Being a shareholder means you are one of the many owners of a company and as such have a claim to everything the company owns. You are entitled to your share of the company’s earnings as well as any voting rights attached to the share.</p>
+<p>Usually holding shares gives you an equivalent number of votes for who should be on the board of directors. Though only having a few share, and therefore a few votes won’t affect this too much.</p>
+<p>Profits are sometimes paid out in the form of <em>dividends</em>. Your claim on assets is only relevant if the company goes bankrupt. In this scenario, you will only get some money back once all other creditors have been paid. Nevertheless owning shares gives you a claim on the earnings and assets.</p>
+<p><em>Limited liability</em> is another important aspect of shares. You are not personally liable if the company is not able to pay its debts. Partnerships, on the other hand, do hold any <em>partners</em> liable. Shareholders only ever stand to loose their investment in shares.</p>
+<p>Companies sell stocks as a way to raise money. Bank loans or issuing bonds (IOUs) are also possible and this is called <em>debt financing</em>. However, issuing stocks to raise money is <em>equity financing</em>. These type of money does not require the company to pay back the money, or pay interest. IPO - initial public offering - the first sale of stock by the company.</p>
+<p>Companies do not have to pay dividends and many do not.</p>
+<p>Stocks are risky, but the return has historically been good. Over the long term and investment in stocks has historically had an average return of 10-12%.</p>
+<h3 id="different-types-of-stocks">Different types of stocks</h3>
+<p>Common stock - as described above.</p>
+<p>Preferred stock - doesn’t usually have the same voting rights (i.e. one vote per share). Investors are usually guaranteed a fixed dividend forever, and in the event of liquidation preferred shareholders and paid off before common shareholders. Preferred shares have similarity with bonds.</p>
+<p>Other classes - other variants can also exist. E.g. a stock which gives voting rights of 10 votes per share.</p>
+<p>When there are different classes of stock these are often referred to as <em>Class A</em> and <em>Class B</em> and these are often represented by placing a letter behind the ticker symbol e.g. BRKa and BRKb for a company whose ticker symbol is BRK.</p>
+<h3 id="how-stocks-trade">How stocks trade</h3>
+<h3 id="what-causes-stock-prices-to-change">What causes stock prices to change</h3>
+<h3 id="buying-stocks">Buying stocks</h3>
+<h3 id="how-to-read-a-stock-table-quote">How to read a stock table/quote</h3>
+<h3 id="the-bulls-the-bears-and-the-farm">The Bulls, the Bears and the Farm</h3>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2015/08/08/cs50-week-6/">CS50 - Week 6</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2015/08/23/cs50-week-8/">CS50 - Week 8</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2015/08/09/cs50-week-7/` was built on 2025-09-05T01:23:56.884Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

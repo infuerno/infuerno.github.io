@@ -1,0 +1,948 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>TOGAF</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="togaf">TOGAF</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2015-06-29">29 June 2015</time></li>
+</ul>
+
+<h2 id="references">References</h2>
+<p><a href="https://celestialconsulting.atlassian.net/wiki/display/DIS/DIS+-+TOGAF+AIDES+Home">https://celestialconsulting.atlassian.net/wiki/display/DIS/DIS+-+TOGAF+AIDES+Home</a>
+<a href="https://delicious.com/celestial_consulting">https://delicious.com/celestial_consulting</a>
+<a href="http://www.danroam.com/the-back-of-the-napkin/">http://www.danroam.com/the-back-of-the-napkin/</a>
+<a href="https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=soa-rm">https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=soa-rm</a>
+<a href="http://www.mikethearchitect.com/2012/10/togaf-templates.html">http://www.mikethearchitect.com/2012/10/togaf-templates.html</a>
+<a href="http://www.iso-architecture.org/ieee-1471/afs/frameworks-table.html">http://www.iso-architecture.org/ieee-1471/afs/frameworks-table.html</a>
+<a href="http://opengroup.co.za/presentations">http://opengroup.co.za/presentations</a>
+<a href="http://blog.buildingautomationmonthly.com/togaf-foundation-exam-study-guide/">http://blog.buildingautomationmonthly.com/togaf-foundation-exam-study-guide/</a>
+Module 1
+Module 2
+Module 3
+Module 4
+Module 5
+Module 6
+Module 7
+Module 8 Preliminary Phase
+Module 9 Architecture Governance
+Module 10 Business Scenario</p>
+<h2 id="introduction">Introduction</h2>
+<p>What is an Enterprise?
+A set of organisations with a common set of goals.
+Define the enterprise. Work out where the boundaries are.</p>
+<p>What is an Architecture?
+Components, relationships, principles governing its design and evolution.</p>
+<p>What is an Enterprise Architecture?
+Think of it as town planning…
+PESTLE - need to understand the external policies which affect the business and the internal policies
+Need to have governance to enforce this:</p>
+<ol>
+<li>Somebody has to make the rules - legislation</li>
+<li>Make a judgement, interpret the law</li>
+<li>Enforce the law</li>
+</ol>
+<p>Legislators need to be independent of the implementors.
+Architecture is separate to IT.</p>
+<h2 id="domains">Domains</h2>
+<ul>
+<li>Technology Architecture - hardware, software e.g. operating system, network</li>
+<li>Data Architecture - databases, data governance, data ownership</li>
+<li>Application Architecture - contains infrastructure applications (out of the box email, word, CRM etc) and business applications (customised for your needs)</li>
+<li>Business Architecture - business processes, organisation, people - how you make money, strategy to grow, customer needs and channels</li>
+</ul>
+<p>BIDAT = business, information, data, appliation, technology</p>
+<p>Architecturally significant - only some things are significant - these have an impact on the 4 domains</p>
+<h2 id="the-parts-of-togaf">The Parts of TOGAF</h2>
+<p>There are 6 + 1 (introduction) parts to TOGAF</p>
+<ul>
+<li>ADM - Architecture Development Methods - the Process. TOGAF is not the only one. Others are RAFIM, FEAF, TEAF, Zachman, RM-ODP, MODAF, DODAF. However TOGAF is the only one with a solid process.</li>
+<li>Architecture Content Framework - the Terminology.</li>
+<li>ADM Guidelines and techniques - the things which help you do your job</li>
+<li>Architecture Capability Framework - determine the capabilities required for the requirement e.g. data migration will require more data architects</li>
+<li>Reference models - there are 2 reference models:
+<ul>
+<li>TRM - Technical reference model - TOGAF delivers a generic one out of the box which can be applied to any situation</li>
+<li>IIIRM - Integrated Information Infrastructure reference model
+<ul>
+<li>client devices</li>
+<li>brokering applications</li>
+<li>data in context = information</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Enterprise Continuum - windows / way of looking at architecural assets - either buy or build - buy them if it isn’t your core competancy - find <em>reuse</em> either internally or externally in the market</li>
+</ul>
+<h2 id="phases">Phases</h2>
+<h3 id="phase-p-preliminary-phase">Phase P - Preliminary phase</h3>
+<p>Setting up the shop - targetting the customers - what is the enterprise - set up the tools - cost model - set up the teams - create governance framework - define principles - nail down the terminolgy</p>
+<p>Make sure you read:
+* the objectives - why you do something - purpose
+* the approach - how you do something</p>
+<h4 id="objectives">Objectives</h4>
+<p>Mode of engagement. There is a problem. Tell me what the problem is.
+Mode of engagement. Define what the problem is. Define the scope, analyse the problem.
+Mode of engagement. Find a solution.</p>
+<p>Work out the value proposition is to the business…</p>
+<ol>
+<li>Define the capability.</li>
+<li>Implement it.</li>
+</ol>
+<h4 id="approach">Approach</h4>
+<ol>
+<li>Define the Enterprise - whats in whats out</li>
+<li>Why have we been brought in?</li>
+<li>Formalise the requirements</li>
+<li>Identify Architecture principles - usually done by senior people - short statement of the principle - implication - hwat happens if you do do it / don’t do it
+<ul>
+<li>primacy of principles - obey the principles</li>
+<li>maximise benefit to the enterprise - their must be a business benefit</li>
+<li>compliance with the law</li>
+<li>business continuity</li>
+</ul>
+</li>
+</ol>
+<h4 id="inputs">Inputs</h4>
+<p>BOM mostly has the strategies, goals, tactics - often have a shareholders report (contains the BOM - business operating model)</p>
+<h4 id="steps-more-formalised-way-of-approach">Steps (more formalised way of approach)</h4>
+<ol>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li>Tailor TOGAF and any other frameworks</li>
+<li>Tools - mood, repo</li>
+</ol>
+<p>Technology principles - only use hardware from a certain vendor, open source first</p>
+<h3 id="phase-h-architechture-change-management">Phase H - Architechture Change Management</h3>
+<ul>
+<li>Is this an architecturally significant change? Monitoring station for the requirements.</li>
+<li>What is the impact?</li>
+</ul>
+<h3 id="phase-a">Phase A</h3>
+<p>Draft of a 20,000 foot view of current point, target point and how we’re going to get there. Do all phases (e.g. B, C, D and also E, F), but at 20,000 feet. Start by harvesting what is real, but turn it into logical models and specifications and write the specifications for the target state - then go to market and see what products there are and how they map onto your requirements / map onto your roadmap. Identify the products - NOT select (selection of products is done right at the end).
+Good architecture is rooted in the specifications / logical space NOT the solution space.
+Identify risks and start monitoring them through phase B, C, D, E F to ensure you are mitigating them. Identify initial risk and any residual risk.</p>
+<p>20,000 foot quadrant - <a href="https://celestialconsulting.atlassian.net/wiki/display/DIS/Phase+A+-+Vision+Phase">https://celestialconsulting.atlassian.net/wiki/display/DIS/Phase+A+-+Vision+Phase</a></p>
+<p>The next 3 phases will tend to be done in the order of the biggest impact first. E.g. a data migration will start first to look at the data and therefore the information architecture.</p>
+<h3 id="phase-b-business-architecture">Phase B - Business Architecture</h3>
+<p>Anything you do in phase B should support you in phases C and D. You can’t change what you don’t know - hence you need to spend a bit of time harvesting at Phase A. Understand the business, customers, channel, customer segments, relationships, connecting to customers.  Only once you’ve done that can you look at your application, data and infrastructure.
+Business architecture quadrant.</p>
+<h3 id="phase-c-information-architecture">Phase C - Information Architecture</h3>
+<p>Data - data models, CRUD, ownership of data, geographic location, policies around data
+Application - infrastructure / business specific
+Information architecture quadrant.</p>
+<h3 id="phase-d-technology-architecture">Phase D - Technology Architecture</h3>
+<h3 id="phase-e">Phase E -</h3>
+<p>Collaborative effort.
+First phase concerning implementing.
+Bring together the 4 quadrants from A, B, C, D and produce a more detailed quadrant from 2000 feet.
+Select solutions.
+Detailed planning of how you are going to move from current to planning.
+Involve the PMOs - they have the budget.</p>
+<h3 id="phase-f">Phase F -</h3>
+<p>Continue to engage with the PMO - best to begin the engagement in phase E (or even earlier). Some things in this phase seem a bit late. Almost merged together into one phase.
+Show everybody all the stuff - key players - see what they think of the roadmaps you’ve drawn in E go back to E if necessary and tweak - back to F to validate etc</p>
+<h4 id="tools-and-techniques-need-to-know-they-name-them-in-the-exam">Tools and techniques (need to know - they name them in the exam)</h4>
+<p>Five key types of tables FOR THE EXAM</p>
+<ol>
+<li>Implementation Factor Assessment and Deduction Matrix (Impact table) WHAT you want to do v. IMPACT / HOW you’re going to do it</li>
+<li>Consolidated Gaps, Solutions and Dependencies Matrix</li>
+<li>Architecture Definition Increments table (Roadmap)</li>
+<li>Transition Architecture State Evolution table - links to TRM - shows</li>
+<li>Business Value Assessment Technique - value vs risk - size of the circle indicates cost - colour is at RAG state - shows which projects should be canned - can do in Excel really easily if you put the data in</li>
+</ol>
+<p>Tube maps for road maps - see samples in photos on the phone and also</p>
+<h3 id="phase-g-implementation-governance">Phase G - Implementation governance</h3>
+<p>Govern the implementation of the solution. Engage with the delivery team to deliver the solution.</p>
+<h3 id="architecture-repository">Architecture repository</h3>
+<p>Confluence
+Archimate; Mega; System Architect; IServer; Mood</p>
+<ul>
+<li>Repository of all the solutions</li>
+<li>Meta model</li>
+<li>Landscape - strategic (20,000 ft), segment (smaller chunks, e.g. time, gegraphy, business unit), capability</li>
+<li>Organisation reference models</li>
+<li>Standards - copy the standard rather than reference the standard (since they tend to change)</li>
+<li>Governance Log - how did the decisions get made</li>
+</ul>
+<h3 id="enterprise-continuum">Enterprise Continuum</h3>
+<p>The way you view your assets will determine how much reuse you can get.</p>
+<p>Two rows:</p>
+<ul>
+<li>Architecture C - specs</li>
+<li>Solution C - real stuff</li>
+</ul>
+<p>Four columns:
+Foundation = the lowest common denominator e.g. keyboards, screens
+Common &gt; Industry specific &gt; Organisation specific &gt; Business specific (e.g. different versions)
+Left to right ()
+Right to left (eclipse, netbeans, SMS)
+Common systems architecture - pattern which can apply to reoccuring problems</p>
+<h3 id="core-content-metamodel">Core Content Metamodel</h3>
+<p>TOGAF have taken terminology from PRINCE, ITIL.
+They have used a technique called role based modelling.
+Core + Extensions - can’t change anything</p>
+<p>CMDs - catalogs, matrices, diagrams.
+For any domain we will have different types of these. There are templates for each domain based on the meta model. Stencils are provided based on excel and visio.</p>
+<h3 id="governance">Governance</h3>
+<ul>
+<li>
+<p>Enabler</p>
+</li>
+<li>
+<p>Be creative within the constraints.</p>
+</li>
+<li>
+<p>COBIT 4.1 - Control objectives for IT frameworks</p>
+</li>
+<li>
+<p>Governance ensures business is conducted properly</p>
+</li>
+<li>
+<p>Have processes in place</p>
+</li>
+<li>
+<p>Monitor these</p>
+</li>
+<li>
+<p>Need senior level buy in</p>
+</li>
+<li>
+<p>Architecture Board - requires CIO / CTO, requires architect / EA, number of EAs (not everyone), people from the business to get buy in</p>
+</li>
+<li>
+<p>PMO - Need to be lead by the architecture board</p>
+</li>
+<li>
+<p>Architecture contract - phase G - need to govern the relationship between the business and the delivery team</p>
+</li>
+<li>
+<p>Compliance</p>
+</li>
+<li>
+<p>Don’t have a governance framework / not even an compliance framework really</p>
+</li>
+<li>
+<p>Irrelevant - doesn’t match</p>
+</li>
+<li>
+<p>Consistent - some parts match, some extra bits</p>
+</li>
+<li>
+<p>Compliant - all parts match, not complete, but no extra</p>
+</li>
+<li>
+<p>Comformant - all parts match, some extra bits</p>
+</li>
+<li>
+<p>Fully conformant - exact match</p>
+</li>
+<li>
+<p>Non conformant - similar to consistent - extreme conditions it starts to fail, it isn’t the same actually</p>
+</li>
+<li>
+<p>Do they already have any governance frameworks?</p>
+</li>
+<li>
+<p>How will the EA integrate with theirs - work out in prelim phase - iseb fundamental test process, iso 9001/TickIT.</p>
+</li>
+<li>
+<p>principles help your governance - TOGAF has a really good set of principles</p>
+</li>
+</ul>
+<p>TOGAF will gude the prince and itil frameworks - iserver repo supports</p>
+<p>HSBC / ATOS governance framework examples
+TOGAF MAPPING 300 pdf
+atos and ns&amp;i - 660m outsourcing - 15000 pages of schedule</p>
+<p>governance and change control framework
+formulate req &gt; assess impact &gt; develop baseline and target arch (artefacts) &gt;
+harvest current estate &gt; develop current SBB &gt; [develop current ABB &gt; develop target ABB &gt; develop target SBB] - change lifecycle</p>
+<p>iServer repo - provider RW - director RO - director what if RW</p>
+<h3 id="business-scenario">Business Scenario</h3>
+<p>Business scenario is a textual represenation of a business process - check out case study interview v2.1.pdf
+TOGAF dictates “developing a business scenario” but there are much better things to use instead e.g. use cases, business process modelling HOWEVER for the purposes of the exam use the TOGAF stuff</p>
+<p>1962 - monkey - BPM - purpose is to uncover business processes and why they are done like this.</p>
+<p>for greenfield this works really well
+requirements &gt; use cases &gt; scenarios &gt; models (class diagrams) &gt; software and hardware</p>
+<p>brownfield - need to do the reverse
+harvest the current &gt; models &gt; scenarios and use cases &gt; requirements for change</p>
+<h3 id="stakeholder-management-communications-planning">Stakeholder Management (Communications Planning)</h3>
+<p>RASCI chart the other way
+Respnsible (doer); Accountablility (butt kicked); Support; Consulted (talk to, advise); Informed (kept in the loop)
+e.g. upgrade all the desktops - then go down with the stake holder on the left and identify who is in which group.</p>
+<p>RASCI normal way
+actors on the left, activity on the top - put RASCI in each square…</p>
+<h4 id="classify-stakeholder-positions">Classify Stakeholder Positions</h4>
+<p>Stakeholder Analysis Matrix -
+Power / Interest Matrix -
+<a href="http://www.mindtools.com/">http://www.mindtools.com/</a> under Toolkit
+Stakeholder map - size of the circle / weight of the line
+Actor interaction graph - stateholders with the relationships mapped out
+The effect of change
+Stakeholder Map - stakeholder /</p>
+<p>Phase A - Vision Phase</p>
+<p>VIEW - Thing you see
+VIEWPOINT - perspective of what you see</p>
+<p>Can’t have a view without a viewpoint
+.dotx = template = stencil = viewpoint
+.docx = view</p>
+<p>Concern + stakeholder + technique
+Stakeholders have concerns and we address the converns using a technique</p>
+<h3 id="building-block">Building block</h3>
+<p>A BB is something well defined interfaces.</p>
+<p>A BB direct correlation to a TYPE in the metamodel (e.g. role, org unit, )
+Role is a building block - can take you out and put someone else in.
+You are a building block - can take on different roles.
+Protocol is an interface, a way of communicating.</p>
+<p>ABB - architecture building block - specficiation
+SBB - solution building block - real thing</p>
+<p>When you describe a phone - ABB
+Create a standard with various people who can implement this -</p>
+<h4 id="software">Software</h4>
+<p>Specification - ABB
+Instantion of the software - SBB
+Install it - SBB instance - these are what require the licence</p>
+<p>component - specification
+artefact -</p>
+<p>Architecture Definition Document - Chapter 6 - Architecture Devliverables (hout foundation unit 11.pdf)
+RAW - Request for Architecture work
+SAW - Statement of Architecture work</p>
+<h3 id="interoperability">Interoperability</h3>
+<p>Have interoperability between systems and people.</p>
+<h4 id="business-transformation-btep-canada-readiness-assessment">Business Transformation (BTEP Canada) Readiness Assessment</h4>
+<p>Assess the readiness factors - the table doesn’t make sense… They didn’t take the correct table from the BTEP outputs.</p>
+<h3 id="capability-planning">Capability Planning</h3>
+<p>Capability can be defined as - the ability to achieve a desired effect in a specific operating environment, it is a logical construct that is made manifest through the components of an organisation.</p>
+<p>Capability planning is about changing one capability and increasing others -</p>
+<h2 id="other-frameworks">Other Frameworks</h2>
+<h3 id="zachman">Zachman</h3>
+<p>Zachman framework - created in the 1980s by an IBM person - John Zachman.
+Simply a system for collecting and organising. Present it using something else.
+Interrogrative - number of questions - come from Rudyard Kipling
+Rows represent stakeholders:
+Scope -
+Business Model - ops
+system model - devs
+tech - infrasture people
+details - outsourced partners</p>
+<p>E.g I notice we have ops in France (WHERE)… WHY? Bought a company ages ago - legacy.
+WHO? Sales people, trainers.
+What type of things do we do (functions - HOW) - deliver courses, sell courses
+Do we have any key assets? Any buildings? (WHAT)</p>
+<p>Fill in data in the cells, link data in the cells - usually just text in the cells. Often create sentences out of the text in the cells using nouns for the words in the cells and verbs for the columns.</p>
+<p>Really good tool for collecting data, harvesting your estate.</p>
+<p>Tom Graves <a href="http://weblog.tetradian.com/">http://weblog.tetradian.com/</a> : Every enterprise architecture</p>
+<h3 id="bmc-business-model-canvas">BMC - Business Model Canvas</h3>
+<p>Looked after by Business Model Generation - Scandinavian company. <a href="http://www.businessmodelgeneration.com/canvas/bmc">http://www.businessmodelgeneration.com/canvas/bmc</a>
+In dropbox under “methods, frameworks and styles”.
+Good book - profiles the top 100 companies.</p>
+<p>Looking at the company and trying to understand the ecosystem. Steve Jobs made it famous. “Apple ecosystem” <a href="http://livingenterprise.net/the-apple-ecosystem-and-the-concept-of-lock-in/">http://livingenterprise.net/the-apple-ecosystem-and-the-concept-of-lock-in/</a> - need a good business plan.</p>
+<p>Helps you understand the flow of how things happen (the jet stream and why it is affecting the weather).</p>
+<p>You do stuff (author courses, sell courses, buy other courses, book people on courses)</p>
+<p>What makes you different? What is your USP? What is your value proposition?</p>
+<p>Business Module YOU (for your own career progression)</p>
+<p>Revenue stream - Pay on demand, subscription based, invoice based…</p>
+<p>process
+role to process
+role to process to data
+role to process to data to application
+role to process to data to application to technology (infrastructure)</p>
+<p>BCD do the same thing
+meet regularly to ensure all models are consistent - should have a bunch of data diagrams, business process diagrams etc which can’t be related to each other and match up.
+don’t talk about data / products etc in business architecture - only types</p>
+<h3 id="requirements-management">Requirements Management</h3>
+<p>RQ tools
+Open Source Process for doing Requirements Management
+VOLARE process</p>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2015/06/26/cs50-week-3/">CS50 - Week 3</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2015/07/11/cs50-week-4/">CS50 - Week 4</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2015/06/29/togaf/` was built on 2025-09-05T01:23:56.884Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

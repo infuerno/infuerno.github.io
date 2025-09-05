@@ -1,0 +1,987 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Pluralsight: Microsoft Azure for .NET Developers - Cloud Patterns and Architecture</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="pluralsight-microsoft-azure-for-net-developers-cloud-patterns-and-architecture">Pluralsight: Microsoft Azure for .NET Developers - Cloud Patterns and Architecture</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2019-06-03">03 June 2019</time></li>
+</ul>
+
+<ul>
+<li><code>amarula-rg</code></li>
+<li><code>amarula-serviceplan-eu</code> - service plan based in EU</li>
+<li><code>amarula-serviceplan-us</code> - service plan based in US</li>
+<li><code>amarula-traffic</code> - traffic manager</li>
+<li><code>amarula-us</code> - app service</li>
+<li><code>amarula-eu</code> - app service</li>
+<li><code>amarula-redis</code> - redis cache</li>
+</ul>
+<h2 id="architecture-in-the-cloud">Architecture in the Cloud</h2>
+<p>Patterns for building scalable cloud solutions</p>
+<h3 id="an-overview-of-azure-services">An Overview of Azure Services</h3>
+<h4 id="iaas">IaaS</h4>
+<ul>
+<li>Compute - VMs and Containers</li>
+<li>Storage - BLOB, Files, Log files, Diagnostic files for other services</li>
+<li>Networking - Create private network inside of Azure; VPN to on premises network</li>
+</ul>
+<h4 id="paas">PaaS</h4>
+<ul>
+<li>Compute - Service Fabric (scalable microservices - low level services - useful for a large number of stateless services)</li>
+<li>Integration - Storage Queues, BizTalk services, Service Bus</li>
+<li>Media and CDN</li>
+<li>App Service - Web Apps, API Apps, Notification Hubs (SMS)</li>
+<li>Developer Services - Azure Devops, Azure SDK, Application Insights</li>
+<li>Analytics and IOT - HDInsight (Hadoop), Machine Learning (set up API), Data Factory (move large volumes of data)</li>
+<li>Data - SQL, Redis Cache, CosmosDB</li>
+</ul>
+<h4 id="security-and-management">Security and Management</h4>
+<ul>
+<li>Azure AD, Azure Key Vault</li>
+</ul>
+<h3 id="basic-api-design">Basic API Design</h3>
+<ul>
+<li>App Service can run on Windows and therefore IIS. Nevertheless can still run Node.JS, Ruby, PHP and Java. App Services for Linux can run all these stacks as well as .NET Core</li>
+<li>Advantages over VMs:
+<ul>
+<li>Instantaneous deployments</li>
+<li>App Service Plan - can be scaled vertically and horizontally, also auto-scale configurations</li>
+<li>Deployment slots (no downtime)</li>
+<li>Storage account usually used for log files, diagnostic files</li>
+<li>Blob storage can also be used for user uploads (can replicate / share access signatures)</li>
+<li>Blob storange can also be used for static files e.g. CSS - can then be pushed to CDN</li>
+</ul>
+</li>
+</ul>
+<h3 id="adding-authentication">Adding Authentication</h3>
+<ul>
+<li>Can add various external identity providers e.g. Twitter, Facebook etc - middleware components for these. Simply register the application’s URL with the identity provider. <a href="http://ASP.NET">ASP.NET</a> Identity can additionally be used to track who has registered for which account.</li>
+<li>Azure AD for business / internal applications</li>
+<li>Azure AD B2C</li>
+<li>IdentityServer</li>
+</ul>
+<h3 id="sophisticated-web-system">Sophisticated Web System</h3>
+<ul>
+<li>App Service with App Service Plan with auto-scale in place</li>
+<li>Azure AD plugged in for authentication</li>
+<li>Asynchronous processing - use a storage account and message queues to manage - load levelling - helps cope with spikes in traffic by levelling the load and amorizing the request over a longer length of time e.g. heavy processing to manage a customer’s order.</li>
+<li>Azure WebJobs and Azure Functions - good for executing code when a message appears in a queue, when a new blob appears in a storage account (Consumption Based app service plan)</li>
+<li>Blob storage for static content to push to a CDN (can pick up straight from the app service, but blob storage recommended)</li>
+<li>Azure Redis Cache - can hold cache for all services used - saves start up time</li>
+<li>Azure search - indexers which can crawl data in SQL, CosmosDB</li>
+<li>App Insights - has an API</li>
+<li>Azure Key Vault - protect access keys, passwords, certificates</li>
+</ul>
+<h3 id="adding-resilience-and-availability">Adding Resilience and Availability</h3>
+<ul>
+<li>Deploy the application across two different regions</li>
+<li>Azure Traffic Manager can be used to route requests to one region or the other. DNS name servers when queried return the IP address for a region, based on routing rules e.g. lowest latency (geographically closest), or specific geographic routing (requests from Europe go to the Europe data center). Alternatively can have active region and standby region.</li>
+<li>Geo replication for databases - primary for writes, replicated to multiple secondary for reads</li>
+</ul>
+<h3 id="managing-apis">Managing APIs</h3>
+<ul>
+<li>API Manager can provide API gateway capabilities as well as a unified API interface from a multitude of different services.</li>
+<li>Can provide a developer portal - allow third parties to sign up to use the API</li>
+</ul>
+<h3 id="backend-architecture-for-native-apps">Backend Architecture for Native Apps</h3>
+<ul>
+<li>Azure Mobile SDK - will help synchronise data between local storage on the device and an API endpoint. Notification hubs for push messages.</li>
+<li>Microsoft Hockey App (now renamed Visual Studio App Centre) (with Azure DevOps) to push builds to devices</li>
+</ul>
+<h3 id="devops-with-containers-and-kubernetes">DevOps with Containers and Kubernetes</h3>
+<ul>
+<li>Push code to Azure DevOps and from there push to Azure Container Registry (or DockerHub)</li>
+<li>From there can push to App Service (Web App for Containers)</li>
+<li>OR set up own cluster using Azure Kubernetes Service (AKS)</li>
+<li>Azure Monitor to monitor deployments</li>
+</ul>
+<h3 id="building-for-the-iot">Building for the IOT</h3>
+<ul>
+<li>Event Hubs - designed to ingest events e.g. temperature readings. Built on top of Service Bus. Can use HTTPS as well as AMQP.</li>
+<li>IoT hub - bidirectional communication with devices</li>
+<li>Stream Analytics for analysing data</li>
+<li>Data Lake or Data Warehouse for holding data - HDInsight</li>
+</ul>
+<h3 id="iaas-2">IaaS</h3>
+<ul>
+<li>Public load balancer which distributes traffic to one of a set of web servers running in an Availability Set</li>
+<li>Web servers in turn communicate via an internal load balancer to a set of business services also running in an Availability Set</li>
+<li>Jump box to manage VPNs - potentially via a VPN Gateway</li>
+</ul>
+<h2 id="cloud-patterns-for-resilency">Cloud Patterns for Resilency</h2>
+<p>Resilient applications have two important characteristics:</p>
+<ul>
+<li>High Availability - responsive and healthy for a substantive amount of time</li>
+<li>Disaster Recovery</li>
+</ul>
+<p>One often influences the other. Resiliency is a trade off with cost and is therefore a business decision. Additional costs for resources, but also additional complexity which implicitily equals higher costs.</p>
+<h4 id="redundant-storage">Redundant Storage</h4>
+<ul>
+<li>LRS - locally redundant storage - copied to 3 different nodes locally</li>
+<li>GRS - geo redundant storage - copied to primary and secondary data centers</li>
+</ul>
+<h4 id="availiability-sets-for-vms">Availiability Sets for VMs</h4>
+<ul>
+<li>Fault Domain</li>
+<li>Update Domain</li>
+</ul>
+<h4 id="replication-and-point-in-time-restores">Replication and Point in Time Restores</h4>
+<ul>
+<li>Replication - high availability and disaster recovery for the data</li>
+<li>Point in Time Restore - for when the application writes bad data</li>
+</ul>
+<h4 id="app-services">App Services</h4>
+<ul>
+<li>Geo Distributed using Traffic Manager</li>
+</ul>
+<h3 id="slas">SLAs</h3>
+<p>Microsoft publish the SLAs for Azure services: <a href="https://azure.microsoft.com/en-gb/support/legal/sla/">https://azure.microsoft.com/en-gb/support/legal/sla/</a>. Need to recognise the conditions under which different SLAs are given e.g. VMs deployed in an Availability Set will have a different SLA to single instance VMs.</p>
+<h3 id="connection-resiliency">Connection Resiliency</h3>
+<ul>
+<li>Retry a few times with a delay between e.g. 503 - Service Unavailable - worth retrying; 404 - not worth it</li>
+<li>Many different services have different retry policies which can be specified when creating a client from the appropriate SDK library</li>
+<li><a href="http://ADO.NET">ADO.NET</a> doesn’t include any retry logic (must write yourself), but EF6 and EF Core DO have retry logic e.g.</li>
+</ul>
+<pre><code>services.AddDbContext&lt;ApplicationContext&gt;(options =&gt;
+{
+    options.UseSqlServer(Configuration.GetConnectionString(&quot;default&quot;))
+    sqlOptions =&gt; sqlOptions.EnableRetryOnFailure());
+});
+</code></pre>
+<h3 id="graceful-degradation">Graceful Degradation</h3>
+<p>When retry still isn’t working. Need to provide the best experience when things have gone wrong in one part.</p>
+<p>The added complexity with add cost, but for example can add a ready only Redis Cache to have all data the main database has to at least service reads. CQRS and event sourcing pattern comes in handy here to give a structure and make resilient systems easier to implement.</p>
+<h3 id="load-balancing">Load Balancing</h3>
+<ul>
+<li>Azure Load Balancer - layer 4 - transport layer load balancer. Sends all TCP packets for a single request to the same machine</li>
+<li>Azure Application Gateway - layer 7 - application level load balance - understands HTTP, HTTPS, WebSockets - can do SSL offloading, cookie based sessions, URL based routing</li>
+<li>Azure Traffic Manager - DNS lookups to distribute requests</li>
+</ul>
+<h3 id="azure-traffic-manager">Azure Traffic Manager</h3>
+<p>A “profile” can be set to one of several Routing Methods:</p>
+<ul>
+<li>Performance - best latency</li>
+<li>Weighted - 10% to App A; 90% to App B; Good for AB testing</li>
+<li>Priority - Send all traffic to Priority 1 instance unless unavailable / unhealthy</li>
+<li>Geographic - Allocate based on location of user</li>
+<li>Multivalue - ?</li>
+<li>Subnet - ?</li>
+</ul>
+<h3 id="azure-traffic-manager-endpoints">Azure Traffic Manager Endpoints</h3>
+<ul>
+<li>Can change the routing method</li>
+<li>Can update the TTL - default is 60 seconds - lower the value, the quicker a client can cutover from a failing instance to a working instance in that event (however more DNS queries have to be done the lower the value - may make the application “slower” and also may cost more - DNS queries as charged pro rate)</li>
+<li>Endpoint manager settings need to be set properly to an address on the endpoint which is going to return a 200 status code - often set to a specific path e.g. <code>/monitor</code> - which could perform some additional checks e.g. database connectivity</li>
+<li>Set up endpoints and set endpoint type:
+<ul>
+<li>Azure endpoint - for anything Azure</li>
+<li>External endpoint - anything else</li>
+<li>Nested endpoint - another traffic manager profile</li>
+</ul>
+</li>
+<li><a href="https://www.whatsmydns.net">https://www.whatsmydns.net</a> - useful to check how it is resolving around the world</li>
+<li>SQL server options for resiliency
+<ul>
+<li>Just one SQL server means if EU region is down and the SQL server is in the EU region, the US app would also be having problems</li>
+<li>Can geo-replicate the data from EU (write) to US (read only)</li>
+<li>Build a caching layer</li>
+<li>Use messaging, and message queues (only possible with async tasks)</li>
+</ul>
+</li>
+</ul>
+<h3 id="load-levelling">Load Levelling</h3>
+<ul>
+<li>Storage queues - reliable, persistent, support HTTP based interface</li>
+<li>Service Bus queues - not only queues. Has other features e.g. transactions, duplicate message detection, poison messaging handling, expiration, batching. Can help communicate through firewalls and reach endpoints which are hidden by NATs.
+<ul>
+<li>Queue - brokered communication</li>
+<li>Topics - similar to a queue with multiple subscribers</li>
+<li>Relays - synchronous two way communication - firewall, dynamic IP, hidden by NAT</li>
+</ul>
+</li>
+</ul>
+<h3 id="azure-service-bus">Azure Service Bus</h3>
+<ul>
+<li>First need to create a namespace</li>
+<li>Queues have various configurations:
+<ul>
+<li>Max queue size - default 1 GB</li>
+<li>Message TTL - default 14 days - after this messages are delete (or dead lettered)</li>
+<li>Lock duration - default 30 seconds when a reading process tries to read a message</li>
+<li>Enable duplicate detection</li>
+<li>Enable dead lettering on expiration</li>
+<li>Enable session (for dealing with groups of related message)</li>
+<li>Enable partitioning - ???</li>
+</ul>
+</li>
+<li>Usual to create separate policies for reading and writing</li>
+</ul>
+<p>Metrics shown on summary:</p>
+<ul>
+<li>Active message count - number of messages in the queue</li>
+<li>Scheduled message count</li>
+<li>Dead-letter message count</li>
+<li>Transfer message count</li>
+<li>Transfer dead-letter message count</li>
+</ul>
+<h3 id="testing">Testing</h3>
+<p>Important to simulate sceanrios for the resilience that is in place to ensure it works.</p>
+<h3 id="monitoring">Monitoring</h3>
+<p>Despite the in built diagnostics - need to add logging and instrumentation. Have alerts set up - be on the look out for unusual behaviour. Web logs, database logs, OS performance counters</p>
+<h2 id="cloud-patterns-for-scalability">Cloud Patterns for Scalability</h2>
+<p>Performance is usually thought of as the speed with which ONE request can be actioned.</p>
+<p>Scalability, on the other hand, is how well an application copes with 1000s of requests.</p>
+<h3 id="a-sample-architecture">A Sample Architecture</h3>
+<ul>
+<li>Azure Traffic Manager - route requests to multiple app service deployments. The app service themselves can use auto scaling</li>
+<li>API Gateway - optimise API endpoints</li>
+<li>CDN</li>
+<li>Partition blob storage</li>
+<li>CQRS pattern - one approach to reading data, a different approach to writing data</li>
+<li>Use service bus and functions for back end processing</li>
+<li>Partition SQL data</li>
+<li>Application Insights for monitoring</li>
+</ul>
+<h3 id="the-importance-of-partitioning">The Importance of Partitioning</h3>
+<p>Data storage is often a bottleneck.</p>
+<ul>
+<li><strong>Vertical partioning</strong><br>
+Can be used to divide atributes of data which are more often referenced from attributes of data which are more seldomly referenced. The data attributes which are referenced more often can then use premium storage / caching / replication.</li>
+<li><strong>Horizontal partioning</strong><br>
+Popular approach to scaling data - e.g. range partitioning - all customers for A-M go to one database, N-Z to another; temporal partitioning - all orders for this month to one database, all orders for last month to a database; hashing partitioning - decided based on hash value</li>
+<li><strong>Functional partitioning</strong>
+Different data sets in different data sources. Also easy to then store one set of data in a relational database and one set in a document database.</li>
+</ul>
+<p>Will complicate the design and will be difficult to join data or transactions across the partitions, but needed to be able to scale this aspect.</p>
+<h3 id="azure-sql-sharding">Azure SQL Sharding</h3>
+<p>Each database has the same <em>schema</em>, but with different records inside. Can shard on a range (as above) or a tenant id if hosting for different tenants. One extra database is the “shard map manager” which contains all the metadata about how to reach all the metadata in the shard set of databases.</p>
+<p>The database for each tenant can furthermore be scaled vertically (increase the capacity for a busy tenant etc).</p>
+<p>Databases can also be placed into an elastic pool. Azure provides “elastic” tools to manage and work with shard sets. E.g. Elastic database job allows executing SQL commands against all the databases in the shard set, elastic query for querying for all data.</p>
+<p>Most database technologies in Azure have a partitioning strategy e.g. CosmosDB</p>
+<h3 id="understanding-the-cap-theorum">Understanding the CAP Theorum</h3>
+<p>Useful in thinking about designing the qualities of distributed systems.</p>
+<ul>
+<li>C = Consistent - every read will see the most recent data - e.g. system uses a relational database with ACID transactions</li>
+<li>A = Availability - every request receives a response - diffificult to have 100% availability, but can aim for e.g. 99.9%, can design for high availability when it is demanded by the business</li>
+<li>P = Partition Tolerance - a request will receive a reponse even when parts of the system are not able to communicate normally (a “network” partition) - usually expanded to mean not just network failures, but server failures or server out for patching</li>
+</ul>
+<p>Put forward by Eric Brewer who stated that a distributed system can only have 2 of the 3 guarantees. Therefore need to find which 2 qualities are most important.</p>
+<ul>
+<li><strong>Intersection CA (Consistency / Availability)</strong><br>
+Every request will receive a response, and every response includes the latest data but e.g. updating the data may be unavailable (so the request to UPDATE would not get a response??). This intersection is difficult for cloud systems, because high availability usually means caching, queuing etc which means the latest data may not be available.</li>
+<li><strong>Intersection CP (Consistency / Partition Tolerance)</strong><br>
+If there is a problem, the system will stop processing requests to ensure consistency</li>
+<li><strong>Intersection AP (Availability / Partition Tolerance)</strong><br>
+Highly available and resilient to failures and as such, there is some inconsistence - e.g. be eventually consistent</li>
+</ul>
+<p>The choices will depend on the business. Also, some parts of the system can be different.</p>
+<h3 id="common-application-patterns">Common Application Patterns</h3>
+<ul>
+<li>Partioning at the data layer</li>
+<li>CQRS - code to write data and code to read data are different</li>
+</ul>
+<h3 id="configuring-and-using-redis-cache">Configuring and Using Redis Cache</h3>
+<p>The <code>StackExchange.Redis</code> nuget package (included in the meta package <code>Microsoft.AspNetCore.App</code>) contains a client for interacting with a redis cache. This can be done via specifically interacting to redis OR via <code>IDistributedCache</code></p>
+<pre><code>// establish connection
+var connectionString = &quot;amarula-redis.redis.cache.win ... Connect=False&quot;;
+var connection = ConnectionMultiplexer.Connect(connectionString);
+_redis = connection.GetDatabase();
+
+// get a STRING
+var greeting = _redis.StringGet(&quot;greeting&quot;);
+
+// set a STRING
+_redis.StringSet(&quot;greeting&quot;, greeting);
+
+</code></pre>
+<pre><code>public CacheController(IDistributedCache cache)
+{
+    _cache = cache;
+
+    // get a STRING
+    var greeting = _cache_.GetString(&quot;greeting&quot;);
+
+    // set a STRING
+    _redis.SetString(&quot;greeting&quot;, greeting);    
+}
+
+// in Startup.ConfigureServices
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddDistributedRedisCache(options =&gt; {
+        options.Configuration = &quot;amarula-redis.redis.cache.win ... Connection=False&quot;;
+    })
+}
+
+</code></pre>
+<h3 id="the-role-of-cdns">The Role of CDNs</h3>
+<p>Azure CDN has support for SSL and custom domains. Can cache content from web app, blob storage or any web location.</p>
+<ol>
+<li>Set up a CDN profile which allows working with one or more endpoints (which can be set up to ANY web content).</li>
+<li>Set up an endpoint for e.g. <code>amarula-traffic</code> - Azure Traffic Manager. When the CDN is initially queried it won’t have the asset and will query it from the associated endpoint. Thereafter it will be cached. (Current the web app option doesn’t work well with traffic manager so choose custom)</li>
+</ol>
+<h3 id="azure-api-gateway">Azure API Gateway</h3>
+<ul>
+<li>Important if you want to charge money for use of your API.</li>
+<li>Add cross cutting concerns e.g. rate limit throttling, response caching to tune performance</li>
+<li>Portal to login, create access keys, view documentation etc</li>
+<li>In Azure there are several important parts:
+<ul>
+<li>APIs - manage collection of APIs - can be App Services / Functions / own data centre</li>
+<li>Products - each API will be placed into a “product”. Clients then register for access to products
+<ul>
+<li>Starter - default included product which limits rate of requests</li>
+<li>Unlimited - default included product which doesn’t limit number / rate of requests</li>
+</ul>
+</li>
+<li>Subscriptions - manage any subscription</li>
+</ul>
+</li>
+<li>API Gateway has ability to modify incoming requests as well as outgoing response e.g. add caching, add additional headers, serve static mock responses rather than hitting the actual API.</li>
+<li>Policies allow you to apply rate limits, whitelist IP addresses, transform JSON to XML (all availble in pre built policies). Can even write some simple C# code into the policy to be evaluated at runtime.</li>
+</ul>
+<h2 id="cloud-patterns-for-testing">Cloud Patterns for Testing</h2>
+<h3 id="requirements">Requirements</h3>
+<ul>
+<li>Know why are we load testing?
+<ul>
+<li>e.g. How many concurrent users can we support?</li>
+<li>Need qualatitive goals - e.g. average response time must be less than 750 ms.</li>
+</ul>
+</li>
+<li>Need a test environment. Also need machines to generate load against the test environment (e.g. to simulate 100,000 users)</li>
+<li>Software to monitor the application, not only the response times, but also find the bottlenecks e.g. was the web server out of memory, database reached a utilisation limit</li>
+</ul>
+<h3 id="simple-url-testing">Simple URL Testing</h3>
+<p>Can set up a simple load test on an Azure App service iteslf. App Service &gt; Performance Test.</p>
+<p>Visual Studio Enterprise has tooling to perform more sophisticated tests including HTTP POSTs and paramteters.</p>
+<h3 id="prepare-a-web-application-for-testing">Prepare a web application for testing</h3>
+<ul>
+<li>Install Application Insights to the web application.
+<ul>
+<li>Connected Services &gt; Add Connected Service &gt; Monitoring with Application Insights.</li>
+<li>Installs necessary NuGet packages</li>
+<li>Attempts to connect to existing “insight” resource / or create one</li>
+<li>Add the necessary application key</li>
+<li>Add .UseApplicationInsights() to the WebHostBuilder creation</li>
+</ul>
+</li>
+<li>Consider adding config settings to turn features on an off
+<ul>
+<li>e.g. caching to make it easier to do load testing (e.g. with and without caching)</li>
+<li>two different approaches to a database query</li>
+</ul>
+</li>
+</ul>
+<h2 id="creating-a-web-test">Creating a Web Test</h2>
+<ul>
+<li>
+<p>Add “Web Performance and Load Test project” (under Test section)</p>
+</li>
+<li>
+<p>File will be added with the extension <code>.webtest</code></p>
+</li>
+<li>
+<p>A = Atomic -</p>
+</li>
+<li>
+<p>C = Consistent -</p>
+</li>
+<li>
+<p>I =</p>
+</li>
+<li>
+<p>D = Durable</p>
+</li>
+</ul>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2018/11/27/freeman-essential-docker-for-aspnet-core-mvc/">Freeman: Essential Docker for ASP.NET Core MVC</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2019/06/11/pluralsight-microsoft-azure-for-net-developers-building-secure-services-and-applications/">Pluralsight: Microsoft Azure for .NET Developers - Building Secure Services and Applications</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2019/06/03/pluralsight-microsoft-azure-for-net-developers-cloud-patterns-and-architecture/` was built on 2025-09-05T01:23:56.888Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

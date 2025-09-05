@@ -1,0 +1,1147 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Treehouse DD CSS Foundations</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="treehouse-dd-css-foundations">Treehouse DD CSS Foundations</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2013-09-22">22 September 2013</time></li>
+</ul>
+
+<p>Mozilla CSS reference: <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference">https://developer.mozilla.org/en-US/docs/Web/CSS/Reference</a></p>
+<h2 id="stylesheet-types">Stylesheet types</h2>
+<ul>
+<li>user-agent stylesheets (built into the browser)</li>
+<li>user stylesheets</li>
+<li>author stylesheets</li>
+</ul>
+<h2 id="selectors">Selectors</h2>
+<h3 id="universal-selector">Universal selector</h3>
+<p>The universal selector <code>*</code> is very powerful and can be used to select <strong>all</strong> elements. Useful for removing all margins and paddings from user-agent stylesheets.</p>
+<h3 id="type-selectors">Type selectors</h3>
+<p>e.g. body, h1, table</p>
+<h3 id="descendant-selectors">Descendant selectors</h3>
+<p>Only select elements which are decendants of other elements.</p>
+<pre class="language-css" tabindex="0"><code class="language-css"><span class="token selector">h1 span</span> <span class="token punctuation">{</span> <span class="token property">color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span><span class="token punctuation">}</span>  
+<span class="token selector">.base p</span> <span class="token punctuation">{</span> <span class="token property">padding</span><span class="token punctuation">:</span> 5px<span class="token punctuation">;</span><span class="token punctuation">}</span></code></pre>
+<h3 id="class-and-id-selectors">Class and ID selectors</h3>
+<p>Both a class and an ID can be applied to an element. IDs carry more specificity than classes, so styles defined in IDs will carry more weight than styles defined in classes.</p>
+<h3 id="combinators">Combinators</h3>
+<p>Selectors can be combined using a combinator.</p>
+<h4 id="direct-child">Direct child</h4>
+<p><code>&gt;</code> selects elements which are only direct children of the element on the left</p>
+<pre class="language-css" tabindex="0"><code class="language-css"><span class="token selector">h1 > a</span> <span class="token punctuation">{</span> <span class="token property">color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span><span class="token punctuation">}</span>  </code></pre>
+<h4 id="adjacent-sibling">Adjacent sibling</h4>
+<p><code>+</code> selects elements which are immediately adjacent to the element on the left</p>
+<pre class="language-css" tabindex="0"><code class="language-css"><span class="token selector">h2 + p</span> <span class="token punctuation">{</span> <span class="token property">font-size</span><span class="token punctuation">:</span> 1.2em<span class="token punctuation">;</span> <span class="token punctuation">}</span> </code></pre>
+<h4 id="general-sibling">General sibling</h4>
+<p><code>~</code> selects all sibling elements, not only those immediately adjacent, to the element on the left. <strong>Note</strong> it will select all elements which follow as long as they are siblings (i.e. on the same level) even if they are separated by other elements, but no elements which are before.</p>
+<pre class="language-css" tabindex="0"><code class="language-css"><span class="token selector">h2 ~ p</span> <span class="token punctuation">{</span> <span class="token property">font-size</span><span class="token punctuation">:</span> 1.2em<span class="token punctuation">;</span> <span class="token punctuation">}</span> </code></pre>
+<h3 id="attribute-selectors">Attribute selectors</h3>
+<p>Select all elements which have a certain attribute.</p>
+<ul>
+<li><code>[class]</code> will select all elements with a <code>class</code> attribute (regardless of value)</li>
+<li><code>a[class]</code> will select all <code>a</code> elements with a <code>class</code> attribute</li>
+<li><code>a[class=&quot;foo&quot;]</code> will select all <code>a</code> elements with a <code>class</code> attribute which has a value of <code>foo</code>. <strong>Note</strong> in this example this is much more work for the browser than simply using the <code>.foo</code> selector. A better example would be selecting all <code>input</code> values of type text, or all anchor tags which open in a new window.</li>
+</ul>
+<p>Attribute selectors have the same specificity as classes and pseudo classes.</p>
+<h3 id="pseudo-classes">Pseudo classes</h3>
+<ul>
+<li><code>a:link</code> selects anchor elements which have yet to be clicked on. It can only be used to target anchor elements with the href attribute.</li>
+<li><code>a:visited</code> selects anchor elements which have already been visited.</li>
+<li><code>a:hover</code> select anchor elements which are currently being hovered over. The <code>:hover</code> pseudo class can be applied to any element, not just anchors.</li>
+<li><code>:active</code> pseudo class selects elements when they are “active”, and can also be applied to any element, commonly applied to anchors.</li>
+<li><code>:focus</code> only applies to interactive elements e.g. links and form elements and can be applied when this element has the focus. This helps show which is the element with the current focus when tabbing through the page.</li>
+</ul>
+<h4 id="structural-pseudo-classes">Structural pseudo classes</h4>
+<ul>
+<li>
+<p><code>li:first-child</code> selects only the first child li in a ul or ol.</p>
+</li>
+<li>
+<p><code>li:last-child</code> conversely selects only the last child li in a ul or ol.</p>
+</li>
+<li>
+<p><code>:only-child</code> selects elements which are the only children of their particular parent.</p>
+</li>
+<li>
+<p><code>:nth-child(an + b)</code> selects the nth child of a parent element where b is the offset value, and a is the cycle multiple <strong>after</strong> the first element has been selected.</p>
+<ul>
+<li><code>odd</code> will select only odd elements, <code>even</code> will select only even elements</li>
+<li><code>3</code> will select only the 3rd element</li>
+<li><code>2n + 1</code> will select the 1st element (+ 1) followed by the 3rd element, 5th element etc</li>
+<li><code>3n</code> will select every 3rd element e.g. 3, 6, 9 etc</li>
+<li><code>-n+5</code> will select the 5th element, then 4th, 3rd, 2nd, 1st</li>
+</ul>
+</li>
+<li>
+<p><code>:nth-last-child</code> is exactly the same, but starts from the bottom first</p>
+<ul>
+<li><code>-n+3</code> will here select the 3rd element from bottom, then the 2nd element from bottom and finally the last element i.e. the last 3 elements</li>
+</ul>
+</li>
+<li>
+<p><code>:nth-of-type(an+b)</code> selects all sibling elements of the specified type</p>
+</li>
+<li>
+<p><code>:nth-last-of-type(an+b)</code> is similar, but starts counting from the bottom</p>
+</li>
+<li>
+<p><code>:only-of-type</code> selects elements if it is the only element of its type within its parent element</p>
+</li>
+</ul>
+<h4 id="additional-pseudo-classes">Additional pseudo classes</h4>
+<ul>
+<li><code>:root</code> will select the root element of the document (usually the html element). This may be useful since it has more specificity than the html element selector.</li>
+<li><code>:target</code> can be used to style the target element of matching anchor. e.g. if <code>&lt;a href=&quot;#s2&quot;&gt;section 2&lt;/a&gt;</code> targets a div with id s2, then when it is clicked, the string “#s2” is appended to the url and the browser uses this to style the element with matching id “#s2”</li>
+<li><code>:empty</code> will select any empty elements. This may be useful for alerting the user to an empty result set, or an empty string</li>
+<li><code>:not()</code> is the negation selector. e.g. <code>:not(:empty)</code> will select all elements which aren’t empty; <code>:not([id=&quot;s1&quot;])</code> will select all elements which don’t have an id of “s1”</li>
+</ul>
+<h4 id="ui-element-states-pseudo-classes">UI element states pseudo classes</h4>
+<ul>
+<li><code>:enabled</code> selects any form and input elements which are enabled e.g. <code>input[type=&quot;text&quot;]:enabled</code></li>
+<li><code>:disabled</code> selects elements which are disabled</li>
+<li><code>:checked</code> selects any form elements which are <em>checked</em> e.g. check boxes and radio buttons. Radio button labels can be selected using a combination of this pseudo class with the adjacent sibling select e.g <code>input[type=&quot;radio&quot;]:checked + label</code>.</li>
+</ul>
+<h3 id="substring-matching-attribute-selectors">Substring matching attribute selectors</h3>
+<h4 id="begins-with">Begins with ^=</h4>
+<ul>
+<li><code>a[href^=&quot;http://&quot;]</code> selects any anchor elements with href attribute values beginning with “http://”.</li>
+<li><code>a[href^=&quot;mailto:]</code> selects all the anchor elements with email addresses.</li>
+</ul>
+<h4 id="ends-with">Ends with $=</h4>
+<ul>
+<li><code>a[href$=&quot;.pdf&quot;]</code> selects all anchor elements with an href attribute value ending with “.pdf”.</li>
+<li><code>a[href$=&quot;.doc&quot;]</code> selects all anchor elements with an href attribute value ending with “.doc”.</li>
+</ul>
+<h4 id="contains">Contains</h4>
+<ul>
+<li><code>img[src*=&quot;thumb&quot;]</code> selects all img elements with a src attribute value containing the string “thumb”</li>
+</ul>
+<h3 id="pseudo-elements">Pseudo-elements</h3>
+<p>The difference between psuedo-elements and psuedo classes is that psuedo classes target actual elements, whereas psuedo-elements target virtual elements which don’t always exist as elements.<br>
+The two syntax variations <code>:first-letter</code> and <code>::first-letter</code> will both work, but the double colon is more common to distinguish that this is targeting a psuedo element.</p>
+<ul>
+<li><code>::first-line</code> selects the first line</li>
+<li><code>::first-letter</code> selects the first letter</li>
+</ul>
+<p>Two further pseudo-elements allow inserting generated content.</p>
+<ul>
+<li><code>::before</code> will insert the content before</li>
+<li><code>::after</code> will insert the content after</li>
+</ul>
+<p>Both require a <code>content</code> property which can specify the content to be inserted in a number of different ways: the actual content as a string; a url to an image; a reference to the content of an attribute on that element; or an empty string with extra css properties to e.g. draw a circle.</p>
+<pre class="language-css" tabindex="0"><code class="language-css"><span class="token selector">.phone::before</span> <span class="token punctuation">{</span> <span class="token property">content</span><span class="token punctuation">:</span> <span class="token string">"\2706"</span><span class="token punctuation">;</span> <span class="token comment">/* common phone icon unicode */</span> <span class="token punctuation">}</span>
+<span class="token selector">.phone::before</span> <span class="token punctuation">{</span> <span class="token property">content</span><span class="token punctuation">:</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span><span class="token string url">"img/phone.jpg"</span><span class="token punctuation">)</span></span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token selector">.dload::before</span> <span class="token punctuation">{</span> <span class="token property">content</span><span class="token punctuation">:</span> <span class="token function">attr</span><span class="token punctuation">(</span>href<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token selector">.dload::before</span> <span class="token punctuation">{</span> <span class="token property">content</span><span class="token punctuation">:</span> <span class="token string">""</span><span class="token punctuation">;</span> <span class="token property">height</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span> <span class="token property">width</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span> <span class="token property">display</span><span class="token punctuation">:</span> inline-block<span class="token punctuation">;</span> <span class="token punctuation">}</span></code></pre>
+<p><strong>Note</strong> the generated contented is inserted into the actual element, rather than alongside.</p>
+<h2 id="values-and-units">Values and units</h2>
+<h3 id="absolute-length-units">Absolute length units</h3>
+<p>Reference: <a href="http://www.w3.org/TR/css3-values/#absolute-lengths">http://www.w3.org/TR/css3-values/#absolute-lengths</a></p>
+<p>These are only useful when the dimensions of the output are known e.g. cm when printing, px when viewing on a screen.</p>
+<table>
+<thead>
+<tr>
+<th>Unit</th>
+<th>Description</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cm</td>
+<td>Centimeters</td>
+<td>Not commonly intended for web design, highly dependent on output and varies greatly between different resolutions</td>
+</tr>
+<tr>
+<td>mm</td>
+<td>Millimeters</td>
+<td></td>
+</tr>
+<tr>
+<td>in</td>
+<td>Inches</td>
+<td></td>
+</tr>
+<tr>
+<td>pc</td>
+<td>Picas</td>
+<td>Commonly used in print, not intended for web or screen design (1pc = 12pt = 1/6 inch)</td>
+</tr>
+<tr>
+<td>pt</td>
+<td>Points</td>
+<td>Commonly used in print, not intended for web or screen design (1pt = 1/72 inch)</td>
+</tr>
+<tr>
+<td>px</td>
+<td>Pixels</td>
+<td>1px used to be 1/98 inch, but now pixel densities are changing, this changes too</td>
+</tr>
+</tbody>
+</table>
+<p>An alternative method for pixels instead of relating physical units to physical measurements on a screen, the concept of a <em>reference pixel</em> - an optically consistent reference unit.</p>
+<p>Except for pixel units, all other absolute units tend to be avoided, except in cases when desigining for printing.</p>
+<h3 id="relative-length-units">Relative length units</h3>
+<table>
+<thead>
+<tr>
+<th>Unit</th>
+<th>Description</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ex</td>
+<td>The height of the current fonts lower case letter ‘x’</td>
+<td>Different fonts even with the same font size may have differently sized 'x’s.</td>
+</tr>
+<tr>
+<td>em</td>
+<td>Relative to the font size of the parent element</td>
+<td>The default font size is 16px, em is useful since it will resize according to the default font size chosen by the user. Nested elements get tricky.</td>
+</tr>
+<tr>
+<td>rem</td>
+<td>Root em, always relative to the root element</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="viewport-relative-units">Viewport relative units</h3>
+<p>Size is based on the size of the viewport and is 1% of this size. Currently have less browser support. Check out <a href="http://caniuse.com/viewport-units">http://caniuse.com/viewport-units</a></p>
+<table>
+<thead>
+<tr>
+<th>Unit</th>
+<th>Description</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vw</td>
+<td>viewport width</td>
+<td>Measured in 1% units of the width of the view port e.g. 15vw is 15% of the width</td>
+</tr>
+<tr>
+<td>vh</td>
+<td>viewport height</td>
+<td>1% units of the height of the view port</td>
+</tr>
+<tr>
+<td>vmin</td>
+<td>viewport width or height, whichever is the smaller</td>
+<td>1% units of the width or height</td>
+</tr>
+<tr>
+<td>vmax</td>
+<td>viewport width or height, whichever is the larger</td>
+<td>1% units of the width or height</td>
+</tr>
+</tbody>
+</table>
+<h3 id="numeric-and-text-data-values">Numeric and text data values</h3>
+<ul>
+<li><code>auto</code> is the default value for certain properties e.g. height, z-index. Assigning this value will allow the browser to set this automatically. For example, when setting giving a block element a width and setting the margins to auto, the browser will make the left and right margins equal thereby centering the element on the page.</li>
+<li><code>inherit</code> explicitly specifies that the value of the propery on an element should be the same as the parent element. W3C list all the elements which can take this value.</li>
+<li><code>initial</code> resets the property value to its initial value had nothing been applied. Only supported by Chrome, Safari and Mozilla (with the -moz- prefix).</li>
+<li>units specifed using <code>%</code> are relative to the parent element</li>
+</ul>
+<h3 id="color-values">Color values</h3>
+<ul>
+<li>Keywords - Full keywords list on W3C at <a href="http://www.w3.org/TR/css3-color/#svg-color">http://www.w3.org/TR/css3-color/#svg-color</a></li>
+<li>RGB e.g. rgb(255, 255, 255), rgba(255, 255, 255, 0) - full transparency, rgba(255, 255, 255, 0.9) - nearly opaque</li>
+<li>HSL - hue saturation lightness e.g. hsl(240, 70%, 55%).
+<ul>
+<li>Hue is the angle in the colour wheel measured in degrees from 0 to 360</li>
+<li>Saturation of 0% is grey, 100% is full colour</li>
+<li>Lightness of 0% is black, 100% is white, 50% is normal</li>
+<li>Alpha can also be added e.g. hsla(240, 70%, 55%, 0.7)</li>
+</ul>
+</li>
+</ul>
+<h2 id="text-fonts-and-lists">Text, Fonts and Lists</h2>
+<h3 id="fonts">Fonts</h3>
+<p>Reference: <a href="http://www.w3.org/Style/Examples/007/fonts.en.html">http://www.w3.org/Style/Examples/007/fonts.en.html</a></p>
+<p>The generic fonts are <code>serif</code>, <code>sans-serif</code>, <code>monospace</code>, <code>cursive</code> and <code>fantasy</code>.
+CSS properties for fonts are <code>font-family</code>, <code>font-weight</code>,  <code>font-variant</code> (small-caps), <code>font-style</code> (italic, oblique). These can all be expressed in one line:</p>
+<pre class="language-css" tabindex="0"><code class="language-css"><span class="token selector">p</span> <span class="token punctuation">{</span>
+    <span class="token property">font</span><span class="token punctuation">:</span> [font-style] [font-variant] [font-weight] font-size font-family<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<h4 id="white-space">White space</h4>
+<p>The <code>white-space</code> property is used to alter the display of whitespace.</p>
+<ul>
+<li><code>nowrap</code> renders all text on one line</li>
+<li><code>pre</code> preserves all whitespace in the markup</li>
+<li><code>pre-line</code> renders the line breaks in the markup, but collapses multiple spaces</li>
+<li><code>pre-wrap</code> preserves the whitespace in the markup, but will also wrap text if necessary</li>
+</ul>
+<h4 id="shadows">Shadows</h4>
+<pre class="language-css" tabindex="0"><code class="language-css"><span class="token selector">p</span> <span class="token punctuation">{</span>
+    <span class="token property">text-shadow</span><span class="token punctuation">:</span> x-offset y-offset shadow-size colour<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Multiple shadows can be applied by seperating each shadow definition by a comma. The first one defined will be “on top”.</p>
+<h4 id="overflow">Overflow</h4>
+<p>The <code>text-overflow</code> will determine the style if text is spilling outside of a container (e.g. due to <code>white-space: nowrap</code> style). Possible values are <code>hidden</code> and <code>ellipses</code>.</p>
+<p>The <code>word-wrap</code> property can be set to <code>break-word</code> to ensure a long string wraps to be contained within one container.</p>
+<h4 id="list-bullet-styles">List bullet styles</h4>
+<p>Reference: <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/list-style-type">https://developer.mozilla.org/en-US/docs/Web/CSS/list-style-type</a></p>
+<ul>
+<li><code>list-style-type</code> sets the type of bullet</li>
+<li><code>list-style-position</code> places the bullet outside the list item by default, but can be change to inside</li>
+<li><code>list-style-image</code> can be used to add custom images in place of the bullets. This doesn’t give much control and it is more common to turn the bullets off and set the background-image on a list item instead. This way means the alignment of the image can be accurately controlled.</li>
+</ul>
+<p>As with fonts, the <code>list-style</code> property can be used to define everything in one. Parts are optional and the order does not matter.</p>
+<h3 id="box-model">Box model</h3>
+<p>Block level elements take up the full width available from the parent element, plus a new line before and after.</p>
+<p><code>border-width</code>, <code>border-style</code> and <code>border-color</code> properties can take up to four parameters to uniquely style each of the four sides of the element.</p>
+<h4 id="negative-margins">Negative margins</h4>
+<ul>
+<li>Applied to the top or left will pull the element in that direction.</li>
+<li>Applied on the bottom or right will pull any succeeding element into the main element.</li>
+</ul>
+<h4 id="inline-block">Inline block</h4>
+<p>The value <code>inline-block</code> for the display property generates a box which is a block element flowed with surrounding content. <strong>Note</strong> negative top and bottom margins cannot be applied to inline-block elements</p>
+<h4 id="width">Width</h4>
+<p>The width property specifies the width of the content. To get the complete width used up by an element, the width, padding, border and margins need to be added together.</p>
+<p>The <code>box-sizing</code> property allows you to alter this behaviour if you give it the value border-box (-moz-box-sizing in mozilla)</p>
+<h4 id="height">Height</h4>
+<p>The height property will work depending on the height of the parent container. <code>min-height</code> and <code>max-height</code> can be used to control the height independently of the content. If the content is too big, it will flow outside of the container. This can be controlled with the <code>overflow</code> property to scroll the contents if desired.</p>
+<h4 id="floats">Floats</h4>
+<p>Clearing floated elements can be done in several ways. The most semantic is achieved using the following piece of css:</p>
+<pre class="language-css" tabindex="0"><code class="language-css"><span class="token selector">.group:before,
+.group:after</span> <span class="token punctuation">{</span>
+  <span class="token property">display</span><span class="token punctuation">:</span> table<span class="token punctuation">;</span>
+  <span class="token property">content</span><span class="token punctuation">:</span> <span class="token string">""</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.group:after</span> <span class="token punctuation">{</span>
+  <span class="token property">clear</span><span class="token punctuation">:</span> both<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<h4 id="positioning">Positioning</h4>
+<ul>
+<li><code>static</code> is the default positioning.</li>
+<li><code>relative</code> positioning allows you to add left and top offset - relavtive to its original position in the document</li>
+<li><code>absolute</code> positioning removes an element from the document flow and will be placed according to the first parent element which doesn’t have the default static positioning.</li>
+</ul>
+<h3 id="backgrounds">Backgrounds</h3>
+<ul>
+<li>When using images for the background, also set the background colour to a similar colour in the event the image can’t be displayed.</li>
+<li>Background images are tiled by default. <code>background-repeat</code> can be used to change this. Options are <code>repeat</code>, <code>repeat-x</code>, <code>repeat-y</code>, <code>no-repeat</code>. Check out W3C for some extra values coming in soon.</li>
+<li><code>background-position</code> positions a non tiling image in a container e.g. <code>bottom left</code>.</li>
+<li><code>background-attachment</code> controls how the background image of an element is attached to the container. Possible values are scroll (default), fixed and local.</li>
+</ul>
+<pre class="language-css" tabindex="0"><code class="language-css"><span class="token property">background</span><span class="token punctuation">:</span> [background-color] [background-image] [background-repeat] [background-attachment] [background-position]</code></pre>
+<h3 id="border-radius">Border radius</h3>
+<p>The border radius will be applied if there is either a border <strong>or</strong> a background.
+Negative units cannot be used.
+Horizontal and vertical radius can be given seperately.
+When using the <code>border-radius</code> shorthand to define all corners together, the horizontal and vertical radii can be expressed using a slash.</p>
+<h3 id="box-shadows">Box shadows</h3>
+<pre class="language-css" tabindex="0"><code class="language-css"><span class="token property">box-shadow</span><span class="token punctuation">:</span> [inset] [horizontal-offset] [vertical-offset] [blur-radius] [spread-radius] [colour]</code></pre>
+<p>Multiple values can be specified using a comma to seperate them, the first is rendered on top.</p>
+<h3 id="border-images">Border images</h3>
+<ul>
+<li><code>border-image-source</code> specifes the source for the border image</li>
+<li><code>border-image-slice</code> does all kinds of wierd things and basically takes 4 parameters top-offset, right-offset, bottom-offset, left-offset which correspond to 4 lines drawn through the image. This can either be specifed in % or pixels (without the usual ‘px’).
+For the top and bottom borders, the image shown is that <strong>between</strong> the right and left offsets, but either side of the top and bottom offsets.</li>
+<li><code>border-image-repeat</code> determines if the middle image is stretched or repeated. The value <code>round</code> will attempt to repeat the image such that only whole images are used. It does this be resizing the image. The value <code>space</code> is similar to round, but achieves uniformity by instead adding space (currently poorly supported).</li>
+<li><code>border-image-width</code> changes the width of the image making up the border. A unit without a measurement represents a multiple of the set border width. It can also be specified in 40px.</li>
+<li><code>border-image-outset</code> can be used to displace the border outside of its box model, and push the border outwards. Like <code>border-image-width</code> either units to multiply the border width or px can be used.</li>
+</ul>
+<pre class="language-css" tabindex="0"><code class="language-css"><span class="token property">border-image</span><span class="token punctuation">:</span> [source] [slice] / [width] [repeat] [outset]<span class="token punctuation">;</span></code></pre>
+<p><strong>Note</strong> always define fall back borders <strong>before</strong> the border-image definition.</p>
+<p>Reference: <a href="http://border-image.com">http://border-image.com</a>, <a href="http://css-tricks.com/understanding-border-image/">http://css-tricks.com/understanding-border-image/</a></p>
+<h3 id="multiple-background-images">Multiple background images</h3>
+<p>Multiple sets of values can be set for the <code>background</code> property to layer mulitple backgrounds or background images on top of each other.</p>
+<ul>
+<li>The <code>background-size</code> property can be similarily multi-valued to specify a size for each image. * The <code>background-size</code> can alternatively be added to the shorthand property using a <code>\</code> to seperate it from the <code>background-position</code> (though this has mixed support in browsers).</li>
+<li>Two new keywords can be used to set the size according to the element size. <code>cover</code> does not respect aspect ratio, but the image will cover the whole area, whereas <code>contain</code> will respect the aspect ratio. Ensure to use <code>height: 100%;</code>.</li>
+<li>The background image may fall over the borders and this will be visible if there is any transparency in the border colour. To address this set the <code>background-clip</code> property to content-box or padding-box (default is border-box).</li>
+<li><code>background-origin</code> does a similar thing</li>
+</ul>
+<h2 id="typography">Typography</h2>
+<h3 id="legibility">Legibility</h3>
+<p>Legible typefaces usually have many common features:</p>
+<ul>
+<li>Loose letter spacing</li>
+<li>Generous x-heights - the height of the main body of a lower case letter</li>
+<li>Similar cap heights - the height of the upper case letters</li>
+<li>Prominent ascenders and decenders</li>
+<li>Common counters - the fully or partially enclosed spaces in letter</li>
+<li>Open bowls - the curved strokes enclosing the letter’s counters (e.g. ‘p’)</li>
+<li>Open apetures - the openings at the end of an open counter (e.g. ‘h’)</li>
+<li>Common serifs</li>
+</ul>
+<p>Legibility can be lost if:</p>
+<ul>
+<li>The text is all caps - ascenders and decenders are not visible</li>
+<li>Too text is italicised too much - the space between the text is reduced</li>
+<li>Too much bold font weight - the bowls start to close up</li>
+</ul>
+<p>Can the font do the job?</p>
+<ul>
+<li>Can it emphasis, italicise and quote things well?</li>
+<li>Is the font legible at small and large sizes, light and dark?</li>
+<li>How do the numbers look? Old-style numbers use ascenders and decenders whereas ‘lining’ uses a uniform height for all numbers.</li>
+<li>Is the font free?</li>
+<li>If using two fonts, they will need to balance each other. It is common to use a san-serif for headings and a serif font for the body text.</li>
+</ul>
+<h3 id="readability">Readability</h3>
+<blockquote>
+<p>If we give users a reason to stop reading, they will.</p>
+</blockquote>
+<p>Line length is most comfortable at 45 to 75 characters to one line (this includes spaces and punctuation).</p>
+<p>Line height should also be generous - no less that 150%. Browsers default line height is usually 1em which is too small to be readable. Many factors can affect line height - typeface design, font size, weight and case. Also the longer the line length, the greater the line height which generally is needed.</p>
+<p>Text has a natural rhythum which is created when we read. Designers can create the typographic rhythm to break up the monotony of a page. Readability heavily depends on it. Adding images and different heading colours helps create rhythm.</p>
+<p>Typographic colour of a page refers to the density or tone of text and will affect readability.</p>
+<p>Chunking involves grouping related elements together e.g. a heading and a paragraph. Text needs white space to breathe and to emphasis the content.</p>
+<p>Visual hierarchy is important in order to enable skimming through the page. A good example is <a href="http://simplebits.com">http://simplebits.com</a>.</p>
+<p>Three common approaches to the page:</p>
+<ol>
+<li>The traditional approach - uses a lot of centre and justification with text usually framed, in one or two columns. The text is meant to be contemplated, so is often decorated with text.</li>
+<li>The modernist approach - clear cut margins and edges, many columns, aligned to a grid.</li>
+<li>Post modernist - often breaks the rules, challenges the reader to make sense.</li>
+</ol>
+<h3 id="responsive-text">Responsive text</h3>
+<p>Typographic scales are often used to ensure consistency in combining different font sizes. A common scale is 6 7 8 9 10 11 12 14 16 18 21 24 36 48 72.</p>
+<p>Convert font sizes in pixels to ems remembering that 16px = 1em. 1rem can be used to reset the font to 16px for nested elements.</p>
+<p>Set widths of container divs in percentages instead of pixels to maintain margins when the viewport width changes. Media queries can be used to alter the defaults when the width is very small or very large.</p>
+<pre class="language-css" tabindex="0"><code class="language-css"><span class="token atrule"><span class="token rule">@media</span> screen <span class="token keyword">and</span> <span class="token punctuation">(</span><span class="token property">max-width</span><span class="token punctuation">:</span> 599px<span class="token punctuation">)</span></span> <span class="token punctuation">{</span>
+    <span class="token selector">body</span> <span class="token punctuation">{</span> <span class="token property">font-size</span><span class="token punctuation">:</span> 1em<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+    <span class="token selector">.wrap</span> <span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> 85%<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Line breaks in titles with changing viewport widths can be resolved by:</p>
+<ol>
+<li>Making the font-size smaller and / or using additional media queries to introduce ever changing font-sizes.</li>
+<li>Using the new vw font-size measurement (1/100th the width of the viewport) - not well supported currently and bug in chrome</li>
+<li>Use fittext jquery plugin from <a href="http://fittextjs.com">http://fittextjs.com</a>. Link to jquery and to the fittext library, then add some javascript to select the element (using jquery syntax) and calling the method fitText() on it.</li>
+</ol>
+<h3 id="vertical-rhythm">Vertical rhythm</h3>
+<p>This is the balance of spacing and arrangement of text as the user reads down the page. If each line of text fits consitently on evenly spaced baselines, then the page has a consistent vertical rhythm.</p>
+<p>A useful tool to achieve this is availble from <a href="http://baseline.it">http://baseline.it</a>. Just include a link to the stylesheet of the base line height in order to draw these lines behind the text on the page.</p>
+<h3 id="web-fonts">Web fonts</h3>
+<p>Populate font services include:</p>
+<ul>
+<li><a href="http://typekit.com">http://typekit.com</a></li>
+<li><a href="http://fontdeck.com">http://fontdeck.com</a></li>
+<li><a href="http://fonts.com">http://fonts.com</a></li>
+<li><a href="http://fontsquirrel.com">http://fontsquirrel.com</a></li>
+<li><a href="http://theleagueofmovabletype.com">http://theleagueofmovabletype.com</a></li>
+<li><a href="http://www.google.com/webfonts">http://www.google.com/webfonts</a></li>
+</ul>
+<p>The <code>@font-face</code> css directive allows you to link to downloaded fonts using the <code>font-family</code> and <code>src</code> attributes.</p>
+<h4 id="common-font-formats">Common font formats</h4>
+<ul>
+<li>.eot (embedded open-type) - propriertary format for ie</li>
+<li>.woff (web open font format) - developed by mozilla, supported by most browsers, very fast since data is compressed</li>
+<li>.ttf (true type format) - safari, android and ios</li>
+<li>.svg - open source, can be used for legacy version for ios</li>
+</ul>
+<h4 id="font-stack">Font stack</h4>
+<p>If web fonts are missing certain glyphs, the font stack becomes especially important in filling in any gaps. This mechanism can also be exploited by only specifying a small subset of glyphs in the referenced font-face e.g. ampersand to be used in the web page.</p>
+<h4 id="icon-fonts">Icon fonts</h4>
+<p>Icon fonts can significantly speed up performance for icons and will scale to any size without losing quality.</p>
+<ul>
+<li><a href="http://symbolset.com">http://symbolset.com</a></li>
+<li><a href="http://pictos.cc">http://pictos.cc</a></li>
+<li><a href="http://icomoon.io">http://icomoon.io</a></li>
+</ul>
+<p>These are added in exactly the same way as fonts, using the appropriate unicode. The <code>-webkit-font-smoothing</code> property may be useful with the value <code>antialiased</code> to get anti aliasing.</p>
+<h4 id="ligatures">Ligatures</h4>
+<p>Open type font features can now be better utilised in css. Ligatures are used to improve the appearance of text when letters are too close together, connecting certain letters when they are next to each other.</p>
+<pre class="language-css" tabindex="0"><code class="language-css"><span class="token property">-webkit-font-feature-settings</span><span class="token punctuation">:</span> <span class="token string">"liga"</span><span class="token punctuation">,</span> <span class="token string">"dlig"</span><span class="token punctuation">;</span> </code></pre>
+<p><code>liga</code> denotes common ligatures, <code>dlig</code> denotes discretionary ligatures.</p>
+<h4 id="further-enhancements">Further enhancements</h4>
+<ul>
+<li><strong>Horizontal line rules</strong> used subtly can enhance text and chunks of text.</li>
+<li><strong>Tracking</strong> is the spacing between letters, adjusted using the <code>letter-spacing</code> property.</li>
+<li><strong>Orphans</strong>, <strong>widows</strong> and <strong>rags</strong> can sometimes be controlled by adjusting font sizes and line lengths.</li>
+<li><strong>Rivers</strong> are created when justifying text causes large gaps to appear between words.</li>
+<li><strong>Hanging punctuation</strong> e.g. hanging quotes allow the text to stay aligned. This can be achieved using a negative text indent value. Hanging bullets could also be used.</li>
+<li><strong>Small caps</strong> can be useful for rendering abbreviations which we don’t want to be distracting e.g. PM in 12:30 PM</li>
+<li>“ and ” are the correct double quote entities</li>
+<li>– and — should be used instead of hyphens for specifying number ranges and a break in though respectively</li>
+<li>… renders the three dot ellipsis</li>
+<li>Explore the complete character set of each typeface</li>
+</ul>
+<p><a href="http://www.impressivewebs.com/html-entity-reference-common/">http://www.impressivewebs.com/html-entity-reference-common/</a> has a list of common entities
+<a href="http://dev.w3.org/html5/html-author/charref">http://dev.w3.org/html5/html-author/charref</a> for a complete list</p>
+<h3 id="css-gradients">CSS Gradients</h3>
+<p>Reference: <a href="http://www.colorzilla.com/gradient-editor/">http://www.colorzilla.com/gradient-editor/</a></p>
+<p>There are two types of gradients, linear gradients and radial gradients.</p>
+<h4 id="linear-gradients-prefixed-syntax">Linear gradients - prefixed syntax</h4>
+<p>A linear gradient is created when two or more colours are defined along the <strong>gradient line</strong>. By default the gradient line is from top to bottom. This can be changed, by including the horizontal and or vertical starting position either using position keywords or in degrees. Degrees start on the left and go anti-clockwise.</p>
+<pre class="language-css" tabindex="0"><code class="language-css"><span class="token selector">.box1</span> <span class="token punctuation">{</span>
+    <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">-webkit-linear-gradient</span><span class="token punctuation">(</span>bottom right<span class="token punctuation">,</span> blue 100px<span class="token punctuation">,</span> green<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.box2</span> <span class="token punctuation">{</span>
+    <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">-webkit-linear-gradient</span><span class="token punctuation">(</span>45deg<span class="token punctuation">,</span> blue 50%<span class="token punctuation">,</span> green<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Colour stops can be used to create more complex gradient effects, these require a colour component and optional position component. Positional components can be specified in percentages or pixels and specify where the colour stop should be shown at 100%.</p>
+<h4 id="linear-gradients-unprefixed-syntax">Linear gradients - unprefixed syntax</h4>
+<ul>
+<li>Directional keywords: use the <code>to</code> keyword with the directional keywords (thereby having to use the opposite keywords)</li>
+<li>Degrees: 0deg starts at the bottom and goes clockwise</li>
+</ul>
+<pre class="language-css" tabindex="0"><code class="language-css"><span class="token selector">.box1</span> <span class="token punctuation">{</span>
+    <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">-webkit-linear-gradient</span><span class="token punctuation">(</span>270deg<span class="token punctuation">,</span> blue 100px<span class="token punctuation">,</span> green<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">-moz-linear-gradient</span><span class="token punctuation">(</span>270deg<span class="token punctuation">,</span> blue 100px<span class="token punctuation">,</span> green<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">-p-linear-gradient</span><span class="token punctuation">(</span>270deg<span class="token punctuation">,</span> blue 100px<span class="token punctuation">,</span> green<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">linear-gradient</span><span class="token punctuation">(</span>180deg<span class="token punctuation">,</span> blue 100px<span class="token punctuation">,</span> green<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<h4 id="radial-gradients-prefixed-syntax">Radial gradients - prefixed syntax</h4>
+<p>Radial gradients start at the centre and radiate out based on the parameters specified.</p>
+<p>By default the shape is an ellipse and of the same proportions of the containing div. This can be changed to circular by adding the <code>circle</code> keyword (therefore not necessarily following the containing div’s proportions).</p>
+<p>The centre of the gradient can be specified using two further parameters. If only one value is defined, the other value defaults to the centre. As with background images, the first parameter is from the left and the second from the top.</p>
+<p>Further keywords can be defined to alter the gradient pattern.</p>
+<ul>
+<li>closest-side</li>
+<li>closest-corner</li>
+<li>farthest-side</li>
+<li>farthest-corner (default value)</li>
+</ul>
+<p>As with linear gradients, further colour stops can be added with optional position components. The position component can be specified in percentages, pixels or em units and is measured from the centre of the radial gradient.</p>
+<pre><code>&lt;position&gt;, &lt;shape&gt; &lt;size&gt; followed by the colour stops
+</code></pre>
+<h4 id="radial-gradients-unprefixed-syntax">Radial gradients - unprefixed syntax</h4>
+<pre><code>&lt;shape&gt; &lt;size&gt; at &lt;position&gt; followed by the colour stops
+</code></pre>
+<h4 id="transparent-gradients">Transparent gradients</h4>
+<p>The <code>transparent</code> keyword can be used instead of a colour. This is actually just rgba(0,0,0,0). Better results may be achieved using an rgba colour of white with full transparency i.e. rgba(255,255,255,0).</p>
+<p>If using a gradent for the background of the whole page, specify a height of 100% for the html element.</p>
+<h4 id="repeating-gradients">Repeating gradients</h4>
+<p>By using pixels in the colour stops this gives a repeating gradient pattern.
+<code>repeating-linear-gradient</code> and <code>repeating-radial-gradient</code> are the unprefixed versions.</p>
+<p>The pattern repeats based on the difference between the first and last colour stop values.</p>
+<p>Repeating gradients with smoother colour gradients can be created by making the last colour the same as the first.</p>
+<h3 id="flexbox-and-multi-column-layout">Flexbox and Multi-column layout</h3>
+<p>New positioning system, consisting of a flex container and flex items. Flexbox defines how the flex items are laid out inside the flex container. The flex container can have multiple flex lines. By default these go left to right and top to bottom.</p>
+<p>Axis
+: Flexbox has the concept of the <strong>main axis</strong> (default is left to right) and the <strong>cross axis</strong> (default is top to bottom).</p>
+<h4 id="flex-direction">Flex direction</h4>
+<pre class="language-css" tabindex="0"><code class="language-css"><span class="token selector">.nav</span> <span class="token punctuation">{</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> -webkit-flex<span class="token punctuation">;</span>                      // specify to use the flex layout mode
+    <span class="token property">-webkit-flex-direction</span><span class="token punctuation">:</span> column-reverse<span class="token punctuation">;</span>     // arrange items in a column <span class="token punctuation">(</span>default is row<span class="token punctuation">)</span>
+    <span class="token property">-webkit-justify-content</span><span class="token punctuation">:</span> space-between<span class="token punctuation">;</span>     // evenly distribute items
+    <span class="token property">-webkit-justify-content</span><span class="token punctuation">:</span> flex-end<span class="token punctuation">;</span>          // push items to the <span class="token string">'end'</span>
+    <span class="token property">-webkit-justify-content</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>            // centre the items
+<span class="token punctuation">}</span></code></pre>
+<p>Changing the margins around flex items, especially using auto, changes how the items are distributed in the container.</p>
+<h4 id="wrapping">Wrapping</h4>
+<p>By default the items do not wrap, but spill out of the container. This behaviour can be changed with the property <code>-webkit-flex-wrap</code> and the attribute <code>wrap</code>.</p>
+<h4 id="growing">Growing</h4>
+<p>To control how the items grow relative to the container and each other use the <code>-webkit-flex-grow</code> property. A value of <code>1</code> will ensure the free space is evenly distributed. The <code>-webkit-flex</code> property can also be used to specify ratio of space each item should take up. The <code>-webkit-order</code> property can be used to change the order, e.g. set it to -1 to move a particular item to the front of the other items. <code>-webkit-align-self</code> can take values such as <code>center</code>, <code>flex-end</code> to align individual items in a container (default is <code>stretch</code>).</p>
+<p>Media queries can be used to ensure items do not become too small as the browser viewport is decreased, or alternatively to change the flow direction from row to column.</p>
+<p>To use with browsers which don’t yet support flex box, the modernizr javascript can be used to provide a fall back solution.</p>
+<h4 id="multi-column-layout">Multi-column layout</h4>
+<p>-webkit-column-count
+: splits content into a specified number of columns</p>
+<p>-webkit-column-gap
+: used to specify the width of the gap between columns</p>
+<p>-webkit-column-rule
+: used to specify any rule to be drawn between columns. As with a border, there are three attributes which can be specified: width, style, colour.</p>
+<p>-webkit-column-width
+: used to specify a max width for the columns and useful in responsive design.</p>
+<p>-webkit-columns
+: used to combine the width and the count e.g. <code>-webkit-columns: 250px 3;</code></p>
+<p>Images can be rendered as well as text. Useful markup to have the image display and resize nicely:</p>
+<pre class="language-css" tabindex="0"><code class="language-css"><span class="token selector">img</span> <span class="token punctuation">{</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> block<span class="token punctuation">;</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+    <span class="token property">margin</span><span class="token punctuation">:</span> 1.5em 0<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>-webkit-column-span
+: an attribute of <code>all</code> will allow an element to span all columns</p>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2013/09/14/treehouse-project-building-a-basic-website/">Treehouse Project Building A Basic Website</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2013/09/24/chef/">Chef</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2013/09/22/treehouse-dd-css-foundations/` was built on 2025-09-05T01:23:56.880Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

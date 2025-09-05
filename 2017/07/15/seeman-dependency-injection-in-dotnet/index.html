@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Seemann: Dependency Injection in .NET</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="seemann-dependency-injection-in-net">Seemann: Dependency Injection in .NET</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2017-07-15">15 July 2017</time></li>
+</ul>
+
+<h3 id="references">References</h3>
+<p>Source code: <a href="http://manning.com/DependencyInjectionin.NET">http://manning.com/DependencyInjectionin.NET</a></p>
+<ul>
+<li>Learn what Dependency Injection is</li>
+<li>Learn what kinds of problems it solves</li>
+<li>Learn the patterns for using it</li>
+<li>Look at the various tools which help in applying those patterns</li>
+</ul>
+<h2 id="chapter-1-a-dependency-injection-tasting-menu">Chapter 1: A Dependency Injection tasting menu</h2>
+<ul>
+<li>Code bases need to be maintainable</li>
+<li>One way of making a code base maintainable is through loose coupling</li>
+<li>Loose coupling makes code extensible, extensibility makes it maintainable</li>
+<li>DI is a technique that enables loose coupling</li>
+<li>Program to an interface not an implementation</li>
+<li>Programming to interfaces is easy, but where do the instances come from - this is where DI comes in</li>
+<li>DI injects dependencies from the outside, with constructor injection being the preferred method</li>
+</ul>
+<h3 id="fallacies-about-di">Fallacies about DI</h3>
+<ul>
+<li>Late Binding: DI enables late binding (implementation chosen at runtime via config) but is ONLY ONE of the many aspects of DI</li>
+<li>Unit Testing: Again, relevant, but DI does much more</li>
+<li>Service Locator: DI is the opposite of service locator - we don’t ask for dependencies, we force consumers to supply them.</li>
+<li>DI Container: optional - without this is sometimes known as poor man’s DI - more work, but doesn’t compromise principles</li>
+</ul>
+<h3 id="purpose-of-di">Purpose of DI</h3>
+<p>Liskov Substitution Principle - should be able to replace one implementation of an interface without breaking either client or implementation. One of the most important software design principles for DI.</p>
+<ul>
+<li><strong>Null Object</strong> - replace an implementation with something that does nothing - so as not to break the client</li>
+<li><strong>Decorator</strong> - introduce new features with cross cutting concerns by implementing an interface and and also allowing the original component to plug back into the decorator. e.g. add an implementation which encompasses</li>
+<li><strong>Composite</strong> - add new functionality to an existing codebase by composing an existing implementation of an interface with a new implementation</li>
+<li><strong>Adapter</strong> - match two related but separate interfaces to each other - useful when using a third party API which needs to be consumed by your application according to a specific interface</li>
+</ul>
+<h3 id="benefits-of-di">Benefits of DI</h3>
+<ul>
+<li><strong>Late Binding</strong> - by injecting a dependency via a constructer, there is only one place which couples these two classes together - where the constructor is called. This then enables late binding by swapping out a hard coded implementation choice, with an implementation choice specified via config.</li>
+<li><strong>Extensibility</strong> - loose coupling allows the application to be recomposed in a different way with minimal changes e.g. by replacing one implementation of a particular interface with another. Open for extensibility, closed for modification.</li>
+<li><strong>Parallel Development</strong></li>
+<li><strong>Maintainability</strong> - a known benefit of the single responsibility principle - adding new features becomes simpler because it is clearer where those changes should be applied - more often that not be adding classes and recomposing the application</li>
+<li><strong>Testability</strong> - by coding to interfaces, mocks, test doubles, fakes etc can all be injected easily to limit the testing to the class under test rather than its dependencies</li>
+</ul>
+<h3 id="when-to-use-di">When to use DI</h3>
+<p>Not everything needs to be abstracted away and made pluggable. Distinguish between types that pose no danger (stable) and types that may tighten an application’s degree of coupling (volatile).</p>
+<ul>
+<li><strong>Seam</strong> - where a dependency is separated via DI</li>
+<li><strong>Stable dependency</strong> - doesn’t change, backwards compatible, contain deterministic algorithms, isn’t volatile</li>
+<li><strong>Volatile dependency</strong>
+<ul>
+<li>A dependency which introduces a requirement to set up and configure a runtime environment e.g. databases. LINQ to Entities implies a relational database. Other out of process resources including message queues, web services and the file system.</li>
+<li>A dependency which doesn’t yet exist</li>
+<li>A dependency which can’t be installed on all machines (e.g. expensive 3rd party library)</li>
+<li>A dependency which has non deterministic behaviour e.g. random numbers, or algorithms which depend on the current date or time
+Volatile dependencies are the focal point of DI. Introduce seams for these kind of dependencies.</li>
+</ul>
+</li>
+</ul>
+<h3 id="di-scope">DI Scope</h3>
+<p>By removing the responsibility of instantiating a dependency from a consuming class, that class loses control, but the control is not lost, just moved to another place. In doing so there are several benefits:</p>
+<ul>
+<li><strong>Object composition</strong> - closely associated with the original meaning of DI, compose classes into application with greater control</li>
+<li><strong>Object lifetime</strong> - surrendering creation of dependencies also means a class gives up control of when instances are created and when they go out of scope. Dependencies can be shared between consumers. Garbage collection generally means not much of an issue in .NET. Dependencies which implement <code>IDisposable</code> become complicated. Something else higher up in the call stack must control the lifetime.</li>
+<li><strong>Interception</strong> - Prior to injecting a dependency, it can be intercepted and altered. Interception is an application of the Decorator design pattern.</li>
+</ul>
+<blockquote>
+<p>There are many misconceptions about DI. Some people think that it only addresses narrow problems, such as late binding or unit testing; although these aspects of soft- ware design certainly benefit from DI, the scope is much broader. The overall purpose is maintainability.</p>
+</blockquote>
+<blockquote>
+<p>The idea of DI as a service modeled along the lines of a dictionary leads directly to the SERVICE LOCATOR anti-pattern. This is why I put so much emphasis on the need to clear your mind of even the most basic assumptions. After all, when we’re talking about dictionaries, we’re talking about stuff that belongs in the “reptile brain of programming.”</p>
+</blockquote>
+<h3 id="di-or-ioc">DI or IoC</h3>
+<p>DI is a subset of IoC.
+Inversion of Control simply refers to any style of programming where a framework or runtime controls program flow e.g. <a href="http://ASP.NET">ASP.NET</a> - where the <a href="http://ASP.NET">ASP.NET</a> page lifecycle controls the flow. Nowadays, the term IoC is often used to refer specifically to IoC over dependencies, or Dependency Injection.  However IoC is actually much broader.</p>
+<h2 id="to-read">To Read</h2>
+<ul>
+<li><a href="https://martinfowler.com/eaaDev/EventSourcing.html">Event Sourcing</a>
+<a href="http://blogs.msdn.com/b/nblumhardt/archive/2008/12/27/container-managed-application-design-prelude-where-does-the-container-belong.aspx">http://blogs.msdn.com/b/nblumhardt/archive/2008/12/27/container-managed-application-design-prelude-where-does-the-container-belong.aspx</a></li>
+<li>Currently, the most promising alternative to n-layer applications is an architectural style related to the Command- Query Responsibility Segregation (CQRS) pattern. For more information, see Rinat Abdullin, “CQRS Starting Page,” <a href="http://abdullin.com/cqrs">http://abdullin.com/cqrs</a></li>
+</ul>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2017/06/03/ruby-cheatsheet/">Ruby Cheatsheet</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2017/07/29/infoq-domain-driven-design-quickly/">InfoQ: Domain Driven Design Quickly</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2017/07/15/seeman-dependency-injection-in-dotnet/` was built on 2025-09-05T01:23:56.886Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

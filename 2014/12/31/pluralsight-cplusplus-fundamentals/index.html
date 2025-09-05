@@ -1,0 +1,1000 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Pluralsight - C++ Fundamentals</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="pluralsight-c-fundamentals">Pluralsight - C++ Fundamentals</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2014-12-31">31 December 2014</time></li>
+</ul>
+
+<h2 id="context">Context</h2>
+<h3 id="modern-c">Modern C++</h3>
+<p>The standard library contains:</p>
+<ul>
+<li>String class</li>
+<li>Collections (linked list, stack, queue etc)</li>
+<li>Smart pointers which handle memory management for you</li>
+</ul>
+<p>Managing memory yourself is <em>old-school</em>.</p>
+<h3 id="c-cli">C++/CLI</h3>
+<p>C++/CLI is a variant of C++ which makes managed code.
+Visual Studio can compile C++ code either into native code or managed code. Managed code can be easily called from other .NET modules.
+Note, choose CLR project to compile to managed code, choose Win32 projects to compile to native code.</p>
+<h3 id="versions-of-c">Versions of C++</h3>
+<p>C++ doesn’t belong to anybody. A standards committee decides on updates. First version was C++98 with a small update C++03. Next version was C++11 with a small update C++14.</p>
+<h2 id="tools">Tools</h2>
+<h3 id="visual-studio">Visual Studio</h3>
+<p>Running a console application <em>without debugging</em> automatically give you a ‘Press any key to continue…’ at the end so you can see all the output before closing the command window.</p>
+<p>When creating a new project, click “include pre-compiled header” to include the “stdafx.h” header file to make the application compile faster (not run faster).</p>
+<h3 id="console-application-structure">Console Application Structure</h3>
+<p><code>#</code> preprocessor directives
+The preprocessor goes through the code before the compiler and tweaks it a little bit. One thing it does is combines multiple files into one. Put just the definitions of functionality into a header file and then include that header file into each file that needs it.
+Includes from the Standard Library do not have the .h on the end.</p>
+<p><code>::</code> scope resolution operator as in <code>std::cout</code></p>
+<h2 id="language-basics">Language Basics</h2>
+<p>C++ is strongly typed - once a variable is declared as an int, it is always an int.</p>
+<p>Fundamental types are built into the language and include int, bool, char.
+User defined types include e.g. std::string. They can do everything that fundamental types can do i.e. full participants in the language.</p>
+<p>You can see there are red wigglies here. They say: Error: a value of type “const char *” cannot be used to initialize an entity of type “char”. The important part of that is probably the word ‘Error’.</p>
+<p>Fundamental Types on MSDN: <a href="http://msdn.microsoft.com/en-us/library/cc953fe1.aspx">http://msdn.microsoft.com/en-us/library/cc953fe1.aspx</a>
+Data Type Ranges on MSDN: <a href="http://msdn.microsoft.com/en-us/library/s3f49ktz.aspx">http://msdn.microsoft.com/en-us/library/s3f49ktz.aspx</a></p>
+<p>Different types hold different kinds of data with different lengths and different maxiumum values. When assigning doubles to ints, ints to bools, ints to chars etc, there are no runtime errors. However, the compiler knows the different lengths and will help you and issue warnings.</p>
+<h3 id="casting">Casting</h3>
+<p>Compiler will convert types when they’re compatible, with a warning if data might be lost. Error only if they are not compatible.
+By casting, the compiler warnings disappear, though this still may lead to trouble. Safer casts available with templates.
+Suffixes can be used to show the type of a literal and are a form of casting.</p>
+<h3 id="overflow">Overflow</h3>
+<p>Overflow can happen silently. E.g. char x = 300 will just assign the value 44 to x without error.</p>
+<h2 id="user-defined-types">User defined types</h2>
+<h3 id="classes-and-objects">Classes and objects</h3>
+<ul>
+<li>
+<p>When defining a class, don’t forget the trailing semi-colon, causes some weird error message on the line after the class declaration.</p>
+</li>
+<li>
+<p>Private and public sections (default is private) rather than declaring public or private for each thing.</p>
+</li>
+<li>
+<p>Access member variables and functions with <code>.</code></p>
+</li>
+<li>
+<p>Access static members and functions with <code>::</code></p>
+</li>
+<li>
+<p>To create a class, create two files, .cpp to contain the class and .h to contain the defintion</p>
+</li>
+<li>
+<p>Declare the variables and method signatures in the header file and include this in any other file you need to use it (including the .cpp class file).</p>
+</li>
+<li>
+<p>Memory is allocated but not initialised when declaring and object.</p>
+</li>
+<li>
+<p>Constructors have special initialisation syntax to immediately assign values to the member variables</p>
+<p>Person::Person(string f, string l, int a) : fullname(f), lastname(l), age(a)
+{<br>
+cout &lt;&lt; “Constructing” &lt;&lt; firstname &lt;&lt; &quot; &quot; &lt;&lt; lastname &lt;&lt; endl;<br>
+}</p>
+<p>Person p1(“James”, “Smith”, 23);  // created on the stack</p>
+<p>Person::~Person()
+{
+cout &lt;&lt; “Destructing” &lt;&lt; firstname &lt;&lt; &quot; &quot; &lt;&lt; lastname &lt;&lt; endl;<br>
+}</p>
+</li>
+<li>
+<p>Every class has a default constructor if none others have been defined</p>
+</li>
+<li>
+<p>Objects created as above are created on the stack and automatically cleaned up when the object goes out of scope. If a destructor has been defined, this is automatically called at this point.</p>
+</li>
+<li>
+<p>With inheritance constructor of the base class is called first, then the derived class. With destructors it is in reverse.</p>
+</li>
+<li>
+<p>Only use <code>using namespace &lt;e.g. std&gt;</code> inside the .cpp files and not in the header files</p>
+</li>
+</ul>
+<h3 id="enums">Enums</h3>
+<p>Enums in c++ are not prefixed by the name of the enumeration, so have to be unique across all enumerations defined.
+Generally just have a header file with the enum defined within.</p>
+<h3 id="preprocessor">Preprocessor</h3>
+<p>The preprocessor is most often used to include all files required into one file. This is achieved with preprocessor directives such as <code>#include &quot;Person.h&quot;</code>. If files are included multiple times, the compiler errors. Rather than keep track of the whole tree of inclusions, just use the <code>#ifndef</code> and <code>#endif</code> to defined a constant in your header file, which has the effect of thereafter only including that file if the constant hasn’t been defined.</p>
+<p><code>#pragma once</code> does the same thing for Visual Studio.</p>
+<h2 id="flow-of-control">Flow of control</h2>
+<p>Now a momentary word about bracing style. People have arguments about brace positioning that far exceed the arguments they can have about politics or religion or any other major touch points.</p>
+<h3 id="switch">Switch</h3>
+<p><code>expression</code>s and <code>value</code>s must be integral type or enum</p>
+<h3 id="functions">Functions</h3>
+<ul>
+<li>Can take parameters by value or reference.</li>
+<li>Can return by value or reference (careful not to create a ‘dangling’ reference).</li>
+<li>Passing by reference is used when you want to change something OR when it is expensive to pass by reference even though the variable won’t be changed (use the <code>const</code> keyword here).</li>
+<li>Dangling reference is created when you return a reference to a variable created within the function. Once the function returns, the variable goes out of scope. The memory contents may remain the same for a while, so the code will seem to work, but at any moment can be overwritten. Compiler will try and warn of this.</li>
+<li>Must have a return type. If none, then keyword <code>void</code> is used. Sometimes see this used for paramters when there are no parameters, but not necessary.</li>
+</ul>
+<h4 id="free-functions">Free functions</h4>
+<ul>
+<li>Declare before used in a header file, which can then be included in multiple places.</li>
+<li>Functions which aren’t part of a class are called global or <em>free</em> functions.</li>
+</ul>
+<h4 id="member-functions">Member functions</h4>
+<ul>
+<li>Often don’t take parameters, but work instead on values in the class</li>
+<li>Often don’t return values, but store instead the value in the class</li>
+</ul>
+<h4 id="inline-functions">Inline functions</h4>
+<ul>
+<li>Inline functions can be explicitly defined by putting the implemetation in the header file. (Actually the compiler may also decide to make other functions inline.)</li>
+</ul>
+<h4 id="error-messages">Error messages</h4>
+<p>Errors from calling functions tend to come from one of two places:</p>
+<ol>
+<li>the compiler - have you declared the function (usually in the .h)</li>
+<li>the linker - have you implemented the function (usually in the .cpp)</li>
+</ol>
+<p>For visual studio, the .cpp files in particular MUST be part of the project, not just exist in the folder.</p>
+<h3 id="immediate-if">Immediate if</h3>
+<p>Much cleaner to use immediate if if applicable: <code>result = something? 7: 302;</code></p>
+<h2 id="operators">Operators</h2>
+<p>0 matches false, everything else matches true.
+Yoda syntax: <code>if (3==i)</code> (this is popular because if typo occurs and only one equals sign is entered, in this case there would be a compiler error).</p>
+<h3 id="bitwise-operators">Bitwise operators</h3>
+<p>These do the operations bit by bit, <code>&amp;</code> and <code>^</code>.
+Commonly used to save space and time by packing individual bit values into a single number. E.g. if you have an operation which can take 7 different flags, one way is to take 7 different parameters, all alternatively, take a integer, check the lowest 7 bits of that integer to see if the options are on or off. This is implemented using constants (so you don’t have to work out which int corresponds to a certain set of options being on). flag1 = 1, flag2 = 2, flag3 = 4, flag4 = 8 etc. Bitwise or them to get your set of options, bitwise and them to check if the option is set or not.</p>
+<h3 id="bitshift-operators">Bitshift operators</h3>
+<p>Shifts all the bits along
+e.g. 4 &gt;&gt; 1 is 2, 4 &lt;&lt; 1 is 8</p>
+<h2 id="operator-overloading">Operator overloading</h2>
+<pre><code>int i = j + 3;
+Order newOrder = oldOrder + newItem;
+</code></pre>
+<ul>
+<li>Usually a member function, sometimes a free function (e.g. if you didn’t have access to the Order class to change it, of if the first item was e.g. an int)</li>
+</ul>
+<p>Examples</p>
+<ul>
+<li><code>firstname + &quot; &quot; + lastname</code> works becuase the <code>+</code> has been overloaded by the person who wrote the string class</li>
+<li><code>cout &lt;&lt; &quot;hello&quot;</code> works because the bitwise operator <code>&lt;&lt;</code> has been overloaded</li>
+<li>In collections and iterators, <code>++</code> is often overloaded to move onto the next</li>
+</ul>
+<h3 id="writing-an-overload">Writing an overload</h3>
+<p>There are two ways of writing an overload:</p>
+<ol>
+<li>
+<p>As a member function of whatever type is before the operator which takes one parameter, the type after the operator. Often, especially with comparison operators, the two types will be the same.</p>
+<p>// myObject &lt; something
+bool MyClass::operator&lt;(OtherType something)</p>
+</li>
+<li>
+<p>As a free function which takes two parameters. Often if this is a complement to a set of comparison operators on a class which defines comparison to e.g. int, these free function definitions will be included in the class .cpp file.</p>
+<p>// myObject &lt; something
+bool operator&lt;(MyClass myObject, OtherType something)</p>
+</li>
+</ol>
+<p>Since this isn’t a member of MyClass, it only has access to public member functions (unless you use <code>friend</code>). You can use friend by specifying that the free function is a <code>friend</code> inside the class definition. Thereafter the free function can access private member variables. This is one of the few situations where using <code>friend</code> is acceptable.</p>
+<h2 id="templates">Templates</h2>
+<ul>
+<li>Templates is the way C++ implements genericity. Unlike other languages, templates are resolved at compile time, not runtime.</li>
+<li>Write a class or a function and use it with a variety of types. e.g. typesafe collections</li>
+<li>Often rely on overload functions and can therefore work with both fundamental types and user defined types</li>
+<li>Much of the Standard Library is template based (formerly STL, or Standard Template Library)</li>
+<li>Both function and class templates tends to be implemented all at once in the include file rather than seperate header and .cpp file</li>
+<li>Author of some code which uses templates must ensure that types are compatible with templates chosen (and implement any extra functions required if necessary)</li>
+<li>Note, mostly people <em>use</em> templates rather than writing them</li>
+</ul>
+<h3 id="function-templates">Function templates</h3>
+<p>The example below works for all types which have defined the less than operator. Note, for those that haven’t, the error messages are vague since they will often refer to the implentation and that isn’t obvious for the user of a function.</p>
+<pre><code>template &lt;class T&gt;
+T max(T&amp; t1, T&amp; t2)
+{
+    return t1 &lt; t2? t2: t1;
+}
+</code></pre>
+<ul>
+<li>The compiler can usually work out which type to use depending on the type of the operands, but you can specify it if necessary e.g. <code>max&lt;double&gt;(1.2, 3)</code> instead of <code>max(1.2, 3)</code></li>
+</ul>
+<h3 id="class-templates">Class templates</h3>
+<p>An example of a template class which could take e.g. <code>int</code> or <code>float</code></p>
+<pre><code>template &lt;class T&gt;
+class Accum
+{
+private:
+    T total;
+public:
+    Accum(T start): total(start) {};
+    T operator+=(const  T&amp; T) {return total = total + t;};
+    T GetTotal() {return total;}
+};
+</code></pre>
+<ul>
+<li>
+<p>When instantiating template class, the type must be explicitly stated</p>
+<p>Accum<int> integers(0);
+integers += 7;</int></p>
+</li>
+<li>
+<p>Trying to add a string to the integers object will give a compile time exception (which is what we want with templates)</p>
+</li>
+</ul>
+<h3 id="template-specialization">Template specialization</h3>
+<p>Compilers will generate appropriate code from the template for any type you pass it, but you can also specify the code you want if necessary. You may need this if:</p>
+<ul>
+<li>
+<p>Operator or function is missing</p>
+</li>
+<li>
+<p>Operator of function used by the template has been written in such a way that is not appropriate for this case</p>
+</li>
+<li>
+<p>First choice if e.g. operator function is missing - then just add that operator function as a free function (assumption is that you don’t have access to change the class code, or that don’t want to add in the operator function, maybe doesn’t fit)… but someone may have already written it</p>
+</li>
+<li>
+<p>Second choice is template specialization (which was often required with c style strings, though less so now). However since templates are such a time saver, if you find one which is good, but not quite right, you’ll need to know how to adapt it.</p>
+</li>
+</ul>
+<p>Example of trying to accumulate Person (which doesn’t define operator+)</p>
+<pre><code>template &lt;&gt;
+class Accum&lt;Person&gt;
+    {
+private:
+    int total;
+public:
+    Accum(Person start): total(start) {};
+    int operator+=(Person&amp; t) {return total = total + t.GetNumber();};
+    int GetTotal() {return total;}
+};
+</code></pre>
+<ol>
+<li>Take a copy of the template code</li>
+<li>Remove the <code>class T</code> from the template declaration on the first line</li>
+<li>Add the type fo the class declaration on the second line</li>
+<li>Replace type T with appropriate types (often the class type, but not necessarily)</li>
+</ol>
+<h2 id="pointers-and-references">Pointers and references</h2>
+<h3 id="pointers">Pointers</h3>
+<ul>
+<li>
+<p>A pointer is a variable which holds the address of another variable</p>
+</li>
+<li>
+<p>They should either be initialised to an address or ‘null’, but never just declared</p>
+</li>
+<li>
+<p>You can use the pointer to go through it get to the value it is pointing to (or indeed change the pointer to point to something else)</p>
+</li>
+<li>
+<p>One way to get one is to take the address of an existing variable.</p>
+<p>int *pA = &amp;A; // note, either int <em>pA or int</em> pA works fine, importantly the type is <code>int *</code>
+pA = &amp;B; // now points to address of int variable B
+*pA = 5; // change the contents of the memory to 5, B now equals 5
+(<em>pA</em>)++; // increment the contents of the memory, new value is 6</p>
+</li>
+<li>
+<p>When an <code>&amp;</code> is before a variable it means “please take the address of the instance of this variable”. (When the <code>&amp;</code> is at the end of a type, as e.g. in previous section above, it means an e.g. Person reference)</p>
+</li>
+<li>
+<p>To get through the pointer to its target use the <code>*</code> operator</p>
+<p>*pA = 5</p>
+</li>
+<li>
+<p>If the contents of the memory location is an object, you would need to access the members of the object via the <code>.</code> operator which would become <code>(*pO).SomeMember</code> or alternatively <code>p0-&gt;SomeMember</code></p>
+</li>
+<li>
+<p><code>-&gt;</code> is pronounced <em>points to</em> or <em>arrow</em></p>
+</li>
+<li>
+<p>Since pointers are not always initialised to be pointing to something, they can be initialised to “not pointing to anything” and should be. Choices are <code>0</code>, <code>NULL</code> (which has been defined in an application to point to 0) or <code>nullptr</code> (C++11)</p>
+</li>
+</ul>
+<h3 id="references">References</h3>
+<p>C++ got pointers from C, but added references. References are much simpler than pointers, and are like aliases. Unlike pointers, they can’t be changed to point to different places, the target is set on declaration and that’s that. Also don’t have to use different punction (<code>-&gt;</code>) to talk to the target, just use <code>.</code> as normal.</p>
+<pre><code>int&amp; rA = a; // set reference equal to a (hence alias analogy)
+rA = b; // now aliasing b 
+rA = 5; // change value to 5
+</code></pre>
+<h3 id="examples-of-bad-programming">Examples of bad programming</h3>
+<pre><code>int *badPointer; // declare a pointer, but not pointing to any memory
+*badPointer = 3; // try to dereference the pointer, program blows up
+
+int *badPointer = nullptr;
+if (badPointer) // this will now resolve to true or false (would still error if try to deref)
+{
+    *badPointer = 3;
+}
+
+int &amp;badReference; // won't compile, has to point to something
+</code></pre>
+<h3 id="const">Const</h3>
+<ul>
+<li><code>const</code> is a commitment to the compiler that you won’t change it</li>
+<li>Used when declaring a local variable <code>const int zero = 0</code></li>
+<li>As a function parameter
+<ul>
+<li><code>int foo(const int i)</code> - function won’t change the value of i</li>
+<li><code>int something(const Person&amp; p)</code> - less expensive to pass, if any code in function tries to change, compiler error. This in turn means that any functions which <code>something</code> calls on the Person&amp; must also be const functions which state that the values won’t change e.g. a GetName() method. They need to be declared as such <code>int GetName() const;</code> in both the header and .cpp file.</li>
+</ul>
+</li>
+<li><em>Const correctness</em> is the term used to get all this inline (can end up following a long thread if left to the end)</li>
+</ul>
+<h3 id="const-and-pointers">Const and pointers</h3>
+<ul>
+<li><code>const</code> can also be used with pointers and has two possible meanings:
+<ul>
+<li>the pointer is constant and can’t chagne it to point to anything else e.g. <code>int * const cpI;</code></li>
+<li>or it is pointing to something const e.g. <code>const int *cpI;</code> in this case you can’t change the value of the target.</li>
+<li>can use both of course: <code>const int * const cpI;</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="the-free-store">The Free Store</h3>
+<ul>
+<li>Often called the heap, since this is how it is implemented, it is used to store longer lived variables.</li>
+<li>Create with <code>new</code></li>
+<li>Tear down with <code>delete</code></li>
+</ul>
+<h3 id="manual-memory-management">Manual memory management</h3>
+<ul>
+<li>Manual memory management is hard with variety of mistakes e.g. delete too soon, delete twice, never delete</li>
+<li>Rule of three
+<ul>
+<li>Copy constructor</li>
+<li>Copy assignment operator</li>
+<li>Destructor</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>GREAT DEMO OF HOW TO IMPLEMENT WITH MANUAL MEMORY MANAGEMENT&lt;&lt;&lt;</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h3 id="smart-pointers">Smart pointers</h3>
+<ul>
+<li>C++11 has a nice range of smart pointers, which do all the manual memory management for you</li>
+<li>They are solid objects which contain a pointer</li>
+<li>When a smart pointer goes out of scope, the destructor calls the delete for you</li>
+<li>Imagine a template class with just one member variable, a pointer. The constructor saves the T* in a member variable, the destructor will delete the T*</li>
+<li>Copying is handled either by prevention OR by keeping a count of the references</li>
+<li><code>*</code> and <code>-&gt;</code> are overloaded</li>
+<li>All used exactly the same as traditional raw pointers</li>
+</ul>
+<h3 id="smart-pointers-in-the-standard-library">Smart pointers in the Standard Library</h3>
+<ul>
+<li><code>shared_ptr</code> - reference counted behaves well in collections</li>
+<li><code>weak_ptr</code> - allows you to “peek” at shared_ptr without bumping the reference count</li>
+<li><code>unique_ptr</code> - non copyable</li>
+</ul>
+<h2 id="pointers-and-inheritance">Pointers and inheritance</h2>
+<ul>
+<li>Inheritance in C++ uses pointers</li>
+<li>A pointer to a derived class can be stored as a pointer to a base class instead - if a function takes a pointer to e.g. a BankAccount and you pass it a SavingsAccount that works ok</li>
+<li>When a derived class overrides a function in the base class either implementation could run when the function name is called, depending on if the programmer has marked the function as <code>virtual</code> or not (default is not)</li>
+<li>Virtual functions are implemented through a virtual table, so a little more time and memory are used</li>
+<li>Smart pointers work in exactly the same way as raw pointers in inheritance situations</li>
+<li>The <code>virtual</code> keyword only needs to be added to the header file of the base class</li>
+<li>Careful that if there any methods which are virtual then also ensure to make sure that the destructor is virtual too</li>
+</ul>
+<h3 id="slicing">Slicing</h3>
+<p>Slicing occurs when you pass objects by value and you pass e.g. a SavingsAccount when a function or object is expecting a BankAccount. The memory allocated is only enough for the BankAccount so anything extra in SavingsAccount is lost OR the copy will fail.</p>
+<p>To avoid slicing always use references or pointers.</p>
+<pre><code>Tweeter localT(&quot;Local&quot;, &quot;Tweeter&quot;, 123, &quot;@local&quot;)
+Person localP = localT; // slicing occurs, twitter handle gets lost
+cout &lt;&lt; localP.GetName() &lt;&lt; endl; // calls the Person version of the GetName() function
+
+// fix with pointers (make Person and pointer, to the address of localT and dereference to call GetName())
+Tweeter localT(&quot;Local&quot;, &quot;Tweeter&quot;, 123, &quot;@local&quot;)
+Person *localP = &amp;localT; // slicing occurs, twitter handle gets lost
+cout &lt;&lt; localP-&gt;GetName() &lt;&lt; endl; // calls the Person version of the GetName() function
+
+// fix with references (just declare localP as Person&amp;)
+Tweeter localT(&quot;Local&quot;, &quot;Tweeter&quot;, 123, &quot;@local&quot;)
+Person&amp; localP = localT; // slicing occurs, twitter handle gets lost
+cout &lt;&lt; localP.GetName() &lt;&lt; endl; // calls the Person version of the GetName() function
+</code></pre>
+<h3 id="cast-operators">Cast operators</h3>
+<ul>
+<li><code>(type)</code> is one way, C style, but dangerous</li>
+<li><code>static_cast&lt;type&gt;</code> uses a template and resolves at compile time and may give a warning (or error) but up to you to ensure it’s safe</li>
+<li><code>dynamic_cast&lt;type&gt;</code> is much better
+<ul>
+<li>works with pointers to classes with virtual tables</li>
+<li>Uses a dynamic check at run time on the virtual table</li>
+<li>will give a null back if it fails which you can check for</li>
+<li>Note, casting e.g. a reference will fail</li>
+</ul>
+</li>
+<li><code>const_cast</code>, <code>reinterpret_cast</code> etc are dangerous</li>
+</ul>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2014/12/23/javascript-succinctly/">JavaScript Succinctly</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2015/01/07/pluralsight-sscp-access-controls/">Pluralsight - SSCP Access Controls</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2014/12/31/pluralsight-cplusplus-fundamentals/` was built on 2025-09-05T01:23:56.882Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

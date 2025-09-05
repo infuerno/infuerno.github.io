@@ -1,0 +1,891 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Chris Richardson: Distributed Data Patterns for Microservices - RedisConf 2020 Takeaway</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="chris-richardson-distributed-data-patterns-for-microservices-redisconf-2020-takeaway">Chris Richardson: Distributed Data Patterns for Microservices - RedisConf 2020 Takeaway</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2020-06-02">02 June 2020</time></li>
+</ul>
+
+<h2 id="module-1-overview-of-the-workshop">Module 1: Overview of the workshop</h2>
+<p>Lab guide (PDF) to set up local environment using github repo <a href="https://github.com/eventuate-tram/eventuate-tram-examples-customers-and-orders-redis">https://github.com/eventuate-tram/eventuate-tram-examples-customers-and-orders-redis</a></p>
+<h3 id="lab-setup">Lab setup</h3>
+<p>Can either set up a development environment locally OR use docker to set up a development environment running in containers.</p>
+<ol>
+<li>Clone repo</li>
+<li>Build and start the <strong>java-development</strong> container using docker-compose: <code>docker-compose -p redisconf-2019 up -d --build java-development</code></li>
+<li>Get an interactive bash shell on the container: <code>docker exec -it redisconf-2019_java-development_1 bash</code></li>
+<li>Build and start services: <code>./gradlew buildAndStartServices</code></li>
+</ol>
+<h3 id="lab-tear-down">Lab tear down</h3>
+<ol>
+<li>Stop containers (running in the container!): <code>./gradlew composeDown</code></li>
+<li>Stop the java-development container: <code>docker-compose -p redisconf-2019 down</code></li>
+</ol>
+<h3 id="useful-links">Useful links</h3>
+<ul>
+<li>About Chris: <a href="https://chrisrichardson.net/about.html">https://chrisrichardson.net/about.html</a></li>
+<li><a href="https://microservices.io/">https://microservices.io/</a></li>
+<li>Book: <a href="https://microservices.io/book">https://microservices.io/book</a></li>
+</ul>
+<h2 id="module-2-microservice-architecture-essentials">Module 2: Microservice Architecture Essentials</h2>
+<p>Watch JFokus 2020 conference talk: <a href="http://chrisrichardson.net/microservices/2020/02/04/jfokus-geometry-of-microservices.html">http://chrisrichardson.net/microservices/2020/02/04/jfokus-geometry-of-microservices.html</a></p>
+<p>Referenced: <a href="https://medium.com/@copyconstruct/testing-in-production-the-safe-way-18ca102d0ef1">https://medium.com/@copyconstruct/testing-in-production-the-safe-way-18ca102d0ef1</a></p>
+<h2 id="module-3-transactions-and-queries-in-a-microservice-architecture">Module 3: Transactions and queries in a microservice architecture</h2>
+<p>Short video outling challenges faced (&lt; 5 mins)</p>
+<ul>
+<li>Ecommerce application with REST API with commands and queries
+<ul>
+<li>createCustomer(creditLimit)</li>
+<li>createOrder(customerId, orderTotal)</li>
+<li>findOrdersForCustomer(customerId)</li>
+<li>findRecentCustomers()</li>
+</ul>
+</li>
+<li>Implemented using Customer Service and Order Service (with respective DBs) and API Gateway</li>
+<li>Both the createOrder command and the 2 queries need data from both services, but since we need to ensure loose coupling, implementing this is not straightforwards</li>
+</ul>
+<p><picture><source type="image/avif" srcset="/infuerno.github.io/2020/06/02/chris-richardson-microservices/PW8TqSxTXh-1012.avif 1012w"><source type="image/webp" srcset="/infuerno.github.io/2020/06/02/chris-richardson-microservices/PW8TqSxTXh-1012.webp 1012w"><img loading="lazy" decoding="async" src="/infuerno.github.io/2020/06/02/chris-richardson-microservices/PW8TqSxTXh-1012.png" alt="Architecture" width="1012" height="715"></picture></p>
+<h3 id="transactions">Transactions</h3>
+<p>Need to ensure the customer has enough credit, create the order, decrement the customers credit atomically. In a monolith or within a microservices application can simply wrap everything in a transaction. In a microservices architecture this is not possible.</p>
+<p>Can’t use traditional distributed transaction i.e. 2PC / XA, since this requires tight runtime coupling which then reduces availability.</p>
+<h3 id="queries">Queries</h3>
+<p>Queries which span services is also challenging, since can’t simply JOIN across databases.</p>
+<h2 id="module-4-overview-of-the-saga-pattern">Module 4: Overview of the SAGA pattern</h2>
+<p>Must use the SAGA pattern instead of traditional distributed transactions. Short video (approx 12 mins)</p>
+<h3 id="introduction-to-sagas">Introduction to SAGAs</h3>
+<p>Idea is from a paper written in 1987. Split up the whole transaction into series of local transactions. For example:</p>
+<ol>
+<li>createOrder() in OrderService creates the order in a PENDING state</li>
+<li>reserveCredit() in CustomerService</li>
+<li>approveOrder() in OrderService updates state to APPROVED</li>
+</ol>
+<h3 id="rolling-back-with-compensating-transactions">Rolling back with compensating transactions</h3>
+<p>When a business validation fails in a transaction, can simply “rollback” the transaction with a single statement. However, not possible in a SAGA. Therefore developer needs to write specific compensating transactions which explicitly undoes what has already been done previously.</p>
+<p>Each local transaction e.g. T1, T2, T3 needs to have a corresponding compensating transaction e.g. C1, C2, C3. Therefore if T2 fails then C1 needs to be run to undo T1. Need to write the logic to coordinate this.</p>
+<ol>
+<li>createOrder() in OrderService creates the order in a PENDING state</li>
+<li>reserveCredit() in CustomerService <strong>FAIL</strong></li>
+<li>rejectOrder() in OrderService updates state to <strong>REJECTED</strong></li>
+</ol>
+<p>Example of a semantic undo.</p>
+<h4 id="challenges">Challenges</h4>
+<ul>
+<li>Compensating transactions can NEVER fail - no concept of compensating the compensating transaction. Therefore write them so they will always succeed.</li>
+<li>Implementation of the undo needs to be carefully considered. Can’t simply restore an object to its original state since it may have been modified by another transaction in the interim. Sometimes easy, sometimes not. Also need to consider transactions which can’t be undone e.g. sending an email.</li>
+</ul>
+<h3 id="implementing-updates-which-can-t-be-undone">Implementing updates which can’t be undone</h3>
+<p>Useful to <em>categorise</em> transactions to help solve these kind of problems.</p>
+<ol>
+<li><strong>Compensatable transactions</strong> - can be easily undone with a compensating transaction</li>
+<li><strong>Retriable transactions</strong> - guaranteed to succeed (i.e. no business rules preventing success)</li>
+<li><strong>Pivot transations</strong> - neither compensatable OR retriable
+<ul>
+<li>since NOT retriable =&gt; all transactions preceding it MUST be compensatable</li>
+<li>since NOT compensatable =&gt; all transactions following MUST be retriable (so they will never fail and need to pivot transaction to be rolled back)</li>
+<li>only ONE pivot transation in a SAGA</li>
+</ul>
+</li>
+</ol>
+<p>Therefore SAGAs can be thought of in three phases:</p>
+<ol>
+<li>Compensatable transactions</li>
+<li>Pivot transaction (GO / NO GO)</li>
+<li>Retriable transactions (great for actions which can’t be undone)</li>
+</ol>
+<p>Can therefore reorder steps e.g. place what would otherwise be a complex undo compensation transaction AFTER the pivot, therefore removing the need to write it</p>
+<h3 id="sagas-are-not-acid-no-isolation">SAGAs are not ACID (no Isolation)</h3>
+<p>ACD, but not I. Therefore steps of 2 concurrently executing SAGAs <em>may</em> be interleaved.</p>
+<ol>
+<li>Create Order SAGA: Customer creates an order - createOrder() is called, order 1 = PENDING, reserveCreditEvent emitted</li>
+<li>Cancel Order SAGA: Customer cancels order - cancelOrder() is called, releaseCreditEvent emitted</li>
+<li>Create Order SAGA: Customer service received reserveCredit, but fails due to insufficient credit</li>
+<li>Cancel Order SAGA: Customer service received releaseCredit, <strong>releases credit which was never reserved</strong></li>
+</ol>
+<p>The Cancel Order SAGA does a “dirty” read resulting in a data inconsistency.</p>
+<h3 id="countermeasures">Countermeasures</h3>
+<ul>
+<li>Design technique to make SAGAs more &quot;ACID&quot;ic e.g. semantic lock - application level lock on an object that is being updated. If a lock had been applied to the order in the PENDING state, it couldn’t have been read by the Cancel Order SAGA until its state had been finalised</li>
+</ul>
+<h3 id="further-reading">Further reading</h3>
+<ul>
+<li><a href="https://microservices.io/patterns/data/saga.html">https://microservices.io/patterns/data/saga.html</a></li>
+<li><a href="https://chrisrichardson.net/post/microservices/2019/07/09/developing-sagas-part-1.html">https://chrisrichardson.net/post/microservices/2019/07/09/developing-sagas-part-1.html</a>
+<ul>
+<li>References talk at MicroCPH in May 2019: <a href="https://microservices.io/microservices/sagas/2019/07/09/microcph-sagas.html">https://microservices.io/microservices/sagas/2019/07/09/microcph-sagas.html</a> - first half covers roughly what is covered here, but a little more detail</li>
+</ul>
+</li>
+<li>Chapter 4 of the Manning Microservice Patterns book</li>
+</ul>
+<h2 id="module-5-saga-communication-and-orchestration">Module 5: SAGA communication and orchestration</h2>
+<h3 id="communication-between-saga-participants">Communication between SAGA participants</h3>
+<p>How do to two services communicate?</p>
+<ul>
+<li>BAD: Synchronous REST services
+<ul>
+<li>Runtime coupling</li>
+<li>If a service fails after sending a message but before receiving a response various inconsistencies (e.g. credit is reserved for an order which is never created)</li>
+</ul>
+</li>
+<li>GOOD: Message broker with “at least once” delivery
+<ul>
+<li>Should also implement ordered delivery</li>
+<li>Should also have a mechanism to increase consumers WHILST still preserving ordering e.g. Apache Kafka consumer group; ActiveMQ message group</li>
+</ul>
+</li>
+</ul>
+<h3 id="transactional-messaging">Transactional messaging</h3>
+<p>A single service needs to both update its database AND send a message to the next participant in an atomic transaction i.e. neither part should fail.</p>
+<ol>
+<li>If update the database first and THEN send the message, if the service crashes after updating the databse, the message will never be sent</li>
+<li>If update the database and try to send the message during the database transaction. However if the database transaction doesn’t commit but the message IS sent, then have an issue the other way round. Also tightly couples the database TO the message broker.</li>
+</ol>
+<p>Therefore, need to use a transactional messaging system.</p>
+<h4 id="option-1-event-sourcing-pattern">Option 1: Event Sourcing pattern</h4>
+<p>Uses an event store for persistence. An event store is a hybrid of a databsae and a message broker. A service persists a domain object in the event store as a sequence of events. Other services consume the events. This way the event in the <code>OrderService</code> of the order being created is both the database update AND the message to the <code>CustomerService</code>, hence atomic. See Chapter 6 of the book!</p>
+<h4 id="option-2-transaction-outbox-pattern">Option 2: Transaction Outbox pattern</h4>
+<p>A service sends a message by inserting it into an OUTBOX table. Hence the database update is completed within a transaction (to the ORDERS table and the OUTBOX table). A seperate message relay process retrieves messages from the OUTBOX table and sends them to the message broker.</p>
+<p>To get the messages from the OUTBOX table:</p>
+<ol>
+<li>Transaction log tailing. Use a database specific APi to read the databases transaction log looking for inserts into the OUTBOX table (e.g. MySQL binlog; Postgres WAL; AWS DynamoDB table streams; MongoDB change streams). Very efficient.</li>
+<li>Periodically query the OUTBOX table using a flag “IsSent” to keep track of rows successfully sent. Latency is higher because polling has to be periodic.</li>
+</ol>
+<h3 id="how-sagas-affect-api-design">How SAGAs affect API design</h3>
+<p>Ideally APIs should not wait for a whole SAGA to complete before replying. However, this puts the onus on the client to poll for the outcome of the SAGA. This polling should be invisible to the user e.g. server could use websockets to notify the client. Will often complete within 100ms, so user won’t even notice. UI could anyway display a “processing” popup in case of a longer delay.</p>
+<h3 id="overview-of-different-coordination-mechanisms">Overview of different coordination mechanisms</h3>
+<p>The application must contain logic which defines each SAGA, which steps to execute and any rollbacks required. Two approaches:</p>
+<ol>
+<li>Choreography: distributed decision making - logic is distributed amongst the participants</li>
+<li>Orchestration: centralised decision making - logic is centralised within a SAGA orchestrator</li>
+</ol>
+<h4 id="choreography-event-driven-approach">Choreography = event driven approach</h4>
+<p>Services publish events stating what they <strong>have done</strong> which are consumed by other services.</p>
+<h4 id="orchestrator-central-async-request-response">Orchestrator = central async request/response</h4>
+<p>Orchestrator invokes each particpant in turn using asynchronous request / response.</p>
+<h3 id="further-reading-2">Further reading</h3>
+<ul>
+<li>Event Sourcing: <a href="https://microservices.io/patterns/data/event-sourcing.html">https://microservices.io/patterns/data/event-sourcing.html</a></li>
+<li>Transactional Outbox: <a href="https://microservices.io/patterns/data/transactional-outbox.html">https://microservices.io/patterns/data/transactional-outbox.html</a></li>
+<li>Log Tailing: <a href="https://microservices.io/patterns/data/transaction-log-tailing.html">https://microservices.io/patterns/data/transaction-log-tailing.html</a></li>
+<li>API Composition: <a href="https://microservices.io/patterns/data/api-composition.html">https://microservices.io/patterns/data/api-composition.html</a></li>
+<li>CQRS Pattern: <a href="https://microservices.io/patterns/data/cqrs.html">https://microservices.io/patterns/data/cqrs.html</a></li>
+<li>Chapter 7 of the book!</li>
+</ul>
+<h2 id="module-6-using-choreography-based-sagas">Module 6: Using choreography-based SAGAs</h2>
+<p><picture><source type="image/avif" srcset="/infuerno.github.io/2020/06/02/chris-richardson-microservices/b7SbAH0Zco-933.avif 933w"><source type="image/webp" srcset="/infuerno.github.io/2020/06/02/chris-richardson-microservices/b7SbAH0Zco-933.webp 933w"><img loading="lazy" decoding="async" src="/infuerno.github.io/2020/06/02/chris-richardson-microservices/b7SbAH0Zco-933.png" alt="Choreography based SAGA example" width="933" height="508"></picture></p>
+<h3 id="advantages">Advantages</h3>
+<ul>
+<li>Simple to implement, especially if already using event sourcing</li>
+<li>Reduces runtime coupling</li>
+</ul>
+<h3 id="disadvantages">Disadvantages</h3>
+<ul>
+<li>Decentralised implementation - hard to understand, so good for simple SAGAs, but potentially not for complex ones</li>
+<li>Risk of excessive design time coupling - services need to know about each other events and may need to change both when events are changed</li>
+</ul>
+<h3 id="considerations">Considerations</h3>
+<ul>
+<li>How much data to publish in the event? Minimal OR Enriched
+<ul>
+<li>Minimal e.g. <code>OrderCreated</code> event could just contain the <code>OrderId</code>. Event structure is lightweight and stable, but consumer needs to fetch the data it needs AND data <strong>could</strong> have changed since the event being published</li>
+<li>Enriched requires the event structure to be more complex and less stable. However just <code>OrderId</code>, <code>CustomerId</code> and <code>OrderTotal</code> should be all that is required (for the <code>OrderCreated</code> event), so not THAT complex! <strong>Therefore enriched is generally preferable.</strong></li>
+</ul>
+</li>
+<li>NOTE: message channels are typically named after the domain aggregate emitting the event e.g. <code>OrderService</code> publishes events to the order events channel.</li>
+</ul>
+<h2 id="module-7-using-orchestration-based-sagas">Module 7: Using orchestration-based SAGAs</h2>
+<p>The SAGA orchestrator implements a state machine with each reply triggering a state transition.</p>
+<ol>
+<li>SAGA is created, invokes first participant, persists state in DB, waits for a reply</li>
+<li>Reply has the SAGA ID (a correlation ID)</li>
+<li>SAGA instance is loaded from the database and passed the message, message triggers a state transition which causes the SAGA to send a message to the next participant, again persisted to the DB etc</li>
+</ol>
+<p>In a specific example the <code>OrderService</code> would still receive the initial order request, but would instead create a <code>CreateOrderSaga</code> instance. The order would be created as a result of the message sent from the <code>CreateOrderSaga</code>. This would be a local operation with the ID returned in response to the initial request. Following this the CreateOrderSaga would send a message to the Customer command channel (point to point, NOT pubsub). A message would be received on the SAGA reply channel (again point to point).</p>
+<p><picture><source type="image/avif" srcset="/infuerno.github.io/2020/06/02/chris-richardson-microservices/c57l5XIkz8-952.avif 952w"><source type="image/webp" srcset="/infuerno.github.io/2020/06/02/chris-richardson-microservices/c57l5XIkz8-952.webp 952w"><img loading="lazy" decoding="async" src="/infuerno.github.io/2020/06/02/chris-richardson-microservices/c57l5XIkz8-952.png" alt="Orchestration based saga" width="952" height="553"></picture></p>
+<h3 id="advantages-2">Advantages</h3>
+<ul>
+<li>Centralised logic</li>
+<li>State of a SAGA lives in the database, so can easily query (note, should however be extremely short lived)</li>
+<li>Reduced design time coupling, Customer Service knows less</li>
+</ul>
+<h3 id="disadvantages-2">Disadvantages</h3>
+<ul>
+<li>Yet another class - may garner too much logic</li>
+<li>Often need a framework to implent state machines (however these frameworks DO exist!)</li>
+</ul>
+<h3 id="message-design">Message design</h3>
+<ul>
+<li>Command message
+<ul>
+<li>Header: <code>Type</code> (command to invoke), <code>ReplyTo</code> (the reply channel), <code>SagaId</code></li>
+<li>Payload: command arguments</li>
+</ul>
+</li>
+<li>Reply message
+<ul>
+<li>Header: <code>Type</code> (reply type), <code>SagaId</code></li>
+<li>Payload: results, if any (often empty, the <code>Type</code> usually surfices)</li>
+</ul>
+</li>
+</ul>
+<h3 id="considerations-2">Considerations</h3>
+<h2 id="module-8-querying-in-a-microservice-architecture">Module 8: Querying in a microservice architecture</h2>
+<p>Queries which span services in a microservices architecture are always challenging. Two key patterns: API composition (simple) and CQRS (more complex, but more powerful). Use the API composition pattern when possible.</p>
+<h3 id="api-composition">API Composition</h3>
+<p>Initiate sub queries on the services which own the needed data and merge the results. Main disadvantage is that some queries may be too inefficient e.g. due to too many network round trips.</p>
+<h3 id="cqrs">CQRS</h3>
+<p>Supports a view database specifically designed to support one or more queries. The replica database is kept up to date using events.</p>
+<h2 id="module-9-implementing-queries-using-cqrs">Module 9: Implementing queries using CQRS</h2>
+<p>In a nutshell:</p>
+<ul>
+<li>Services which update data, publish events</li>
+<li>Event handlers subscribe to the events and update the view (replicate database)</li>
+</ul>
+<p>CQRS splits the data model into two, a command side model used for commands and query side data model used only for queries</p>
+<p><picture><source type="image/avif" srcset="/infuerno.github.io/2020/06/02/chris-richardson-microservices/tBY9-506z6-723.avif 723w"><source type="image/webp" srcset="/infuerno.github.io/2020/06/02/chris-richardson-microservices/tBY9-506z6-723.webp 723w"><img loading="lazy" decoding="async" src="/infuerno.github.io/2020/06/02/chris-richardson-microservices/tBY9-506z6-723.png" alt="CQRS" width="723" height="398"></picture></p>
+<p>In microservices it is less strict and the command side model is often used for a service’s local queries too. The query side data model’s main purpose here is for queries which span multiple command side data models or services.</p>
+<p>Services publish events, typically domain events. As in choreography based SAGAs, events are typcially published using either Event Sourcing OR the Transactional Outbox pattern.</p>
+<p>Views are replicas and are therefore disposable. They can be rebuilt either by replaying events OR more traditional ETL.</p>
+<p>The Redis example uses a <code>HASH</code> to store customer data, with fields for <code>id</code>, <code>name</code>, <code>creditList</code> and <code>orders</code>. Data can be efficiently received from a single call to <code>HGETALL</code>.</p>
+<h3 id="advantages-3">Advantages</h3>
+<ul>
+<li>Code is simpler and more maintainable (though potential for code duplication)</li>
+<li>Can have multiple denormalised views</li>
+<li>Necessage when using Event sourcing</li>
+</ul>
+<h3 id="disadvantages-3">Disadvantages</h3>
+<ul>
+<li>Complex</li>
+<li>Storage costs for replicated data</li>
+<li>Eventually consistent due to heavily asynchronous architecture</li>
+</ul>
+<h3 id="implementations">Implementations</h3>
+<p>Aside from the data source, 3 code modules are required:</p>
+<ol>
+<li>Data access</li>
+<li>Event handlers to update the databases</li>
+<li>Query API to query the database</li>
+</ol>
+<h3 id="considerations-for-event-handlers">Considerations for event handlers</h3>
+<ul>
+<li>Event handlers MUST be idempotent. If not inheritently idempotent, track received event IDs.</li>
+<li>Must deal with concurrent updates e.g. using application side optimistic locking or using database specific mechanism</li>
+<li>Must deal with out of order events e.g. <code>OrderCreated</code> followed by <code>CustomerCreated</code>. Event handler for <code>OrderCreated</code> can’t assume customer already exists and event handler for <code>CustomerCreated</code> can’t assume customer doesn’t already exist!</li>
+</ul>
+<h3 id="database-technology-choice">Database technology choice</h3>
+<ul>
+<li>Choose a database optimised for querying, but be wary of introducing too many database technologies into the organisation.</li>
+<li>The schema must support both queries and updates</li>
+<li>The event may not contain the PK of the record to be updated, so schema must support update based on a FK (think Redis)</li>
+<li>CQRS views can usually make the most of NoSQL database advantages (high performance, scalability) without being affected by the drawbacks (limited transactions, complex querying capability)</li>
+<li>SQL database may be a good choice if also wanting to use for BI</li>
+<li>Can use multiple CQRS views using multiple database technologies to optimise each type of query required e.g. document database, text database AND graph database (note Redis can be used for all three!)</li>
+</ul>
+<h3 id="relationship-between-cqrs-views-and-services">Relationship between CQRS views and services</h3>
+<p>Three options to consider to expose a CQRS view via a service:</p>
+<ol>
+<li>Dedicated service e.g. OrderHistory service</li>
+<li>Part of the service which owns the data stored in the view. Useful when the command side “source of truth” database doesn’t support the query e.g. <code>RestaurantService</code> which in addition to a MySQL database, maintains an Elastic search database for geo and text based “nearest” queries</li>
+<li>Command side replica in another service. Useful when the data doesn’t change much. e.g. OrderService has replica of customer <code>availableCredit</code> information (surely this changes a lot?!)</li>
+</ol>
+<h3 id="eventual-consistency">Eventual consistency</h3>
+<p>There is lag before the view is updated following a command. Therefore if a client issues a query immediately after a command, stale data may be returned resulting in a confusing user experience.</p>
+<p>One solution is for the browser NOT to immediately issue a query, but use the response to update its local view model. Added benefit is the elimination of an extra server round trip.</p>
+<p>Alternative solution is to use aggregate version numbers. A new version number for the aggregate is returned with the initial response. If the browser queries and gets an older version number for the aggregate, it knows this data must be stale. If it is still stale, it can periodically query until the data is fresh.</p>
+<h2 id="module-10-eventuate-and-redis">Module 10: Eventuate and Redis</h2>
+<ul>
+<li>Eventuate - distributed data management platform for microservices.</li>
+<li>Eventuate Tram - transactional messaging framework, one of the main parts</li>
+</ul>
+<h2 id="module-11-eventuate-and-redis-lab">Module 11: Eventuate and Redis Lab</h2>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2019/11/12/redis-certified-developer-program/">Redis Certified Developer Program</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2020/06/27/fem-bianca-gandolpho-javascript-from-fundamentals-to-functional-js-v2/">Frontend Masters: Bianca Gandolpho Javascript from Fundamentals to Functional JS v2</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2020/06/02/chris-richardson-microservices/` was built on 2025-09-05T01:23:56.889Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

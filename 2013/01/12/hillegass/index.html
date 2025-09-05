@@ -1,0 +1,797 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Hillegass</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="hillegass">Hillegass</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2013-01-12">12 January 2013</time></li>
+</ul>
+
+<h2 id="chapter-1-cocoa-what-is-it">Chapter 1 Cocoa: What is it?</h2>
+<p>Objective C reference on Apple site: <a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/Introduction/Introduction.html">https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/Introduction/Introduction.html</a></p>
+<h2 id="chapter-2-let-s-get-started">Chapter 2 Let’s Get Started</h2>
+<ul>
+<li><strong>Outlet</strong> - instance variable which is a pointer to another object</li>
+<li><strong>Action</strong> - method that can be triggered by user interface objects</li>
+<li><strong>Set the outlet of an object</strong> - control drag from the object that needs to know to the object it needs to know about</li>
+<li>Navigate -&gt; Jump to Next Counterpart command, Control-Command-UpArrow, flips the editor between corresponding <code>.h</code> and <code>.m</code> files.</li>
+</ul>
+<h2 id="chapter-3-objective-c">Chapter 3 Objective-C</h2>
+<h3 id="allocating-memory">Allocating memory</h3>
+<p>Create a new instance of <code>NSMutableArray</code> by sending the message
+<code>alloc</code> to the <code>NSMutableArray</code> class:</p>
+<pre><code>[NSMutableArray alloc];
+</code></pre>
+<h3 id="sending-messages">Sending messages</h3>
+<p>Send the message init to the object foo points to, “foo is the receiver of the
+message init”:</p>
+<pre><code>[foo init];
+</code></pre>
+<p>Messages can be nested. The method init returns the newly initialised object, so message sends must always be initialised like this:</p>
+<pre><code>foo = [[NSMutableArray alloc] init];
+</code></pre>
+<p>To differentiate between constant C strings and constant <code>NSString</code>s, you
+must put <code>@</code> before the opening quote of a constant <code>NSString</code>:</p>
+<pre><code>NSLog(@&quot;The number at index %d is %@&quot;, i, numberToPrint);
+</code></pre>
+<p>Arguments are specified using a colon:</p>
+<pre><code>[foo addObject:bar];
+</code></pre>
+<p>Multiple arguments use different parts of the selector (or method name). In this case the selector is insertObject:atIndex:</p>
+<pre><code>[foo insertObject:bar atIndex:5];
+</code></pre>
+<h3 id="nsarray">NSArray</h3>
+<p>List of pointers to other objects, indexed by integers, cannot contain nil, is immutable (NSString and NSNumber are also immutable.) One array can hold objects of different classes. It can’t hold C primitive types e.g. int, float.</p>
+<h3 id="initialisers">Initialisers</h3>
+<ul>
+<li>You do not have to create any initializer in your class if the superclass’s initializers are sufficient</li>
+<li>If you decide to create an initializer, you must override the superclass’s designated initializer.</li>
+<li>If you create multiple initializers, only one does the work—the designated initializer. All other initializers call the designated initializer.</li>
+<li>The designated initializer of your class will call its superclass’s designated initialiser.</li>
+</ul>
+<p>If a class initialiser always requires an argument, override the base class init method to throw an exception.</p>
+<pre><code>- (id)init
+{
+    @throw [NSException exceptionWithName:@&quot;BNRBadInitCall&quot;
+                 reason:@&quot;Initialize Lawsuit with initWithDefendant:&quot;
+               userInfo:nil];
+    return nil;
+}
+</code></pre>
+<h3 id="the-debugger">The debugger</h3>
+<p>A handy feature is the “print object” <code>po</code>. Calling <code>po</code> on an object will send the message <code>description</code> to the object.</p>
+<pre><code>po newEntry
+</code></pre>
+<p>The debugger can be configured to stop whenever an exception is thrown by “adding an exception breakpoint” from the breakpoint navigator.</p>
+<p>Use <code>NSAssert()</code> to throw an exception as soon as the program is in an unstable state e.g. a variable is unexpectedly nil. Note: this only works in Objective-C methods. Use <code>NSCAssert()</code> in C methods.</p>
+<p>Set the preprocessor macro for release mode <code>NS_BLOCK_ASSERTIONS</code> to ensure an exception is not thrown in release mode.</p>
+<h3 id="static-analyzer">Static Analyzer</h3>
+<p>The static analyzer (Product &gt; Analyze) shows potential problems with the code over and above compiler warnings and errors.</p>
+<h2 id="chapter-4-memory-management">Chapter 4 Memory Management</h2>
+<p>When an object is no longer used i.e. no longer has any pointers to it, the memory can be reused. Working out which memory is available for reuse is tricky.</p>
+<p>Three solutions (with advantages and disadvantages) are:</p>
+<ol>
+<li>Manual reference counting or retain counts. Every object has a retain count which is the number of objects with pointers to it. When the retain count of an object is 0 it is deallocated.
+<ul>
+<li>Requires explicit programming statements.</li>
+<li>Retain cycles possible (two objects reference each other but not referenced by anything else).</li>
+</ul>
+</li>
+<li>Garbage collection. Unreachable objects are automatically deallocated.
+<ul>
+<li>Performance cost - poorer or uneven performance while the GC scans the object collection</li>
+<li>Cannot manage manually allocated memory e.g. allocated with <code>malloc</code></li>
+<li>GC not supported on Mac OS X &lt; 10.5 or iOS</li>
+</ul>
+</li>
+<li>ARC - automatic reference counting. Retain count mechanism is used, but is managed by the compiler rather than explicitly by programmers.
+<ul>
+<li>Doesn’t require explicit programming statements to manage retain counts</li>
+<li>Doesn’t have GC performance hit</li>
+<li>Still needs work to avoid retain cycles</li>
+<li>Doesn’t manage manually allocated memory</li>
+</ul>
+</li>
+</ol>
+<h3 id="manual-reference-counting">Manual reference counting</h3>
+<p>When an object is created using alloc, the retain count is 1. Retain count is incremented by sending the <code>retain</code> message and deallocated by sending the <code>release</code> message.</p>
+<pre><code>NSDate *now = [[NSDate alloc] init];
+
+/* lines of code which use the variable now */
+
+[now release]
+</code></pre>
+<p>When creating objects and adding them to an array, the array stores a pointer to the object and sends it a message <code>retain</code>. The retain count is incremented. When the array is deallocated it sends <code>release</code> messages to the objects it contains. The object’s retain counts are decremented, but will still be 1. Therefore the objects should be sent a <code>release</code> message after adding to the array.</p>
+<pre><code>Cat \*cat = [[Cat alloc] initWithBreed:breed];
+[array addObject:cat];
+[cat release];
+</code></pre>
+<p>The <code>array</code> now has ownership of <code>cat</code>.</p>
+<p>Objects will often <code>retain</code> objects they hold references to. If an object is passed into a constructor the <code>retain</code> message will be sent to it and similarly a <code>release</code> message sent in the destructor <code>dealloc</code>.</p>
+<p>If overriding the <code>dealloc</code> method, call <code>[super dealloc]</code> at the <em>end</em>.</p>
+<h3 id="autoreleasing-objects">Autoreleasing objects</h3>
+<p>When a method creates and object and returns a pointer to that object we don’t want to <code>retain</code> the object. But if we <code>release</code> it before returning, there will be no object to return. To resolve this use the autorelease pool by sending the object the <code>autorelease</code> message. The release message is sent to all objects in the autorelease pool when the pool is drained. In Cocoa an autorelease pool is created before an event and drained after the event has been handled. Autorelease pools can also be created explicitly in non-event driven applications, or to more explicitly manage memory.</p>
+<p>Many methods return autoreleased objects. e.g. <code>NSString initWithFormat</code> doesn’t, but the class method <code>NSString stringWithFormat</code> does.</p>
+<p>From stackoverflow <a href="http://stackoverflow.com/questions/1378206/do-all-class-methods-return-an-autoreleased-object">http://stackoverflow.com/questions/1378206/do-all-class-methods-return-an-autoreleased-object</a>:</p>
+<blockquote>
+<p>Class methods, just like instance methods, should adhere to the standard Cocoa memory management rules.</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>You take ownership of an object if you create it using a method whose name begins with “alloc” or “new” or contains “copy” (for example, alloc, newObject, or mutableCopy), or if you send it a retain message. You are responsible for relinquishing ownership of objects you own using release or autorelease. Any other time you receive an object, you must not release it.</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>Presumably they are returning an autoreleased object, or a reference to a singleton or something like that. Either way, you need not release the object unless it started with “alloc” or “new” or contained “copy”. You need not retain it unless you’re looking to keep it around past the scope of the current autorelease pool, by storing it in an iVar or something like that.</p>
+</blockquote>
+<h3 id="the-retain-count-rules">The retain count rules</h3>
+<ul>
+<li>If you create an object by using a method whose name starts with <code>alloc</code> or <code>new</code> or contains <code>copy</code>, you have taken ownership of it.</li>
+<li>An object created through any other means, such as a convenience method, is not owned by you.</li>
+<li>If you don’t own an object and want to ensure its continued existence, take ownership by sending it the message <code>retain</code>.</li>
+<li>When you own an object and no longer need it, send it the message <code>release</code> or <code>autorelease</code>.</li>
+<li>As long as it has at least one owner, an object will continue to exist.</li>
+</ul>
+<p>Finally, think locally and trust that all other code is doing the right thing</p>
+<h3 id="strong-and-weak-references">Strong and weak references</h3>
+<p>By default all references are strong. ARC will take care of releasing strong references.</p>
+<p>Retain cycles need to be managed properly by strategically using weak references. A typical example is where a class holds references to both parents and children. The pattern commonly used in Objective-C is to leave the parent-child relationship strong, but make the child-parent relationship weak:</p>
+<pre><code>@interface Person : NSObject {
+    __weak Person *parent; // Good! No strong reference cycle.
+    NSMutableArray *children;
+}
+@end
+</code></pre>
+<h3 id="arc">ARC</h3>
+<p>Under ARC it is an error to use the manual retain count functionality. That is, you can’t send the messages <code>retain</code>, <code>release</code>, <code>autorelease</code>, <code>dealloc</code>.</p>
+<h3 id="chapter-5-target-action">Chapter 5 Target/Action</h3>
+<h3 id="chapter-6-helper-objects">Chapter 6 Helper Objects</h3>
+<p>Functionality of objects in the Cocoa framework are often extended using helper objects. For example a table view is supplied with a helper object to supply the data.</p>
+<h4 id="delegates">Delegates</h4>
+<p>Many classes in the Cocoa framework have an instance variable called <code>delegate</code> to point to a helper object. If your class is to be the delegate, then change the class declaration to refer to this protocol:</p>
+<pre><code>@interface SpeakLineAppDelegate : NSObject    &lt;NSApplicationDelegate, NSSpeechSynthesizerDelegate&gt; {
+</code></pre>
+<p>Additionally set the delegate outlet of the speech synthesizer with <code>[_speechSynth setDelegate:self]</code> in <code>init</code>.</p>
+<h4 id="nstableview-and-its-datasource">NSTableView and its dataSource</h4>
+<p><code>NSTableView</code> has a helper object called <code>dataSource</code>. The NSTableView dataSource object needs to conform to the NSTableDataSource informal protocol i.e. has to have some methods to give data. <code>NSTableView</code> also has a helper object called <code>delegate</code>.</p>
+<h4 id="finding-delegate-methods-at-runtime">Finding delegate methods at runtime</h4>
+<p>If you wanted to see the checks for the existence of the delegate methods, you could override respondsToSelector: in your delegate object:</p>
+<pre><code>- (BOOL)respondsToSelector:(SEL)aSelector{
+	NSString *methodName = NSStringFromSelector(aSelector);
+	NSLog(@&quot;respondsToSelector:%@&quot;, methodName);
+	return [super respondsToSelector:aSelector];
+}
+</code></pre>
+<h3 id="chapter-7-key-value-coding-and-key-value-observing">Chapter 7 Key-Value Coding and Key-Value Observing</h3>
+<p>Key-value coding (or KVC) is a mechanism that allows you to set and get the value of any variable by its name. Alternatively you can declare getter and setter methods. These will use the KVC methods as long as the naming convention for getters and setters is followed.</p>
+<h4 id="bindings">Bindings</h4>
+<p>Graphical objects can be bound to keys - the view will automatically keep the values in sync.</p>
+<p>If the value of the object is changed directly, any observers are not notified of the change. Explicityly trigger the notification of the observers with:</p>
+<pre><code>[self willChangeValueForKey:@&quot;fido&quot;];
+// action
+[self didChangeValueForKey:@&quot;fido&quot;];
+</code></pre>
+<h4 id="properties">Properties</h4>
+<p>If simple setters and getters are required, properties can be declared instead:</p>
+<ul>
+<li><code>@property (readwrite, assign) int fido;</code> in the header file;</li>
+<li><code>@synthesize fido</code> in the implementation file</li>
+</ul>
+<h4 id="attributes-of-a-property">Attributes of a property</h4>
+<ul>
+<li><code>readwrite</code> or <code>readonly</code></li>
+<li><code>assign</code>, <code>strong</code>, <code>weak</code> or <code>copy</code> where <code>assign</code> is used for non-pointer types</li>
+<li><code>nonatomic</code> can be used to explicitly eliminate the overhead of using locks to ensure atomic setters</li>
+</ul>
+<h4 id="key-paths">Key paths</h4>
+<pre><code>NSString *mn;
+mn = [selectedPerson valueForKeyPath:@&quot;spouse.scooter.modelName&quot;];
+
+NSNumber *theAverage;
+theAverage = [employees valueForKeyPath:@&quot;@avg.expectedRaise&quot;];
+</code></pre>
+<p>Other commonly used operators:</p>
+<ul>
+<li>@avg</li>
+<li>@count</li>
+<li>@max</li>
+<li>@min</li>
+<li>@sum</li>
+</ul>
+<h3 id="chapter-8-nsarray-controller">Chapter 8 NSArray Controller</h3>
+<p>Controller classes in the MVC design pattern are usually application specific and used with more general-purpose Views and Models.
+<code>NSController</code> is an abstract class, with <code>NSObjectController</code>displaying the content of an object. <code>NSArrayController</code> further derives from this to display the contents of an array.
+Model classes need only import <code>Foundation/Foundation.h</code></p>
+<h3 id="chapters-9-to-38">Chapters 9 to 38</h3>
+<p>TODO</p>
+
+<ul class="links-nextprev"><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2013/06/01/groovy/">Groovy</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2013/01/12/hillegass/` was built on 2025-09-05T01:23:56.876Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

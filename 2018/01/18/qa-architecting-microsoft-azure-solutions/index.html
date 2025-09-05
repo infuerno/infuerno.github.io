@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>QA: Architecting Microsoft Azure Solutions</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="qa-architecting-microsoft-azure-solutions">QA: Architecting Microsoft Azure Solutions</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2018-01-18">18 January 2018</time></li>
+</ul>
+
+<h2 id="module-1-application-architecture-patterns-in-azure">Module 1: Application Architecture Patterns in Azure</h2>
+<p>This module introduces and reviews common Azure patterns and architectures as prescribed by the Microsoft Patterns &amp; Practices team. Each pattern is grouped into performance, resiliency, and scalability categories and described in the context of similar patterns within the category.</p>
+<h3 id="lessons">Lessons</h3>
+<ul>
+<li>Pattern Resources</li>
+<li>Performance Patterns</li>
+<li>Resiliency Patterns</li>
+<li>Scalability Patterns</li>
+<li>Data Patterns</li>
+</ul>
+<h2 id="module-2-deploying-resources-with-azure-resource-manager">Module 2: Deploying Resources with Azure Resource Manager</h2>
+<p>This module establishes a basic understanding of Azure Resource Manager and the core concepts of deployments, resources, templates, resource groups, and tags. The module will dive deeply into the automated deployment of resources using ARM templates.</p>
+<h3 id="lessons-2">Lessons</h3>
+<ul>
+<li>ARM Templates</li>
+<li>Role-Based Access Control (RBAC)</li>
+<li>Resource Policies</li>
+<li>Security</li>
+<li>Building Blocks</li>
+</ul>
+<h3 id="lab-getting-started-with-azure-resource-manager">Lab : Getting Started with Azure Resource Manager*</h3>
+<ul>
+<li>Create Resource Groups</li>
+<li>Deploy an Empty Template</li>
+<li>Deploy a Simple Template</li>
+<li>Cleanup Subscription</li>
+</ul>
+<h2 id="module-3-building-azure-iaas-based-server-applications">Module 3: Building Azure IaaS-Based Server Applications</h2>
+<p>This module identifies workloads that are ideally deployed using Infrastructure-as-a-Service services in Azure. The module focuses on the VM Scale Sets and Virtual Machine services in Azure and how to best deploy workloads to these services using best practices and features such as Availability Sets.</p>
+<h3 id="lessons-3">Lessons</h3>
+<ul>
+<li>High Availability</li>
+<li>Templated Infrastructure</li>
+<li>Domain-Connected Machines</li>
+</ul>
+<h3 id="lab-deploying-infrastructure-workloads-to-azure">Lab : Deploying Infrastructure Workloads to Azure*</h3>
+<ul>
+<li>Deploy a Virtual Machine using PowerShell DSC</li>
+<li>Deploy a Virtual Machine Scale Set using PowerShell DSC</li>
+<li>Cleanup Subscription</li>
+</ul>
+<h2 id="module-4-creating-managed-server-applications-in-azure">Module 4: Creating Managed Server Applications in Azure</h2>
+<p>This module describes services that use infrastructure but manage the infrastructure on behalf of the user instead of obfuscating the infrastructure resources. The module focuses on infrastructure-backed PaaS options such as Azure Service Fabric, Container Service, and App Service Environments. The module will explore how to deploy custom workloads to these services such as an HPC batch processing task.</p>
+<h3 id="lessons-4">Lessons</h3>
+<ul>
+<li>Infrastructure-Backed Platform-as-a-Service (PaaS)</li>
+<li>High-Performance Compute (HPC)</li>
+<li>Migration</li>
+</ul>
+<h3 id="lab-deploying-managed-server-workloads-to-azure">Lab : Deploying Managed Server Workloads to Azure*</h3>
+<ul>
+<li>Create Azure Container Service Cluster</li>
+<li>Deploy Docker Image</li>
+<li>Cleanup Subscription</li>
+</ul>
+<h2 id="module-5-authoring-serverless-applications-in-azure">Module 5: Authoring Serverless Applications in Azure</h2>
+<p>This module describes how solutions can leverage serverless application hosting services in Azure to host web applications, REST APIs, integration workflows and HPC workloads without the requirement to manage specific server resources. The module focuses on App Services-related components such as Web Apps, API Apps, Mobile Apps, Logic Apps, and Functions.</p>
+<h3 id="lessons-5">Lessons</h3>
+<ul>
+<li>Azure Web App</li>
+<li>Azure Functions</li>
+<li>Integration</li>
+<li>High Performance</li>
+</ul>
+<h3 id="lab-deploying-serverless-workloads-to-azure">Lab : Deploying Serverless Workloads to Azure*</h3>
+<ul>
+<li>Create Web App</li>
+<li>Deploy Web App Code</li>
+<li>Deploy Function App and Code</li>
+<li>Cleanup Subscription</li>
+</ul>
+<h2 id="module-6-backing-azure-solutions-with-azure-storage">Module 6: Backing Azure Solutions with Azure Storage</h2>
+<p>This module describes how many Azure services use the Azure Storage service as a backing store for other application solution in Azure. The module dives into critical considerations when using Azure Storage as a supplemental service for an all-up Azure solution.</p>
+<h3 id="lessons-6">Lessons</h3>
+<ul>
+<li>Pricing</li>
+<li>Blob Storage</li>
+<li>Files</li>
+<li>StorSimple</li>
+</ul>
+<h3 id="lab-deploying-azure-storage-to-support-other-workloads-in-azure">Lab : Deploying Azure Storage to Support Other Workloads in Azure*</h3>
+<ul>
+<li>Create Required Resources for a Virtual Machine</li>
+<li>Create a VM With a Storage Account</li>
+<li>Create a VM With a Managed Disk</li>
+<li>Cleanup Subscription</li>
+</ul>
+<h2 id="module-7-comparing-database-options-in-azure">Module 7: Comparing Database Options in Azure</h2>
+<p>This module compares the various relational and non-relational data storage options available in Azure. Options are explored as groups such as relational databases (Azure SQL Database, MySQL, and PostgreSQL on Azure), non-relational (Azure Cosmos DB, Storage Tables), streaming (Stream Analytics) and storage (Data Factory, Data Warehouse, Data Lake).</p>
+<h3 id="lessons-7">Lessons</h3>
+<ul>
+<li>Relational</li>
+<li>NoSQL Services</li>
+<li>Azure Cosmos DB</li>
+<li>Data Storage</li>
+<li>Data Analysis</li>
+</ul>
+<h3 id="lab-deploying-database-instances-in-azure">Lab : Deploying Database Instances in Azure*</h3>
+<ul>
+<li>Deploy a CosmosDB Database Instance</li>
+<li>Validate the REST API</li>
+<li>Cleanup Subscription</li>
+</ul>
+<h2 id="module-8-networking-azure-application-components">Module 8: Networking Azure Application Components</h2>
+<p>This module describes the various networking and connectivity options available for solutions deployed on Azure. The module explores connectivity options ranging from ad-hoc connections to long-term hybrid connectivity scenarios. The module also discusses some of the performance and security concerns related to balancing workloads across multiple compute instances, connecting on-premise infrastructure to the cloud and creating gateways for on-premise data.</p>
+<h3 id="lessons-8">Lessons</h3>
+<ul>
+<li>
+<p>VNETs</p>
+</li>
+<li>
+<p>Load Balancing</p>
+</li>
+<li>
+<p>External Connectivity</p>
+</li>
+<li>
+<p>Hybrid Connectivity</p>
+</li>
+<li>
+<p>Lab : Deploying Network Components for Use in Azure Solutions*</p>
+</li>
+<li>
+<p>Create an ARM Template for a Linux VM</p>
+</li>
+<li>
+<p>Duplicate the VM Resources</p>
+</li>
+<li>
+<p>Create a Load Balancer Resource</p>
+</li>
+<li>
+<p>Cleanup Subscription</p>
+</li>
+</ul>
+<h2 id="module-9-managing-security-and-identity-for-azure-solutions">Module 9: Managing Security and Identity for Azure Solutions</h2>
+<p>This module discusses both security and identity within the context of Azure. For security, this module reviews the various options for monitoring security, the options available for securing data and the options for securing application secrets. For identity, this module focuses specifically on Azure Active Directory (Azure AD) and the various features available such as Multi-Factor Authentication (MFA), Managed Service Identity, Azure AD Connect, ADFS and Azure AD B2B/B2C.</p>
+<h3 id="lessons-9">Lessons</h3>
+<ul>
+<li>Security Monitoring</li>
+<li>Data Security</li>
+<li>Application Security Azure Active Directory (Azure AD)</li>
+<li>Hybrid Identity</li>
+<li>Azure AD Application Integration</li>
+</ul>
+<h3 id="lab-deploying-services-to-secure-secrets-in-azure">Lab : Deploying Services to Secure Secrets in Azure</h3>
+<ul>
+<li>Deploy Key Vault using ARM Template</li>
+<li>Deploy Virtual Machine using Key Vault Secret</li>
+<li>Cleanup Subscription</li>
+</ul>
+<h2 id="module-10-integrating-saas-services-available-on-the-azure-platform">Module 10: Integrating SaaS Services Available on the Azure Platform</h2>
+<p>This module introduces multiple SaaS services available in Azure that are available for integration into existing Azure solutions. These services include Cognitive Services, Bot Service, Machine Learning and Media Services.</p>
+<h3 id="lessons-10">Lessons</h3>
+<ul>
+<li>Cognitive Services</li>
+<li>Bot Services</li>
+<li>Machine Learning</li>
+<li>Media Services</li>
+</ul>
+<h3 id="lab-deploying-service-instances-as-components-of-overall-azure-solutions">Lab : Deploying Service Instances as Components of Overall Azure Solutions</h3>
+<ul>
+<li>Deploy Function App and Cognitive Service using ARM Template</li>
+<li>Cleanup Subscription</li>
+</ul>
+<h2 id="module-11-integrating-azure-solution-components-using-messaging-services">Module 11: Integrating Azure Solution Components using Messaging Services</h2>
+<p>This module describes and compares the integration and messaging services available for solutions hosted on the Azure platform. Messaging services described include Azure Storage Queues, Service Bus Queues, Service Bus Relay, IoT Hubs, Event Hubs, and Notification Hubs. Integration services include Azure Functions and Logic Apps.</p>
+<h3 id="lessons-11">Lessons</h3>
+<ul>
+<li>Event Messaging</li>
+<li>Integration</li>
+<li>IoT</li>
+</ul>
+<h3 id="lab-deploying-messaging-components-to-facilitate-communication-between-azure-resources">Lab : Deploying Messaging Components to Facilitate Communication Between Azure Resources</h3>
+<ul>
+<li>Deploy Service Bus Namespace</li>
+<li>Deploy Logic App</li>
+<li>Cleanup Subscription</li>
+</ul>
+<h2 id="module-12-monitoring-and-automating-azure-solutions">Module 12: Monitoring and Automating Azure Solutions</h2>
+<p>This module covers the monitoring and automation solutions available after an Azure solution has been architected, designed and possibly deployed. The module reviews services that are used to monitor individual applications, the Azure platform, and networked components. This module also covers automation and backup options to enable business-continuity scenarios for solutions hosted in Azure.</p>
+<h3 id="lessons-12">Lessons</h3>
+<ul>
+<li>Application Monitoring</li>
+<li>Platform Monitoring</li>
+<li>Network Monitoring</li>
+<li>Alerting</li>
+<li>Backup</li>
+<li>Azure Automation</li>
+<li>Config Management</li>
+<li>Auto-Scale</li>
+</ul>
+<h3 id="lab-deploying-configuration-management-solutions-to-azure">Lab : Deploying Configuration Management Solutions to Azure*</h3>
+<ul>
+<li>Deploy a Chef Management Server using ARM</li>
+<li>Configure Management Server</li>
+<li>Deploy a VM Scale Set using Chef-Configured VMs</li>
+<li>Cleanup Subscription</li>
+</ul>
+<h2 id="additional-reading">Additional Reading</h2>
+<p>To help you prepare for this class, review the following resources:</p>
+<p><a href="https://azure.microsoft.com/en-us/documentation/">https://azure.microsoft.com/en-us/documentation/</a>
+<a href="https://docs.microsoft.com/en-us/azure/architecture/patterns/">https://docs.microsoft.com/en-us/azure/architecture/patterns/</a>
+<a href="https://docs.microsoft.com/en-us/azure/architecture/">https://docs.microsoft.com/en-us/azure/architecture/</a></p>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2018/01/17/pluralsight-building-applications-with-asp-dot-net-mvc-4/">Pluralsight: Building applications with ASP.NET MVC 4</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2018/01/23/google-it-support-professional-certificate-technical-support-fundamentals/">Google IT Support Professional Certificate: Technical Support Fundamentals</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2018/01/18/qa-architecting-microsoft-azure-solutions/` was built on 2025-09-05T01:23:56.886Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

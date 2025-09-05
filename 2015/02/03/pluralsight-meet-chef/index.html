@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Pluralsight - Meet Chef</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="pluralsight-meet-chef">Pluralsight - Meet Chef</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2015-02-03">03 February 2015</time></li>
+</ul>
+
+<h2 id="introduction">Introduction</h2>
+<p>Chef is a ruby framework for automating, reusing and documenting server configuration.</p>
+<p>An important idea is <em>idempotence</em> meaning you can run a script several times, but if it has already been run, it won’t change anything</p>
+<p>Adam Wiggans: <a href="http://12factor.net/">http://12factor.net/</a></p>
+<p>Other tools: Puppet, CFEngine</p>
+<h2 id="terminology">Terminology</h2>
+<p>:node
+A host where the chef client will run</p>
+<p>:Chef client
+The comman line program that configures the servers. You will often log into the server and run the client from the command line on that node.</p>
+<p>:Chef server
+Stores information about the nodes. REST based.</p>
+<p>:Chef solo
+A standalone version of the client which doesn’t use a server</p>
+<p>:recipes
+A single file of Ruby code that contains commands to run on a node</p>
+<p>:resources
+A node’s resouces includes files, directories, users and services</p>
+<p>:cookbook
+A collection of recipes</p>
+<p>:roles
+Concept chef uses to group specific functionality e.g. web role, database role</p>
+<p>:runlist
+An array of recipes and roles defining what gets run on that server</p>
+<p>:attributes
+variables which get passed into recipes and templates e.g. version of software to install</p>
+<p>:template
+erb file similar to a rails view usually used to create and update configuration files</p>
+<p>:notification
+When a resouce is changed it can trigger an update in another resource</p>
+<h2 id="using-virtualbox-and-vagrant">Using VirtualBox and Vagrant</h2>
+<ol>
+<li>git clone</li>
+<li><code>cd</code> into directory</li>
+<li><code>vagrant up</code> to download the .box image, configure and start it</li>
+<li><code>vagrant ssh</code> to ssh into the server as the vagrant user</li>
+<li><code>ruby -v</code> and <code>gem -v</code> to check that ruby and rubygems are both installed</li>
+</ol>
+<h2 id="writing-a-simple-cookbook-and-recipe">Writing a simple cookbook and recipe</h2>
+<ol>
+<li>Create a directory for the cookbook (Nginx)</li>
+<li>Create directories for recipes, attributes and templates</li>
+<li>Create a default.rb in the recipes directory - default recipe is a good place to set up the service or process and master configuration template - a default recipe shouldn’t do much more than this</li>
+<li>First need to install the nginx package itself e.g. with debian this would be <code>apt-get nginx</code>. The chef directive <code>package &quot;nginx&quot;</code> will figure out how to install this package on this os. Specify a version if really necessary.</li>
+<li>Secondly we want to start, stop and restart the nginx server, so need to install as a service. This can be done using the chef directive <code>service &quot;nginx&quot;</code>.</li>
+<li>We also want to get the status, start and reload the service, so it must support these.</li>
+<li>We also want the service to “be started” when the os boots and also when chef runs. Normally need to check run levels etc, but with chef the <code>action</code> directive can be passed an array with <code>:enable</code> to make sure it is started when the os starts and <code>:start</code> to ensure chef will start nginx if it isn’t already running</li>
+<li>To configure the .conf file for nginx, it is best to start with the default .conf. For this it may be necessary to manually install nginx to see this default file, then write the chef recipe to modify it, then run the whole chef install to check it all works correctly - good to use virtual machines in this instance. The <code>template</code> block can take further directives to e.g. restart the service anytime the config file is updated</li>
+</ol>
+<h2 id="running-chef">Running chef</h2>
+<ol>
+<li>Install chef solo using a ruby gem <code>gem install chef --no-rdoc --no-ri</code></li>
+<li>Run <code>chef-solo</code></li>
+</ol>
+<h3 id="attributes">Attributes</h3>
+<p>Attributes or variables are applied according to a hierarchy.</p>
+<p>Cookbook &gt; Environment &gt; Role &gt; Node</p>
+<ol>
+<li>Cookbook attributes give good default attributes e.g. 5 worker processes for Nginx</li>
+<li>Environment attributes can override this, e.g. 1 worker process for a development environment</li>
+<li>Role attributes override environment attributes - a web server may actually need 6 worker process for Nginx to handle all the requests</li>
+<li>Finally node attributes override everything else, e.g. web server 42 is older and should only define 2 worker processes</li>
+</ol>
+<p>Default &gt; Normal / (Set) &gt; Override &gt; Automatic</p>
+<p>Most people name their cookbook attribute files <code>default.rb</code> but this could get confusing with all the other things called default. All files in a cookbook get loaded, so you are free to call your file anything you like.</p>
+<p>This file contains cookbook default attributes. Default attributes are usually all that is required.</p>
+<p>Attributes can be defined using ruby symbols, strings or dot notation:</p>
+<pre><code>default[:nginx][:worker_processes] = 4
+default[&quot;nginx&quot;][:worker_processes] = 4
+default.nginx[:worker_processes] = 4
+</code></pre>
+<p>This attribute can be referred to in the template file using the following syntax:</p>
+<pre><code>&lt;%= @node[:nginx][:worker_processes] %&gt;
+</code></pre>
+<p>The @node object holds all the attributes, defined either on a cookbook, environment, role or node.</p>
+<p>An alternative is to define the variable directly in the recipe in the parameters which get passed to the template. HOWEVER, default attributes are preferred over variables.</p>
+<pre><code>template &quot;/etc/nginx/nginx.conf&quot; do
+    source &quot;nginx.conf.erb&quot; # chef will automatically look for this, so this is not required unless we are not using the default
+    notifies :reload, &quot;service[nginx]&quot;
+    variables :user =&gt; &quot;www-data&quot;
+end
+</code></pre>
+<p>Try not to go overboard replacing all values in template files with attributes. Defaults are often good enough.</p>
+<h3 id="providers-and-resources">Providers and Resources</h3>
+<p>Seldomly used, but useful for auxillary configurations e.g. nginx virtual hosts. Used to create LWRPs (Light Weight Resource Providers).</p>
+<h2 id="add-an-ssh-key-to-a-virtual-server">Add an SSH key to a Virtual Server</h2>
+<p>Copy your own ssh key (in ~/.ssh/) to the clipboard <code>pbcopy &lt; ~/.ssh/id_rsa.pub</code> and paste it into the authorised keys on the vagrant box (in ~/.ssh/authorized_keys)</p>
+<h2 id="write-a-recipe-everything-required-for-serving-a-rails-app">Write a recipe (everything required for serving a rails app)</h2>
+<p>Deploying rails app requires many config files (Nginx virtual hosts file, app server config file such as Passenger or Unicorn). This will be done with a single recipe.</p>
+<h3 id="check-the-unicorn-recipe">Check the unicorn recipe</h3>
+<p>The unicorn recipe does 3 things:</p>
+<ol>
+<li>Installs the unicorn gem package via chef (could also be done using the rails app itself and bundler)</li>
+<li>Creates a directory to store unicorn configuration files</li>
+<li>Installs a cookbook file i.e. a static file, stored in the cookbook which can be copied to the node</li>
+</ol>
+<h3 id="write-the-rails-recipe">Write the rails recipe</h3>
+<ol>
+<li>Create a directory for the cookbook (Rails)</li>
+<li>Create directories for recipes, attributes and templates</li>
+<li>Create a default recipe which will need to:
+i. run the Nginx and Unicorn installers - <code>include_recipe &quot;nginx&quot;</code>
+ii. create a metadata file to define dependencies (similar to bundler) - typically only used in chef server, but good practise to include for chef solo too
+iii. include bundler and create some directories
+iv. configure the unicorn app server
+v. configure nginx to serve the application as a virtual host</li>
+</ol>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2015/02/02/pluralsight-net-distributed-systems-architecture/">Pluralsight - .NET Distributed Systems Architecture</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2015/04/19/treehouse-data-basics/">Treehouse - Data Basics</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2015/02/03/pluralsight-meet-chef/` was built on 2025-09-05T01:23:56.882Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

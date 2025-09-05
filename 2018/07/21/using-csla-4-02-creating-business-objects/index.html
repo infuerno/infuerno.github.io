@@ -1,0 +1,1044 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Using CSLA 4 02 Creating Business Objects</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="using-csla-4-02-creating-business-objects">Using CSLA 4 02 Creating Business Objects</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2018-07-21">21 July 2018</time></li>
+</ul>
+
+<p>137 pages</p>
+<h3 id="reference">Reference</h3>
+<p>Templates: <a href="https://github.com/MarimerLLC/csla/tree/master/Support/Templates/cs/Files">https://github.com/MarimerLLC/csla/tree/master/Support/Templates/cs/Files</a></p>
+<h2 id="chapter-1-key-object-concepts-page-11">Chapter 1: Key Object Concepts (page 11)</h2>
+<h3 id="stereotypes">Stereotypes</h3>
+<p>Stereotypes supported by <a href="http://CSLA.NET">CSLA.NET</a>:</p>
+<table>
+<thead>
+<tr>
+<th>Stereotype</th>
+<th>Description</th>
+<th>Base Class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Editable root</td>
+<td>Read/write properties; Retrieved/stored directly</td>
+<td><code>BusinessBase&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td>Editable child</td>
+<td>Read/write properties; Retrieved/stored via parent</td>
+<td><code>BusinessBase&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td>Editable root list</td>
+<td>List object containing editable child objects. List is retrieved/stored directory</td>
+<td><code>BusinessListBase&lt;T,C&gt;</code> <code>BusinessBindingListBase&lt;T,C&gt;</code></td>
+</tr>
+<tr>
+<td>Editable child list</td>
+<td>List is retrieved/stored via parent</td>
+<td><code>BusinessListBase&lt;T,C&gt;</code> <code>BusinessBindingListBase&lt;T,C&gt;</code></td>
+</tr>
+<tr>
+<td>Dynamic root list</td>
+<td>Editable root objects; Retrieved/stored directly</td>
+<td><code>DynamicListBase&lt;C&gt;</code> <code>DynamicBindingListBase&lt;C&gt;</code></td>
+</tr>
+<tr>
+<td>Command</td>
+<td>Executes a command on the server, reports back results</td>
+<td><code>CommandBase&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td>Unit of work</td>
+<td>Combines operations against several objects</td>
+<td><code>ReadOnlyBase&lt;T&gt;</code> <code>CommandBase&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td>Read-only root</td>
+<td>Read properties; Retrieved/stored directly</td>
+<td><code>ReadOnlyBase&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td>Read-only child</td>
+<td>Read properties; Retrieved/stored via parent</td>
+<td><code>ReadOnlyBase&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td>Read-only root list</td>
+<td>List object containing read-only child objects. List is retrieved/stored directory</td>
+<td><code>ReadOnlyListBase&lt;T,C&gt;</code> <code>ReadOnlyBindingListBase&lt;T,C&gt;</code></td>
+</tr>
+<tr>
+<td>Read-only child list</td>
+<td>List is retrieved/stored via parent</td>
+<td><code>ReadOnlyListBase&lt;T,C&gt;</code> <code>ReadOnlyBindingListBase&lt;T,C&gt;</code></td>
+</tr>
+<tr>
+<td>Name/value list</td>
+<td>Read name / value objects</td>
+<td><code>NameValueListBase&lt;K,V&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="serializers">Serializers</h3>
+<ul>
+<li><code>BinaryFormatter</code> (DEFAULT) and <code>NetDataContractSerializer</code> (NDCS) (NOT RECOMMENDED) create true clones</li>
+<li><code>MobileFormatter</code> clone like functionality for Silverlight, WP7 and .NET</li>
+<li><code>Serialization</code> attribute generally used on each and every object</li>
+<li><code>DataContract</code> and <code>DataMember</code> can also be used at a field level - NDCS only - NOT RECOMMENDED - cannot swap to another formatter and will miss out any fields not decorated</li>
+<li><code>BinaryFormatter</code> is normally faster and more efficient, so shouldn’t be overriden. However the <code>MobileFormatter</code> avoids use of reflection and so may work in medium trust environments where the <code>BinaryFormatter</code> is disallowed.</li>
+</ul>
+<h3 id="object-relationships">Object Relationships</h3>
+<p>Relationships are important because the conceptual differences mean the code which is written to implement them is also different.</p>
+<table>
+<thead>
+<tr>
+<th>Relationship</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Containment</td>
+<td>Parent child relationship</td>
+<td>an <code>OrderEdit</code> object contains a <code>LineItems</code> collection, which in turn contains <code>LineItemEdit</code> objects. This set of objects is an <strong>object graph</strong>. The object at the top of the graph is the <strong>root</strong> object.</td>
+</tr>
+<tr>
+<td>Using</td>
+<td>Separate and independent objects which collaborate</td>
+<td><code>LineItemEdit</code> uses a <code>TaxCalculator</code> to calculate tax depending on country.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="equality">Equality</h3>
+<p>Object equality can mean different things - actually the same object, or two different objects containing the same values. The <code>Equals</code> method can be overriden, or the <code>IEquatable</code> interface implemented.</p>
+<h3 id="basic-csla-4-property-concepts">Basic CSLA 4 Property Concepts</h3>
+<p>Properties can become complex. A <code>getter</code> requires checking authorization, a <code>setter</code> requires checking: authorization, is new value different to existing value, <code>PropertyChanging</code> event, run rules, mark object as changed, <code>PropertyChanged</code> event.</p>
+<p>CSLA defines a standard way to declare properties and backing fields involving:</p>
+<ul>
+<li>metadata descriptions and</li>
+<li>helper methods.</li>
+</ul>
+<h4 id="metadata">Metadata</h4>
+<p>A <code>static</code> <code>PropertyInfo</code> field contains metadata about the property and is “registered” with the framework using the <code>RegisterProperty</code> method:</p>
+<p><code>public static readonly PropertyInfo&lt;string&gt; MyTextProperty = RegisterProperty&lt;string&gt;(c =&gt; c.MyText);</code></p>
+<p>Declaring metadata in this way is a requirement for using CSLA features.</p>
+<h5 id="registerproperty-method"><code>RegisterProperty</code> method</h5>
+<p>The <code>RegisterProperty</code> method registers the property’s metadata with the “field manager”, the <a href="http://CSLA.NET">CSLA.NET</a> property management subsystem (with various overloads). It creates an instance of <code>IPropertyInfo</code> containing property metadata - which is returned to the class and can be stored in a <code>static</code> field. It also registers the instance with a <code>static</code> data structure maintained by the framework.</p>
+<h5 id="propertyinfo-t-and-ipropertyinfo"><code>PropertyInfo&lt;T&gt;</code> and <code>IPropertyInfo</code></h5>
+<p>The <code>RegisterProperty</code> method either accepts a pre-created <code>IPropertyInfo</code> (usually a <code>PropertyInfo&lt;T&gt;</code>) or will create an instance for you. (PropertyInfo<T> is strongly typed and therefore more efficient.)</T></p>
+<p>The <code>PropertyInfo&lt;T&gt;</code> stores the property metadata (hence can be static at the class level). Elements in <code>IPropertyInfo</code> include: <code>Name</code>, <code>Type</code>, <code>FriendlyName</code>, <code>DefaultValue</code> (only use in value or immutable types since will be shared across all instances). The types can be extended to store extra metadata if required (advanced).</p>
+<h5 id="helper-methods">Helper Methods</h5>
+<p>Helper methods encapsulate authorisation, validation and so forth:</p>
+<pre><code>public string MyText
+      {
+get { return GetProperty(MyTextProperty); }
+set { SetProperty(MyTextProperty, value); } }
+</code></pre>
+<p>with the <code>GetProperty</code> and <code>SetProperty</code> methods behaving as outlined above.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GetProperty</code></td>
+<td>Gets a property, checking authorization rules</td>
+</tr>
+<tr>
+<td><code>ReadProperty</code></td>
+<td>Gets a property, no authorization checked</td>
+</tr>
+<tr>
+<td><code>SetProperty</code></td>
+<td>Sets a property, authorization, validation etc</td>
+</tr>
+<tr>
+<td><code>LoadProperty</code></td>
+<td>Simply sets a property, no auth, valiadtion, events raised etc</td>
+</tr>
+<tr>
+<td><code>GetPropertyConvert</code>, <code>ReadPropertyConvert</code>, <code>SetPropertyConvert</code>, <code>LoadPropertyConvert</code></td>
+<td>As above, additionally converting the new value to the correct backing field type</td>
+</tr>
+</tbody>
+</table>
+<h4 id="backing-fields">Backing fields</h4>
+<p>CSLA 4 allows you to implement properties using a manual backing field, or a “managed” backing field. In the latter case the CSLA .NET base class manages the property’s value on your behalf. Performance is slightly worse using managed backing fields, but generally recommended unless there is a high performance requirement.</p>
+<h4 id="types-of-property-declaration">Types of Property Declaration</h4>
+<p>Different base objects implement properties differently e.g. <code>BusinessBase</code> properties provide full read/write functionality; <code>CriteriaBase</code> properties are lightweight</p>
+<table>
+<thead>
+<tr>
+<th>Declaration type</th>
+<th>Property gets or sets</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Read/write</td>
+<td>Primitive or standard .NET type</td>
+</tr>
+<tr>
+<td>Read/write with conversion</td>
+<td>Converts to and from the type of field containing the value</td>
+</tr>
+<tr>
+<td>Read-only</td>
+<td>Non-public setter</td>
+</tr>
+<tr>
+<td>Read-only with conversion</td>
+<td>Non-public setter with conversion</td>
+</tr>
+<tr>
+<td>Child</td>
+<td>Containment, typically has a non-public setter</td>
+</tr>
+<tr>
+<td>Child with lazy loading</td>
+<td>Only loaded or created on demand</td>
+</tr>
+<tr>
+<td>Inter-graph reference</td>
+<td>Reference to another object in the same object graph (not child)</td>
+</tr>
+<tr>
+<td>Using reference</td>
+<td>Reference to object OUTSIDE the object graph, no setter</td>
+</tr>
+<tr>
+<td>Manual backing fields</td>
+<td>Includes read/write and read-only</td>
+</tr>
+</tbody>
+</table>
+<h5 id="read-write">Read-Write</h5>
+<ul>
+<li>The getter uses the <code>GetProperty</code> method, passing in the static IPropertyInfo metadata. If a user is NOT authorised the default value is returned (throwing exceptions will cause UIs to blow up - use <code>CanReadProperty</code> to check first).</li>
+<li>The setter uses <code>SetProperty</code>, taking the same metadata field and the new value. Throws a <code>SecurityException</code> in this case if the user is not allowed to change the value</li>
+<li>Child objects have to be taken into account when setting properties (more later)</li>
+<li><code>SetProperty</code> invokes business rules for this property and any dependent property</li>
+<li>Raises the <code>PropertyChanged</code> event to support data binding</li>
+</ul>
+<h5 id="read-write-with-no-rules">Read-Write with No Rules</h5>
+<ul>
+<li>Might need a field just to “store” a value, but with no rules.</li>
+<li>Required for certain base classes e.g. <code>CommandBase</code>. Here the <code>ReadProperty</code> and <code>LoadProperty</code> methods are used instead.</li>
+<li>Property itself can be private, but ensure the metadata is declared public if requiring full support from certain data access models e.g. <code>ObjectFactory</code></li>
+</ul>
+<h5 id="read-write-with-value-conversion">Read-Write with Value Conversion</h5>
+<ul>
+<li>Common example: string property backed by an enum value (note, breaks localization) where a string representation is useful for the UI</li>
+<li>Various mechanisms allow a value of one type to be converted into another type. Conversion will succeed as long as one of those mechanisms works.</li>
+<li>To access the underlying backing field (e.g. the enum here) a private property of the same type (e.g. the enum) is the easiest approach. NOTE <code>RegisterProperty</code> is not required a second time (obviously).</li>
+</ul>
+<pre><code>public static readonly PropertyInfo&lt;TestEnum&gt; MyStringEnumProperty = RegisterProperty&lt;TestEnum&gt;(c =&gt; c.MyStringEnum);
+public string MyStringEnum
+{
+  get { return GetPropertyConvert&lt;TestEnum, string&gt;(MyStringEnumProperty); }
+  set { SetPropertyConvert&lt;TestEnum, string&gt;(MyStringEnumProperty, value); }
+}
+</code></pre>
+<h5 id="read-only-and-read-only-with-value-conversion">Read-Only (and Read-Only with Value Conversion)</h5>
+<ul>
+<li>If authorisation is required for getting properties, these can be implemented using <code>GetProperty</code> and <code>LoadProperty</code> with the setter private (assumption being that properties do not change over the lifetime of the object)</li>
+<li>For base types which don’t support authorisation rules, use <code>ReadProperty</code> instead</li>
+</ul>
+<h5 id="child-object-reference">Child Object Reference</h5>
+<ul>
+<li>Need to use an overload of <code>RegisterProperty</code> helper method to specify the relationship type as <code>RelationshipTypes.Child</code></li>
+<li>For some situations, the child object will be read only, the property has a private setter and will be created when creating the parent object e.g. with code such as <code>Addresses = DataPortal.CreateChild&lt;AddressEditList&gt;();</code></li>
+</ul>
+<h5 id="child-object-reference-with-lazy-loading">Child Object Reference with Lazy Loading</h5>
+<ul>
+<li>Create or load the child object in the getter</li>
+<li>Additionally specify the relationship type <code>RelationshipTypes.LazyLoad</code> e.g.</li>
+</ul>
+<p><code>public static readonly PropertyInfo&lt;AddressEditList&gt; AddressesProperty = RegisterProperty&lt;AddressEditList&gt;(c =&gt; c.Addresses, RelationshipTypes.Child | RelationshipTypes.LazyLoad);</code></p>
+<ul>
+<li>The getter may be invoked on the client, but need to converse with the server i.e. data portal in order to load the object. Two methods:
+<ol>
+<li>Directly use the data portal</li>
+<li>Use a seperate “child object creator” e.g. <code>AddressListCreator</code> class with <code>Result</code> property which will be called from the getter (if not already loaded - check this using <code>FieldManager.FieldExists</code>)</li>
+</ol>
+</li>
+</ul>
+<h5 id="properties-with-manual-backing-fields">Properties with Manual Backing Fields</h5>
+<p>Examples of where you might use manual backing fields include:</p>
+<ul>
+<li>
+<p>Inter-graph references</p>
+</li>
+<li>
+<p>Using relationship references</p>
+</li>
+<li>
+<p>Scenarios where you need to apply attributes to fields</p>
+</li>
+<li>
+<p>High-performance scenarios where using managed backing fields is a performance bottleneck</p>
+</li>
+<li>
+<p>Still register a static metadata field for the property, but specify the <code>RelationshipTypes.PrivateField</code></p>
+</li>
+<li>
+<p>Initialise the private variable with the <code>MyProperty.DefaultValue</code></p>
+</li>
+<li>
+<p><code>GetProperty</code>, <code>SetProperty</code> have overloads to use the manual backing field for consistency</p>
+</li>
+<li>
+<p>No need for <code>ReadProperty</code> or <code>LoadProperty</code> - just use the backing field - but loosely typed versions of these methods which can be used if required</p>
+</li>
+</ul>
+<h5 id="inter-graph-reference">Inter-Graph Reference</h5>
+<p>For example <code>PersonEdit</code> has a list of child objects of type <code>AddressList</code>, but also has a reference <code>PrimaryAddress</code>. This would be an inter-graph reference. The difference is important for how n-level undo works - need to increase edit level for all objects in the object graph ONLY ONCE.</p>
+<p>Inter-graph references must use a manual backing field AND must have the <code>[NotUndoable]</code> attribute applied to that backing field. Since not a child object only the <code>RelationshipTypes.PrivateField</code> is needed.</p>
+<pre><code>public static readonly PropertyInfo&lt;AddressEdit&gt; PrimaryAddressProperty = RegisterProperty&lt;AddressEdit&gt;(c =&gt; c.PrimaryAddress, RelationshipTypes.PrivateField);
+[NotUndoable]
+private AddressEdit _primaryAddress = PrimaryAddressProperty.DefaultValue; public AddressEdit PrimaryAddress
+{
+  get { return GetProperty(PrimaryAddressProperty, _primaryAddress); }
+  set { SetProperty(PrimaryAddressProperty, ref _primaryAddress, value); }
+}
+</code></pre>
+<h5 id="using-reference">Using Reference</h5>
+<p>A reference to an object OUTSIDE the object graph. Best way is NOT to keep a reference to this object. Either create a reference when needed, or get a reference and store only in a local variable.</p>
+<p>For times when a reference is REQUIRED - this MUST be implemented using a manual backing field and decorated with the [NotUndoable] and [NonSerialized] attributes. Lazy loading of this reference MUST also be implemented - since after deserialization the property value will be null.</p>
+<h5 id="non-generic-loadproperty-method">Non-Generic LoadProperty Method</h5>
+<p>Most examples above use the generic overloaded version of the LoadProperty method e.g. <code>LoadProperty(AddressesProperty, value)</code>.</p>
+<p>The non-generic overload is substantially slower than the generic overload, because the value types aren’t known at compile time. Only use if there’s no way to invoke the generic overload.</p>
+<h3 id="method-declarations">Method Declarations</h3>
+<p>Similarly to properties, declaration of methods include the declaration of a static metadata field as well as use of helper methods to check authorization.</p>
+<pre><code>public static readonly MethodInfo TestMethod = RegisterMethod(typeof(EditableProperties), &quot;Test&quot;);
+public void Test()
+{
+  CanExecuteMethod(TestMethod, true); // method author must remember to add this line first
+  // do some work here
+}
+</code></pre>
+<h3 id="metastate">Metastate</h3>
+<p>CSLA objects maintain their own status. Following flags are available:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+<th>Stereotypes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IsNew</code></td>
+<td>Object’s primary key value doesn’t exist in data store</td>
+<td>Editable root and child</td>
+</tr>
+<tr>
+<td><code>IsDeleted</code></td>
+<td>Object is marked for deletion (and on save will delete rather than update). Generally used for child objects.</td>
+<td>Editable root and child</td>
+</tr>
+<tr>
+<td><code>IsChild</code></td>
+<td>Child object</td>
+<td>Editable root and child, Editable list</td>
+</tr>
+<tr>
+<td><code>IsDirty</code></td>
+<td>Has been changed (object or child)</td>
+<td>Editable root and child, Editable list</td>
+</tr>
+<tr>
+<td><code>IsSelfDirty</code></td>
+<td>Has been changed (this object only)</td>
+<td>Editable root and child</td>
+</tr>
+<tr>
+<td><code>IsValid</code></td>
+<td>No broken rules (object or child)</td>
+<td>Editable root and child, Editable list</td>
+</tr>
+<tr>
+<td><code>IsSelfValid</code></td>
+<td>No broken rules (this object only)</td>
+<td>Editable root and child</td>
+</tr>
+<tr>
+<td><code>IsBusy</code></td>
+<td>Async operations in progress (object or child)</td>
+<td>Editable root and child, Editable list</td>
+</tr>
+<tr>
+<td><code>IsSelfBusy</code></td>
+<td>Async operations in progress (this object only)</td>
+<td>Editable root and child</td>
+</tr>
+<tr>
+<td><code>IsSavable</code></td>
+<td><code>IsDirty &amp;&amp; IsValid &amp;&amp; !IsBusy</code> AND user is authorised</td>
+<td>Editable root and child, Editable list</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>It is possible to directly alter metastate</li>
+<li>It is possible to override how metastate works (make sure you know what you are doing)</li>
+<li>Various events are raised during an object’s lifetime</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Description</th>
+<th>Stereotypes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PropertyChanged</code></td>
+<td>A property has changed</td>
+<td>Editable root and child</td>
+</tr>
+<tr>
+<td><code>PropertyChanging</code></td>
+<td>A property is changing</td>
+<td>Editable root and child</td>
+</tr>
+<tr>
+<td><code>ListChanged</code></td>
+<td>The list or item in the list has changed (<code>BindingList</code> subclasses only)</td>
+<td>Editable list</td>
+</tr>
+<tr>
+<td><code>CollectionChanged</code></td>
+<td>The collection or item in the collection has changed (<code>ObservableCollection</code> subclasses only)</td>
+<td>Editable list</td>
+</tr>
+<tr>
+<td><code>ChildChanged</code></td>
+<td>An object in the graph has changed</td>
+<td>Editable root and child, Editable list</td>
+</tr>
+<tr>
+<td><code>Saved</code></td>
+<td>The object graph has been saved</td>
+<td>Editable root, Editable root list</td>
+</tr>
+<tr>
+<td><code>BusyChanged</code></td>
+<td>The objects busy status has changed</td>
+<td>Editable root and child, Editable list</td>
+</tr>
+</tbody>
+</table>
+<h4 id="accessing-metastate">Accessing Metastate</h4>
+<ul>
+<li>via public properties directly from the object itself</li>
+<li>via <code>ITrackStatus</code> interface which all business objects implement (useful for polymorphism)</li>
+<li>via <code>INotifyBusy</code> interface to access busy status as well as <code>BusyChanged</code> events (useful for polymorphism)</li>
+<li>via <code>INotifyChildChanged</code> interface for <code>ChildChanged</code> events (useful for polymorphism)</li>
+</ul>
+<p>Note: metastate properties do NOT support data binding</p>
+<h2 id="chapter-2-solution-structure-page-57">Chapter 2: Solution Structure (page 57)</h2>
+<h2 id="chapter-3-object-stereotypes-page-64">Chapter 3: Object Stereotypes (page 64)</h2>
+<h2 id="chapter-4-business-rules-page-91">Chapter 4: Business Rules (page 91)</h2>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2018/07/13/Install-local-version-of-ghost-for-development/">Install Local Version Of Ghost For Development</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2018/07/28/life-in-the-united-kingdom/">Life in the United Kingdom</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2018/07/21/using-csla-4-02-creating-business-objects/` was built on 2025-09-05T01:23:56.888Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

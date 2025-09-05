@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Angular.io: Tour of Heroes</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="angular-io-tour-of-heroes">Angular.io: Tour of Heroes</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2019-08-20">20 August 2019</time></li>
+</ul>
+
+<h2 id="references">References</h2>
+<ul>
+<li>Glossary - <a href="https://angular.io/guide/glossary">https://angular.io/guide/glossary</a></li>
+<li>Project file structure - <a href="https://angular.io/guide/file-structure">https://angular.io/guide/file-structure</a></li>
+</ul>
+<h2 id="workspaces-and-projects">Workspaces and Projects</h2>
+<h3 id="one-application-per-workspace">One application per workspace</h3>
+<p>Beginners and intermediate users are encouraged to use <code>ng new</code> to create a separate workspace for each project (where a project is an app, a library or a set of e2e tests).</p>
+<h3 id="multiple-applications-per-workspace">Multiple applications per workspace</h3>
+<p>Angular also supports workspaces with multiple projects. This type of development environment is suitable for advanced users who are developing shareable libraries, and for enterprises that use a “monorepo” development style, with a single repository and global configuration for all Angular projects.</p>
+<p>To set up a monorepo workspace, you should skip the creating the root application. See <a href="https://angular.io/guide/file-structure#multiple-projects">https://angular.io/guide/file-structure#multiple-projects</a>.</p>
+<p>All projects within a workspace share a “CLI configuration context” e.g. <code>angular.json</code> containing config for build, serve and test tools (TSLint, Karma, Protractor). See <a href="https://angular.io/guide/workspace-config">https://angular.io/guide/workspace-config</a></p>
+<p>In single application workspaces all source lives in <code>src</code>. In mulitiple project workspaces, each application sources files live in a <code>projects\[project-name]\src</code> folder.</p>
+<h2 id="binding">Binding</h2>
+<p><code>[(ngModel)]</code> is Angular’s two-way data binding syntax (import the <code>FormsModule</code>).</p>
+<h2 id="mock-data">Mock data</h2>
+<p>Define mock data in a seperate file with the contents <code>export const products = [{ ... }]</code>. This can then be imported where necessary and the const <code>products</code> used.</p>
+<h2 id="styling">Styling</h2>
+<p>Class bindings make it easy to add and remove CSS classes conditionally by adding <code>[class.some-css-class]=&quot;some-condition&quot;</code> to the element to be styled.</p>
+<h2 id="pass-data-to-child-component">Pass data to child component</h2>
+<p>Use <code>@Input() hero: Hero</code> to define the input field on the child component. Embed the child component and pass the property from the parent using <code>&lt;app-hero-detail [hero]=&quot;selectedHero&quot;&gt;&lt;/app-hero-detail&gt;</code></p>
+<h2 id="providing-a-service">Providing a service</h2>
+<pre class="language-typescript" tabindex="0"><code class="language-typescript"><span class="token decorator"><span class="token at operator">@</span><span class="token function">Injectable</span></span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  providedIn<span class="token operator">:</span> <span class="token string">'root'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p>When providing a service at the root level, Angular creates a <strong>single, shared instance</strong> of the HeroService and injects into any class that asks for it. Registering the provider in the @Injectable metadata also allows Angular to optimize an app by removing the service if it turns out not to be used after all.</p>
+<h2 id="observable-data">Observable data</h2>
+<p>When getting real heroes (data), asynchronous needs to be used to prevent locking the UI. Therefore <code>HeroService.getHeroes()</code> must have an asynchronous signature of some kind e.g. return <code>Observable</code>. When using the Angular <code>HttpClient.get</code> method, this returns an <code>Observable</code>.</p>
+<pre class="language-typescript" tabindex="0"><code class="language-typescript"><span class="token function">getHeroes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> Observable<span class="token operator">&lt;</span>Hero<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token keyword">of</span><span class="token punctuation">(</span><span class="token constant">HEROES</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>The RxJS <code>of()</code> function <code>of(HEROES)</code> returns an <code>Observable&lt;Hero[]&gt;</code> that emits a <strong>single value</strong>, the array of mock heroes.</p>
+<p>Consume the stream using an <code>async</code> pipe in the template e.g. <code>*ngFor=&quot;let hero of heroes | async</code> OR by subscribing to the stream in the <code>getHeroes</code> method.</p>
+<pre class="language-typescript" tabindex="0"><code class="language-typescript"><span class="token function">getHeroes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span> <span class="token punctuation">{</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span>heroService<span class="token punctuation">.</span><span class="token function">getHeroes</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>heroes <span class="token operator">=></span> <span class="token keyword">this</span><span class="token punctuation">.</span>heroes <span class="token operator">=</span> heroes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<h2 id="service-in-service">Service in Service</h2>
+<p>Create a <code>MessageService</code>, which can be consumed by the <code>HeroesComponent</code>, by injecting it into a service it is already using, the <code>HeroService</code>
+This is a typical “service-in-service” scenario: you inject the <code>MessageService</code> into the <code>HeroService</code> which is injected into the <code>HeroesComponent</code>.</p>
+<h2 id="use-a-service-in-a-component-template">Use a service in a component template</h2>
+<p>Inject the service into the component constructor as <code>public</code> (not <code>private</code>) e.g. <code>constructor(public messageService: MessageService) { }</code></p>
+<h2 id="routing-best-practices">Routing best practices</h2>
+<p>In Angular, the best practice is to load and configure the router in a separate, top-level module that is dedicated to routing and imported by the root <code>AppModule</code>. By convention, the module class name is <code>AppRoutingModule</code> and it belongs in the <code>app-routing.module.ts</code> in the src/app folder.</p>
+<p>Add using: <code>ng g m app-routing --flat --module=app</code></p>
+<p>The <code>AppRoutingModule</code> sets up the routes in the <code>imports</code> section, but also adds the <code>RoutingModule</code> to the <code>exports</code> section to ensure it can be used by the <code>AppModule</code>.</p>
+<pre class="language-typescript" tabindex="0"><code class="language-typescript"><span class="token decorator"><span class="token at operator">@</span><span class="token function">NgModule</span></span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  declarations<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  imports<span class="token operator">:</span> <span class="token punctuation">[</span>
+    RouterModule<span class="token punctuation">.</span><span class="token function">forRoot</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+      <span class="token punctuation">{</span> path<span class="token operator">:</span> <span class="token string">'heroes'</span><span class="token punctuation">,</span> component<span class="token operator">:</span> HeroesComponent <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span> path<span class="token operator">:</span> <span class="token string">'hero/:id'</span><span class="token punctuation">,</span> component<span class="token operator">:</span> HeroDetailComponent <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  exports<span class="token operator">:</span> <span class="token punctuation">[</span>RouterModule<span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">AppRoutingModule</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span></code></pre>
+<h2 id="default-route-redirects-to-other-route">Default route redirects to other route</h2>
+<p><code>{ path: '', redirectTo: '/dashboard', pathMatch: 'full' }</code></p>
+<h2 id="location-service">Location service</h2>
+<p>The <code>Location</code> service in <code>@angular/common</code> gives access to the browser’s location history to e.g. navigation back to the previous page e.g. <code>this.location.back()</code></p>
+<h2 id="simulating-a-data-server">Simulating a data server</h2>
+<ul>
+<li><code>npm install angular-in-memory-web-api</code></li>
+<li><code>ng generate service InMemoryData</code></li>
+</ul>
+<h2 id="httpclient-with-optional-type-specifier">HttpClient with optional type specifier</h2>
+<p><code>HttpClient.get()</code> returns the body of the response as an untyped JSON object by default. Applying the optional type specifier, <code>&lt;Hero[]&gt;</code>, adds TypeScript capabilities reducing errors during compile time.</p>
+<p>NOTE: Other APIs may bury the data that you want within an object. You might have to dig that data out by processing the Observable result with the RxJS <code>map()</code> operator. There’s an example of <code>map()</code> in the <code>getHeroNo404()</code> method included in the sample source code.</p>
+<h2 id="handling-errors">Handling errors</h2>
+<p><code>import { catchError, map, tap } from 'rxjs/operators';</code></p>
+<p>The <code>catchError</code> operators intercepts an observable which failed, passing it an error handler e.g. <code>catchError(this.handleError&lt;Hero[]&gt;('getHeroes', []))</code></p>
+<pre class="language-typescript" tabindex="0"><code class="language-typescript">  <span class="token keyword">private</span> <span class="token generic-function"><span class="token function">handleError</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">></span></span></span><span class="token punctuation">(</span>operation <span class="token operator">=</span> <span class="token string">'operation'</span><span class="token punctuation">,</span> result<span class="token operator">?</span><span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>error<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">)</span><span class="token operator">:</span> Observable<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">></span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+
+      <span class="token comment">// TODO: send the error to remote logging infrastructure</span>
+      <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// log to console instead</span>
+
+      <span class="token comment">// TODO: better job of transforming error for user consumption</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>operation<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> failed: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>error<span class="token punctuation">.</span>message<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+      <span class="token comment">// Let the app keep running by returning an empty result.</span>
+      <span class="token keyword">return</span> <span class="token keyword">of</span><span class="token punctuation">(</span>result <span class="token keyword">as</span> <span class="token constant">T</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span></code></pre>
+<h2 id="tap-into-the-observable">Tap into the Observable</h2>
+<p>The RxJS <code>tap()</code> operator, looks at the observable values, does something with the values, and then passes them along. The <code>tap()</code> callback doesn’t touch the values themselves.</p>
+<pre class="language-typescript" tabindex="0"><code class="language-typescript"><span class="token function">getHeroes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> Observable<span class="token operator">&lt;</span>Hero<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>http<span class="token punctuation">.</span><span class="token generic-function"><span class="token function">get</span><span class="token generic class-name"><span class="token operator">&lt;</span>Hero<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>heroesUrl<span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span>
+      <span class="token function">tap</span><span class="token punctuation">(</span>_ <span class="token operator">=></span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'fetched heroes'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token function">catchError</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token generic-function"><span class="token function">handleError</span><span class="token generic class-name"><span class="token operator">&lt;</span>Hero<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token string">'getHeroes'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<h2 id="creating-new-objects">Creating new objects</h2>
+<p><code>let hero1 = { name: 'Wendy' } as Hero</code>
+<code>let hero2: Hero = { id: null, name: 'Wendy' } // have to specify all properties</code></p>
+<h2 id="event-to-capture-user-input">Event to capture user input</h2>
+<p>Use the <code>input</code> event to trigger on user input.</p>
+<p><code>&lt;input #searchBox (input)=&quot;search(searchBox.value)&quot; /&gt;</code></p>
+<h2 id="naming-convention-for-observables">Naming convention for observables: <code>$</code></h2>
+<p>Using <code>$</code>, at the end of a variable name, is a convention that indicates the variable is an Observable rather than a regular object or array. In the following, <code>heroes$</code> is of type <code>Observable&lt;Hero[]&gt;</code>:</p>
+<p><code>&lt;li *ngFor=&quot;let hero of heroes$ | async&quot;&gt;</code></p>
+<h2 id="rxjs-subject">RxJS <code>Subject</code></h2>
+<p>A <code>Subject</code> is both a source of observable values and an <code>Observable</code> itself. You can subscribe to a <code>Subject</code> as you would any <code>Observable</code>. You can also push values into the observable using the <code>next(term)</code> method.</p>
+<pre class="language-typescript" tabindex="0"><code class="language-typescript">  heroes$<span class="token operator">:</span> Observable<span class="token operator">&lt;</span>Hero<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span><span class="token punctuation">;</span>
+  <span class="token keyword">private</span> searchTerms <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Subject<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token operator">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token keyword">private</span> heroService<span class="token operator">:</span> HeroService<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+  <span class="token comment">// Every time the value of the input box changes, a search term is pushed into the observable stream</span>
+  <span class="token comment">// The observable emits a steady stream of search terms</span>
+  <span class="token function">search</span><span class="token punctuation">(</span>term<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>searchTerms<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span>term<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// Passing a new term to the HeroService to search for every time the user entered a value, would create an excessive amount of HTTP requests.</span>
+  <span class="token comment">// ngOnInit therefore pipes the stream through a series of RxJS operators thereby reducing the number of calls to searchHeroes</span>
+  <span class="token function">ngOnInit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>heroes$ <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>searchTerms<span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span>
+      <span class="token comment">// wait until flow of new events pauses for 300 milliseconds before continuing</span>
+      <span class="token function">debounceTime</span><span class="token punctuation">(</span><span class="token number">300</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+
+      <span class="token comment">// ignore new term if same as previous term</span>
+      <span class="token function">distinctUntilChanged</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+
+      <span class="token comment">// switch to new search observable each time the term changes</span>
+      <span class="token function">switchMap</span><span class="token punctuation">(</span><span class="token punctuation">(</span>term<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">this</span><span class="token punctuation">.</span>heroService<span class="token punctuation">.</span><span class="token function">searchHeroes</span><span class="token punctuation">(</span>term<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span></code></pre>
+<h2 id="switchmap"><code>switchMap</code></h2>
+<p>With the <code>switchMap</code> operator, every qualifying key event can trigger an HttpClient.get() method call. Even with a 300ms pause between requests, you could have multiple HTTP requests in flight and they may not return in the order sent.</p>
+<p><code>switchMap()</code> preserves the original request order while returning only the observable from the most recent HTTP method call. Results from prior calls are canceled and discarded.</p>
+<p>Note that canceling a previous searchHeroes() Observable doesn’t actually abort a pending HTTP request. Unwanted results are simply discarded before they reach your application code.</p>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2019/08/12/pluralsight-linq-fundamentals/">Pluralsight: LINQ Fundamentals</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2019/09/16/haverbeke-eloquent-javascript/">Haverbeke: Eloquent JavaScript</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2019/08/20/angular-io-tour-of-heroes/` was built on 2025-09-05T01:23:56.889Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Frontend Masters: Brian Holt Fox Game</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="frontend-masters-brian-holt-fox-game">Frontend Masters: Brian Holt Fox Game</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2020-06-27">27 June 2020</time></li>
+</ul>
+
+<h2 id="references">References</h2>
+<ul>
+<li>Course notes: <a href="https://btholt.github.io/project-fox-game-site/">https://btholt.github.io/project-fox-game-site/</a></li>
+</ul>
+<h3 id="stretch">Stretch</h3>
+<ul>
+<li>Code in alternative framework</li>
+<li>Write tests</li>
+<li>Rewrite using TypeScript</li>
+<li>Model using xstate</li>
+</ul>
+<h2 id="front-end-infrastructure">Front End Infrastructure</h2>
+<h3 id="npm">npm</h3>
+<ul>
+<li><code>npm list -g --depth=0</code> lists all top-level packages with versions</li>
+<li><code>npm list -g --parseable --depth=0</code> lists with paths</li>
+<li><code>npm init -y</code> start a node project with all the defaults</li>
+</ul>
+<h3 id="bundlers">Bundlers</h3>
+<p><strong>Webpack</strong> is one of the most well known bundlers. Course by Sean Larkin - <a href="https://frontendmasters.com/courses/webpack-fundamentals/">https://frontendmasters.com/courses/webpack-fundamentals/</a>.</p>
+<ul>
+<li>reliable</li>
+<li>configurable</li>
+<li>robust</li>
+<li>BUT difficult to set up</li>
+</ul>
+<p>Other bundlers include:</p>
+<ul>
+<li><a href="http://browserify.org/">Browserify</a> - lets you <code>require('modules')</code> in the browser by bundling up all of your dependencies.</li>
+<li><a href="https://www.snowpack.dev/">Snowpack</a></li>
+<li><a href="https://rollupjs.org/guide/en/">Rollup</a> - Next-generation ES module bundler</li>
+<li><a href=".">Microbundle</a> - The zero-configuration bundler for tiny modules, powered by Rollup</li>
+<li><a href="https://v2.parceljs.org/">Parcel</a> - zero configuration, works out of the box</li>
+</ul>
+<p><code>npm i -D parcel-bundler</code> to install parcel to the dev dependencies
+<code>npm i -D parcel-bundler@1.12.4</code> to install a particular version</p>
+<h3 id="emmet">Emmet</h3>
+<ul>
+<li><code>html:5</code> to get the emmet code snippet for html in vs code</li>
+</ul>
+<h3 id="parcel">Parcel</h3>
+<ul>
+<li>Use <code>parcel src/index.html</code> to build your project. Parcel will create a <code>.cache</code> directory AND a <code>dist</code> directory with all the output. These should NOT be commited to the git repo.</li>
+<li>Create an npm script in package.json e.g. <code>dev</code> so that <code>npm run dev</code> runs this script</li>
+</ul>
+<h3 id="prettier">Prettier</h3>
+<ul>
+<li><code>npm i -D prettier</code></li>
+<li>Create a file at the route <code>.prettierrc</code> with contents <code>{}</code> which configures prettier for the project but with all the default rules</li>
+<li>Install Esben Petersen’s VS Code extension (the most popular one)</li>
+<li>In Settings, ensure “Editor: Format On Save” is selected</li>
+<li>In Settings, ensure “Prettier: Require Config” is also selected, if there is no <code>.prettierrc</code> or <code>.editorconfig</code>, the prettier extension will not screw around with the project</li>
+</ul>
+<p>In <code>package.json</code> add the following script definitions:</p>
+<pre class="language-json" tabindex="0"><code class="language-json"><span class="token property">"format"</span><span class="token operator">:</span> <span class="token string">"prettier --ignore-path ./.gitignore --write \"./**/*.{html,json,js,ts,css}\""</span><span class="token punctuation">,</span>
+<span class="token property">"format:check"</span><span class="token operator">:</span> <span class="token string">"prettier --ignore-path ./.gitignore --check \"./**/*.{html,json,js,ts,css}\""</span></code></pre>
+<p>The first actually fixes the code, the second checks the code and throws an error if anything found (useful for automated build pipelines).</p>
+<h3 id="editorconfig">Editorconfig</h3>
+<p>Most editors understand <code>.editorconfig</code> so it is a good file to have in projects especially working with other team members. (So why do we need an extension in VS Code then?)</p>
+<p>Create a <code>.editorconfig</code> file with the following contents and ensure the “EditorConfig for VS Code” extension is installed</p>
+<pre class="language-yaml" tabindex="0"><code class="language-yaml">root = true <span class="token comment"># this is the root most .editorconfig file</span>
+
+<span class="token punctuation">[</span>*<span class="token punctuation">]</span>
+end_of_line = lf
+insert_final_newline = true
+charset = utf<span class="token punctuation">-</span><span class="token number">8</span>
+indent_size = 2
+indent_style = space</code></pre>
+<p>Prettier will also use the settings in <code>.editorconfig</code></p>
+<h3 id="eslint">ESLint</h3>
+<p>Overlaps prettier to some extent, but has more focus on enforcing good code syntax</p>
+<ul>
+<li><code>npm i -D eslint eslint-plugin-import eslint-config-prettier</code></li>
+<li>Create <code>.eslintrc.json</code> in the root directory</li>
+</ul>
+<pre class="language-json" tabindex="0"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"extends"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"eslint:recommended"</span><span class="token punctuation">,</span> <span class="token comment">// all the rules which eslint itself recommends</span>
+    <span class="token string">"plugin:import/errors"</span><span class="token punctuation">,</span> <span class="token comment">// uses the eslint-plugin-import package to detect issues with plugins</span>
+    <span class="token string">"prettier"</span> <span class="token comment">// let prettier worry about things like bad indentation and TURN OFF these rules for eslint</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"rules"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"no-console"</span><span class="token operator">:</span> <span class="token number">1</span> <span class="token comment">// warn about console.log (rather than the default which is to error) - note 0 turns off altogether</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"plugins"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"import"</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token comment">// there is a plugin called import</span>
+  <span class="token property">"parserOptions"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"ecmaVersion"</span><span class="token operator">:</span> <span class="token number">2018</span><span class="token punctuation">,</span>
+    <span class="token property">"style"</span><span class="token operator">:</span> <span class="token string">"module"</span> <span class="token comment">// since using ES6 style modules</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"env"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"es6"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">"browser"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">"node"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Similar script definitions to add to <code>package.json</code>:</p>
+<pre class="language-json" tabindex="0"><code class="language-json"><span class="token property">"lint"</span><span class="token operator">:</span> <span class="token string">"eslint --ignore-path ./.gitignore --fix \"./**/*.{js,ts}\""</span><span class="token punctuation">,</span>
+<span class="token property">"lint:check"</span><span class="token operator">:</span> <span class="token string">"eslint --ignore-path ./.gitignore --quiet \"./**/*.{js,ts}\""</span><span class="token punctuation">,</span></code></pre>
+<ul>
+<li>Install the Dirk Baeumer’s ESLint extension</li>
+</ul>
+<h3 id="testing">Testing</h3>
+<p>Testing frameworks include:</p>
+<ul>
+<li>Jest</li>
+<li>Jasmine</li>
+<li>Mocha</li>
+<li>AVA</li>
+</ul>
+<p>Install e.g. jest using: <code>npm i -D jest</code> and update the <code>test</code> script in <code>package.json</code> to simply say <code>jest</code>. Any file named <code>*.test.js</code> will now be run when issuing <code>npm run test</code></p>
+<h2 id="architecture">Architecture</h2>
+<h3 id="organising-your-code">Organising your code</h3>
+<p>There is an endless ocean of good ways to organise your code. They each tend to have different trade offs e.g.:</p>
+<ul>
+<li>searchability</li>
+<li>discoverability</li>
+<li>available from a file explorer</li>
+</ul>
+<p>Generally ALL well intentioned and <strong>generally ALL eventually fall apart</strong>.</p>
+<p>Recommendation is to optimise for deletability (Ryan Florence), which means it needs to be modular, which then forces you into good practices.</p>
+<h3 id="start">Start</h3>
+<p>First file <code>init.js</code>. Always try to have one defined entry to the app which the browser loads. Everything else behind it are then modules. All the garbage e.g. GA goes in the <code>init.js</code> which is not going to be tested.</p>
+<h4 id="clock-loop-which-runs-the-game-every-3-seconds">Clock loop which runs the game every 3 seconds</h4>
+<p><code>setTimeout</code> can be used, but it asks the browser to drop everything and run the code right there and then. <code>requestAnimationFrame(methodToRun)</code> instead lets the browser run the code as soon as it isn’t busy (which will be at most 1 to 2ms)</p>
+<h4 id="init-js-9-uncaught-referenceerror-regeneratorruntime-is-not-defined">init.js:9 Uncaught ReferenceError: regeneratorRuntime is not defined</h4>
+<p>Parcel is targetting older browsers, but they don’t understand <code>async</code> SO within <code>package.json</code> add <code>browserslist</code></p>
+<pre class="language-json" tabindex="0"><code class="language-json">  <span class="token property">"browserslist"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"last 2 Chrome versions"</span>
+  <span class="token punctuation">]</span></code></pre>
+<p>However, should not write code which only target the last 2 Chrome versions, so therefore, can’t use <code>async</code> in shippable code?</p>
+<h4 id="other-issues">Other issues</h4>
+<p>If any issues, try resetting parcel using <code>rm -f .cache dist</code> and then running <code>npm run dev</code> again.</p>
+<h3 id="finite-state-machine-fsm">(Finite) State Machine (FSM)</h3>
+<p>Methodology of writing code which prevents lots of different types of bugs.</p>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2020/06/27/fem-bianca-gandolpho-javascript-from-fundamentals-to-functional-js-v2/">Frontend Masters: Bianca Gandolpho Javascript from Fundamentals to Functional JS v2</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2020/08/02/dotnet-conf-microservices-workshop/">.NET Conf Microservices 2020 - Workshop</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2020/06/27/fem-brian-holt-fox-game/` was built on 2025-09-05T01:23:56.889Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

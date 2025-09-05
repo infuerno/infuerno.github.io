@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Pluralsight: C# Generics</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="pluralsight-c-generics">Pluralsight: C# Generics</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2019-08-09">09 August 2019</time></li>
+</ul>
+
+<h2 id="generic-delegates">Generic Delegates</h2>
+<p>Regular delegates would require using <code>object</code> and the disadvantages (not type safe, boxing performance hit).</p>
+<pre><code>// declare a delegate type
+public delegate void Printer(object data);
+
+// declare a method that has the same signature
+public void WriteToConsole(object data) {
+    Console.WriteLine(data);
+}
+
+// create a delegate to point to this method
+var consolePrinter = new Printer(WriteToConsole);
+// invoke the delegate
+consolePrinter.Invoke(&quot;hello&quot;);
+// or pass the delegate to a method that will use it
+buffer.Dump(consolePrinter);
+
+// using shorthand (method group conversion)
+var consolePrinter = WriteToConsole;
+consolePrinter(&quot;hello&quot;); // or buffer.Dump(consolePrinter)
+</code></pre>
+<p>Using generics:</p>
+<pre><code>// make it all generic
+public delegate void Printer&lt;T&gt;(T data);
+public void WriteToConsole&lt;T&gt;(T data) {
+    Console.WriteLine(data);
+}
+var consolePrinter = new Printer&lt;double&gt;(WriteToConsole);
+consolePrinter.Invoke(2.0); // or buffer.Dump(consolePrinter)
+</code></pre>
+<h2 id="general-purpose-delegate-types">General purpose delegate types</h2>
+<p>To save having to create your own delegate types, there are several built in delegate types which can be used instead: <code>Func</code>, <code>Action</code> and <code>Predicate</code>.</p>
+<h3 id="action">Action</h3>
+<p>Always returns void, but can take from 0 to 16 params, the types of which are determined using from 0 to 16 generic type arguments. e.g. <code>Action&lt;double&gt;</code> can be used for a method which returns <code>void</code>, but takes one parameter of type <code>double</code>.</p>
+<pre><code>var consolePrinter = new Action&lt;double&gt;(WriteToConsole);
+consolePrinter(2.0);
+// or if passing to a method, that method would have to be updated to accept a delegate type of Action
+buffer.Dump(consolePrinter);
+
+// can use method group conversion instead
+var consolePrinter = WriteToConsole;
+
+// can use anonymous method
+Action&lt;double&gt; consolePrinter = delegate(double data) { Console.WriteLine(data);};
+
+// can use lamda expression
+Action&lt;double&gt; consolePrinter = d =&gt; Console.WriteLine(data);
+buffer.Dump(consolePrinter);
+
+// can use inline lamda
+buffer.Dump(d =&gt; d.Console.WriteLine(data));
+</code></pre>
+<h3 id="func">Func</h3>
+<p>Always has a return type, which is the last argument specified as well as 0 to 16 parameters e.g. <code>Func&lt;double, double&gt;</code> points to a method which takes a <code>double</code> and returns a <code>double</code>.</p>
+<pre><code>Func&lt;double, double&gt; square = d =&gt; d * d;
+Func&lt;double, double, double&gt; add = (x, y) =&gt; x + y;
+</code></pre>
+<h3 id="predicate">Predicate</h3>
+<p>Always returns a boolean.</p>
+<pre><code>Predicate&lt;double&gt; isLessThanTen = d =&gt; d &lt; 10;
+</code></pre>
+<h2 id="events-and-generics">Events and Generics</h2>
+<p>As well as <code>Func</code>, <code>Action</code> and <code>Predicate</code> the built in delegate <code>EventHandler</code> is useful for raising events.</p>
+<p><strong>Come back to this after checking more into events</strong></p>
+<h2 id="constraints-covariance-contravariance">Constraints, Covariance, Contravariance</h2>
+<h3 id="constraints">Constraints</h3>
+<p>Use the <code>where</code> keyword to restrict generic types. This means that we know we can now call certain methods in the implementation. It makes more sense to add these restrictions just to the implementations rather than interfaces, since the interface doesn’t care about implementation details. However matter of personal taste.</p>
+<h3 id="covariance">Covariance</h3>
+<ul>
+<li><code>IEnumerable&lt;Employee&gt; temp = employeeRepository.FindAll()</code> - this is ok because <code>FindAll</code> returns <code>IQueryable</code> which implements <code>IEnumerable</code>, so the collection returned will be IQueryable as well as IEnumerable.</li>
+<li><code>IEnumerable&lt;Person&gt; temp = employeeRepository.FindAll()</code> - this is also OK. <code>FindAll</code> return a collection of <code>Employee</code>s and since <code>Employee</code> inherits from <code>Person</code>, those employees will also be people. This only works because the IEnumerable interface is specified using the <code>out</code> keyword (a generic modifier) which allows the <code>T</code> parameter to “vary” i.e. <code>IEnumerable&lt;out T&gt;</code>. The <code>T</code> parameter is covariant. The <code>GetEnumerator</code> method in the IEnumerable interface is allowed to return types which are “more derived” than the original type specified.</li>
+<li>NOTE: covariance only works with delegates and interfaces (not classes)</li>
+<li>Covariance can only be used on an interface where the <code>T</code> is returned. It can’t be used when the <code>T</code> is used as a parameter. Treating employees as people is ok when they are returned to a caller. But treating a person as an employee will be a problem. So we can’t accept a person instead.</li>
+<li>A solution is to split out the interface into the read only methods which simply return T and then implement this interface by the other one</li>
+<li><code>interface IReadOnlyRepository&lt;out T&gt;</code></li>
+</ul>
+<h3 id="contravariance">Contravariance</h3>
+<ul>
+<li>The opposite. Allow generic interfaces which define methods which accept T, but don’t return it, to accept T OR any type which derives from T. Do this using the <code>in</code> keyword: <code>interface IWriteOnlyRepository&lt;in T&gt;</code></li>
+<li>The <code>IRepository</code> interface is now empty with read split out to <code>IReadOnlyRepository</code> and writes split out to <code>IWriteOnlyRepository</code>. The <code>IRepository</code> simply implements both interfaces, but specifies that <code>T</code> must be invariant when dealing with <code>IRepository</code>. e.g. can only use Employee objects here and nothing else. i.e. <code>IRepository&lt;T&gt; : IReadOnlyRepository&lt;T&gt;, IWriteOnlyRepository&lt;T&gt;</code></li>
+<li>Example with a delegate: <code>delegate TOutput Converter&lt;in TInput, out TOutput&gt;(TInput input)</code></li>
+</ul>
+<h2 id="generics-and-reflection">Generics and Reflection</h2>
+<h3 id="instantiate-generic-types">Instantiate Generic Types</h3>
+<p>Create a generic type using the whole type definition</p>
+<pre><code>Type t = typeof(List&lt;Employee&gt;);
+object o = Activator.CreateInstance(t);
+Console.WriteLine(o.GetType().Name); // List`1
+o.GetType().GenericTypeArguments.ToList().ForEach(arg =&gt; Console.Write($&quot;[{arg.Name}]&quot;)); // [Employee]
+</code></pre>
+<p>Create a generic type where collection type and item type are specified seperately by calling <code>MakeGenericType</code> on the collection type.</p>
+<pre><code>Type typeCollection = typeof(List&lt;&gt;);
+type typeItem = typeof(Employee);
+Type closedType = typeCollection.MakeGenericType(typeItem);
+object o = Activator.CreateInstance(closedType);
+</code></pre>
+<h3 id="invoke-generic-methods">Invoke Generic Methods</h3>
+<p>The below code would usually work for non generic methods, but doesn’t work where generic parameters are required.</p>
+<pre><code>var employee = new Employee();
+var employeeType = employee.GetType();
+var methodInfo = employeeType.GetMethod(&quot;Speak&quot;);
+methodInfo.Invoke(employee, null); // null since method doesn't have any parameters
+</code></pre>
+<p>Need to create a generic method using <code>MakeGenericMethod</code> on the method info: <code>methodInfo = methodInfo.MakeGenericMethod(typeof(DateTime));</code></p>
+<h2 id="odds-and-ends">Odds and Ends</h2>
+<h3 id="enums">Enums</h3>
+<p>When using generics with <code>enum</code>s - it is not possible to constrain a generic type to be of type enumeration. The nearest possible is of a value type. So e.g. writing a generic method to convert a string to an enumeration cannot be constrained to ensure it will only be used with enumerations.</p>
+<pre><code>enum ColourType {
+    Black, White
+}
+public static StringExtensions
+{
+    public static T ParseEnum&lt;T&gt;(this string value) : where T : struct
+    {
+        return (T)Enum.Parse(typeof(T), value);
+    }
+}
+
+var input = &quot;black&quot;;
+var colour = input.ParseEnum&lt;ColourType&gt;();
+</code></pre>
+<h3 id="maths">Maths</h3>
+<p>Can’t enforce generic types such that they implement certain operators e.g. <code>+</code>, <code>&lt;</code>, <code>+=</code>. Best approach here is overloaded methods instead.</p>
+<h3 id="using-base-types">Using Base Types</h3>
+<p>If you have a generic class <code>Item&lt;T&gt;</code> and you want to have a list of only these items, you need to defined a strongly type list OF strongly typed items and it wouldn’t be possible to e.g. have <code>Item&lt;int&gt;</code> and <code>Item&lt;double&gt;</code> in the same list.</p>
+<p>One solution is to create a <code>Item</code> base type and have <code>Item&lt;T&gt; : Item</code> inherit from this base type. This way you have have a <code>List&lt;Item&gt;</code> and maintain some control over what is added to the list.</p>
+<h3 id="generics-and-statics">Generics and Statics</h3>
+<p>Static fields belong to the generic type specified FOR a particular type e.g. <code>Item&lt;int&gt;</code> and not shared across all <code>Item&lt;T&gt;</code>.</p>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2019/07/27/pluralsight-angular-getting-started/">Pluralsight: Angular Getting Started</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2019/08/12/pluralsight-linq-fundamentals/">Pluralsight: LINQ Fundamentals</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2019/08/09/pluralsight-csharp-generics/` was built on 2025-09-05T01:23:56.889Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

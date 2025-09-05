@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>BerkleyX: CS169.1x Agile Development Using Ruby on Rails</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="berkleyx-cs169-1x-agile-development-using-ruby-on-rails">BerkleyX: CS169.1x Agile Development Using Ruby on Rails</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2017-06-03">03 June 2017</time></li>
+</ul>
+
+<h2 id="chapter-1-introduction-to-saas-and-agile-development">Chapter 1: Introduction to SaaS and Agile Development</h2>
+<h3 id="references">References</h3>
+<p><a href="http://www.saasbook.info/students">Students - Engineering Software as a Service: An Agile Approach Using Cloud Computing</a>
+<a href="http://www.akitaonrails.com/2017/01/10/arch-linux-best-distro-ever">http://www.akitaonrails.com/2017/01/10/arch-linux-best-distro-ever</a>
+<a href="http://rubular.com">http://rubular.com</a></p>
+<h3 id="plan-and-document">Plan and Document</h3>
+<ul>
+<li>Create a plan and detailed documentation</li>
+<li>Start building the software, measuring progress against the plan</li>
+<li>If changes required in the project, update the plan and the documentation</li>
+</ul>
+<h4 id="waterfall-software-development-lifecycle-1970">Waterfall - Software Development Lifecycle (1970)</h4>
+<ol>
+<li>Requirements and Analysis</li>
+<li>Architectural design</li>
+<li>Implementation and Integration</li>
+<li>Verification</li>
+<li>Operation and Maintenance</li>
+</ol>
+<blockquote>
+<p>“And the users exclaimed with a laugh and an taunt, its just what we asked for, but not what we want”</p>
+</blockquote>
+<p>Often when the customer sees a SW product, they want to change it.</p>
+<h4 id="spiral-lifecycle-1986">Spiral Lifecycle (1986)</h4>
+<p>Combines Plan and Document with prototypes.</p>
+<ol>
+<li>Determine objectives and contraints</li>
+<li>Evaluate alternatives and identify risk</li>
+<li>Develop and verify prototype</li>
+<li>Show to customers, get feedback, next iteration</li>
+</ol>
+<p>Iterations involve the customer so there is feedback, but iterations tend to be approx six months. Each iteration requires documentation, so lots of it. Various rules e.g. can’t skip between phases. Gets expensive and proves to be hard to meet the project and</p>
+<h4 id="rational-unified-process-2003">Rational Unified Process (2003)</h4>
+<ol>
+<li>Inception - business case, schedule, budget</li>
+<li>Elaboration - identify use cases, design an architecture, outline development plan, build prototype</li>
+<li>Construction - code and testing, first external release</li>
+<li>Transition - move from development to production, customer acceptance testing, user training</li>
+</ol>
+<h3 id="agile-manifesto-2001">Agile Manifesto (2001)</h3>
+<p>We have come to value:</p>
+<ul>
+<li>Individuals and interactions over processes and tools</li>
+<li>Working software over comprehensive documentation (direct jab at Plan and Document approach)</li>
+<li>Customer collaboration over contract negotiation</li>
+<li>Responding to change over following a plan</li>
+</ul>
+<h3 id="when-to-use-plan-and-document">When to use Plan and Document</h3>
+<p>Ian Sommerville - Software Engineering,10th Edition</p>
+<ol>
+<li>Is specification required?</li>
+<li>Are customers unavailable?</li>
+<li>Is the system to be built large?</li>
+<li>Is the system to be built complex (e.g. real time)?</li>
+<li>Will it have a long product lifetime?</li>
+<li>Are you using poor software tools?</li>
+<li>Is the project team geographically distributed?</li>
+<li>Is the team part of a document-oriented culture?</li>
+<li>Does the team have poor programming skills?</li>
+<li>Is the system to be built subject to regulation?</li>
+</ol>
+<h3 id="legacy-code">Legacy Code</h3>
+<p>Old software which continues to meet customer’s needs but which is difficult to evolve.</p>
+<h3 id="quality">Quality</h3>
+<p>Satisfying the customers needs, easy to use, gets correct answers, does not crash AND easy for the developer to debug and enhance.</p>
+<p>:Verification
+Did you build the system as it was asked for (i.e. did you meet the specification)?</p>
+<p>:Validation
+Did you build the right thing (i.e. does it do what the customer wants, or is the specification right?)</p>
+<h2 id="chapter-2-the-architecture-of-saas-applications">Chapter 2: The Architecture of SaaS applications</h2>
+<h3 id="client-server-architecture">Client-Server Architecture</h3>
+<p>SaaS web apps are examples of client server architecture.
+Client - specialised in interacting with the user and sending requests to a server e.g. web browsers: Firefox, Safari
+Server - specialised in handling large volumes of client requests e.g. web servers: Apache, IIS</p>
+<h3 id="communication-http-and-uris">Communication - HTTP and URIs</h3>
+<p>Clients and servers communication using HTTP which in turn relies on TCP/IP. Each computer has an IP address and via DNS to translate a hostname to the equivalent IP address, the browser and server communicate to send and receive packets. TCP/IP additionally uses port numbers from 1 to 65535 (i.e. 16 bits) to distinguish different network agents at the same IP address.</p>
+<p>An HTTP request consists of an HTTP method and a URI. HTTP is a stateless protocol. Cookies and session are used to track state. It is the browser’s responsibliity to ensure the correct cookies are sent with each request.</p>
+<h3 id="representation-html-and-css">Representation - HTML and CSS</h3>
+<p>An HTML document of tags and optional attributes determine the structure of a web page. Selectors identify one or more elements. CSS describes visual attributes of HTML elements using selectors. A CSS stylesheet is associated with an HTML document using a special link element in the header of the HTML document.</p>
+<h3 id="3-tier-architecture-and-horizontal-scaling">3-Tier Architecture and Horizontal Scaling</h3>
+<p>Web apps are structured as 3 logical tiers:</p>
+<ul>
+<li>Presentation tier: HTTP or Web server which accepts requests and serves static assets</li>
+<li>Logic tier: receives requests from the Web server for any dynamic content. An application server hides the low level mechanics of HTTP from the application  or application framework, e.g. Rack. The application server needs to be able to handle the particular application code</li>
+<li>Persistence tier: e.g. database to store state</li>
+</ul>
+<p>All 3 tiers can be deployed to one server, or to seperate servers. Each tier can then be scaled out as required using load balancers. The persistence tier can only by psuedo scaled by e.g. adding several copies of the data to slave servers which deal only with reads and use the master only where writes are required (with the master updating the slaves as quickly as possible following a write).</p>
+<p>Shared-Nothing architectures - no state shared, so horizontal scaling is possible.</p>
+<h3 id="model-view-controller-architecture">Model-View-Controller Architecture</h3>
+<p>Each entity has a <em>Model</em>, a <em>Controller</em> and one or more <em>View</em>s.</p>
+<ul>
+<li>Models: concerned with data manipulated by the application</li>
+<li>Views: presented to the user, show information about the models</li>
+<li>Controllers: mediate the interaction in both directions, when a user clicks on a view and afterwards when returning a different view back to the user</li>
+</ul>
+<p>MVC is used by Ruby on Rails and Java Spring.</p>
+<p>There are various other design patterns which are used by various other frameworks:</p>
+<ul>
+<li>Template View - a pattern suited to mostly static content (PHP)</li>
+<li>Page Controller - good for applications structured with a few distinct pages, with each page effectively having its own controller (e.g. Sinatra)</li>
+<li>Front Controller - various pages, but few models (J2EE servlets) - one dispatch factory which everything comes through</li>
+</ul>
+<h3 id="active-record-for-models">Active Record for Models</h3>
+<p>Many design patterns exist to persist objects to structured storage, especially RDBMSs. The Active Record architectural pattern correlates an instance of an entity with a row in a database table. In ActiveRecord, every model knows how to CRUD itself using common mechanisms.</p>
+<p>The schema is the structure of the database tables, columns etc.</p>
+<h4 id="datamapper">DataMapper</h4>
+<p>This is an alternative to ActiveRecord and associates a seperate mapper with each model. This keeps the database representation independent (used by Google AppEngine). One of the advantages is that it allows the storage system to reach much larger scale.</p>
+<h3 id="routes-controllers-and-rest">Routes, Controllers and REST</h3>
+<p>The mapping of an HTTP request to an individual controller and action (method) is a <em>route</em>. REST identifies the entities to be manipulated as <em>resources</em> and designs routes so that an HTTP request can identify both the resource and the action to be performed on it. e.g. a request to get the current contents of a shopping cart also needs to contain a user id (rather than relying on information retained in e.g. a session about which user is logged in).</p>
+<p>A resource could be e.g. a movie, a list of movies a list of movies matching a certain criteria - these are all resources.
+URIs (and REST) should express resources and the things you want to do them in a self contained manner.</p>
+<p>If you have a web service which follows these principles then this is a RESTful service and has a RESTful API.</p>
+<p>Browsers only implement the verbs GET and POST. Rails compensates for this by annoting forms that should instead use PUT or DELETE and then translating this to the correct HTTP method “seen” by the controller.
+Should think about this as a “service” rather than just a UI for a browser.</p>
+<p>REST vs SOAP vs WS-* (WS-DeathStar)</p>
+<h4 id="intro-to-rails-subsystem">Intro to Rails subsystem</h4>
+<ul>
+<li>Dispatch &lt;method, URI&gt; to correct controller action</li>
+<li>Provide helper methods that generate &lt;method, URI&gt; pair given a controller action</li>
+<li>Parses query paramters from both URI and form submission into a convenient hash</li>
+<li>Built-in shortcuts to generate all CRUD routes (as a good starting point)</li>
+</ul>
+<p>What happens when a browser generates a “GET /movies/3/edit HTTP/1.0” request?</p>
+<ol>
+<li>Matches route in the route table</li>
+<li>Parse any wildcard paramters and add to a hash (in this case <code>params[:id] = 3</code>)</li>
+<li>Dispatch to the <code>edit</code> method in the <code>movies_controller.rb</code></li>
+<li>Include a URI in the generated view which will submit the form to the correct update controller action. You specify the resource and the operation, rails generates the URI for you (in case you change your routing scheme).</li>
+</ol>
+<h3 id="views">Views</h3>
+<h4 id="templates-views">Templates Views</h4>
+<p>Views which have static content interspersed with dynamic content via variables or brief snippets of code.</p>
+<p>Haml OR Erb together with a Closure (application state) -&gt; Renderer (Action-View) to output HTML</p>
+<h4 id="transform-views">Transform Views</h4>
+<p>Alternative. Closure (represents what you want to display to the user) plus the data and this is then rendered - without any particular template. This could be used to render JSON or XML.</p>
+<h4 id="haml">HAML</h4>
+<p>HTML on a diet.</p>
+<ul>
+<li>Use % rather than angle bracket.</li>
+<li>Indentation is used to indicate scope (so no <code>end</code> required on a <code>do</code>)</li>
+<li>Attributes <code>class</code> and <code>id</code> are represented by <code>.</code> and <code>#</code> respectively.</li>
+<li><code>-</code> means execute this code</li>
+<li><code>=</code> means subsitute the result of running this code directly into the template</li>
+<li><code>|</code> to join two lines (making it deliberately awkward to put code in the views - but shouldn’t be doing that). Move important manipulations to the model. Use helpers to make things pretty for views.</li>
+</ul>
+<h3 id="summary">Summary</h3>
+<h4 id="patterns">Patterns</h4>
+<p>Client-Server v Peer-to-Peer
+Shared-nothing (Cloud Computing) v Symmetric multiprocessor, shared global address space
+Model-View-Controller v Page Controller, Front Controller, Template View
+Active Record v Data Mapper
+RESTful URIs (all state affecting request is explicit) v Same URI does different things depending on internal state</p>
+<h2 id="chapter-3-introduction-to-ruby-for-java-programmers">Chapter 3: Introduction to Ruby for Java Programmers (!!!)</h2>
+<ul>
+<li>Everything</li>
+</ul>
+<h2 id="chapter-4">Chapter 4: ?</h2>
+<p>Ruby’s null reference error: <code>Undefined method foobar for nil:NilClass</code>. Hard to find if a null object is sent from the controller to the view. Should check for valid objects in the controller.</p>
+<h3 id="debugging">Debugging</h3>
+<p>Within rails apps, <code>print</code> or <code>puts</code> for rudimentary debugging doesn’t work since a rails app is not attached to a console.</p>
+<p>Use <code>@movie.inspect</code> or <code>debug(@movie)</code> in a view to details about a particular object.</p>
+<p><code>raise params.inspect</code> will throw an error displaying the content of params as well as other useful information around e.g. the request and the response details.</p>
+<p><code>logger.debug(message)</code> will print a message to the log file (found under the logs directory - default level is via the configs)</p>
+<p><code>byebug</code> uses the byebug gem and will set a breakpoint wherever this is inserted into the code. The interactive prompt will open here to allow debugging interactively.</p>
+<h3 id="database-migrations">Database migrations</h3>
+<p>Run <code>rake db:migrate</code> to run any migrations not yet run and update the internal record of which migrations have been run. A local schema.db file is also updated to detail the current database schema (this file needs to be under version control).
+Run <code>rake db:test:prepare</code> to get the test database schema in sync with the development environment (having already run the migrations there).
+Run <code>rake db:seed</code> to seed the database using <code>db/seeds.rb</code>
+Run <code>rake -T &lt;task&gt;</code> to get information on any rake task</p>
+<h3 id="models">Models</h3>
+<p>Having created a database table, ActiveRecord models query the database at run time and any columns become the getters and setters available on that model.</p>
+<h3 id="active-record-basics">Active Record Basics</h3>
+<ul>
+<li>Create <code>Movie.create! :title =&gt; 'Star Wars', :rating =&gt; 'PG'</code> - can use <code>create!</code> interactively, but more common to use <code>create</code> in applications and then check for <code>nil</code> afterwards (meaning something went wrong)</li>
+<li>New and Save <code>mv = Movie.new ; mv.save!</code> - again use <code>save</code> and check for <code>nil</code> more common in applications</li>
+<li>Update 1 <code>mv.title = 'Start Wars'; mv.save!</code> (or <code>save</code>)</li>
+<li>Update 2 <code>mv.update_attributes(:Title =&gt; 'Start Wars'</code> to update immediately</li>
+<li>Delete <code>mv.destroy</code></li>
+<li>Find <code>Movie.find(3)</code>, <code>Movie.all</code></li>
+<li>Search <code>Movie.where(&quot;rating = 'PG'&quot;)</code> <em>BAD</em></li>
+<li>Search 2 <code>Movie.where(&quot;rating = ?&quot;, 'PG'</code> <em>GOOD</em> - this is the parameterised version</li>
+</ul>
+<h3 id="controllers-and-views">Controllers and Views</h3>
+<table>
+<thead>
+<tr>
+<th>Helper Method</th>
+<th>URI returned</th>
+<th>RESTful route</th>
+<th>RESTful action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>movies_path</td>
+<td>/movies</td>
+<td>GET /movies</td>
+<td>index</td>
+</tr>
+<tr>
+<td>new_movies_path</td>
+<td>/movie/new</td>
+<td>GET /movies</td>
+<td>new</td>
+</tr>
+<tr>
+<td>movies_path</td>
+<td>/movies</td>
+<td>POST /movies</td>
+<td>create</td>
+</tr>
+<tr>
+<td>movie_path(m)</td>
+<td>/movies/1</td>
+<td>GET /movies/:id</td>
+<td>show</td>
+</tr>
+<tr>
+<td>edit_movie_path(m)</td>
+<td>/movies/1/edit</td>
+<td>GET /movies/:id/edit</td>
+<td>edit</td>
+</tr>
+<tr>
+<td>movie_path(m)</td>
+<td>/movies/1</td>
+<td>PUT /movies/:id</td>
+<td>update</td>
+</tr>
+<tr>
+<td>movie_path(m)</td>
+<td>/movies/1</td>
+<td>DELETE /movies/:id</td>
+<td>destroy</td>
+</tr>
+</tbody>
+</table>
+<h3 id="strong-parameters">Strong parameters</h3>
+<p>Rails’ strong parameters mechanism require us to declare which values from the <code>params</code> object are required to be present and which are permitted, so stop malicious attackers changing variables which shouldn’t be settable by normal users. This follows the <em>principle of least privilege</em>.</p>
+<h3 id="flash">Flash</h3>
+<p><code>flash[]</code> has hash like functionality to store message. <code>flash[:notice]</code> and <code>flash[:warning]</code></p>
+<p><code>flash[]</code> is a special case of <code>session[]</code>. By default both are stored in a cookie and so have a limited size. Alternatively it could be stored in a database e.g. a NoSQL system like memcached. HOWEVER, if you are storing a lot in the session, likely the design of the application is becoming unRESTful.</p>
+<h2 id="chapter-9">Chapter 9</h2>
+<h3 id="smells-and-metrics">Smells and Metrics</h3>
+<h4 id="qualitive">Qualitive</h4>
+<p>SOFA - Short, One thing, Few arguments, Abstraction
+<em>reek</em> - rails tool for checking for code smells
+Lots of arguments - makes it hard to get good test coverage - hard to mock while testing
+Boolean arguments which determine different functionality - should refactor to two methods
+Arguments travelling in a pack - extract to a seperate class</p>
+<h4 id="quantitive-abc-complexity">Quantitive: ABC complexity</h4>
+<p>Counts number of assignments, branches and conditions
+Score =  square_root(a^2 + b^2 + c^2)
+Government contracts specify this should be &lt;= 20
+<em>flog</em> - rails tool checks the ABC complexity</p>
+<h4 id="quantitive-cyclomatic-complexity">Quantitive: Cyclomatic complexity</h4>
+<p>Number of linearly independent paths through a piece of code calculated using E-N+2P where N=Nodes, E=Edges, P=Connected Components
+Governement says CC &lt;= 10 per module
+<em>saikuro</em> - rails tool to calculate the C</p>
+<h4 id="coverage">Coverage</h4>
+<p>Aim to get above 90%, tools for Rails / Ruby is SimpleCov</p>
+<h4 id="ratio-of-code-to-tests">Ratio of code to tests</h4>
+<p>Aim for 1:2 i.e. twice as much testing code as actual code
+(<em>rail stats</em>)</p>
+<h3 id="behavioural-driven-design">Behavioural Driven Design</h3>
+<h4 id="key-features">Key features</h4>
+<p>[list in kindle book]</p>
+<p>Ask questions before and during development - about validation (not verification). Requirements written down as User Stories. Captures behaviour rather than implementation (TDD deals with implementation)</p>
+<p>FEATURE
+As a … [kind of stakeholder]
+So that … [I can achieve some goal]
+I want to … [do some task]</p>
+<p>Different stakeholders may see the same kind of functionality differently.</p>
+<p>Product backlog - user stories not yet completed - prioritized with most valuable items highest - organise so they match SW releases</p>
+<p>Spike - quick investigation - after spike, code must be thrown away</p>
+<h3 id="scenarios">Scenarios</h3>
+<p>Scenarios should have 3 to 8 steps
+Explicit scenarios come from the User Story - become acceptance tests
+Implicit scenarios are things that need to be figured out - e.g. which order to list films (if not previously specified)
+Imperative: Inital user stories with many steps (not DRY)
+Declarative: State we want it to be</p>
+<p>GOOD EXAMPLE
+Feature: moves when added should appear in the movie list
+Scenario: view movie list after adding movie
+Given I have added “Zorro” with rating “PG-13”
+And I have added “Apocalypse Now” with rating “R”
+Then I should see “Apocalypse Now” before “Zorro” on the home page</p>
+<p>3 steps - 2 steps to set up the test - 1 step for behaviour - focuses on the behaviour - not the steps to get there.</p>
+<p>Often have to start imperatively and then extract common sets of steps, so that you can reuse and end up declaratively.</p>
+<h3 id="cucumber">Cucumber</h3>
+<p>Feature files - the feature with its scenarios and the steps comprising each scenarios - language is from the 3x5 card
+Step definitions - ruby code which correspond to the steps in the scnarios - a single step definition can be used by many steps. Cucumber matches the step to the appropriate step definision using regex</p>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2017/06/02/git-immersion/">Git Immersion</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2017/06/03/codecademy-ruby/">Codecademy: Ruby</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2017/06/03/berkleyx-cs169-dot-1x-agile-development-using-ruby-on-rails/` was built on 2025-09-05T01:23:56.885Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

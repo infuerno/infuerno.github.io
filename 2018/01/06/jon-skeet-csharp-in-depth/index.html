@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Jon Skeet: C# In Depth 4th Edition</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="jon-skeet-c-in-depth-4th-edition">Jon Skeet: C# In Depth 4th Edition</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2018-01-06">06 January 2018</time></li>
+</ul>
+
+<h3 id="references">References</h3>
+<blockquote>
+<p>This book is dedicated to equality, which is significantly harder to achieve in the real world than overriding Equals()and GetHashCode().</p>
+</blockquote>
+<p>Book website: <a href="https://csharpindepth.com">https://csharpindepth.com</a>
+Publishers website: <a href="https://www.manning.com/books/c-sharp-in-depth-fourth-edition">https://www.manning.com/books/c-sharp-in-depth-fourth-edition</a></p>
+<h1 id="part-1-c-in-context">Part 1: C# in context</h1>
+<h2 id="chapter-1-survival-of-the-sharpest">Chapter 1: Survival of the sharpest</h2>
+<h3 id="a-helpful-type-system">A helpful type system</h3>
+<p>Statically typed languages help show intent in large programs.</p>
+<ul>
+<li>Evolution includes: generics (C#2), nullable types (C#2), immutable structs (C#7), nullable reference types (C#8) i.e. any reference type not explicitly marked nullable, can’t be null</li>
+<li>Anonymous types and <code>var</code> (both C#3) reduced verbosity. Anonymous types are useful if you need a particular data shape within a method, but nowhere else, often used for LINQ. They only help within a single block of code however - they can’t be used in parameters OR return types.</li>
+<li>Tuples (C#7) and the ability to name elements means they could be used instead of anonymous types in some cases and CAN be used in params or return types</li>
+<li>Record types (C#8) are essentially named anonymous types</li>
+</ul>
+<h3 id="concise-code">Concise code</h3>
+<p>C#’s features allow you to reduce <strong>ceremony</strong>, remove <strong>boilerplate</strong> code, and avoid <strong>cruft</strong>.</p>
+<ul>
+<li>Method group conversions and anonymous methods (C#2) for writing delegates more concisely.</li>
+<li>Lamda expressions (C#3) for delegate with even shorter syntax</li>
+<li>Object and collection initialisers from LINQ where properties can be set inline during initialisation</li>
+<li>Automatically implemented properties (C#3, improved in later versions)</li>
+<li>Expression-bodied members (C#6) for when a method or property is a single expression, using <code>=&gt;</code> syntax: <code>member =&gt; expression</code></li>
+<li>Caller information attributes (C#5) for diagnostics and debugging where a method can receive information about the calling method, namely: the method name, the line number and the file path at compile time</li>
+</ul>
+<h3 id="data-access-with-linq">Data access with LINQ</h3>
+<ul>
+<li>Query expressions - compile-time checking, intellisense, efficient database queries</li>
+<li>Expression trees for querying out of process data (e.g. SQL server)</li>
+<li>LINQ encourages thinking about data transformations in terms of functional programming</li>
+</ul>
+<h3 id="asynchrony">Asynchrony</h3>
+<ul>
+<li><code>async</code> and <code>await</code> (C#5) allowing the writing of asynchronous code, which looks similar to more familiar synchronous code</li>
+</ul>
+<h1 id="part-2-c-2-5">Part 2:  C# 2-5</h1>
+<h2 id="chapter-2-c-2">Chapter 2: C# 2</h2>
+<p>C# 2 was released with Visual Studio 2005 and .NET 2.0. Important features were generics, better constructs for writing both delegates and iterators.</p>
+<h3 id="generics">Generics</h3>
+<p>General purpose code which is type safe at compile time. Mainly used in collections, delegates (particularly LINQ), async code with <code>Task&lt;T&gt;</code> and nullable value types.</p>
+<ul>
+<li><strong>Parameter</strong>: a method declares its inputs as <strong>parameters</strong></li>
+<li><strong>Argument</strong>: these are provided by the calling code in the form of <strong>arguments</strong></li>
+</ul>
+<p>Generics has <strong>type parameters</strong> and <strong>type arguments</strong>, same idea but applied to types.</p>
+<ul>
+<li>Generic classes - generic type declared immediately after the name of the class in angle brackets e.g. <code>public class Car&lt;T&gt;</code>. Methods within the class can be expressed with parameters and return types in terms of <code>T</code>.</li>
+<li>Generic methods - a generic method declares type parameters immediately after the name of the method in angle brackets which can be used in other parts of the method signature, the parameters or return type e.g.</li>
+<li>Generic classes can implement generic interfaces by using the type declared by the class</li>
+<li>Classes and methods with the same name, but a different “arity” of type parameters is ok e.g. <code>class Car&lt;T&gt;</code> and <code>class Car&lt;T1, T2&gt;</code></li>
+<li>Enums <strong>can’t</strong> be generic, but classes, structs, interfaces and delegates can be</li>
+<li>Methods <strong>can</strong> be generic, but fields, properties, indexers, constructors, events and finalizers can’t be</li>
+<li>If the type(s) of a generic method can be inferred from the type of the arguments (where the type is used in specifying the parameters) then you don’t need to specify the type when calling the method. If there are multiple type arguments, need to either specify none or all.</li>
+<li>Only methods allow type inference, so static factory methods can be useful to create types more easily e.g. see <code>Tuple</code> <a href="https://referencesource.microsoft.com/#mscorlib/system/tuple.cs,9124c4bea9ab0199">https://referencesource.microsoft.com/#mscorlib/system/tuple.cs,9124c4bea9ab0199</a> - then allows writing <code>Tuple.Create(10, &quot;x&quot;, 20)</code> instead of <code>new Tuple&lt;int, string, int&gt;(10, &quot;x&quot;, 20)</code></li>
+<li>If type inference fails, explicitly specify or cast arguments e.g. <code>Tuple.Create(10, (string)null, 50)</code></li>
+<li>Constrain generic type arguments to certain types using <code>where</code> e.g. to ensure elements of type <code>T</code> implement <code>IFormattable</code> declare the method: <code>void PrintItems&lt;T&gt;(List&lt;T&gt; items) where T : IFormattable</code>. This additionally allows any <code>IFormattable</code> methods to be called on this input.</li>
+<li><code>default()</code> is useful when dealing with generics in methods e.g. <code>T x = default(T);</code></li>
+<li>A type of <code>System.Collections.Generic.List`1[System.Int32]</code> means a generic type of <code>List</code> with arity 1 (one type parameter) and the type of that argument is <code>System.Int32</code></li>
+<li>the <code>typeof</code> operator ONLY can also take an argument e.g. <code>typeof(List&lt;&gt;)</code> and refers to the generic type definition itself. Add commas to indicate multiple arguments e.g. <code>typeof(Dictionary&lt;,&gt;)</code> or <code>typeof(Tuple&lt;,,,&gt;)</code></li>
+</ul>
+<h3 id="nullable-value-types">Nullable value types</h3>
+<p>A nullable type encapsulates the value and a flag. At the core is the <code>public struct Nullable&lt;T&gt; : where T : struct</code> struct.</p>
+<ul>
+<li>Can be used with primitive types, enums, system-provided structs and user-defined structs</li>
+<li>Type <code>T</code> is the “underlying type” of <code>Nullable&lt;T&gt;</code> (i.e. <code>int</code> is the underlying type of <code>Nullable&lt;int&gt;</code>)</li>
+<li>Boxing behaviour of value types and nullable value types is different. A nullable value type has no “boxed” form - it is simply either null or the boxed form of the underlying value</li>
+<li>Strange note - calling GetType() on a value type variable requires it to be boxed first</li>
+<li>Using <code>?</code> is completely equivalent to using <code>Nullable&lt;T&gt;</code> e.g. <code>int?</code>, <code>Int32?</code></li>
+<li>When a nullable value type is <code>null</code>, the value is <code>null</code> and the <code>HasValue</code> property is false i.e. <code>int? x = new int?()</code> and <code>int? x = null</code> are equivalent (and <code>x.HasValue</code> will return false, NOT throw a null reference exception)</li>
+<li><code>as</code> could additionally be used with nullable value types in C#2 (check out pattern matching for C#7 onwards)</li>
+<li><code>??</code> can be used to assign to a value type IF one side is also a value type</li>
+</ul>
+<p>With regards to the fact that trying to access the value of a nullable value type which doesn’t have a value will throw an exception:</p>
+<blockquote>
+<p>I think it’s important enough to restate: progress doesn’t come just from making it easier to write correct code; it also comes from making it harder to write broken code or making the consequences less severe.</p>
+</blockquote>
+<h3 id="simplified-delegate-creation">Simplified delegate creation</h3>
+<blockquote>
+<p>The basic purpose of delegates is to encapsulate a piece of code so that it can be passed around and executed as necessary in a type-safe fashion in terms of the return type and parameters.</p>
+</blockquote>
+<ul>
+<li>A delegate is essentially a function contained in an object - allows you to specify a sequence of actions to be execute at a later time</li>
+<li>Four parts to delegates:
+<ul>
+<li>A <strong>delegate type</strong> needs to be declared e.g. <code>delegate void StringProcessor(string input)</code> - this delegate type can point to any method which takes one string parameter and doesn’t return anything</li>
+<li>The code to be executed must be contained in a method (either an existing one, or by writing a new one)</li>
+<li>A delegate instance must be created - exact form depends on whether method is instance or static</li>
+<li>The delegate instance must be invoked - a method <code>Invoke</code> is always present in the delegate with the same parameters and return type as delgate type declaration e.g. <code>delegateX.Invoke(&quot;hey&quot;)</code></li>
+</ul>
+</li>
+<li>Shorthand exists to omit the call to <code>Invoke</code> by treating the delegate variable as a method e.g. <code>delegateX(&quot;hey&quot;)</code></li>
+<li>Delegates tended to be used for event handling or starting threads in C#1 and also in C#2. LINQ in C#3 made delegates and passing functions around more commonplace</li>
+<li>Method group conversions simplify specifying a delegate instance from <code>var proc = new StringProcessor(PrintString)</code> to <code>StringProcessor proc = PrintString;</code></li>
+<li>Anonymous methods preceeded lamda expressions and allowed specifying a delegate instance without having to have a separate method e.g.</li>
+</ul>
+<pre><code>StringProcessor proc = delegate(string input) { Console.Write($&quot;{input}&quot;) }
+</code></pre>
+<h3 id="iterators">Iterators</h3>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2017/12/07/martin-agile-principles-patterns-and-practices-in-csharp/">Martin: Agile Principles, Patterns, and Practices in C#</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2018/01/17/pluralsight-building-applications-with-asp-dot-net-mvc-4/">Pluralsight: Building applications with ASP.NET MVC 4</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2018/01/06/jon-skeet-csharp-in-depth/` was built on 2025-09-05T01:23:56.886Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

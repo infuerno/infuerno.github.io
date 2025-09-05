@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Using CSLA 4 04 Data Portal Configuration</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="using-csla-4-04-data-portal-configuration">Using CSLA 4 04 Data Portal Configuration</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2018-06-18">18 June 2018</time></li>
+</ul>
+
+<h2 id="chapter-1-data-portal-deployment">Chapter 1: Data Portal Deployment</h2>
+<p>Supports 1-, 2-, 3-, 4- tier deployments. CSLA is comprised of 5 logical layers: Interface, Interface Control, Business Logic, Data Access, Data Storage and Management. These 5 layers can be deployed physically into various configurations.</p>
+<p>The data portal manages the movement of objects between the Business layer running on the “client” and the Business layer running on the “server”. The Business layer therefore needs to be deployed to both.</p>
+<p>The Local channel (local proxy) does not cross the network. Both server and client side components are run within the same AppDomain.</p>
+<p>The other channels at the very least cross AppDomain or process boundaries.</p>
+<p>The WCF channel for .NET uses the <code>NetDataContractSerializer</code> provided by WCF. Any binding which uses synchronous communication can be used (i.e. not MSMQ, but HTTP, TCP, named pipes all ok).</p>
+<p>“Proxy” on the “Client”. “Host” on the “Server”. The data portal proxy on the client side loads the proxy based on the <code>CslaDataPortalProxy</code> configuration setting. The proxy in turn invokes the host (often running within IIS), and the host the server side components.</p>
+<h3 id="3-tier-deployment">3-tier Deployment</h3>
+<p>Possible to use 3-tier deployment model for a web application - isolating the web server from the organisation’s internal network.</p>
+<ul>
+<li>Browser - Interface</li>
+<li>Web server - Interface Control and Business Logic</li>
+<li>App server - Business Logic and Data Access</li>
+<li>SQL server - Data Storage and Management</li>
+</ul>
+<p>The data portal is configured to run in <em>remote</em> mode, WCF channel is recommended.</p>
+<h3 id="using-the-local-channel">Using the Local Channel</h3>
+<p>The <code>CslaDataPortalProxy</code> is set to <code>Local</code> by default so explicit configuration (AppSetting) is not required.</p>
+<p>Objects are nevertheless serialized and deserialized which incurs some overhead. ALL KINDS OF SIDE EFFECTS - NOT RECOMMENDED unless you are willing to write extra application code to deal with certain new scenarios this will introduce.</p>
+<h3 id="using-the-wcf-channel">Using the WCF Channel</h3>
+<p>A WCF Channel consists of a <code>WcfProxy</code> class running on the client and a <code>WcfPortal</code> class running on the server (which uses WCF under the hood). Three primary elements define the connection on both the client and the server: Address, Binding and Contract. e.g. example client configuration:</p>
+<pre><code>&lt;client&gt;
+&lt;endpoint name=&quot;BasicHttpBinding_IWcfPortal&quot; address=&quot;http://localhost:21647/SlPortal.svc&quot; binding=&quot;basicHttpBinding&quot; contract=&quot;WcfPortal.IWcfPortal&quot; /&gt;
+&lt;/client&gt;
+</code></pre>
+<p>: Address
+Address where the service is hosted</p>
+<p>: Binding
+The address will depend on the binding used. Serveral bindings use HTTP, but also TCP sockets, named pipes (all synchronous) and MSMQ queues (async).
+e.g. tcp binding: <code>tcp://myserver.mycompany.com:12004/WcfPortal.svc</code></p>
+<p><em>The data portal needs SYNCHRONOUS bindings.</em></p>
+<p>: Contract</p>
+<p>Defines operation contract - methods a service implements; data contracts - properties or parameters for the methods; fault contracts - messages returned in event of failure. When using the WCF data portal channel, the service contract is defined by CSLA .NET. The .NET contract (as opposed to the Silverlight one) is <code>IWcfPortal</code> from the <code>Csla.Server.Hosts</code> namespace.</p>
+<h4 id="customisations">Customisations</h4>
+<ul>
+<li>WCF message size limits on the server need to be increased to transfer the object graphs - at least 6 different attributes which may need to be increased on the server binding</li>
+<li><a href="http://ASP.NET">ASP.NET</a> and IIS size limits also need increasing e.g. <code>&lt;httpRuntime maxRequestLength=&quot;2147483647&quot;/&gt;</code></li>
+<li>WCF size limits on the client may also need to be increased, as well as send and receive timeouts</li>
+<li>Return faults by setting a custom behaviour on the server (required for the data portal to operate correctly)</li>
+</ul>
+<h4 id="troubleshooting">Troubleshooting</h4>
+<ul>
+<li>WCF can be configured to write detailed information to a .NET trace listener using <code>system.diagnostics</code> configuration element</li>
+</ul>
+<h4 id="net-client-configuration">.NET Client Configuration</h4>
+<ol>
+<li>Configuration to use the WCF Channel is by the <code>CslaDataPortalProxy</code> app setting:
+<code>&lt;add key=&quot;CslaDataPortalProxy&quot; value=&quot;Csla.DataPortalClient.WcfProxy, Csla&quot; /&gt;</code></li>
+<li>URL of the server e.g. using the <code>CslaDataPortalUrl</code> app setting (uses wsHttpBinding with maximum message sizes) OR explicity specify the client WCF binding with endpoint name WcfDataPortal OR explicity in code.</li>
+</ol>
+<h4 id="server-configuration-iis-and-asp-net">Server Configuration (IIS and <a href="http://ASP.NET">ASP.NET</a>)</h4>
+<p>Any <a href="http://ASP.NET">ASP.NET</a> web project which can run in IIS. The following references must be added:</p>
+<ul>
+<li>Csla.dll</li>
+<li>Business libraries</li>
+<li>Data access libraries</li>
+<li>Any other libraries required by the server side code</li>
+</ul>
+<p>WcfPortal.svc file is the endpoint for the .NET data portal and contains a line detailing the type which implements the service (and nothing else).</p>
+<ol>
+<li>Configure an application in IIS</li>
+<li>Increase the <a href="http://ASP.NET">ASP.NET</a> maximum request lengths (as per customisations above)</li>
+<li>Add WCF serviceModel configuration section as detailed</li>
+</ol>
+<h2 id="chapter-2-data-portal-configuration-reference">Chapter 2: Data Portal Configuration Reference</h2>
+<p>List of all the appSettings that can be applied either client or server side for the data portal.</p>
+<h2 id="chapter-3-serialization">Chapter 3: Serialization</h2>
+<p>Standard .NET serializer with 100% fidelity is <code>NetDataContractSerializer</code> (NDCS) replacing the previous <code>BinaryFormatter</code>. Although WCF defaults to the NDCS, CSLA defaults to the <code>BinaryFormatter</code> “for all operations outside the channel” - what does this mean? Does it use it or not? The <code>CslaSerializationFormatter</code> can use used to override the default.</p>
+<h2 id="chapter-4-custom-data-portal-proxies">Chapter 4: Custom Data Portal Proxies</h2>
+<p>Useful for advanced scenarios.</p>
+<ul>
+<li>Client proxy has a couple of use cases when a custom data portal proxy implementation may be required e.g. multiple server hosts (covered in further detail in this section)</li>
+<li>Custom server host implementations are rare - on your own for this</li>
+</ul>
+<h2 id="chapter-5-authentication-models">Chapter 5: Authentication Models</h2>
+<p>In .NET the principal object is attached to the current thread or <code>HttpContext</code> object. <a href="http://CSLA.NET">CSLA.NET</a> supports 3 authentication models:</p>
+<ol>
+<li>Custom authentication</li>
+<li><a href="http://ASP.NET">ASP.NET</a> Memberhip Provider authentication</li>
+<li>Windows authentication</li>
+</ol>
+<h3 id="custom-authentication">Custom Authentication</h3>
+<p>Use custom authentication when you want to authenticate users against your own database, LDAP etc rather than using their windows credential. To implement a custom principal - generally only need to implement Login and Logout operations.</p>
+<h4 id="custom-principal">Custom Principal</h4>
+<ul>
+<li><code>BeginLogin</code> and <code>Login</code> methods take username and password, but details will vary depending on how you need to authenticate</li>
+<li>Both example methods invoke factory methods on the custom identity class</li>
+<li>No exception is thrown if the username or password is incorrect - the identity object returned will have <code>IsAuthenticated</code> set to false and the principal will contain no roles.</li>
+<li><code>Load</code> method only requires the username - used by e.g. <a href="http://ASP.NET">ASP.NET</a> to load the principal on each request once already authenticated (by calling an equivalent method on the custom identity class)</li>
+</ul>
+<h4 id="custom-identity">Custom Identity</h4>
+<ul>
+<li>Adding lots of properties to the custom identity has a performance impact
+<ul>
+<li>either add to a custom object on the LocalContext dictionary class (doesn’t flow through)</li>
+<li>or load each time on the application server</li>
+</ul>
+</li>
+<li>Identity data access code needs to
+<ul>
+<li>verify identity</li>
+<li>load roles</li>
+<li>load any extra profile</li>
+</ul>
+</li>
+</ul>
+<h4 id="application-server-configuration">Application Server Configuration</h4>
+<p>Discussion of how to implement loading the principal on the server EACH TIME</p>
+<h4 id="client-application-configuration-asp-net-applications">Client Application Configuration - <a href="http://ASP.NET">ASP.NET</a> Applications</h4>
+<p><a href="http://ASP.NET">ASP.NET</a> provides support for authentication, including managing an encrypted user token in a cookie (or URL). The encrypted token minimally contains the username and the expiration time and (optionally contains roles, but not usually due to cookie size). <a href="http://ASP.NET">ASP.NET</a> creates a principal and identity from the authentication token, but this is minimal and doesn’t contain roles or any other profile attributes. The <code>CustomPrincipal</code> required by the application needs to be make available for each request.</p>
+<ul>
+<li>Stateless applications - use the username from the authentication token (<a href="http://ASP.NET">ASP.NET</a> out of the box identity) to load the principal using the <code>Load</code> method of the <code>CustomPrincipal</code>.</li>
+<li>Stateful applications - keep the principal in Session - may or may not provide better performance</li>
+</ul>
+<p>In the <code>Application_AcquireRequestState</code> in the <code>Global.asax.cs</code> the real custom principal loaded via <code>CustomPrincipal.Load()</code> (which in turn sets the <code>Csla.ApplicationContext.User</code>) or via <code>CustomPrincipal.Login()</code></p>
+<h3 id="membership-provider-authentication">Membership Provider Authentication</h3>
+<p><code>CustomPrincipal</code> is same as above. <code>CustomIdentity</code> is similar. The data access is implemented using the “encapsulated invoke model” (see Data Access book).</p>
+<ul>
+<li>Data access code uses types from System.Web.Security - FULL .NET FRAMEWORK.</li>
+<li>However <code>Library.Net</code> targets the Client Profile - WHY? So to workaround the DAL provider needs to be DYNAMICALLY loaded.</li>
+<li>A DalManager is used to dynamically load these types.</li>
+<li>DataPortal_Fetch methods in the CustomIdentity call the DalManager to get the dynamically loaded implementation of the dal (IIdentityDal)</li>
+<li>The IIdentityDal wraps calls to the MembershipProvider</li>
+<li>Two calls are made to membership <code>Membership.VerifyUser(u, p)</code> and then <code>Membership.GetUser(u)</code> - HOW DOES THE INCREMENT / AUTO LOCK OUT WORK</li>
+<li>GetRolesForUser uses <code>Roles.Provider.GetRolesForUser</code> rather than <code>Roles.GetRolesForUser</code> due to a bug presumably in .NET 4 - how do we specify the Application here? Rather than have to define two / three different connection strings and therefore providers?</li>
+</ul>
+<h3 id="windows-authentication">Windows Authentication</h3>
+<p>For <a href="http://ASP.NET">ASP.NET</a> applications using CSLA, the application must simply be configured not to perform any explicity authentication or impersonation</p>
+<p>Why do we need to use <a href="http://ASP.NET">ASP.NET</a> membership? We simply need to store or update the id_token / user profile. From the graph API this has a distinct set of fields, and any custom ones can go into a custom table…?</p>
+<p>BUT if we then need to support BOTH with <a href="http://ASP.NET">ASP.NET</a> membership AND without it??</p>
+<p>We DO need to ensure that CSLA membership principal is instantiated properly from the regular Principal</p>
+<p>Use the Membership Roles Provider with Windows Authentication.
+Screens to administer will still remain within MABO (along with Q1, Q2)</p>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2018/05/16/asynchronous-programming-succinctly/">Asynchronous Programming Succinctly</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2018/06/25/pluralsight-polly-fault-tolerant-web-service-requests/">Pluralsight: Polly Fault Tolerant Web Service Requests</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2018/06/18/using-csla4-04-data-portal/` was built on 2025-09-05T01:23:56.887Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

@@ -1,0 +1,934 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Pluralsight - Linux Installation and Configuration</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="pluralsight-linux-installation-and-configuration">Pluralsight - Linux Installation and Configuration</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2015-06-19">19 June 2015</time></li>
+</ul>
+
+<h2 id="introduction">Introduction</h2>
+<p>: Linux
+Kernel or core software</p>
+<p>: Distribution
+e.g. Suse, Redhat, Ubunto</p>
+<ul>
+<li>
+<p><code>uname -r</code> will report the kernel version</p>
+</li>
+<li>
+<p><code>lsb_release -a</code> will usually report the release</p>
+</li>
+<li>
+<p><code>ctrl-shift-+</code> to enlarge the font</p>
+</li>
+<li>
+<p><code>ctrl-l</code> clear screen</p>
+</li>
+<li>
+<p><code>ctrl-d</code> exit terminal</p>
+</li>
+<li>
+<p><code>free</code> to give you memory usage</p>
+</li>
+<li>
+<p><code>free -m</code> to give memory usage in bytes</p>
+</li>
+</ul>
+<h2 id="determine-hardware-settings">Determine Hardware Settings</h2>
+<p>Physical consoles are number tty1 to tty6. Psuedo terminals represent logical terminals such as GUI or X-Terminals and those made from SSH clients.</p>
+<ul>
+<li><code>tty</code> to show which terminal you are connected to</li>
+<li><code>who</code> or <code>w</code> to show people connected to the terminals</li>
+<li><code>ctrl-alt-f1</code> to go to tty1 etc or <code>sudo chvt 1</code> from a terminal</li>
+<li><code>ctrl-alt-f7</code> to return to the graphical environment (or <code>sudo chvt 7</code>)</li>
+</ul>
+<h3 id="resource-interrogation">Resource Interrogation</h3>
+<ul>
+<li><code>lsusb</code>, <code>lspci</code>, <code>lsscsi</code> to list the contents of various buses</li>
+<li><code>free</code> shows memory available</li>
+<li><code>uname</code> to interrogate the kernel</li>
+<li><code>uptime</code> to see how long the system has been running</li>
+<li><code>hwinfo</code> shows information on the hardware</li>
+</ul>
+<h3 id="pseudo-file-systems">Pseudo File Systems</h3>
+<p>These “file systems” contain information about the currently running system. It only exists while the system is running and only in RAM.</p>
+<ul>
+<li>
+<p><code>/dev</code> the actual devices as they are connected and can be created dynamically</p>
+</li>
+<li>
+<p><code>/sys</code> has metadata about these devices</p>
+</li>
+<li>
+<p><code>/proc</code> information about the current control set / running processes</p>
+<ul>
+<li>e.g. <code>/proc/meminfo</code> shows full version of the info from <code>free</code></li>
+<li>e.g. <code>/proc/interrupts</code> shows interrupts to the processor; indexes 1-15 are hardware interrupts, above 15 are software interrupts; number of interrupts per second is a useful indication of how busy a cpu is
+<ul>
+<li><code>head -n 10 /proc/interrupts</code> shows just the first 10 entries</li>
+<li><code>watch -n1 head -n 10 /proc/interrupts</code> will show you a watch which refreshes every second</li>
+</ul>
+</li>
+<li>e.g. <code>/proc/&lt;number&gt;</code> represents a running process; 1 is always the <code>init</code> process; this list the resources this process is currently using</li>
+</ul>
+</li>
+<li>
+<p><code>ps</code> shows the process of the current shell</p>
+</li>
+<li>
+<p><code>alt-f2</code> to open a graphical application finder</p>
+</li>
+</ul>
+<h2 id="managing-the-boot-loader-and-understanding-run-levels">Managing the Boot Loader and Understanding Run Levels</h2>
+<ul>
+<li>
+<p><code>shutdown -r now</code> to reboot the system immediately</p>
+</li>
+<li>
+<p><code>shutdown -r +5</code> to reboot in 5 minutes time</p>
+</li>
+<li>
+<p><code>shutdown -r 18:27</code> to reboot in 5 minutes time</p>
+</li>
+<li>
+<p><code>shutdown -r +5 &amp;</code> to background this job</p>
+</li>
+<li>
+<p><code>shutdown -c</code> to cancel any shutdown jobs</p>
+</li>
+<li>
+<p><code>shutdown -h</code> to poweroff or halt the system</p>
+</li>
+<li>
+<p><code>jobs</code> to show a list of background jobs</p>
+</li>
+<li>
+<p><code>fg</code> to bring any background jobs to the foreground</p>
+</li>
+<li>
+<p><code>runlevel</code> to show the current run level, or <code>who -r</code></p>
+</li>
+<li>
+<p><code>init 6</code> will also reboot</p>
+</li>
+</ul>
+<h3 id="bootloader">Bootloader</h3>
+<p>The bootloader or bootstrap file is responsible for loading the kernel into memory. It may be located on the network (PXE boot) or in the master boot record.</p>
+<ul>
+<li>GRUB Legacy is used on many enterprise systems</li>
+<li>GRUB2 will utlimately replace this</li>
+<li>EXTLINUX e.g. as used by Citrix Xen Server</li>
+<li>LILO older bootloader</li>
+</ul>
+<p>At the grub boot menu enter <code>e</code> to edit an entry or <code>c</code> to go to a grub command line</p>
+<h3 id="run-levels-and-init">Run Levels and Init</h3>
+<p>There are usually 6 run levels: 0 (Halt); 1 (Single User - root only); 2 (Multi-user, no network or GUI - though Ubuntu tends to use 2 for normal mode); 3 (Multi-user, no GUI); 4 is not implemented; 5 (Multi-user); 6 (Reboot)</p>
+<p>When the system boots the init daemon reads a file to find the default run level. The old SysV init scripts used to work with <code>/etc/inittab</code> to specify the default run level and then directories such as /etc/rc3.d for the service scripts.</p>
+<p>Newer distros use <code>upstart</code> and the <code>/etc/init</code> directory. e.g. on Ubuntu the default run level is set in <code>/etc/init/rc-sysinit.conf</code></p>
+<p>The boot menu can be configured by editing the <code>/etc/boot/menu.lst</code> file. Further command line options can be specified here, or after the boot menu has loaded e.g. <code>3</code> to enter run level 3; <code>init=/bin/bash</code> to just load up bash (handy for resetting a root password if unknown since this will automatically log you in)</p>
+<h3 id="service-control">Service Control</h3>
+<ul>
+<li><code>service &lt;name&gt; start|stop|restart|status</code> (links to the service scripts in <code>/etc/init.d</code>)</li>
+<li><code>chkconfig</code> on Red Hat, SUSE and CentOS machines this will allow you to set the auto start options for a service e.g. <code>chkconfig &lt;name&gt; off</code> to remove a service from auto starting (this is actually just creating and removing symbolic links from the individual run level directories)</li>
+<li><code>update-rc.d</code> on Debian and Ubuntu machines e.g. <code>rc-update.d &lt;name&gt; defaults</code> to enable, <code>rc-update.d &lt;name&gt; remove</code> to disable</li>
+<li><code>netstat -antl</code></li>
+</ul>
+<h2 id="software-and-package-management">Software and Package Management</h2>
+<h3 id="red-hat-centos-fedora">Red Hat / CentOS / Fedora</h3>
+<ul>
+<li>
+<p>.rpm files and software management</p>
+</li>
+<li>
+<p>YUM repos</p>
+</li>
+<li>
+<p>rpm database at <code>/var/lib/rpm</code></p>
+</li>
+<li>
+<p><code>rpm -qa</code> to list all rpms installed on a device</p>
+</li>
+<li>
+<p><code>rpm -i &lt;name&gt;</code> to install an rpm</p>
+</li>
+<li>
+<p><code>rpm -e &lt;name&gt;</code> to remove an rpm</p>
+</li>
+<li>
+<p><code>yum</code> allows you to install from a repo without knowing path to file or dependencies e.g. <code>yum install &lt;packagename&gt;</code></p>
+</li>
+<li>
+<p><code>rpm -qpi &lt;name&gt;</code> where q=query, p=package (rather than something installed), i=info to get package information</p>
+</li>
+<li>
+<p><code>rpm -qpl &lt;name&gt;</code> where l=list to show which files will be installed</p>
+</li>
+<li>
+<p><code>rpm -i !$</code> to install (where <code>!$</code> is the last argument given in the history)</p>
+</li>
+<li>
+<p><code>rpm -ql</code> will then list files in the installed package by querying the rpm database</p>
+</li>
+<li>
+<p><code>rpm -qf $(which nmap)</code> where f=file will tell you which package a file comes from (with $() feeding the result from the parentheses to the rpm -qf command)</p>
+</li>
+</ul>
+<p>The problem with installing packages this way is that you need to first locate the rpm file in order to install it. Furthermore, if the rpm has any dependencies, these will need to be downloaded and installed alongside. The YUM repos answers these issues by resolving any dependencies.</p>
+<h3 id="debian-ubuntu">Debian / Ubuntu</h3>
+<ul>
+<li>
+<p>.deb files and dpkg software management</p>
+</li>
+<li>
+<p><code>dpkg-reconfigure</code> to reconfigure the package if allowed</p>
+</li>
+<li>
+<p>apt repos</p>
+</li>
+<li>
+<p>deb database at <code>/var/lib/dpkg</code></p>
+</li>
+<li>
+<p><code>dpkg -L</code> to list all debs installed</p>
+</li>
+<li>
+<p><code>dpkg -i &lt;name&gt;</code> to install</p>
+</li>
+<li>
+<p><code>dpkg -r &lt;name&gt;</code> to remove a package</p>
+</li>
+<li>
+<p><code>apt-get update</code> to update the local cache at /var/cache/apt/archives</p>
+</li>
+<li>
+<p><code>apt-cache search &lt;query&gt;</code> to search the cache</p>
+</li>
+<li>
+<p><code>apt-cache pkgnames &lt;query&gt;</code> to seach just the package names in the cache</p>
+</li>
+<li>
+<p>/etc/apt/sources.list contains the urls to the deb package sources</p>
+</li>
+</ul>
+<h3 id="susu-opensuse">SUSU / openSUSE</h3>
+<ul>
+<li>.rpm files and software management</li>
+<li>zypper repos</li>
+</ul>
+<h2 id="management-of-shared-software-libraries">Management of Shared Software Libraries</h2>
+<p>Developers can make use of shared libraries to stop code duplication
+DLLs in Windows, .so or .ko in Linux</p>
+<ul>
+<li>
+<p><code>.so</code> are standard modules used by user space programs</p>
+</li>
+<li>
+<p><code>.ko</code> are kernel modules used by the kernel or privileged programs</p>
+</li>
+<li>
+<p><code>ldd /bin/ls</code> to list shared libraries for ls</p>
+</li>
+<li>
+<p><code>lsmod</code> to list loaded kernel modules</p>
+</li>
+<li>
+<p><code>/etc/ld/so.conf</code> maintains PATH to search for modules</p>
+</li>
+</ul>
+<p>So, for example, <code>ls</code>, <code>grep</code>, and <code>cat</code> all need to access the file system and will all use <code>libc.so.6</code> in order to do that.</p>
+<ul>
+<li><code>/etc/ld.so.conf</code> maintains the system path to the shared libraries.</li>
+<li>Run <code>ldconfig</code> to rebuild this path if the conf file is changed.</li>
+<li><code>ldconfig -p</code> to list all modules in the module path</li>
+</ul>
+<p>To test libraries under development, create a new directory to hold the libraries and set the LD_LIBRARY_PATH variable. Reviewing with <code>ldd</code> will reveal that the system will check the LD_LIBRARY_PATH location first for any modules required. Unset a variable with <code>unset</code> e.g. <code>unset LD_LIBRARY_PATH</code></p>
+<ul>
+<li><code>lsmod</code> lists all loaded modules (which checks is a more convenient way to check <code>/proc/modules</code>)</li>
+<li><code>modprobe</code> can be used to load and unload modules</li>
+<li><code>modprobe -r &lt;module&gt;</code> to unload a module (using <code>rmmod</code>)</li>
+<li><code>modprobe &lt;module&gt;</code> to load a module (using <code>insmod</code>)</li>
+<li><code>modprobe -v &lt;module&gt;</code> to load a module and include dependencies and path to the actual module loaded</li>
+<li><code>modinfo -d &lt;module&gt;</code> to show a short description of the module</li>
+<li><code>modinfo &lt;module&gt;</code> to show complete information</li>
+<li><code>modinfo -p &lt;module&gt;</code> to show possible parameters</li>
+</ul>
+<p>To load a module with additional paramters, create a .conf file in <code>/etc/module.d/</code> according to the documentation</p>
+<p><code>/etc/modprobe.d/blacklist.conf</code> lists any modules which should never be loaded</p>
+<h2 id="linux-file-system">Linux File System</h2>
+<p>A disk is often partitioned.</p>
+<p>An MBR partition table allows for a maximum of 4 Primary partitions per disk and a maximum of 2TB per partition. One of the primary partitions can be a logical partitions and with a maximum of 15 partitions in total. (Uses <code>msdos</code> as the partition label.)</p>
+<p>A GPT partition table - GUID partition table allows partitions of up to 8ZB in size and a maximum of 128 partitions. (Uses <code>gpt</code> as the partition label.)</p>
+<p>Partitions are then formatted using file systems.</p>
+<h3 id="creating-partitions">Creating partitions</h3>
+<ul>
+<li><code>fdisk</code> - used both in windows and linux</li>
+<li><code>fdisk -l</code> to list the partitions and information</li>
+<li><code>parted /dev/sda print</code> does the same</li>
+<li>parted - supports both MBR and GPT partition tables</li>
+<li>gdisk - replaces fdisk</li>
+<li>lsblk - reports partitions</li>
+<li><code>parted /dev/sdb mklabel gpt</code> to create a gpt partion table on the /dev/sdb device</li>
+</ul>
+<h3 id="choosing-a-file-system">Choosing a file system</h3>
+<p>For general use ext4. This is a journaled file system which maintains a journal of transactions. If the system crashes the journal can be checked to find out which files were in use and only the integrity of these files need be checked. This is a good choice for small files e.g. 4K, but not for bigger files e.g. 1GB.</p>
+<p>XFS will be the default on Red Hat 7 and is designed for large files and for robustness. <code>mkfs</code> is used to make the file systems.</p>
+<h3 id="creating-file-systems">Creating file systems</h3>
+<p><code>mkfs</code> is used to create file systems. Use tab completion on <code>mkfs.</code> to see the different possibilities. Packages may need to be installed e.g. XFS.
+When creating a file system, one parameter which can be set is the block size. e.g. 4096 bytes. If you try to save a 1KB file it will be saved to a 4K block and the rest of the space will be empty. If you save an 8K file, it will be saved to 2 4K blocks and may be fragmented.</p>
+<ul>
+<li><code>mkfs.ext4 -b 4096 /dev/sdb</code></li>
+<li><code>mkfs.xfs -b size=64k /dev/sdb</code> - block size will be set in bytes, but can conveniently be specified in kB</li>
+</ul>
+<h3 id="mounting-file-systems">Mounting file systems</h3>
+<ul>
+<li><code>mount</code> to mount a file system</li>
+<li><code>umount</code> to unmount a file system - can do this by mount point or by device name</li>
+<li>To mount file systems on boot, add entries to <code>/etc/fstab</code></li>
+<li><code>mount -a</code> to mount any file systems which should be mounted</li>
+<li><code>mount -o remount /data</code> to remount a file system which is already mounted (e.g. after changes to <code>/etc/fstab</code>)</li>
+<li><code>blkid /dev/sdb1</code> shows the UUID of a block which can alternatively be used to mount (or put into fstab)</li>
+<li>[NOTE: in vi using <code>r ! &lt;command&gt;</code> will insert the result of a command into the document]</li>
+</ul>
+<h2 id="virtual-memory-and-file-system-tools">Virtual Memory and File System Tools</h2>
+<ul>
+<li>A swap file can be a disk partion or a swap file (less performant).</li>
+<li>Swap partitions can be created in the same way as creating normal partions e.g. using fdisk, parted or gdisk</li>
+<li>Once created the system may need to be rebooted in order to synchronise (or use <code>partprobe</code> as a shortcut to synchronise).</li>
+<li>To format the swap partition use <code>mkswap</code> e.g. <code>mkswap /dev/sdb3</code>.</li>
+<li>Mount the swap partition using <code>swapon</code> e.g. <code>swapon /dev/sdb3</code> (options priority <code>-p</code> flag)</li>
+<li>Use <code>swapon -s</code> to report on the swap space status</li>
+<li>Remove the swap partition using <code>swapoff</code> e.g. <code>swapoff /dev/sdb3</code></li>
+<li>Again use <code>fstab</code> to ensure swap partitions are mounted all the time.</li>
+<li>Use <code>swapon -a</code> to mount any swap file systems which should be mounted.</li>
+</ul>
+<h2 id="tools">Tools</h2>
+<ul>
+<li><code>df</code> shows disk usage, use with <code>-h</code> flag to make more readable, <code>-l</code> limits the information to local disks</li>
+<li><code>du</code> shows disk usage of particular directories, again use with <code>-h</code> for more readable output</li>
+</ul>
+<h2 id="controlling-access-to-file-systems">Controlling Access to File Systems</h2>
+<h3 id="permissions">Permissions</h3>
+<p>Permission can be set using symbolic notation (<code>chmod g+x file1</code>) or octal notation (<code>chmod 777 file1</code>) to the user, the group or others.</p>
+<ul>
+<li><code>chmod</code> - change mode</li>
+<li><code>chown</code> - change owner, must be done as root</li>
+<li><code>chgrp</code> - change group, must be done as root e.g. <code>chgrp users /data</code></li>
+<li><code>stat</code> - view file permissions by looking directly at the inode (instead of using <code>ls -l</code>)</li>
+<li><code>umask</code> - control default permissions by specifying the default mask e.g. <code>umask 002</code> sets permissions to remove write permissions for others; <code>umask 077</code> sets default to remove all permissions for group and others</li>
+<li><code>id</code> - shows the group the current user belongs to e.g. <code>uid=1000(jharvard) gid=1000(students) groups=1000(students)</code></li>
+<li><code>mkdir -p data/dir{1,2,3}</code> - create directories <code>data/dir1</code>, <code>data/dir2</code>, <code>data/dir3</code></li>
+<li><code>ls -ld .</code> to show the permissions of a directory (execute permissions are included by default since you need these permissions to enter a directory)</li>
+<li>File creation and deletion permissions are controlled by the permission on the directory</li>
+<li>The sticky bit is a permission bit which can be set on a directory that allows only the owner of a file within the directory (or root) to delete or rename the file. i.e. you can’t create or rename a file created by some other user. It is set using the first index in the 4 octal indexes (e.g. <code>chmod 1755 dir1</code>) or by using <code>t</code> (e.g. chmod +t dir1). When showing permissions using <code>ls -ld</code> the final bit (shows execute for others) is either <code>T</code> if execute NOT set, but sticky bit is set OR <code>t</code> if execute and sticky bit set.</li>
+</ul>
+<h3 id="hard-and-soft-symbolic-or-sym-links">Hard and Soft (Symbolic or Sym) Links</h3>
+<p>A filename links through to an inode which is the actual entry in the file system which contains metadata including a pointer to where the data is physically held on disk. A file has at least one name, but can have more than on name and will then have more than 1 hard link (count of hard links is shown in the <code>ls -l</code> listing).</p>
+<p>The <code>ls -ld</code> long directory listing shows the number of hard links to that directory (the directory name itself, the <code>.</code> within the directory and the <code>..</code> within all the sub directories). (A quick way to count the number of sub directories is to substract 2 from the link count! To verify use <code>find . -maxdepth 1 -type d</code> to display all the subdirectories and pipe this through to <code>wc -l</code>)</p>
+<p>Soft links on the other hand have seperate inodes, but the data pointer points through to the same place on the physical disk</p>
+<ul>
+<li><code>ln file3 file4</code> creates a hard link from file3 to file4 the names file3 and file4 point at the same inode</li>
+<li><code>ls -li</code> shows the long listing including the inode number which shows that this is now the same for file2 and file4</li>
+<li><code>ln -s file3 file5</code> creates a soft / symbolic link from file3 to file5 where a seperate inode is created for file5, but the data points a the same place as for the inode for file3</li>
+</ul>
+<h3 id="implementing-quotas">Implementing Quotas</h3>
+<p>Limits can be set in terms of blocks (space) or inodes (number of files). There are soft and hard limits. The soft limit can be exceeded, but by default only for 7 days.</p>
+<p><code>vi +?&lt;searchterm&gt; &lt;filename&gt;</code> to open a file in vi and go directly to that line for editing
+<code>dd if=/dev/zero of=/data/file1 count=1 bs=1024M</code> to create a file reading from <code>/dev/zero</code> which is a stream of 0s, and writing one file of size 1GB</p>
+<p><code>quotacheck -cu /data</code> to create user quota files for the /data file system. This will create an aquota.user file in the root of the file system, which is the quota database
+<code>repquota -auv</code> reports the quota usage
+<code>quotaon /dev/sdb1</code> will enable running the quota check continuously (which would happen on boot by default)
+<code>edquota -u claire</code> will open an editor to allow editing the quota limits
+<code>setquota -u claire 20000 25000 0 0 /dev/sdb1</code> allows setting quota limits in a one line command
+<code>edquota -t</code> to edit the grace period of the soft limit</p>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2015/06/13/pluralsight-web-debugging-by-example/">Pluralsight - Web Debugging by Example</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2015/06/26/cs50-week-3/">CS50 - Week 3</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2015/06/19/pluralsight-linux-installation-and-configuration/` was built on 2025-09-05T01:23:56.883Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

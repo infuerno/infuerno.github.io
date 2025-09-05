@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Manning: Learn Active Directory Management in a Month of Lunches</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="manning-learn-active-directory-management-in-a-month-of-lunches">Manning: Learn Active Directory Management in a Month of Lunches</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2016-12-18">18 December 2016</time></li>
+</ul>
+
+<h2 id="chapter-one-before-you-begin">Chapter One: Before you begin</h2>
+<p>Active Directory (AD) provides a centralized service that links all of those machines and enables a user to log on and access any of them provided they have been granted permission to do so.</p>
+<p>Active Directory is part of the class of products known as <em>Directory Services</em>. Other products in this category include Novell’s eDirectory and Red Hat’s Directory Server. Some applications, such as Lotus (now IBM) Domino, have their own built-in Directory Service.</p>
+<h3 id="authentication">Authentication</h3>
+<ul>
+<li>Logging on to the domain, not an individual computer.</li>
+<li>Active Directory uses the Kerberos protocol for authentication.</li>
+<li>Time synchronization within Active Directory is important because the time stamp is used during the authentication process. If a PC’s time is more than five minutes different from the domain controller, the authentication attempt will be rejected.</li>
+</ul>
+<h3 id="authorisation">Authorisation</h3>
+<p>When you log on a token is created on your local machine containing group memberships, privileges and rights. This token is presented to resources you are trying to access. If you attempt to access a resource on a remote machine, a local access token is created on that machine</p>
+<h3 id="definitions">Definitions</h3>
+<p>:Forest
+The whole Active Directory. Can contain one or more domains arranged in trees. The forest is named after the first domain created (the root domain). All domains in a forest share a common Configuration container and a common schema. Most organisations have a single forest.</p>
+<p>:Domain
+Container for users, computers, groups etc. Has a FQ DNS name as its unique identifier. Domains can be arranged in hierarchies. Most organisations only require a single domain.</p>
+<p>:Organisational Unit (OU)
+A container within a domain. Used to control the delegation of admin privileges and the application of group policy.</p>
+<p>:Containers
+Other containers created with a domain include:</p>
+<ul>
+<li>Built-in - stores a number of default groups</li>
+<li>Users - stores other default groups e.g. Domain Admins, Enterprise Admins, Schema Admins, default location for new user accounts</li>
+<li>Computers - default location for new computer acccounts</li>
+<li>Group policy CANT be applied to a container</li>
+<li>Child OUs CANT be created in a container</li>
+</ul>
+<h2 id="chapter-two-creating-user-accounts">Chapter Two: Creating user accounts</h2>
+<h3 id="users">Users</h3>
+<p>Active Directory Administrative Center (ADAC) can be used to create user accounts. It calls PowerShell cmdlets under the hood.
+Active Directory Users and Computers (ADUC) is older that ADAC and serves a similar purpose.
+PowerShell module ActiveDirectory with elevated privileges can be used: <code>Import-Module ActiveDirectory</code></p>
+<p>:samAccountName
+Mandatory for creating a new users, must be unique across the forest, used to create the UPN (User Principal Name - looks like an email and can be used for logging in instead of a login ID)</p>
+<p>:Name
+Also mandatory. Must be unique across the OU or container</p>
+<p>:Password
+Not mandatory when using ADAC or PowerShell, but the user account won’t be enabled</p>
+<p>:Container
+Will default to the Users container if not specified</p>
+<p>:Protect from Accidental Deletion (PAD) setting
+Denies permission to delete the object to the Everyone group. Advised to be used where required.</p>
+<pre><code>$SecurePassword = Read-Host &quot;Password&quot; -AsSecureString
+New-ADUser -Name &quot;Clive Green&quot; -SamAccountName clive.green `
+-UserPrincipalName &quot;clive.green@lab.local&quot; -AccountPassword $SecurePassword -Path&quot;cn=Users,dc=Lab,dc=local&quot; ` -Enabled:$True
+</code></pre>
+<h3 id="user-creation-from-a-template">User creation from a template</h3>
+<p>In reality, creating users requires adding more information e.g. Group Membership, Home-drive paths, Logon script, Manager, Telephone numbers. An existing user account can be used as a “template” OR an account can be created to be used as a template. ADAC can’t be used to create an account from a template, so ADUC should be used by right clicking on an existing user and selecting “Copy”.</p>
+<p>PowerShell is also possible using <code>New-ADUser</code> with the <code>-Instance</code> parameter set to a user object (using <code>Get-ADUser</code>). The <code>-Properties</code> parameter needs a list of properties to be copied e.g. memberof, office. However, group memberships or other multivalue attributes cannot be copied, so this method may not be advised.</p>
+<h3 id="user-bulk-creation">User bulk creation</h3>
+<p>Use a .csv file to hold data and a script to call <code>New-ADUser</code> e.g. <code>Import-Csv names.csv | % { New-ADUser ...}</code></p>
+<h3 id="managed-service-accounts">Managed Service Accounts</h3>
+<p>Introduced in Windows 2008 R2, used to run services such as SQL, IIS, Express.</p>
+<ul>
+<li>PowerShell is recommended (ADAC doesn’t have this, ADUC doesn’t implement properly).</li>
+<li>Windows 2012 requires a Microsoft Key Distribution Service root (use <code>Add-KdsRootKey -EffectiveImmediately</code>)</li>
+<li>Default approach is to create a managed service group which can be used on multiple machines e.g. <code>New-ADServiceAccount -Name SvcAccount -DNSHostName SvcAccount@domain.local -Enabled $True</code></li>
+<li>Alternatively, for a single machine use: <code>New-ADServiceAccount -Name SvcAccount -RestrictToSingleComputer -Enabled $True</code></li>
+</ul>
+<h2 id="chapter-three-managing-user-accounts">Chapter Three: Managing user accounts</h2>
+<h3 id="update">Update</h3>
+<p>The Attribute Editor can be enabled in ADUC from the View menu.
+Attributes can be single value (e.g. homePhone) or multi-value (e.g. otherHomePhone).
+The cmdlet <code>Set-ADUser</code> can be used to update attributes.
+Use the <code>-Identity</code> parameter to specify the user to modify. Use with either the samAccountName value or distinguished name.
+Update single value attributes by specifying the value.
+Update multi-value attributes using one of <code>-Remove</code>, <code>-Add</code>, <code>-Replace</code>, <code>-Clear</code>
+<code>Set-ADUser</code> can be combined with <code>Get-ADUser</code> to copy properties from one account to another:</p>
+<pre><code>$Source = Get-ADUser -Identity bgreen -Properties OfficePhone, otherTelephone
+Set-ADUser -Identity bgreen -OfficePhone $($Source.OfficePhone) -Replace @{otherTelephone = $($Source.otherTelephone)}
+</code></pre>
+<p>Accounts can be disabled or deleted (removed). Removed accounts are added to the recycled bin OR tombstoned (archived and fully deleted at a later date).</p>
+<h2 id="chapter-four-managing-groups">Chapter Four: Managing groups</h2>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2016/12/03/pluralsight-architecting-azure-solutions/">Pluralsight: Architecting Azure Solutions (70-534): Infrastructure and Networking</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2016/12/23/pluralsight-automating-deployment-and-scale-of-azure-iaas-solutions/">Pluralsight: Automating Deployment and Scale of Azure IaaS Solutions</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2016/12/18/manning-learn-active-directory-management-in-a-month-of-lunches/` was built on 2025-09-05T01:23:56.885Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

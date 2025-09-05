@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>.NET Conf Microservices 2020 - Workshop</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="net-conf-microservices-2020-workshop">.NET Conf Microservices 2020 - Workshop</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2020-08-02">02 August 2020</time></li>
+</ul>
+
+<h2 id="resources">Resources</h2>
+<ul>
+<li>To read: <a href="https://azure.microsoft.com/en-gb/blog/microservices-an-application-revolution-powered-by-the-cloud/">https://azure.microsoft.com/en-gb/blog/microservices-an-application-revolution-powered-by-the-cloud/</a></li>
+<li>To watch: Avoiding Microservice Megadisasters: <a href="https://www.youtube.com/watch?v=gfh-VCTwMw8">https://www.youtube.com/watch?v=gfh-VCTwMw8</a></li>
+<li>Book: <a href="https://www.amazon.co.uk/Art-Immutable-Architecture-Management-Distributed/dp/1484259548">https://www.amazon.co.uk/Art-Immutable-Architecture-Management-Distributed/dp/1484259548</a></li>
+<li>To read: <a href="https://docs.microsoft.com/en-us/dotnet/architecture/microservices/multi-container-microservice-net-applications/implement-api-gateways-with-ocelot">https://docs.microsoft.com/en-us/dotnet/architecture/microservices/multi-container-microservice-net-applications/implement-api-gateways-with-ocelot</a></li>
+<li>To watch: <a href="https://www.youtube.com/watch?v=wR9zxqB_r-0&amp;list=PL03Lrmd9CiGcg2_VkY3AdZs3-bR9jzu4J&amp;index=8&amp;t=0s&amp;app=desktop">https://www.youtube.com/watch?v=wR9zxqB_r-0&amp;list=PL03Lrmd9CiGcg2_VkY3AdZs3-bR9jzu4J&amp;index=8&amp;t=0s&amp;app=desktop</a></li>
+<li>To watch: <a href="https://www.youtube.com/watch?v=V_m1i1MkG4Q">https://www.youtube.com/watch?v=V_m1i1MkG4Q</a> OR <a href="https://www.infoq.com/presentations/kubernetes-yaml/">https://www.infoq.com/presentations/kubernetes-yaml/</a></li>
+</ul>
+<h2 id="workshop-module-1-introducing-microservices">Workshop Module 1: Introducing Microservices</h2>
+<p>Define microservices: What are they? How do they work? Benefits and challenges? Problems they solve. Identity systems that would warrant this architectural approach.</p>
+<h2 id="workshop-module-2-modeling-microservices">Workshop Module 2: Modeling Microservices</h2>
+<p>Examine best practices for scoping microservices. What are the drivers for partitioning them? How granular should they be? Greenfield systems as well as approaches to replatforming brownfield monolithic systems into a microservice architecture.</p>
+<h2 id="workshop-module-3-architecting-microservices">Workshop Module 3: Architecting Microservices</h2>
+<p>Explore microservice architecture, characteristics and design. Emphasis is on widely-accepted patterns and principles. Coverage includes service design, DDD, backing services, observability, resiliency, idempotency, and decoupled configuration.</p>
+<h3 id="domain-architectures">Domain Architectures</h3>
+<h4 id="anemic-domain-model">Anemic Domain Model</h4>
+<p>A single microservice could be developed in a single assembly using the Anemic Domain Model approach:</p>
+<ul>
+<li>One (or a few) business classes containing all business rules</li>
+<li>Many entity classes only containing state (getters and setters)</li>
+<li>Can still have logically seperate layers for API (controllers), Domain (business classes), Data Access (repository classes)</li>
+</ul>
+<h4 id="domain-model">Domain Model</h4>
+<p>Alternatively, for anything not super simple use a regular Domain Model approach:</p>
+<ul>
+<li>Multiple assemblies for physical seperation</li>
+<li>Application layer - Ordering.Api - service endpoints, commands and command handlers, queries</li>
+<li>Domain model layer - Ordering.Domain - domain aggregates, domain entities with data and behaviour</li>
+<li>Infrastructure layer - Ordering.Infrastructure - data persistence and repositories</li>
+</ul>
+<h4 id="domain-entity-pattern">Domain Entity pattern</h4>
+<ul>
+<li>Entity classes have both state and behaviour</li>
+<li>Improves maintainability, testability, data integrity</li>
+</ul>
+<h4 id="domain-aggregates-pattern">Domain Aggregates pattern</h4>
+<ul>
+<li>Group related entities into an aggregate e.g. <code>Order Aggregate</code> contains <code>Order</code> (aggregate root = only one) and <code>OrderDetail</code> (child entity)</li>
+<li>Each aggregate is self contained</li>
+<li>Only communicate via the root, the root exposes members which access both root and children (typically don’t reference children directly)</li>
+</ul>
+<p><picture><source type="image/avif" srcset="/infuerno.github.io/2020/08/02/dotnet-conf-microservices-workshop/XHKjcu-EXF-821.avif 821w"><source type="image/webp" srcset="/infuerno.github.io/2020/08/02/dotnet-conf-microservices-workshop/XHKjcu-EXF-821.webp 821w"><img loading="lazy" decoding="async" src="/infuerno.github.io/2020/08/02/dotnet-conf-microservices-workshop/XHKjcu-EXF-821.png" alt="Domain Aggregates pattern" width="821" height="521"></picture></p>
+<h3 id="backing-services">Backing Services</h3>
+<p>Ancillary resources e.g.</p>
+<ul>
+<li>Data stores</li>
+<li>Message brokers</li>
+<li>Distributed caches</li>
+<li>Monitoring</li>
+<li>Identity services</li>
+</ul>
+<p>Should be able to attach / detach without code changes i.e. plug and play using Strategy pattern</p>
+<ul>
+<li>Reference infrastructure via an interface
+<ul>
+<li>e.g. <code>IEventBus</code> which has <code>Publish</code> and <code>Subscribe</code> methods available in the <code>EventBus</code> asseumbly</li>
+</ul>
+</li>
+<li><code>Startup.cs</code> -&gt; <code>ConfigureServices</code> -&gt; <code>services.RegisterEventBus</code> - defined in an extension class BUT THEN hardcoded to the chosen implementation (!)</li>
+<li>Use repository to separate business layer from database implementation (and then <code>MockRepository</code> for testing e.g. using Moq: <code>Mock&lt;IBasketRepository&gt;</code>)</li>
+</ul>
+<h3 id="observability">Observability</h3>
+<ul>
+<li>Choose an observability platform (App Insights - built in correlation)</li>
+<li>Choose a framework (Serilog, can be plugged in to Insights)</li>
+<li>Distributed tracking and correlation tokens - generated at the gateway - passed to each service - ensure included with each logged event - also useful for timing operations</li>
+</ul>
+<h3 id="correlation-id-generation">Correlation ID generation</h3>
+<ul>
+<li>Could use GUIDs, but better to use something more meaningful e.g. Service-Date-Time-Random</li>
+<li>Check Twitter Snowflake project (<a href="https://developer.twitter.com/en/docs/basics/twitter-ids">https://developer.twitter.com/en/docs/basics/twitter-ids</a>)</li>
+<li>Shouldn’t need to explicity pass along - use middleware OnActionExecuting etc</li>
+<li>Aspect orient the correlation ID</li>
+<li><a href="https://github.com/stevejgordon/CorrelationId">https://github.com/stevejgordon/CorrelationId</a></li>
+</ul>
+<h3 id="api-gateway-pattern">API Gateway pattern</h3>
+<ul>
+<li>Client communicates only with the gateway</li>
+<li>Keep gateway close to services to reduce latency (all in Azure network)</li>
+<li>Ensure availability - e.g. multiple instances with a load balancer</li>
+<li>Beware of overly ambitious gateway - consider exposing multiple gateways (Backends for Frontends) e.g. IoS gateway, Web App gateway</li>
+<li>Offload cross cutting concerns from backend services TO the gateway e.g.
+<ul>
+<li>Service discovery, correlation, response caching, resiliency logic, metering, throttling, SSL termination, protocol translation</li>
+<li>Will ALWAYS be some cross cutting concerns in the back end e.g. always going to authenticate, always going to authorise, always going to log</li>
+</ul>
+</li>
+</ul>
+<h4 id="api-gateway-options">API Gateway options</h4>
+<h5 id="azure-api-management">Azure API Management</h5>
+<ul>
+<li>Developer portal, publishing portal</li>
+<li>Apply policies to endpoints to affect behaviour
+<ul>
+<li>several prebuilt, can apply to inbound, outbound or invoked on error</li>
+<li>restrict access, throttle calls, caching, transform e.g. XML to JSON</li>
+</ul>
+</li>
+</ul>
+<h5 id="azure-application-gateway">Azure Application Gateway</h5>
+<ul>
+<li>Simple gateway requirements</li>
+<li>Includes URL routing, SSL termination, firewall</li>
+</ul>
+<h5 id="ocelot">Ocelot</h5>
+<h5 id="azure-front-door">Azure Front Door</h5>
+<h5 id="envoy">Envoy</h5>
+<h2 id="workshop-module-4-microservice-communication">Workshop Module 4: Microservice Communication</h2>
+<p>We explore how clients communicate with microservices and how microservices collaborate among one another. Request/response, publish/subscribe, gRPC, API Gateways, and more. Emphasis is on the trade-offs among messaging patterns.</p>
+<p>Two approaches to communications, solution will depend on the message type</p>
+<ul>
+<li>Synchronous request / responses</li>
+<li>Asynchronous pub / sub model</li>
+</ul>
+<h3 id="message-types">Message types</h3>
+<ul>
+<li>Query, client needs response - use synchronous (using async / await to avoid blocking threads)
+<ul>
+<li>However avoid deep chaining among microservices</li>
+<li>Aggregator pattern - seperate microservice which orchestrates calls to multiple other microservices so that calls aren’t “chained” between microservices - still synchronous - so consider using gRPC instead of HTTP
+<ul>
+<li><a href="https://github.com/uw-labs/bloomrpc">https://github.com/uw-labs/bloomrpc</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/tutorials/grpc/grpc-start?view=aspnetcore-3.0&amp;tabs=visual-studio">https://docs.microsoft.com/en-us/aspnet/core/tutorials/grpc/grpc-start?view=aspnetcore-3.0&amp;tabs=visual-studio</a></li>
+</ul>
+</li>
+<li>Request / Reply pattern (Sync over Async) - client synchronous, but backend services use queues to communicate - decouples calls between backend services</li>
+<li>Have read only copy of data in service which needs it to save lookups (Materialized View pattern: <a href="https://docs.microsoft.com/en-us/azure/architecture/patterns/materialized-view">https://docs.microsoft.com/en-us/azure/architecture/patterns/materialized-view</a>)</li>
+</ul>
+</li>
+<li>Command, client needs to perform an action - use asynchronous
+<ul>
+<li>Producer and consumer - produce messages and place on a queue e.g. Order Service - consume message from a queue e.g. Shipping Service</li>
+</ul>
+</li>
+<li>Event, client reacts to something that has happened in another service
+<ul>
+<li>Publisher and subscriber - publish event when state change or action occurs - use topic - one bus, multiple message types, subscribers subcribe to receive the message types they are interested - topic uses filtering rules</li>
+</ul>
+</li>
+</ul>
+<h2 id="workshop-module-5-distributed-data">Workshop Module 5: Distributed Data</h2>
+<p>We consider best practices for managing distributed data following the widely-accepted Database per Microservice pattern. Emphasis is on managing consistency when implementing cross-service queries and transactions. Coverage of Materialized View Patterns, Sagas, CQRS, and Event Sourcing. Discussion of relational and No-SQL Options in Azure.</p>
+<h2 id="workshop-module-6-deploying-microservices-to-kubernetes">Workshop Module 6: Deploying Microservices to Kubernetes</h2>
+<p>We deploy a set of containerized microservices to Azure Kubernetes Service. Emphasis is on the orchestration and management features of Kubernetes along with decision of criteria of when to use it.</p>
+<h3 id="container-management">Container Management</h3>
+<p>Containers need to:</p>
+<ul>
+<li>Discover and talk to each other e.g. REST / gRPC</li>
+<li>Sometimes manage state</li>
+<li>Upgrade with zero downtime</li>
+<li>Scale in/out on demand</li>
+</ul>
+<p>Orchestration helps with this!</p>
+<h3 id="orchestration">Orchestration</h3>
+<p>Large containerized workloads required automated management or <strong>orchestration</strong> including provisioning, service discovery, networking, scaling, upgrades, failover, monitoring, affinity (provision nearby or far apart)</p>
+<h3 id="kubernetes">Kubernetes</h3>
+<ul>
+<li>Control plane - deploy Master</li>
+<li>Data plane - deploy Worker nodes which run the work loads</li>
+<li>Docker for the container runtime</li>
+<li>Kubectl - CLI for K8s</li>
+<li>Pods, Deployments, Services</li>
+<li>Also Volumes, Namespaces, Labels and Selectors</li>
+<li>Networking infrastructure
+Or can use Azure Kubernetes Service (AKS)</li>
+</ul>
+<p><a href="https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/containers/aks-microservices/aks-microservices">https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/containers/aks-microservices/aks-microservices</a></p>
+<p>NDC Sidney 2019 :Dissecting Kubernetes (K8s) - An Intro to Main Components - Joshua Sheppard The speaker (Joshua Sheppard) runs every single part of Kube on Vagrant and &quot;handle manual file changes on Kubelet / Control plane …)</p>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2020/06/27/fem-brian-holt-fox-game/">Frontend Masters: Brian Holt Fox Game</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2020/10/25/microsoft-azure-az-204-developing-solutions-for-microsoft-azure/">Microsoft Azure: AZ-204: Developing Solutions for Microsoft Azure</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2020/08/02/dotnet-conf-microservices-workshop/` was built on 2025-09-05T01:23:56.889Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

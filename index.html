@@ -1,0 +1,951 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>infuerno.github.io</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/" aria-current="page">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				<h1 id="posts">Posts</h1>
+
+
+<ol reversed="" class="postlist" style="--postlist-index: 132">
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2021/09/17/fem-functional-javascript-first-steps/" class="postlist-link">Frontend Masters: Functional Javascript First Steps</a>
+		<time class="postlist-date" datetime="2021-09-17">17 September 2021</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2021/04/16/wes-box-flexbox/" class="postlist-link">Wes Bos: Flexbox</a>
+		<time class="postlist-date" datetime="2021-04-16">16 April 2021</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2021/04/13/fem-complete-intro-to-react-v6/" class="postlist-link">Frontend Masters: Complete Intro to React v6</a>
+		<time class="postlist-date" datetime="2021-04-13">13 April 2021</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2021/01/10/fem-complete-intro-to-react-v5/" class="postlist-link">Frontend Masters: Complete Intro to React v5</a>
+		<time class="postlist-date" datetime="2021-01-10">10 January 2021</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2020/10/25/microsoft-azure-az-204-developing-solutions-for-microsoft-azure/" class="postlist-link">Microsoft Azure: AZ-204: Developing Solutions for Microsoft Azure</a>
+		<time class="postlist-date" datetime="2020-10-25">25 October 2020</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2020/08/02/dotnet-conf-microservices-workshop/" class="postlist-link">.NET Conf Microservices 2020 - Workshop</a>
+		<time class="postlist-date" datetime="2020-08-02">2 August 2020</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2020/06/27/fem-brian-holt-fox-game/" class="postlist-link">Frontend Masters: Brian Holt Fox Game</a>
+		<time class="postlist-date" datetime="2020-06-27">27 June 2020</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2020/06/27/fem-bianca-gandolpho-javascript-from-fundamentals-to-functional-js-v2/" class="postlist-link">Frontend Masters: Bianca Gandolpho Javascript from Fundamentals to Functional JS v2</a>
+		<time class="postlist-date" datetime="2020-06-27">27 June 2020</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2020/06/02/chris-richardson-microservices/" class="postlist-link">Chris Richardson: Distributed Data Patterns for Microservices - RedisConf 2020 Takeaway</a>
+		<time class="postlist-date" datetime="2020-06-02">2 June 2020</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2019/11/12/redis-certified-developer-program/" class="postlist-link">Redis Certified Developer Program</a>
+		<time class="postlist-date" datetime="2019-11-12">12 November 2019</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2019/11/05/manning-angular-development-with-typescript/" class="postlist-link">Manning: Angular Development with TypeScript</a>
+		<time class="postlist-date" datetime="2019-11-05">5 November 2019</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2019/09/16/haverbeke-eloquent-javascript/" class="postlist-link">Haverbeke: Eloquent JavaScript</a>
+		<time class="postlist-date" datetime="2019-09-16">16 September 2019</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2019/08/20/angular-io-tour-of-heroes/" class="postlist-link">Angular.io: Tour of Heroes</a>
+		<time class="postlist-date" datetime="2019-08-20">20 August 2019</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2019/08/12/pluralsight-linq-fundamentals/" class="postlist-link">Pluralsight: LINQ Fundamentals</a>
+		<time class="postlist-date" datetime="2019-08-12">12 August 2019</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2019/08/09/pluralsight-csharp-generics/" class="postlist-link">Pluralsight: C# Generics</a>
+		<time class="postlist-date" datetime="2019-08-09">9 August 2019</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2019/07/27/pluralsight-angular-getting-started/" class="postlist-link">Pluralsight: Angular Getting Started</a>
+		<time class="postlist-date" datetime="2019-07-27">27 July 2019</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2019/06/28/terraform-getting-started-azure/" class="postlist-link">Terraform: Getting Started - Azure</a>
+		<time class="postlist-date" datetime="2019-06-28">28 June 2019</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2019/06/28/google-cloud-training-security-and-identity-fundamentals/" class="postlist-link">Google Cloud Training: Security &amp; Identity Fundamentals</a>
+		<time class="postlist-date" datetime="2019-06-28">28 June 2019</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2019/06/26/google-cloud-training-baseline-infrastructure/" class="postlist-link">Google Cloud Training - Baseline: Infrastructure</a>
+		<time class="postlist-date" datetime="2019-06-26">26 June 2019</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2019/06/25/google-cloud-training-gcp-essentials/" class="postlist-link">Google Cloud Training: GCP Essentials</a>
+		<time class="postlist-date" datetime="2019-06-25">25 June 2019</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2019/06/25/google-cloud-certification-challenge-professional-cloud-architect/" class="postlist-link">Google Cloud Certification Challenge - Professional Cloud Architect</a>
+		<time class="postlist-date" datetime="2019-06-25">25 June 2019</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2019/06/11/pluralsight-microsoft-azure-for-net-developers-building-secure-services-and-applications/" class="postlist-link">Pluralsight: Microsoft Azure for .NET Developers - Building Secure Services and Applications</a>
+		<time class="postlist-date" datetime="2019-06-11">11 June 2019</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2019/06/03/pluralsight-microsoft-azure-for-net-developers-cloud-patterns-and-architecture/" class="postlist-link">Pluralsight: Microsoft Azure for .NET Developers - Cloud Patterns and Architecture</a>
+		<time class="postlist-date" datetime="2019-06-03">3 June 2019</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/11/27/freeman-essential-docker-for-aspnet-core-mvc/" class="postlist-link">Freeman: Essential Docker for ASP.NET Core MVC</a>
+		<time class="postlist-date" datetime="2018-11-27">27 November 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/07/28/life-in-the-united-kingdom/" class="postlist-link">Life in the United Kingdom</a>
+		<time class="postlist-date" datetime="2018-07-28">28 July 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/07/21/using-csla-4-02-creating-business-objects/" class="postlist-link">Using CSLA 4 02 Creating Business Objects</a>
+		<time class="postlist-date" datetime="2018-07-21">21 July 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/07/13/Install-local-version-of-ghost-for-development/" class="postlist-link">Install Local Version Of Ghost For Development</a>
+		<time class="postlist-date" datetime="2018-07-13">13 July 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/07/09/using-csla4-06-aspnet-mvc/" class="postlist-link">Using CSLA 4 06 ASP.NET MVC</a>
+		<time class="postlist-date" datetime="2018-07-09">9 July 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/06/25/pluralsight-polly-fault-tolerant-web-service-requests/" class="postlist-link">Pluralsight: Polly Fault Tolerant Web Service Requests</a>
+		<time class="postlist-date" datetime="2018-06-25">25 June 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/06/18/using-csla4-04-data-portal/" class="postlist-link">Using CSLA 4 04 Data Portal Configuration</a>
+		<time class="postlist-date" datetime="2018-06-18">18 June 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/05/16/asynchronous-programming-succinctly/" class="postlist-link">Asynchronous Programming Succinctly</a>
+		<time class="postlist-date" datetime="2018-05-16">16 May 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/05/12/pluralsight-asp-dot-net-mvc-4-fundamentals/" class="postlist-link">Pluralsight: ASP.NET MVC 4 Fundamentals</a>
+		<time class="postlist-date" datetime="2018-05-12">12 May 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/04/29/pluralsight-understanding-owin-and-katana/" class="postlist-link">Pluralsight: Understanding OWIN and Katana</a>
+		<time class="postlist-date" datetime="2018-04-29">29 April 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/04/02/asp-dot-net-core-application-development-building-an-application-in-four-sprints/" class="postlist-link">ASP.NET Core Application Development: Building an application in four sprints</a>
+		<time class="postlist-date" datetime="2018-04-02">2 April 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/02/28/pluralsight-what-every-developer-must-know-about-https/" class="postlist-link">Pluralsight: What Every Developer Must Know About HTTPS</a>
+		<time class="postlist-date" datetime="2018-02-28">28 February 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/02/21/docker-windows-workshop/" class="postlist-link">dockr.ly/windows-workshop</a>
+		<time class="postlist-date" datetime="2018-02-21">21 February 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/02/20/pluralsight-modernizing-net-framework-apps-with-docker/" class="postlist-link">Pluralsight: Modernizing .NET Framework Apps with Docker</a>
+		<time class="postlist-date" datetime="2018-02-20">20 February 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/02/20/coursera-google-it-support-professional-certificate-operating-systems-and-you-becoming-a-power-user/" class="postlist-link">Coursera: Google IT Support Professional Certificate, Operating Systems and You, Becoming a Power User</a>
+		<time class="postlist-date" datetime="2018-02-20">20 February 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/02/14/pluralsight-the-go-programming-language-john-sonmez/" class="postlist-link">Pluralsight: The Go Programming Language, John Sonmez</a>
+		<time class="postlist-date" datetime="2018-02-14">14 February 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/02/03/william-e-shotts-jr-the-linux-command-line-no-starch-press/" class="postlist-link">William E. Shotts, Jr.: The Linux Command Line, No Starch Press</a>
+		<time class="postlist-date" datetime="2018-02-03">3 February 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/02/03/shotts-the-linux-command-line-no-starch-press/" class="postlist-link">Shotts, The Linux Command Line, No Starch Press</a>
+		<time class="postlist-date" datetime="2018-02-03">3 February 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/01/25/pluralsight-webapi-v2-security/" class="postlist-link">Pluralsight: Web API v2 Security</a>
+		<time class="postlist-date" datetime="2018-01-25">25 January 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/01/24/google-it-support-professional-certificate-the-bits-and-bytes-of-computer-networking/" class="postlist-link">Google IT Support Professional Certificate: The Bits and Bytes of Computer Networking</a>
+		<time class="postlist-date" datetime="2018-01-24">24 January 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/01/23/google-it-support-professional-certificate-technical-support-fundamentals/" class="postlist-link">Google IT Support Professional Certificate: Technical Support Fundamentals</a>
+		<time class="postlist-date" datetime="2018-01-23">23 January 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/01/18/qa-architecting-microsoft-azure-solutions/" class="postlist-link">QA: Architecting Microsoft Azure Solutions</a>
+		<time class="postlist-date" datetime="2018-01-18">18 January 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/01/17/pluralsight-building-applications-with-asp-dot-net-mvc-4/" class="postlist-link">Pluralsight: Building applications with ASP.NET MVC 4</a>
+		<time class="postlist-date" datetime="2018-01-17">17 January 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2018/01/06/jon-skeet-csharp-in-depth/" class="postlist-link">Jon Skeet: C# In Depth 4th Edition</a>
+		<time class="postlist-date" datetime="2018-01-06">6 January 2018</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2017/12/07/martin-agile-principles-patterns-and-practices-in-csharp/" class="postlist-link">Martin: Agile Principles, Patterns, and Practices in C#</a>
+		<time class="postlist-date" datetime="2017-12-07">7 December 2017</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2017/10/17/pluralsight-asp-dot-net-mvc-5-fundamentals/" class="postlist-link">Pluralsight: ASP.NET MVC 5 Fundamentals</a>
+		<time class="postlist-date" datetime="2017-10-17">17 October 2017</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2017/10/08/bertocci-modern-authentication-with-azure-ad/" class="postlist-link">Bertocci: Modern Authentication with Azure AD</a>
+		<time class="postlist-date" datetime="2017-10-08">8 October 2017</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2017/07/29/infoq-domain-driven-design-quickly/" class="postlist-link">InfoQ: Domain Driven Design Quickly</a>
+		<time class="postlist-date" datetime="2017-07-29">29 July 2017</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2017/07/15/seeman-dependency-injection-in-dotnet/" class="postlist-link">Seemann: Dependency Injection in .NET</a>
+		<time class="postlist-date" datetime="2017-07-15">15 July 2017</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2017/06/03/ruby-cheatsheet/" class="postlist-link">Ruby Cheatsheet</a>
+		<time class="postlist-date" datetime="2017-06-03">3 June 2017</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2017/06/03/codecademy-ruby/" class="postlist-link">Codecademy: Ruby</a>
+		<time class="postlist-date" datetime="2017-06-03">3 June 2017</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2017/06/03/berkleyx-cs169-dot-1x-agile-development-using-ruby-on-rails/" class="postlist-link">BerkleyX: CS169.1x Agile Development Using Ruby on Rails</a>
+		<time class="postlist-date" datetime="2017-06-03">3 June 2017</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2017/06/02/git-immersion/" class="postlist-link">Git Immersion</a>
+		<time class="postlist-date" datetime="2017-06-02">2 June 2017</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2017/05/23/ruby-off-rails/" class="postlist-link">Ruby Off Rails</a>
+		<time class="postlist-date" datetime="2017-05-23">23 May 2017</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2016/12/23/pluralsight-automating-deployment-and-scale-of-azure-iaas-solutions/" class="postlist-link">Pluralsight: Automating Deployment and Scale of Azure IaaS Solutions</a>
+		<time class="postlist-date" datetime="2016-12-23">23 December 2016</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2016/12/18/manning-learn-active-directory-management-in-a-month-of-lunches/" class="postlist-link">Manning: Learn Active Directory Management in a Month of Lunches</a>
+		<time class="postlist-date" datetime="2016-12-18">18 December 2016</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2016/12/03/pluralsight-architecting-azure-solutions/" class="postlist-link">Pluralsight: Architecting Azure Solutions (70-534): Infrastructure and Networking</a>
+		<time class="postlist-date" datetime="2016-12-03">3 December 2016</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2016/06/15/pluralsight-git-fundamentals/" class="postlist-link">Pluralsight: Git Fundamentals</a>
+		<time class="postlist-date" datetime="2016-06-15">15 June 2016</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2016/05/16/pluralsight-getting-started-with-entity-framework-6/" class="postlist-link">Pluralsight: Getting Started with Entity Framework 6</a>
+		<time class="postlist-date" datetime="2016-05-16">16 May 2016</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2016/04/14/code-school-staying-sharp-with-angular-js/" class="postlist-link">CodeSchool - Staying sharp with Angular.JS</a>
+		<time class="postlist-date" datetime="2016-04-14">14 April 2016</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2016/04/13/pluralsight-play-by-play-asp-dot-net-core-1-dot-0-on-any-os/" class="postlist-link">Pluralsight: Play by Play: ASP.NET Core 1.0 on any OS</a>
+		<time class="postlist-date" datetime="2016-04-13">13 April 2016</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2016/02/17/pivotal-migrating-to-cloud-native-app-architecture/" class="postlist-link">Pivotal - Migrating to Cloud-Native Application Architectures</a>
+		<time class="postlist-date" datetime="2016-02-17">17 February 2016</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2016/02/08/pluralsight-automated-acceptance-testing-with-specflow-and-gherkin/" class="postlist-link">Pluralsight: Automated Acceptance Testing with Specflow and Gherkin</a>
+		<time class="postlist-date" datetime="2016-02-08">8 February 2016</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2016/02/04/pluralsight-introduction-to-oauth2-openid-connect-and-json-web-tokens-jwt/" class="postlist-link">Pluralsight: Introduction to OAuth2, OpenID Connect and JSON Web Tokens (JWT)</a>
+		<time class="postlist-date" datetime="2016-02-04">4 February 2016</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2016/02/04/code-school-shaping-up-with-angular-js/" class="postlist-link">CodeSchool - Shaping up with Angular.JS</a>
+		<time class="postlist-date" datetime="2016-02-04">4 February 2016</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/12/01/redis/" class="postlist-link">Redis</a>
+		<time class="postlist-date" datetime="2015-12-01">1 December 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/10/25/ruby-koans/" class="postlist-link">Ruby Koans</a>
+		<time class="postlist-date" datetime="2015-10-25">25 October 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/09/22/winops/" class="postlist-link">WinOps</a>
+		<time class="postlist-date" datetime="2015-09-22">22 September 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/08/23/cs50-week-8/" class="postlist-link">CS50 - Week 8</a>
+		<time class="postlist-date" datetime="2015-08-23">23 August 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/08/09/cs50-week-7/" class="postlist-link">CS50 - Week 7</a>
+		<time class="postlist-date" datetime="2015-08-09">9 August 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/08/08/cs50-week-6/" class="postlist-link">CS50 - Week 6</a>
+		<time class="postlist-date" datetime="2015-08-08">8 August 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/08/02/cs50-week-5/" class="postlist-link">CS50 - Week 5</a>
+		<time class="postlist-date" datetime="2015-08-02">2 August 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/07/11/cs50-week-4/" class="postlist-link">CS50 - Week 4</a>
+		<time class="postlist-date" datetime="2015-07-11">11 July 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/06/29/togaf/" class="postlist-link">TOGAF</a>
+		<time class="postlist-date" datetime="2015-06-29">29 June 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/06/26/cs50-week-3/" class="postlist-link">CS50 - Week 3</a>
+		<time class="postlist-date" datetime="2015-06-26">26 June 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/06/19/pluralsight-linux-installation-and-configuration/" class="postlist-link">Pluralsight - Linux Installation and Configuration</a>
+		<time class="postlist-date" datetime="2015-06-19">19 June 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/06/13/pluralsight-web-debugging-by-example/" class="postlist-link">Pluralsight - Web Debugging by Example</a>
+		<time class="postlist-date" datetime="2015-06-13">13 June 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/06/13/cs50-week-2/" class="postlist-link">CS50 - Week 2</a>
+		<time class="postlist-date" datetime="2015-06-13">13 June 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/06/11/pluralsight-smash-into-vim/" class="postlist-link">Pluralsight - Smash into Vim</a>
+		<time class="postlist-date" datetime="2015-06-11">11 June 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/06/10/pluralsight-courses/" class="postlist-link">Pluralsight Courses</a>
+		<time class="postlist-date" datetime="2015-06-10">10 June 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/06/08/linux-cli-fundamentals/" class="postlist-link">Linux CLI Fundamentals</a>
+		<time class="postlist-date" datetime="2015-06-08">8 June 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/06/05/cs50-week-1/" class="postlist-link">CS50 - Week 1</a>
+		<time class="postlist-date" datetime="2015-06-05">5 June 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/06/05/capture-the-flag/" class="postlist-link">Capture The Flag</a>
+		<time class="postlist-date" datetime="2015-06-05">5 June 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/06/04/bitballoon/" class="postlist-link">BitBalloon</a>
+		<time class="postlist-date" datetime="2015-06-04">4 June 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/06/04/beeminder/" class="postlist-link">Beeminder</a>
+		<time class="postlist-date" datetime="2015-06-04">4 June 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/06/03/freecodecamp/" class="postlist-link">FreeCodeCamp</a>
+		<time class="postlist-date" datetime="2015-06-03">3 June 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/06/02/test-driven-infrastructure-with-chef/" class="postlist-link">Test-Driven Infrastructure With Chef</a>
+		<time class="postlist-date" datetime="2015-06-02">2 June 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/05/23/learn-chef-windows/" class="postlist-link">Learn Chef Windows</a>
+		<time class="postlist-date" datetime="2015-05-23">23 May 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/05/22/apress-beginning-t-sql/" class="postlist-link">Apress Beginning T-SQL 2012</a>
+		<time class="postlist-date" datetime="2015-05-22">22 May 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/05/16/uk-address-data/" class="postlist-link">UK Address Data</a>
+		<time class="postlist-date" datetime="2015-05-16">16 May 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/04/26/python/" class="postlist-link">Python</a>
+		<time class="postlist-date" datetime="2015-04-26">26 April 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/04/19/treehouse-data-basics/" class="postlist-link">Treehouse - Data Basics</a>
+		<time class="postlist-date" datetime="2015-04-19">19 April 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/02/03/pluralsight-meet-chef/" class="postlist-link">Pluralsight - Meet Chef</a>
+		<time class="postlist-date" datetime="2015-02-03">3 February 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/02/02/pluralsight-net-distributed-systems-architecture/" class="postlist-link">Pluralsight - .NET Distributed Systems Architecture</a>
+		<time class="postlist-date" datetime="2015-02-02">2 February 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/01/30/pluralsight-devops-the-big-picture/" class="postlist-link">Pluralsight - DevOps The Big Picture</a>
+		<time class="postlist-date" datetime="2015-01-30">30 January 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/01/20/command-line-tools/" class="postlist-link">Command Line Tools</a>
+		<time class="postlist-date" datetime="2015-01-20">20 January 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/01/13/pluralsight-owasp-top-10-web-application-security-risks-for-asp-dot-net/" class="postlist-link">Pluralsight - OWASP Top 10 Web Application Security Risks for ASP.NET</a>
+		<time class="postlist-date" datetime="2015-01-13">13 January 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/01/09/pluralsight-web-security-and-the-owasp-top-10/" class="postlist-link">Pluralsight - Web Security and the OWASP Top 10</a>
+		<time class="postlist-date" datetime="2015-01-09">9 January 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2015/01/07/pluralsight-sscp-access-controls/" class="postlist-link">Pluralsight - SSCP Access Controls</a>
+		<time class="postlist-date" datetime="2015-01-07">7 January 2015</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2014/12/31/pluralsight-cplusplus-fundamentals/" class="postlist-link">Pluralsight - C++ Fundamentals</a>
+		<time class="postlist-date" datetime="2014-12-31">31 December 2014</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2014/12/23/javascript-succinctly/" class="postlist-link">JavaScript Succinctly</a>
+		<time class="postlist-date" datetime="2014-12-23">23 December 2014</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2014/09/08/grid-systems/" class="postlist-link">Grid systems</a>
+		<time class="postlist-date" datetime="2014-09-08">8 September 2014</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2014/08/31/hartl-rails-tutorial/" class="postlist-link">Hartl Rails Tutorial</a>
+		<time class="postlist-date" datetime="2014-08-31">31 August 2014</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2014/06/30/oreilly-software-architecture-fundamentals/" class="postlist-link">Oreilly Software Architecture Fundamentals</a>
+		<time class="postlist-date" datetime="2014-06-30">30 June 2014</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2014/06/23/software-systems-architecture-part-one/" class="postlist-link">Software Systems Architecture Part One</a>
+		<time class="postlist-date" datetime="2014-06-23">23 June 2014</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2014/05/23/test-driven-infrastructure-with-chef/" class="postlist-link">Test Driven Infrastructure With Chef</a>
+		<time class="postlist-date" datetime="2014-05-23">23 May 2014</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2014/04/27/chef-infrastructure-automation-cookbook/" class="postlist-link">Chef Infrastructure Automation Cookbook</a>
+		<time class="postlist-date" datetime="2014-04-27">27 April 2014</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2014/04/21/csla4-01-overview/" class="postlist-link">Csla4 01 Overview</a>
+		<time class="postlist-date" datetime="2014-04-21">21 April 2014</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2014/04/18/windows-delivery-tools/" class="postlist-link">Windows Delivery Tools</a>
+		<time class="postlist-date" datetime="2014-04-18">18 April 2014</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2014/01/14/treehouse-project-framework-basics/" class="postlist-link">Treehouse Project Framework Basics</a>
+		<time class="postlist-date" datetime="2014-01-14">14 January 2014</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2014/01/02/encoding/" class="postlist-link">Encoding</a>
+		<time class="postlist-date" datetime="2014-01-02">2 January 2014</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2013/12/09/treehouse-dd-technology-foundations/" class="postlist-link">Treehouse DD Technology Foundations</a>
+		<time class="postlist-date" datetime="2013-12-09">9 December 2013</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2013/11/10/treehouse-dd-photoshop/" class="postlist-link">Treehouse DD Photoshop</a>
+		<time class="postlist-date" datetime="2013-11-10">10 November 2013</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2013/11/04/the-treehouse-show/" class="postlist-link">The Treehouse Show</a>
+		<time class="postlist-date" datetime="2013-11-04">4 November 2013</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2013/10/19/hartl-ruby-on-rails-3/" class="postlist-link">Hartl Ruby On Rails 3</a>
+		<time class="postlist-date" datetime="2013-10-19">19 October 2013</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2013/10/06/treehouse-dd-website-basics/" class="postlist-link">Treehouse DD Website Basics</a>
+		<time class="postlist-date" datetime="2013-10-06">6 October 2013</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2013/09/24/chef/" class="postlist-link">Chef</a>
+		<time class="postlist-date" datetime="2013-09-24">24 September 2013</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2013/09/22/treehouse-dd-css-foundations/" class="postlist-link">Treehouse DD CSS Foundations</a>
+		<time class="postlist-date" datetime="2013-09-22">22 September 2013</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2013/09/14/treehouse-project-building-a-basic-website/" class="postlist-link">Treehouse Project Building A Basic Website</a>
+		<time class="postlist-date" datetime="2013-09-14">14 September 2013</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2013/09/14/treehouse-course-overview/" class="postlist-link">Treehouse Course Overview</a>
+		<time class="postlist-date" datetime="2013-09-14">14 September 2013</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2013/09/12/why-the-lucky-stiff/" class="postlist-link">Why The Lucky Stiff</a>
+		<time class="postlist-date" datetime="2013-09-12">12 September 2013</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2013/08/27/whys-poignant-guide-to-ruby/" class="postlist-link">Why&#39;s Poignant Guide To Ruby</a>
+		<time class="postlist-date" datetime="2013-08-27">27 August 2013</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2013/08/26/rails-for-zombies-redux/" class="postlist-link">Rails For Zombies Redux</a>
+		<time class="postlist-date" datetime="2013-08-26">26 August 2013</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2013/08/25/try-ruby/" class="postlist-link">Try Ruby</a>
+		<time class="postlist-date" datetime="2013-08-25">25 August 2013</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2013/08/08/stroustrup-4th-ed-2-a-tour-of-c++/" class="postlist-link">Stroustrup 4th Ed 2 A Tour Of C++</a>
+		<time class="postlist-date" datetime="2013-08-08">8 August 2013</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2013/08/06/stroustrup-4th-ed-1-notes-to-the-reader/" class="postlist-link">Stroustrup 4th Ed 1 Notes To The Reader</a>
+		<time class="postlist-date" datetime="2013-08-06">6 August 2013</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2013/06/01/groovy/" class="postlist-link">Groovy</a>
+		<time class="postlist-date" datetime="2013-06-01">1 June 2013</time>
+	</li>
+	<li class="postlist-item">
+		<a href="/infuerno.github.io/2013/01/12/hillegass/" class="postlist-link">Hillegass</a>
+		<time class="postlist-date" datetime="2013-01-12">12 January 2013</time>
+	</li>
+</ol>
+
+
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/` was built on 2025-09-05T01:23:56.891Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

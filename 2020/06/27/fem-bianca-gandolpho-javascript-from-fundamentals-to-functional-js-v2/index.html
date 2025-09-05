@@ -1,0 +1,920 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Frontend Masters: Bianca Gandolpho Javascript from Fundamentals to Functional JS v2</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="frontend-masters-bianca-gandolpho-javascript-from-fundamentals-to-functional-js-v2">Frontend Masters: Bianca Gandolpho Javascript from Fundamentals to Functional JS v2</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2020-06-27">27 June 2020</time></li>
+</ul>
+
+<p>m/bgando/exercises-fundamentals-2-functional</p>
+<h3 id="other-courses">Other Courses</h3>
+<ul>
+<li><a href="https://frontendmasters.com/courses/functional-javascript-v3/">Functional-Light JavaScript v3</a> by Kyle Simpson</li>
+<li><a href="https://frontendmasters.com/courses/advanced-async-js/">Asynchronous Programming with JavaScript</a> by Jafar Husain
+Dr Bullion</li>
+</ul>
+<h3 id="what-is-functional-programming">What is Functional Programming</h3>
+<ul>
+<li>OO Programming = Nouns - easier to think of the world in terms of nouns</li>
+<li>Functional Programming = Verbs - think in terms of actions and applying them to the nouns - hence use a lot of functions, pass functions to functions, return functions from functions</li>
+<li>Different to Functional Reactive Programming = functional style with streams</li>
+<li>Instead think <a href="https://lodash.com/">Lodash</a>, <a href="https://underscorejs.org/">Underscore</a> and <a href="https://ramdajs.com/">Ramda</a> (more hardcore version of the other two)</li>
+<li>Pure functions - Input, Output and no side effects - very testable, but most code requires side effects e.g. web programmming with DOM manipulation. Can go crazy and sacrifice readability if not careful</li>
+<li>Won’t cover monads, monoids, functors etc</li>
+<li>BUT functional programming can help with e.g. off by one errors when using loops</li>
+</ul>
+<h2 id="objects-and-arrays">Objects and Arrays</h2>
+<h3 id="property-access">Property access</h3>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">let</span> person <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+person<span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string">"Mrs White"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">let</span> person <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token string-property property">"name"</span><span class="token operator">:</span> <span class="token string">"Mrs White"</span><span class="token punctuation">;</span> <span class="token comment">// don't need the quotes around name since a simple string</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">let</span> who <span class="token operator">=</span> person<span class="token punctuation">.</span>name<span class="token punctuation">;</span> <span class="token comment">// who = "Mrs White" - the string primitive value is stored by VALUE</span>
+
+person<span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string">"Mr White"</span><span class="token punctuation">;</span> <span class="token comment">// who STILL = "Mrs White"</span></code></pre>
+<ul>
+<li><strong>primitive</strong> - string, number, boolean, null, undefined - passed by value</li>
+<li><strong>non primitive</strong> - object, array, function, promise - passed by reference</li>
+</ul>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">let</span> person2 <span class="token operator">=</span> person<span class="token punctuation">;</span></code></pre>
+<ul>
+<li>Any changes to <code>person.name</code>, will also apply to <code>person2.name</code>. Therefore recommended that you don’t mutate your data structures, but instead copy them.</li>
+</ul>
+<h3 id="arrays">Arrays</h3>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">let</span> person <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+person<span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string">"Mrs White"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">let</span> who <span class="token operator">=</span> person<span class="token punctuation">.</span>name<span class="token punctuation">;</span> <span class="token comment">// arrays can still have properties since arrays ARE objects</span>
+<span class="token keyword">typeof</span> person <span class="token operator">===</span> <span class="token string">"object"</span><span class="token punctuation">;</span> <span class="token comment">// true</span></code></pre>
+<ul>
+<li>The only difference between objects and arrays is that arrays have some cool methods. e.g. <code>array.push</code>, <code>array.pop</code>, <code>array.length</code></li>
+<li>To check if an object is an array use <code>Array.isArray(person)</code></li>
+<li>An array is <strong>different</strong> in that it has a <code>.length</code> <strong>property</strong> which is computed as numerical indicies are added (different to properties)</li>
+<li>With numerical indicies there is an order e.g. items can be reversed, unlike properties on a object which are not ordered.</li>
+<li>Application level code doesn’t necessarily use properties on arrays very often BUT libraries use them a lot.</li>
+</ul>
+<h3 id="dot-vs-bracket">Dot vs Bracket</h3>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript">person<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"I was not in the Billiards room"</span><span class="token punctuation">;</span></code></pre>
+<ul>
+<li><code>0</code> is simply a property, but specified using bracket notation instead of dot notation (well, its a bit more than that, e.g. effect is different if person is just an object object)</li>
+<li>Can’t use <code>person.0</code> because <code>0</code> is not a string. THEREFORE need to use the brackets. Have to use brackets to access properties whenever not a simple string.</li>
+</ul>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript">person<span class="token punctuation">[</span>plea<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"I would never"</span><span class="token punctuation">;</span> <span class="token comment">// ReferenceError: plea is not defined</span></code></pre>
+<ul>
+<li>The dot notation coerces <code>name</code> in <code>person.name</code> to a string (will only successfully coerce certain strings e.g. <code>0</code> will not be coerced to <code>&quot;0&quot;</code>). With bracket notation this needs to be <strong>explicit</strong> e.g. <code>person[&quot;plea&quot;] = &quot;I would never&quot;</code></li>
+</ul>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript">person<span class="token punctuation">[</span>
+  <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token number">3</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span> <span class="token comment">// simply evalulates function() {} as a string</span>
+person<span class="token punctuation">[</span>
+  <span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token number">3</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span> <span class="token comment">// need to actually call the function to evaluate as the result</span></code></pre>
+<ul>
+<li>Use <code>Object.keys(person)</code> to get a list of properties</li>
+</ul>
+<h3 id="es6-destructuring">ES6 Destructuring</h3>
+<p>Saves repetition in variable declarations. Requires a target and a source.</p>
+<h4 id="array-destructuring">Array destructuring</h4>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token comment">// variable declaration</span>
+<span class="token keyword">const</span> <span class="token punctuation">[</span>first<span class="token punctuation">,</span> second<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> <span class="token punctuation">[</span>first<span class="token punctuation">,</span> second<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token comment">// assignment</span>
+<span class="token punctuation">[</span>first<span class="token punctuation">,</span> second<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token comment">// omit values</span>
+<span class="token punctuation">[</span>a<span class="token punctuation">,</span> <span class="token punctuation">,</span> b<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment">// a = 1, b = 3</span>
+
+<span class="token comment">// spread operator - gathers all remaining values</span>
+<span class="token punctuation">[</span>a<span class="token punctuation">,</span> <span class="token operator">...</span>b<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment">// a = 1, b = [2,3]</span>
+
+<span class="token comment">// swap variables easily without temp</span>
+<span class="token keyword">let</span> a <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span>
+  b <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+<span class="token punctuation">[</span>a<span class="token punctuation">,</span> b<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>b<span class="token punctuation">,</span> a<span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment">//a = 2, b = 1</span>
+
+<span class="token comment">// advanced deep arrays</span>
+<span class="token keyword">let</span> <span class="token punctuation">[</span>a<span class="token punctuation">,</span> <span class="token punctuation">[</span>b<span class="token punctuation">,</span> <span class="token punctuation">[</span>c<span class="token punctuation">,</span> d<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment">// a = 1, b = 2, c = [[3, 4], 5], d = 6</span></code></pre>
+<p>Creating variables on the left = the target, assigning them values on the right = the source. IMPORTANT. Need the brackets on the left <strong>and</strong> right. Matches simply on order (with arrays order is everything!).</p>
+<h4 id="object-destructuring">Object destructuring</h4>
+<p>Objects have no sense of ordering. Destructuring matches on name.</p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token comment">// variable declaration</span>
+<span class="token keyword">const</span> <span class="token punctuation">{</span>first<span class="token punctuation">,</span> second<span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token literal-property property">first</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">;</span> second<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> <span class="token punctuation">{</span>first<span class="token punctuation">,</span> second<span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token literal-property property">first</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">;</span> second<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token comment">// assignment</span>
+<span class="token punctuation">{</span>first<span class="token punctuation">,</span> second<span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token literal-property property">first</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">;</span> second<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token comment">// use different variable names</span>
+<span class="token keyword">let</span> <span class="token punctuation">{</span><span class="token literal-property property">first</span><span class="token operator">:</span> x<span class="token punctuation">,</span> <span class="token literal-property property">second</span><span class="token operator">:</span> y<span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token literal-property property">first</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token literal-property property">second</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">}</span><span class="token punctuation">;</span> <span class="token comment">// assigns to x and y instead</span>
+
+<span class="token comment">// careful</span>
+<span class="token keyword">let</span> a<span class="token punctuation">,</span> b<span class="token punctuation">;</span>
+<span class="token punctuation">{</span>a<span class="token punctuation">,</span> b<span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token literal-property property">a</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token literal-property property">b</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">}</span><span class="token punctuation">;</span> <span class="token comment">// doesn't work</span>
+<span class="token punctuation">(</span><span class="token punctuation">{</span>a<span class="token punctuation">,</span> b<span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token literal-property property">a</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token literal-property property">b</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// works ok. starting with { defines block scope, so need to evaluate with ()</span>
+</code></pre>
+<p>See: <a href="https://gist.github.com/mikaelbr/9900818">https://gist.github.com/mikaelbr/9900818</a></p>
+<h2 id="foreach-function">.forEach() Function</h2>
+<p>Iterates over each value and executes the supplied function. <strong>Does not return anything.</strong></p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token comment">// a property speak which is a function</span>
+<span class="token keyword">function</span> <span class="token function">createSuspect</span><span class="token punctuation">(</span><span class="token parameter">name</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">name</span><span class="token operator">:</span> name<span class="token punctuation">,</span>
+    <span class="token literal-property property">color</span><span class="token operator">:</span> name<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">" "</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">speak</span><span class="token operator">:</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"my name is "</span><span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// ES6 speak is defined slightly differently</span>
+<span class="token keyword">function</span> <span class="token function">createSuspect</span><span class="token punctuation">(</span><span class="token parameter">name</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">name</span><span class="token operator">:</span> name<span class="token punctuation">,</span>
+    <span class="token literal-property property">color</span><span class="token operator">:</span> name<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">" "</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token function">speak</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"my name is "</span><span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">let</span> names <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">"Miss Scarlet"</span><span class="token punctuation">,</span> <span class="token string">"Colonel Mustard"</span><span class="token punctuation">,</span> <span class="token string">"Mr Black"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> suspectList <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token comment">// native forEach(), method on the array, which requires prototypes, this etc, much more advanced</span>
+names<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">n</span><span class="token punctuation">)</span> <span class="token operator">=></span> suspectsList<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token function">createSuspect</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// underscore.js each(), easier to implement since the array is passed in</span>
+_<span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span>names<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">n</span><span class="token punctuation">)</span> <span class="token operator">=></span> suspectsList<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token function">createSuspect</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// _.each() implementation</span>
+<span class="token comment">// expectation is that callback will be called 3 arguments:</span>
+<span class="token comment">// item, then index (or property name in the case of an object), then the whole list</span>
+<span class="token comment">// i.e. callback(item, i, list);</span>
+<span class="token keyword">const</span> _ <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+_<span class="token punctuation">.</span><span class="token function-variable function">each</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">list<span class="token punctuation">,</span> callback</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>Array<span class="token punctuation">.</span><span class="token function">isArray</span><span class="token punctuation">(</span>list<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> list<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">callback</span><span class="token punctuation">(</span>list<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span> i<span class="token punctuation">,</span> list<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> list <span class="token operator">===</span> <span class="token string">"object"</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> key <span class="token keyword">in</span> list<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">callback</span><span class="token punctuation">(</span>list<span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token punctuation">,</span> key<span class="token punctuation">,</span> list<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
+<h2 id="map-function">.map() Function</h2>
+<p>Similar to <code>.forEach()</code>, but returns a new array of values by appling the given transformation function, the <strong>iterator</strong>, to each item in the supplied list. Again the arguments supplied to the iterator are item, index, list in the case of an array (and value, key, object in the case of an object). Always returns a list of the same size.</p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">const</span> weapons <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">"candlestick"</span><span class="token punctuation">,</span> <span class="token string">"lead pipe"</span><span class="token punctuation">,</span> <span class="token string">"revolver"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> <span class="token function-variable function">makeBroken</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">item</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">broken </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>item<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>weapons<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>makeBroken<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// ["broken candlestick", "broken ..." etc]</span>
+
+<span class="token keyword">const</span> _ <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token comment">// implementation using for loop</span>
+_<span class="token punctuation">.</span><span class="token function-variable function">map</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">list<span class="token punctuation">,</span> callback</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> result <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>Array<span class="token punctuation">.</span><span class="token function">isArray</span><span class="token punctuation">(</span>list<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> list<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      result<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token function">callback</span><span class="token punctuation">(</span>list<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span> i<span class="token punctuation">,</span> list<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> list <span class="token operator">===</span> <span class="token string">"object"</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> key <span class="token keyword">in</span> list<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      result<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token function">callback</span><span class="token punctuation">(</span>list<span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token punctuation">,</span> key<span class="token punctuation">,</span> list<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token comment">// implementation using previously defined _.each()</span>
+_<span class="token punctuation">.</span><span class="token function-variable function">map</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">list<span class="token punctuation">,</span> callback</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> result <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  _<span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span>list<span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">item<span class="token punctuation">,</span> i<span class="token punctuation">,</span> list</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    result<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token function">callback</span><span class="token punctuation">(</span>item<span class="token punctuation">,</span> i<span class="token punctuation">,</span> list<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
+<h2 id="filter-function">.filter() Function</h2>
+<p>Similarily to <code>.map()</code>, can reuse <code>.each()</code> to implement.</p>
+<h2 id="functions-in-depth">Functions In Depth</h2>
+<ul>
+<li>definition vs invocation</li>
+<li>parameter vs arguments
+<ul>
+<li>parameters are variables and don’t have values e.g. <code>function square(x) { ... }</code></li>
+<li>arguments have values e.g. <code>square(2)</code></li>
+</ul>
+</li>
+<li>function declaration vs function expression
+<ul>
+<li>function declaration = a named function, which are invoked using the function name e.g. <code>function square(x) { return x*x; }</code>. These are <strong>hoisted</strong> to the top of other code.</li>
+<li>function expressions are assigned to variables e.g. <code>let square = function(x) { return x*x;}</code> and invoked using the variable name. These are not available prior to the line on which the variable is assigned. However, they are useful for:
+<ul>
+<li>closures</li>
+<li>arguments to other functions</li>
+<li>Immediately Invoked Function Expressions (IIFE)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>side effect = anything reaching beyond the curly braces and changes something - functional programming tries to minimise side effects</li>
+</ul>
+<h3 id="es6-arrow-functions">ES6 Arrow Functions</h3>
+<p>All functions have a keyword <code>this</code> which gets bound at call time. However arrow functions do not have a seperate value <code>this</code> and instead reach into the parent scope and grab the value of <code>this</code> from there. Replaces the need for <code>.bind</code>, <code>let that = this</code> etc.</p>
+<p>Arrow function don’t have their own value for the <code>arguments</code> keyword, but rather yield the outer “normal” functions value for <code>arguments</code>.</p>
+<p>Arrow functions auto <code>return</code> in certain circumstances, but best to explicitly <code>return</code> to make sure.</p>
+<h3 id="arguments">Arguments</h3>
+<p>The keyword <code>arguments</code> available in most functions (not arrow functions) is an array-like object (but not a proper array) set to all the arguments passed in whether bound to parameters or not. To transform it into a proper array, use <code>Array.prototype.slice.call(arguments)</code> in ES5, or <code>Array.from()</code> in ES6 e.g. <code>Array.from(arguments)</code>.</p>
+<h2 id="scope">Scope</h2>
+<ul>
+<li><code>var</code> uses function scope (lexical function scope = static scope)</li>
+<li><code>let</code> and <code>const</code> (ES6) use block scope (can just create a random block using <code>{</code> and <code>}</code>)</li>
+</ul>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">var</span> <span class="token function-variable function">firstFn</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">var</span> localToFirstFn <span class="token operator">=</span> <span class="token string">"first"</span><span class="token punctuation">;</span>
+    <span class="token function">secondFn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token keyword">var</span> <span class="token function-variable function">secondFn</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">var</span> actual <span class="token operator">=</span> localToFirstFn<span class="token punctuation">;</span> <span class="token comment">// throws ReferenceError: localToFirstFn is not defined</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token function">firstFn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>Javascript scope is defined statically. <code>firstFn</code> and <code>secondFn</code> are in completely different <strong>static</strong> scopes, so even though at run time, <code>secondFn</code> is run in the context of being within <code>firstFn</code>, it DOESN’T have access to <code>localToFirstFn</code> because scope is determined statically, <strong>not</strong> dynamically.</p>
+<h2 id="callbacks">Callbacks</h2>
+<p>Higher order functions can take functions as parameters and return functions.</p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">const</span> <span class="token function-variable function">ifElse</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">condition<span class="token punctuation">,</span> isTrue<span class="token punctuation">,</span> isFalse</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> condition <span class="token operator">?</span> isTrue <span class="token operator">:</span> isFalse<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">let</span> result <span class="token operator">=</span> <span class="token function">ifElse</span><span class="token punctuation">(</span>
+  <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// result will be the function () => console.log(true) [NOTE: this function is never called]</span></code></pre>
+<h3 id="spread">spread <code>...</code></h3>
+<p>The spread expression, <code>...</code>, is useful for gathering and spreading an unknown number of arguments from parameters AND passing them into further functions as arguments.</p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">const</span> <span class="token function-variable function">func</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">condition<span class="token punctuation">,</span> fn1<span class="token punctuation">,</span> fn2<span class="token punctuation">,</span> <span class="token operator">...</span>arg</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  condition <span class="token operator">?</span> <span class="token function">fn1</span><span class="token punctuation">(</span><span class="token operator">...</span>arg<span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token function">fn2</span><span class="token punctuation">(</span><span class="token operator">...</span>arg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token function">func</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">,</span> fn1<span class="token punctuation">,</span> fn3<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>Can pass multiple arguments (after the initial 3) to <code>func</code>. <code>arg</code> will be an array with all but the first 3 argument values e.g. <code>[1, 2, 3]</code>. When passed to <code>fn1</code> and <code>fn2</code> the elements of <code>arg</code> will be “spread” out into the parameters of the function e.g. <code>fn1(1, 2, 3)</code></p>
+<h3 id="call-apply-bind"><code>call</code>, <code>apply</code>, <code>bind</code></h3>
+<p>Three core functions worth looking into. Pre ES6 and the spread operator, the previous function would need to be rewritten:</p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">var</span> <span class="token function-variable function">func2</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">condition<span class="token punctuation">,</span> fn1<span class="token punctuation">,</span> fn2</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">var</span> args <span class="token operator">=</span> <span class="token class-name">Array</span><span class="token punctuation">.</span>prototype<span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span>arguments<span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  condition <span class="token operator">?</span> <span class="token function">fn1</span><span class="token punctuation">.</span><span class="token function">apply</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> args<span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token function">fn2</span><span class="token punctuation">.</span><span class="token function">apply</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> args<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
+<h3 id="reduce-function"><code>.reduce() Function</code></h3>
+<p>Array has a <code>reduce()</code> function which reduces the array to a single value by applying a function to each item in the array and accumulating the result at each iteration, returning the final result at the end.</p>
+<p>e.g. <code>[1, 2, 3].reduce((n, sum) =&gt; n + sum, 0); // sum elements in array, set initial value to 0</code></p>
+<p>Other libraries e.g. lodash include a similar <code>reduce</code> function for objects.</p>
+<h2 id="functional-utilities">Functional Utilities</h2>
+<h3 id="currying">Currying</h3>
+<p>Currying is a way of calling a function with multiple arguments multiple times to pass in each argument, but only have the function execute once when all arguments have been passed.</p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">const</span> <span class="token function-variable function">abc</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">a<span class="token punctuation">,</span> b<span class="token punctuation">,</span> c</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">[</span>a<span class="token punctuation">,</span> b<span class="token punctuation">,</span> c<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">let</span> curried <span class="token operator">=</span> _<span class="token punctuation">.</span><span class="token function">curry</span><span class="token punctuation">(</span>abc<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// defined in underscore.js</span>
+
+<span class="token comment">// curried saves the parameters in scope (somewhere) UNTIL 3 params have been passed, at which point it calls and returns the result from the original function</span>
+
+<span class="token function">curried</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// => [1, 2, 3]</span></code></pre>
+<p>The curried version of the function needs to keep returning a function (with arguments passed so far in scope) to the caller UNTIL finally the number of arguments has been achieved at which point it can execute the original function with the arguments passed.</p>
+<h3 id="composing">Composing</h3>
+<p>Joins two seperate functions together into one function by calling one and passing the output as an input to the other.</p>
+<h3 id="closures">Closures</h3>
+<p>A child function inside a parent function which retains access to the parent scope even after it has been executed.</p>
+<h4 id="closure-recipe">Closure recipe!</h4>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token comment">// 1. create the parent function</span>
+<span class="token keyword">function</span> <span class="token function">checkScope</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// 2. define some vars in the parent's local scope</span>
+  <span class="token keyword">let</span> innerVar <span class="token operator">=</span> <span class="token string">"local scope"</span><span class="token punctuation">;</span>
+  <span class="token comment">// 3. define the child function</span>
+  <span class="token keyword">function</span> <span class="token function">innerFunc</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> innerVar<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// 4. return from inside the parent function</span>
+  <span class="token keyword">return</span> innerFunc<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<h2 id="advanced-scope-closures">Advanced Scope: Closures</h2>
+<h2 id="recap">Recap</h2>
+<ol>
+<li>What is an object?</li>
+<li>What is the difference between dot and bracket notation?</li>
+<li>How do you add a property with a key that contains special characters?</li>
+<li>How do you add a property whose key and value are stored in different variables?</li>
+<li>How do we loop through objects to access the values?</li>
+<li>When can you only use dot notation and not bracket?</li>
+<li>When can you only use brackets and not dot?</li>
+<li>How do you add a property with a key that is stored in a variable?</li>
+<li>How do you access an object that is inside another object?</li>
+<li>How do you create an object that is nested inside another object?</li>
+</ol>
+<pre><code>
+</code></pre>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2020/06/02/chris-richardson-microservices/">Chris Richardson: Distributed Data Patterns for Microservices - RedisConf 2020 Takeaway</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2020/06/27/fem-brian-holt-fox-game/">Frontend Masters: Brian Holt Fox Game</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2020/06/27/fem-bianca-gandolpho-javascript-from-fundamentals-to-functional-js-v2/` was built on 2025-09-05T01:23:56.889Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

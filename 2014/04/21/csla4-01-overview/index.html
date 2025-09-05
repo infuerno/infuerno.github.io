@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Csla4 01 Overview</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="csla4-01-overview">Csla4 01 Overview</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2014-04-21">21 April 2014</time></li>
+</ul>
+
+<h2 id="chapter-1-introduction-and-installation">Chapter 1: Introduction and Installation</h2>
+<p>CSLA - Component based, Scalable, Logical Architecture
+This ebook provides and overview including vision, goals and guiding philosophy.</p>
+<h2 id="chapter-2-architecture-and-philosophy">Chapter 2: Architecture and Philosophy</h2>
+<h3 id="logical-and-physical-architecture">Logical and physical architecture</h3>
+<h4 id="n-tier-and-soa">N-tier and SOA</h4>
+<p>An application is defined here as a set of code, objects, components that are part of a single logical unit.
+SOA differs, and is designed as multiple services / applications interacting via message based communication.
+An application will have a set number of logical layers. Physical tiers are less than or equal to the number of logical layers. In badly designed applications, the number of logical layers defaults to the number of physical tiers.
+Physical n-tier architecture is not the same as SOA.
+SOA goals: loose coupling, reuse of functionality, open communication.
+N-tier goals: performance, avoidance of code duplication, targeted functionality.</p>
+<h4 id="logical-and-physical-model-differences">Logical and physical model differences</h4>
+<p>Traditionally an application is generally divided into 3 logical layers: interface, business logic, data management. (Today though the interface is usually split into 2 layers: browser and web server.) If not designed properly it isn’t always possible to put a physical boundary between logical layers. Other times, performance is impacted: data binding is very chatty between presentation and business layers so doesn’t work well with a network boundary between.
+The more physical tiers, the worse the performance. Potential however to increase scalability, security, fault tolerance.</p>
+<h5 id="performance-v-scalability">Performance v Scalability</h5>
+<h5 id="security">Security</h5>
+<h5 id="fault-tolerance">Fault Tolerance</h5>
+<h4 id="5-layer-logical-architecture">5-layer logical architecture</h4>
+<p><a href="http://CSLA.NET">CSLA.NET</a> is based on a 5 layer logical architecture comprising: Interface, Interface Control, Business Logice, Data Access, Data Storage and Management.
+[Discussion on each layer]</p>
+<p>This can be applied in different ways physically depending on the technology and purpose.
+[Discussion on each scenario]</p>
+<p><a href="http://CSLA.NET">CSLA.NET</a> can switch between different deployment scenarios based on configuration file changes on the client and the configuration of the servers.</p>
+<h3 id="managing-business-logic">Managing business logic</h3>
+<p>All layers need to interact with the application’s data. Business, validation and authorisation rules are often duplicated / spread between layers / in a non optimal layer e.g. UI layer input data is only validated when it has reached the data layer.</p>
+<p>A better solution is to share business logic across tiers. This can be satisfied by mobile business objects where the .NET framework encapsulate the details of moving objects between layers by value.</p>
+<h4 id="business-objects">Business objects</h4>
+<p>The key to successful object design is encapsulation: the object is a black box, which contains behaviour / logic and the data required by that logic. Business objects are objects which are related to the business for which the application is being developed.
+The data in a business object is <code>smart data</code>, the object contains data and logic which goes along with the data.</p>
+<h4 id="mobile-objects">Mobile objects</h4>
+<p>This kind of OO design is difficult for n-tier applications running in separate processes on different machines.
+To minimize complexity, many applications are OO only within a particular tier. This can increase performance, but does break encapsulation.
+Instead mobile objects can be used.</p>
+<h5 id="local-anchored-and-mobile-objects">Local, anchored and mobile objects</h5>
+<p>Local
+By default .NET objects are local and aren’t accessible from outside the process they are created in.</p>
+<p>Anchored
+A reference can be passed from an object in one process on one machine to an object in a different process. Any property or method calls are sent across the network so the object should be designed to use few method calls e.g. one. This design is true for objects with methods exposed via WCF. In .NET anchored objects are created using <code>[ServiceContract]</code> and <code>[OperationContract]</code> attributes. Older .NET remoting objects can inherit from <code>MarshalByRefObject</code>.</p>
+<p>Mobile
+Mobile objects are passed by value between processes, copying the objects data across the network. In .NET add the <code>[Serializable]</code> attribute to a class, or implement <code>ISerializable</code>. Alternatively WCF allows the <code>[DataContract]</code> and <code>[DataMember]</code> attributes, however, all only those methods so marked will be serialized so this way it is easy to introduce a hard to find bug.</p>
+<p>Anchored and mobile objects can be used in parallel to ensure when an object is required to e.g. run on the application server, this is guaranteed.</p>
+<p>Passing mobile objects by reference.
+These objects are actually passed by value, but the .NET framework gives the illusion of passing by reference. When returned to the calling code, the original reference is replaced with a reference to the new object. Any other references to this object will potentially still be pointing at the old object, so care must be taken to update all references to point to the new object.</p>
+<h2 id="chapter-3-csla-net-framework">Chapter 3: CSLA .NET Framework</h2>
+<h3 id="basic-design-goals">Basic design goals</h3>
+<p>Specifically CSLA maps the architectural layers into these technologies:</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Technologies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Interface</td>
+<td>WPF, Silverlight, WP7, <a href="http://ASP.NET">ASP.NET</a>, WCF, Windows Forms</td>
+</tr>
+<tr>
+<td>Interface Control</td>
+<td>Viewmodel object, Controller object, Code-behind, Service implementation</td>
+</tr>
+<tr>
+<td>Business</td>
+<td>CSLA .NET business domain objects</td>
+</tr>
+<tr>
+<td>Data Access</td>
+<td><a href="http://ADO.NET">ADO.NET</a>, <a href="http://ADO.NET">ADO.NET</a> Entity Framework, and many others</td>
+</tr>
+<tr>
+<td>Data Storage</td>
+<td>SQL Server, Oracle, DB2, MySQL, XML or JSON services</td>
+</tr>
+</tbody>
+</table>
+<p>An ideal situation is that any nonbusiness objects will already exist, e.g. ui controls, dtos.</p>
+<h4 id="business-rules">Business rules</h4>
+<p>Consist of validation rules (data is valid), business rules (involve some kind of calculation to alter an object) and authorization rules.
+Business rules can be hand-coded or use <code>DataAnnotation</code> attribute rules.
+Rules may run synchronously or asynchronously. Asynchronous rules allow CSLA to update the object when returning, and synchronous may therefore just as well follow the same approach.
+Validation rules generally return valid or invalid. Invalid  can have different severities, info, warning or error, and potentially additional information available. Broken rules are maintained in a list.
+Databinding infrastructures make use of the IDataErrorInfo and INotifyDataErrorInfo interfaces to automate the display of error messages in <a href="http://ASP.NET">ASP.NET</a> MVC etc (display of warning or info messages require custom code).</p>
+<h4 id="tracking-whether-the-object-has-changed">Tracking Whether the Object Has Changed</h4>
+<p>There are different ways of tracking this. CSLA maintains a flag set to <code>true</code> if any property is changed to a new value.</p>
+<h4 id="strongly-typed-collections-of-child-objects">Strongly Typed Collections of Child Objects</h4>
+<p>.NET framework provides several powerful collection classes. <code>BindingList&lt;T&gt;</code> and <code>ObservableCollection&lt;T&gt;</code> provide data binding collection support. CSLA contains classes which derive from these and should be used according to the UI technology in use.</p>
+<h4 id="n-level-undo-capability">N-Level Undo Capability</h4>
+<p>More useful for windows forms applications, no overhead incurred if not used.</p>
+<h4 id="class-in-charge-factory-pattern">Class in Charge (Factory pattern)</h4>
+<p>CSLA utilises the <em>Class in charge</em> approach (variation on the factory design pattern) to keep UI code simple and abstract. A <em>factory</em> method is responsible for creating and managing an object. Often these methods are static methods, hence “class in charge”. CSLA allows two approaches, static methods in the class concerned, or instance methods which in turn call a factory class.</p>
+<h4 id="supporting-data-binding">Supporting Data Binding</h4>
+<p>Data binding is an important feature of each UI technology on the Microsoft platforms. It offers:</p>
+<ul>
+<li>good performance, control and flexibility</li>
+<li>can be used to link controls to properties of business objects</li>
+<li>reduce UI code</li>
+</ul>
+<p>Editable objects should implement <code>IEditableObject</code>, supporting one level undo in grids etc. If an objects data changes, it must form the UI that a refresh is required. This is done by implementing INotifyPropertyChanged, which defines the <code>PropertyChanged</code> event. <code>INotifyPropertyChanging</code> can be used for before events. <code>INotifyCollectionChanged</code> equivalent can be implemented by list collections. If deriving from <code>ObservableCollection&lt;T&gt;</code> this will already by implemented. CSLA base classes ultimately derive from this.</p>
+<h5 id="events-and-serialization">Events and serialization</h5>
+<p>When an object is marked as serializable, the .NET framework will serialise this object and all objects it references (unless marked with the <code>[NonSerialized]</code> attribulte). If the object is handling e.g. an event raised by a form, then the .NET framework will attempt to serialise not only the object but also the form (reference from object to form is largely invisible to the .NET developer).
+This can be resolved by marking the events as <code>[NonSerialized]</code> (already implemented by <code>ObservableCollection&lt;T&gt;</code>).</p>
+<h4 id="object-persistence-and-object-relational-mapping">Object Persistence and Object-Relational Mapping</h4>
+<p>A good object model is not the same as a good relational data model. Relational models are concerned with storing data and often conform to rules of normalisation (e.g. third normal form). Object models are concerned with modelling behaviour. An object should have one clear responsibility. The data does not define the object, rather the role the object plays within the business domain.</p>
+<p><code>CustomerEdit</code> - responsible for adding and editing customer data
+<code>CustomerInfo</code> - responsible for providing read-only access to data</p>
+<h5 id="behaviour-is-normalised-not-data">Behaviour is normalised, not data</h5>
+<p>Futhermore, data in objects does not need to be normalised like it would be in a database. Instead behaviour should be normalised, not data.</p>
+<p>Behaviour and rules can be abstracted into their own classes for reuse. This means data can be repeated, but the rules kept seperate and used where necessary.</p>
+<p>Business object oriented design relies heavily on <em>collaboration</em>. One object should collaborate with other objects to do its work.</p>
+<h5 id="orm">ORM</h5>
+<p>ORM tools have difficulties working against behavioural object-oriented designed systems, since by there nature, they tend to create objects closely modelled on the database.</p>
+<p>CSLA 4 defines a standard set of five methods for creating, retrieving, updating, and deleting objects: Create, Fetch, Update, Delete and Execute.</p>
+<h5 id="data-portal">Data Portal</h5>
+<p>The data portal is anchored and will always run on the application server. Mobile business objects interact with the data portal in order to retrieve default values (create), fetch data (read), update or insert data (update), remove data (delete), or execute server code (execute).</p>
+<h5 id="authentication">Authentication</h5>
+<p>Windows authentication, <a href="http://ASP.NET">ASP.NET</a> membership authentication as well as custom authentication is supported.</p>
+<h3 id="framework-design">Framework design</h3>
+<p>The CSLA framework is broken down into several functional groups:</p>
+<ul>
+<li>Business object creation</li>
+<li>Data binding support</li>
+<li>N-level undo functionality</li>
+<li>Validation and business rules</li>
+<li>A data portal enabling various physical configurations</li>
+<li>Transactional and non-transactional data access</li>
+<li>Authentication and authorization</li>
+<li>Helper types and classes</li>
+</ul>
+<h4 id="business-object-creation">Business object creation</h4>
+<h4 id="data-binding-support">Data binding support</h4>
+<h4 id="n-level-undo-functionality">N-level undo functionality</h4>
+<h4 id="validation-and-business-rules">Validation and business rules</h4>
+<h4 id="a-data-portal-enabling-various-physical-configurations">A data portal enabling various physical configurations</h4>
+<h4 id="transactional-and-non-transactional-data-access">Transactional and non-transactional data access</h4>
+<h4 id="authentication-and-authorization">Authentication and authorization</h4>
+<h4 id="helper-types-and-classes">Helper types and classes</h4>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2014/04/18/windows-delivery-tools/">Windows Delivery Tools</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2014/04/27/chef-infrastructure-automation-cookbook/">Chef Infrastructure Automation Cookbook</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2014/04/21/csla4-01-overview/` was built on 2025-09-05T01:23:56.881Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

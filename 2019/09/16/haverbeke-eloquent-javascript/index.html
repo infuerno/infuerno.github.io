@@ -1,0 +1,1091 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Haverbeke: Eloquent JavaScript</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="haverbeke-eloquent-javascript">Haverbeke: Eloquent JavaScript</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2019-09-16">16 September 2019</time></li>
+</ul>
+
+<h2 id="introduction">Introduction</h2>
+<blockquote>
+<p>We think we are creating the system for our own purposes. We believe we are making it in our own image… But the computer is not really like us. It is a projection of a very slim part of ourselves: that portion devoted to logic, order, rule, and clarity.
+— <cite>Ellen Ullman, Close to the Machine: Technophilia and its Discontents</cite></p>
+</blockquote>
+<blockquote>
+<p>When action grows unprofitable, gather information. When information grows unprofitable, sleep.
+— <cite>Ursula K. Le Guin, The Left Hand of Darkness</cite></p>
+</blockquote>
+<p>Programming, it turns out, is hard. You’re buidling your own maze, in a way, and you might just get lost in it. Without care, a programs size and complexity will grow out of control, confusing even the person who created it.</p>
+<h3 id="overview">Overview</h3>
+<ul>
+<li>Chapters 1-12: JavaScript language
+<ul>
+<li>1-4: Control structures, functions, data structures</li>
+<li>5, 6: Functions and objects</li>
+<li>7: <strong>Project</strong> A Robot</li>
+<li>8-11: Error handling , regex, modularity, asynchronous programming</li>
+<li>12: <strong>Project</strong> A Programming Language</li>
+</ul>
+</li>
+<li>Chapters 13-19: Web Browsers
+<ul>
+<li>13-15: Browsers, DOM, events</li>
+<li>16: <strong>Project</strong> A Platform Game</li>
+<li>17,18: Canvas, HTTP, forms</li>
+<li>19: <strong>Project</strong> A Pixel Art Editor</li>
+</ul>
+</li>
+<li>Chapters 20, 21: Node.js
+<ul>
+<li>20: Node.js</li>
+<li>21: <strong>Project</strong> Skill Sharing Website</li>
+</ul>
+</li>
+</ul>
+<h2 id="chapter-1-values-types-and-operators">Chapter 1. Values, Types, and Operators</h2>
+<h3 id="numbers">Numbers</h3>
+<p>JavaScript uses 64 bits to store values of type <code>number</code>. Still need to worry about overflow, but only with huge numbers. Floating point arithmetic is still approximate. There are 3 special number types: <code>Infinity</code>, <code>-Infinity</code> and <code>NaN</code>.</p>
+<h3 id="interpolation">Interpolation</h3>
+<p>Backtick-quoted strings, usually called template literals, can do a few more tricks. Apart from being able to span lines, they can also embed other values.</p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">half of 100 is </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token number">100</span> <span class="token operator">/</span> <span class="token number">2</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span></code></pre>
+<p>When you write something inside <code>${}</code> in a template literal, its result will be computed, converted to a string, and included at that position. The example produces “half of 100 is 50”.</p>
+<h3 id="null-and-undefined"><code>null</code> and <code>undefined</code></h3>
+<ul>
+<li>Two special values, <code>null</code> and <code>undefined</code>, are used to denote the absence of a meaningful value. They are themselves values, but carry no information.</li>
+<li>Many operations in the language that don’t produce meaningful values (detailed later) yield <code>undefined</code> simply because they have to yield <strong>some</strong> value.</li>
+<li>The difference in meaning between <code>undefined</code> and <code>null</code> is an accident of JavaScript’s design, and it doesn’t matter most of the time. In cases where you actually have to concern yourself with these values, I recommend treating them as mostly interchangeable.</li>
+</ul>
+<h3 id="automatic-type-conversion">Automatic type conversion</h3>
+<p>JavaScript goes out of its way to understand almost anything you give it including automatic type conversion when operating on two or more types of different values. When using <code>==</code> to compare different types, JavaScript uses a complicated and confusing set of rules to determine what to do. Use <code>===</code> to avoid automatic type conversion.</p>
+<h2 id="chapter-2-program-structure">Chapter 2. Program Structure</h2>
+<h3 id="expressions-and-statements">Expressions and Statements</h3>
+<p>Expressions are fragments of code which produce values e.g. <code>22</code>, <code>&quot;psycho&quot;</code>, <code>(22)</code>, <code>typeof 22</code>, <code>3 + 4</code>
+Statements combine expressions. The simplist statements are just expressions followed by a <code>;</code> e.g. <code>1;</code>, <code>false;</code></p>
+<h3 id="bindings">Bindings</h3>
+<p>Imagine bindings (or variables) as tentacles, rather than boxes.</p>
+<p>A binding name may include dollar signs <code>$</code> or underscores <code>_</code> but no other punctuation or special characters. Words with a special meaning, such as <code>let</code>, are <strong>keyword</strong>s, and may not be used as binding names. The full list of keywords and reserved words is long.</p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"> <span class="token keyword">break</span> <span class="token keyword">case</span> catch <span class="token keyword">class</span> <span class="token class-name">const</span> <span class="token keyword">continue</span> <span class="token keyword">debugger</span> <span class="token keyword">default</span>
+ <span class="token keyword">delete</span> <span class="token keyword">do</span> <span class="token keyword">else</span> <span class="token keyword">enum</span> <span class="token keyword">export</span> <span class="token keyword">extends</span> <span class="token class-name">false</span> finally <span class="token keyword">for</span>
+ <span class="token keyword">function</span> <span class="token keyword">if</span> <span class="token keyword">implements</span> <span class="token class-name">import</span> <span class="token keyword">interface</span> <span class="token class-name">in</span> <span class="token keyword">instanceof</span> <span class="token class-name">let</span>
+ <span class="token keyword">new</span> <span class="token class-name">package</span> <span class="token keyword">private</span> <span class="token keyword">protected</span> <span class="token keyword">public</span> <span class="token keyword">return</span> <span class="token keyword">static</span> <span class="token keyword">super</span>
+ <span class="token keyword">switch</span> <span class="token keyword">this</span> <span class="token keyword">throw</span> <span class="token boolean">true</span> <span class="token keyword">try</span> <span class="token keyword">typeof</span> <span class="token keyword">var</span> <span class="token keyword">void</span> <span class="token keyword">while</span> <span class="token keyword">with</span> <span class="token keyword">yield</span></code></pre>
+<p>When creating a binding produces an unexpected syntax error, first check if trying to define a reserved word.</p>
+<h3 id="the-environment">The Environment</h3>
+<p>The collection of bindings and their values which exist at a given time is the <strong>environment</strong>. Many of these values of of type <code>function</code>. Executing a function = “invoke” it, “call” it or “apply” it.</p>
+<h3 id="blocks">Blocks</h3>
+<p><code>{</code> and <code>}</code> can be used to group any number of statements into a <strong>block</strong>.</p>
+<h3 id="capitalization">Capitalization</h3>
+<p>Most bindings use Lower Camel Case e.g. <code>fuzzyLittleTurtle</code>. Constructor functions use Camel Case e.g. <code>Number</code>.</p>
+<h2 id="chapter-3-functions">Chapter 3. Functions</h2>
+<p>A function is just a regular binding where the <strong>value</strong> is a function.</p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">const</span> <span class="token function-variable function">square</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">x</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> x <span class="token operator">*</span> x<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">square</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<ul>
+<li>Functions have a set of <code>parameters</code> and a <code>body</code> = statements to be executed when the function is called.</li>
+<li>Functions use the <code>return</code> keyword to return values. e.g. <code>return 4</code>.</li>
+<li>A function immediately returns on encountering the <code>return</code> keyword, giving the value to the code which called the function.</li>
+<li><code>undefined</code> is returned if a return value is not specified OR if there is no <code>return</code>.</li>
+</ul>
+<h3 id="scopes">Scopes</h3>
+<ul>
+<li>A binding defined outside of a function or block is a <strong>global</strong> binding</li>
+<li>A binding created for function parameters or defined within a function is a <strong>local</strong> binding</li>
+<li>Every time a function is called new instances of the bindings are created, isolating separate function invocations</li>
+<li>Bindings declared with <code>let</code> or <code>const</code> are local to the <strong>block</strong></li>
+<li>Each scope can <strong>look out</strong> to the scope around it, except where multiple bindings have the same name</li>
+<li>Multiple degress of locality exist when functions and blocks are created within other functions and blocks (i.e. nested)</li>
+<li>Lexical scoping: the set of bindings visible inside a block (or function) is determined by the place of that block <strong>in the program text</strong></li>
+</ul>
+<h3 id="declaration-notation">Declaration notation</h3>
+<ul>
+<li>A shorter way of declaring a function, using <code>function</code> keyword at the start</li>
+<li>Doesn’t require a semi-colon after the declaration</li>
+<li>Almost the same, except that they are logically <strong>moved</strong> to the top of their scope</li>
+</ul>
+<h3 id="arrow-notation">Arrow notation</h3>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">const</span> <span class="token function-variable function">square1</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">x</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> x <span class="token operator">*</span> x<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> <span class="token function-variable function">square2</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">x</span><span class="token punctuation">)</span> <span class="token operator">=></span> x <span class="token operator">*</span> x<span class="token punctuation">;</span></code></pre>
+<h3 id="parameters">Parameters</h3>
+<ul>
+<li>If too many arguments are passed, extra ones are ignored</li>
+<li>If too few, the remaining are set to <code>undefined</code></li>
+<li>Using <code>=</code> gives a default value in the case it is not specified</li>
+</ul>
+<h3 id="closures">Closures</h3>
+<p>Closures are possible because:</p>
+<ul>
+<li>functions can be treated as values</li>
+<li>bindings are recreated every time a function is calculated</li>
+<li><strong>closure</strong>: being able to reference a specific instance of a local binding in an enclosing scope</li>
+<li><strong>a closure</strong>: a function that references bindings from local scopes around it</li>
+</ul>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">wrapValue</span><span class="token punctuation">(</span><span class="token parameter">n</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> local <span class="token operator">=</span> n<span class="token punctuation">;</span> <span class="token comment">// creates a local binding</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> local<span class="token punctuation">;</span> <span class="token comment">// returns a function which accesses this</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">let</span> wrap1 <span class="token operator">=</span> <span class="token function">wrapValue</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> wrap2 <span class="token operator">=</span> <span class="token function">wrapValue</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">wrap1</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// → 1</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">wrap2</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// → 2</span></code></pre>
+<ul>
+<li>Local bindings are created anew for each call to <code>wrapValue</code></li>
+<li>Different calls are completely seperate</li>
+</ul>
+<p>The <code>local</code> variable from <code>wrapValue</code> isn’t necessary since the parameter itself is a local variable. Therefore equivalent to:</p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">wrapValue</span><span class="token punctuation">(</span><span class="token parameter">n</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> n<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Use this idea to create functions which multiply by an arbitrary amount:</p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">multiplier</span><span class="token punctuation">(</span><span class="token parameter">factor</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token parameter">number</span><span class="token punctuation">)</span> <span class="token operator">=></span> number <span class="token operator">*</span> factor<span class="token punctuation">;</span> <span class="token comment">// returns a **function** which accepts one parameter</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">let</span> twice <span class="token operator">=</span> <span class="token function">multiplier</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">twice</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// → 10</span></code></pre>
+<p>Thinking about programs like this takes some practice. A good mental model is to think of function values as containing both the code in their body and the environment in which they are created. When called, the function body sees the environment in which it was created, not the environment in which it is called.</p>
+<h3 id="functions-and-side-effects">Functions and side-effects</h3>
+<p>Functions can be roughly divided into those that are called for their side effects and those that are called for their return value. (Though it is definitely also possible to both have side effects and return a value.)</p>
+<p>A <strong>pure</strong> function is a specific kind of value-producing function that:</p>
+<ul>
+<li>has no side effects</li>
+<li>doesn’t rely on side effects from other code (e.g. doesn’t use global variables)</li>
+</ul>
+<h2 id="chapter-4-objects-and-arrays">Chapter 4. Objects and Arrays</h2>
+<blockquote>
+<p>On two occasions I have been asked, ‘Pray, Mr. Babbage, if you put into the machine wrong figures, will the right answers come out?’ […] I am not able rightly to apprehend the kind of confusion of ideas that could provoke such a question.
+— <cite>Charles Babbage, Passages from the Life of a Philosopher (1864)</cite></p>
+</blockquote>
+<h3 id="properties">Properties</h3>
+<ul>
+<li>Almost all JavaScript values have properties (with the exception of <code>null</code> and <code>undefined</code>)</li>
+<li>Both <code>value.x</code> and <code>value[x]</code> access a property on value
+<ul>
+<li>Using a dot, the word after the dot is the literal name of the property.</li>
+<li>Using square brackets, the expression between the brackets is evaluated and converted to a string to get the property name</li>
+</ul>
+</li>
+<li>Properties with names which aren’t naturally strings (e.g. 2; “John Doe”) must use square bracket notation</li>
+<li>Elements in an array are stored as the array’s properties, using numbers as property names (and therefore must use square bracket notation)</li>
+<li>Properties that contain functions are generally called methods of the value they belong to, as in “toUpperCase is a method of a string”.</li>
+</ul>
+<h3 id="objects">Objects</h3>
+<ul>
+<li>Values of the type <code>object</code> are arbitrary collections of properties</li>
+<li>One way to create an object is by using braces as an expression</li>
+</ul>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">let</span> day1 <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">squirrel</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">events</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"work"</span><span class="token punctuation">,</span> <span class="token string">"touched tree"</span><span class="token punctuation">,</span> <span class="token string">"pizza"</span><span class="token punctuation">,</span> <span class="token string">"running"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
+<ul>
+<li>Quote binding names if necessary</li>
+<li><code>Object.keys</code> returns an array of strings, the object’s property names e.g. <code>Object.keys(day1)</code> gives <code>[&quot;squirrel&quot;, &quot;events&quot;]</code></li>
+<li><code>Object.assign</code> copies all properties from one object into another e.g. <code>Object.assign(day1, {weather: &quot;cloudy&quot;, moon: &quot;full&quot;})</code></li>
+</ul>
+<h3 id="arrays">Arrays</h3>
+<p>Arrays are simply a kind of object specialized for storing sequences of things, with extra methods available</p>
+<ul>
+<li><code>includes</code> checks whether a given value exists in the array</li>
+<li><code>for ... of</code> to iterate over arrays (as well as other iterables e.g. strings) e.g. <code>for (let entry of journal)</code></li>
+<li><code>push</code> and <code>pop</code> add to and remove from the <strong>end</strong> of an array</li>
+<li><code>unshift</code> and <code>shift</code> add to and remove from the <strong>beginning</strong> of an array</li>
+<li><code>indexOf</code> and <code>lastIndexOf</code> search for objects in an array (returning -1 if not found)</li>
+<li><code>slice</code> returns a sub section of an array e.g. <code>arr.slice(2, 4)</code> (use <code>slice()</code> to copy the whole array)</li>
+<li><code>concat</code> glues arrays together to create a new array (similar to <code>+</code> for strings)</li>
+</ul>
+<h3 id="strings">Strings</h3>
+<ul>
+<li><code>indexOf</code> can search for more than one letter (unlike arrays)</li>
+<li><code>padStart</code>, <code>trim</code></li>
+<li><code>split</code>, <code>join</code></li>
+<li><code>repeat</code> e.g. <code>&quot;ha&quot;.repeat(3) // hahaha</code></li>
+</ul>
+<h3 id="rest-parameters">Rest parameters</h3>
+<ul>
+<li>To accept any number of arguments, add <code>...</code> before the last argument e.g. <code>function max(...numbers)</code> a.k.a. the <strong>rest parameter</strong></li>
+<li>The rest parameter gathers up all remaining parameters and binds them to an array</li>
+<li>Use <code>...</code> to <em>call</em> a function with an array and automagically “spread” the array out into the arguments e.g. <code>let numbers = [5, 1, 7]; console.log(max(...numbers));</code> - “spreading” out the array into the function call</li>
+</ul>
+<h3 id="destructuring">Destructuring</h3>
+<ul>
+<li>Use destructuring to assign more meaningful variable names directly to elements in an array parameter using <code>[]</code> e.g. <code>function phi([n00, n01, n10, n11])</code></li>
+<li>Destructure objects using <code>{}</code> e.g. <code>let {name} = {name: &quot;Faraji&quot;, age: 23}; // &quot;Faraji&quot;</code></li>
+</ul>
+<h2 id="chapter-5-higher-order-functions">Chapter 5. Higher-Order Functions</h2>
+<ul>
+<li>Functions that operate on other functions, either by taking them as arguments or by returning them, are called higher-order functions (term is from mathematics where there is more difference between a “function” and a “value”)</li>
+<li>Allow abstracting over <em>actions</em> (not just <em>values</em>)</li>
+<li>Functions which create new functions:</li>
+</ul>
+<pre><code>function greaterThan(n) {
+   return m =&gt; m &gt; n; // returns a **function**
+}
+let greaterThan10 = greaterThan(10);
+console.log(greaterThan10(11));
+// → true
+</code></pre>
+<ul>
+<li>Functions which change other functions - e.g. log input and output as well as call an existing function</li>
+<li>Array have a variety of higher-order functions defined including:
+<ul>
+<li><code>forEach</code> to loop over the elements in an array</li>
+<li><code>filter</code> returns a new array of only elements passing the predicate function</li>
+<li><code>map</code> transform all elements in an array according to the given function</li>
+<li><code>reduce</code> combines all elements in an array into a single value</li>
+<li><code>some</code> tests whether any element in an array passes a given predicate function</li>
+<li><code>findIndex</code> finds the position of the first element passing a given predicate function</li>
+</ul>
+</li>
+</ul>
+<h2 id="chapter-6-the-secret-life-of-objects">Chapter 6. The Secret Life of Objects</h2>
+<h3 id="encapsulation">Encapsulation</h3>
+<ul>
+<li>Javascript objects do not have the concept of <code>public</code> and <code>private</code> (YET), however it is customary for private variables to be prefixed with <code>_</code>.</li>
+</ul>
+<h3 id="methods">Methods</h3>
+<ul>
+<li><code>Methods</code> are object properties which hold function values</li>
+<li>When a method needs access something on the object it was called on, it can use the binding <code>this</code> (in effect, passed into the method is a special way).</li>
+</ul>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">let</span> rabbit <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">type</span><span class="token operator">:</span> <span class="token string">"white"</span><span class="token punctuation">,</span>
+  <span class="token function">speak</span><span class="token punctuation">(</span><span class="token parameter">line</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">The </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">this</span><span class="token punctuation">.</span>type<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> rabbit says </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>line<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+rabbit<span class="token punctuation">.</span><span class="token function">speak</span><span class="token punctuation">(</span><span class="token string">"hi"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<ul>
+<li>Alternatively a function’s <code>call</code> method can be used to explicity specify the binding for <code>this</code></li>
+</ul>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token function">speak</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span>hungryRabbit<span class="token punctuation">,</span> <span class="token string">"Burp!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h3 id="this"><code>this</code></h3>
+<ul>
+<li>Since each function has its own scope, <code>this</code> will hide any definitions of <code>this</code> in an outer scope EXCEPT for fat arrow functions which DO NOT define their own <code>this</code> value (can be exploited).</li>
+</ul>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">normalise</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>coords<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">n</span><span class="token punctuation">)</span> <span class="token operator">=></span> n <span class="token operator">/</span> <span class="token keyword">this</span><span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// if using `function`, `this` would be undefined</span>
+<span class="token punctuation">}</span>
+<span class="token function">normalise</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token literal-property property">coords</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>length<span class="token operator">:</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// -> [0, 0.4, 0.6]</span></code></pre>
+<h3 id="prototypes">Prototypes</h3>
+<p>Most objects in JavaScript also have a <code>prototype</code>, an informal take on the OO concept of classes. Functions derive from <code>Function.prototype</code>, array from <code>Array.prototype</code> and these prototypes as well as objects derive from <code>Object.prototype</code></p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">let</span> protoRabbit <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token function">speak</span><span class="token punctuation">(</span><span class="token parameter">line</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">The </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">this</span><span class="token punctuation">.</span>type<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> rabbit says </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>line<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> killerRabbit <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>protoRabbit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+killerRabbit<span class="token punctuation">.</span>type <span class="token operator">=</span> <span class="token string">"killer"</span><span class="token punctuation">;</span>
+killerRabbit<span class="token punctuation">.</span><span class="token function">speak</span><span class="token punctuation">(</span><span class="token string">"SKRREEE"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h4 id="constructor-functions">Constructor Functions</h4>
+<p>Special functions - use <code>Object.create</code> - ensure all mandatory properties are initialised.</p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">makeRabbit</span><span class="token punctuation">(</span><span class="token parameter">type</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> rabbit <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>rabbitPrototype<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  rabbit<span class="token punctuation">.</span>type <span class="token operator">=</span> type<span class="token punctuation">;</span>
+  <span class="token keyword">return</span> rabbit<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">let</span> wiseRabbit <span class="token operator">=</span> <span class="token function">makeRabbit</span><span class="token punctuation">(</span><span class="token string">"wise"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>Equivalently syntax using <code>new</code>.</p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">Rabbit</span><span class="token punctuation">(</span><span class="token parameter">type</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span>type <span class="token operator">=</span> type<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token class-name">Rabbit</span><span class="token punctuation">.</span>prototype<span class="token punctuation">.</span><span class="token function-variable function">speak</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">line</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">The </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">this</span><span class="token punctuation">.</span>type<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> rabbit says </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>line<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> weirdRabbit <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Rabbit</span><span class="token punctuation">(</span><span class="token string">"weird"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>Constructors (and all functions actually) automatically get a property name <code>prototype</code>, to which you can add further functionality e.g. the function <code>speak</code>.</p>
+<h4 id="pre-es6">Pre ES6</h4>
+<p>JavaScript classes are constructor functions with a prototype property and are written as such.</p>
+<h4 id="post-es6">Post ES6</h4>
+<p>Same, but with easier syntax.</p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">class</span> <span class="token class-name">Rabbit</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token parameter">type</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>type <span class="token operator">=</span> type<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token function">speak</span><span class="token punctuation">(</span>line<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">The </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">this</span><span class="token punctuation">.</span>type<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> rabbit says </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>line<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// can currently only defined methods, not properties (other than directly manipulating the prototype after creation)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">let</span> blackRabbit <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Rabbit</span><span class="token punctuation">(</span><span class="token string">'black'</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h3 id="maps">Maps</h3>
+<p>Since all objects derive from <code>Object.prototype</code> and inherit several default methods e.g. <code>toString</code>, this can be problematic when requiring a map type object where the ONLY properties you want are those which have been explicitly defined.</p>
+<p>The JavaScript <code>Map</code> class solves this. Methods <code>get</code> and <code>set</code> can be used to set keys and retrieve values.</p>
+<h3 id="getter-setters-and-statics">Getter, Setters and Statics</h3>
+<h2 id="chapter-8-bugs-and-errors">Chapter 8. Bugs and Errors</h2>
+<h2 id="chapter-9-regular-expressions">Chapter 9. Regular Expressions</h2>
+<blockquote>
+<p>Some people, when confronted with a problem think ‘I know, I’ll use regular expressions.’ Now they have two problems.
+— <cite>Jamie Zawinski</cite></p>
+</blockquote>
+<ul>
+<li>Define using literal value <code>/abc/</code> or a constructor <code>new RegExp(&quot;abc&quot;)</code></li>
+<li>If defining using the latter backslashes need escaping e.g. <code>/\d+/</code> but <code>new RegExp(&quot;\\d+&quot;)</code></li>
+<li>If defining using the former forward slashes need to be escaped e.g. <code>new RegExp(&quot;a/b&quot;)</code> but <code>/a\/b/</code></li>
+</ul>
+<h3 id="useful-methods">Useful methods</h3>
+<h4 id="test-on-regexp">.test() on RegExp</h4>
+<p><code>.test()</code> on <code>RegExp</code> when passed a string, returns a boolean e.g. <code>/abc/.test(&quot;abcdef&quot;)</code> returns <code>true</code></p>
+<p>Subexpressions are grouped using <code>()</code> and are treated as a <strong>single element</strong> e.g. <code>/boo+(hoo+)+/i.test(&quot;Boohoooohoohoooo&quot;</code> returns <code>true</code></p>
+<h4 id="exec-on-regexp">.exec() on RegExp</h4>
+<p><code>.exec()</code> on <code>RegExp</code> returns a “match” object. Either <code>null</code> if not found OR an <code>Array</code> of the matches, with some extra properties including <code>index</code> containing where the match was found (and also the properties <code>input</code> and <code>groups</code>)</p>
+<h4 id="match-on-string">.match() on String</h4>
+<p><code>.match()</code> on <code>String</code> is the equivalent of <code>.exec()</code> on <code>RegExp</code></p>
+<h4 id="replace-on-string">.replace() on String</h4>
+<p>This <code>String</code> method can take either <code>String</code>s or <code>RegExp</code>s for the first argument. The second argument can additionally use the <code>$1</code>, <code>$2</code> group substitutions (use <code>$&amp;</code> for the whole match).</p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"Liskov, Barbara\nMcCarthy, John\nWadler, Philip"</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">(\w+), (\w+)</span><span class="token regex-delimiter">/</span><span class="token regex-flags">g</span></span><span class="token punctuation">,</span> <span class="token string">"$2 $1"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// → Barbara Liskov</span>
+<span class="token comment">//   John McCarthy</span>
+<span class="token comment">//   Philip Wadler</span></code></pre>
+<p>A function can alternatively be passed as the second arguments</p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">let</span> s <span class="token operator">=</span> <span class="token string">"the cia and fbi"</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">\b(fbi|cia)\b</span><span class="token regex-delimiter">/</span><span class="token regex-flags">g</span></span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">str</span><span class="token punctuation">)</span> <span class="token operator">=></span> str<span class="token punctuation">.</span><span class="token function">toUpperCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// → the CIA and FBI</span></code></pre>
+<h4 id="search-on-string">.search() on String</h4>
+<p>Similar to <code>indexOf</code>, but using regular expressions instead e.g. <code>&quot; word&quot;.search(/\S/)</code> gives <code>2</code></p>
+<h3 id="the-date-class">The Date class</h3>
+<ul>
+<li><code>new Date()</code> - today’s date</li>
+<li><code>new Date(2009, 11, 9)</code> - date for 9th <strong>December</strong> 2009 (<strong>months</strong> are zero based)</li>
+<li>Timestamps are stored as the number of milliseconds since 1/1/1970. Use <code>getTime()</code> to get this number e.g. <code>new Date().getTime()</code> gives <code>1598619753764</code></li>
+<li>Negative numbers are used for dates prior to 1970</li>
+<li><code>Date()</code> constructor called with a single argument is treated as ticks</li>
+</ul>
+<h3 id="example-using-regex-groups-and-destructuring-to-parse-variables-from-a-string">Example using regex, groups and destructuring to parse variables from a string</h3>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">getDate</span><span class="token punctuation">(</span><span class="token parameter">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> <span class="token punctuation">[</span>_<span class="token punctuation">,</span> month<span class="token punctuation">,</span> day<span class="token punctuation">,</span> year<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">(\d{1,2})-(\d{1,2})-(\d{4})</span><span class="token regex-delimiter">/</span></span><span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span>string<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span>year<span class="token punctuation">,</span> month <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> day<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">getDate</span><span class="token punctuation">(</span><span class="token string">"1-30-2003"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// → Thu Jan 30 2003 00:00:00 GMT+0100 (CET)</span></code></pre>
+<h3 id="matching-and-backtracking">Matching and Backtracking</h3>
+<p>The reg ex parsing engine looks for a match in the string checking from the first character then the second and so on. When there are choices (using <code>|</code>) or wildcard operators (<code>*</code>, <code>+</code>) and the initial pass doesn’t yield a match, the engine has to backtrack and try a second way (the second branch, or less greedy using of <code>*</code>).</p>
+<p>Some regular expressions and string combinations can be written such that ** a lot** backtracking occurs and can yield performance issues.
+e.g. <code>&quot;0101010101010101010101010101&quot;.match(/([01]+)+b/)</code> never matches and takes about 5 seconds to return <code>null</code>. The time to complete is doubled for each number added to the string.</p>
+<h3 id="greed">Greed</h3>
+<p>Due to the mechanics of matching, <code>+</code>, <code>*</code>, <code>?</code> and <code>{}</code> are <strong>greedy</strong> by default, i.e. they match as much as they can and backtrack from there.</p>
+<p>Using a following <code>?</code> makes these operators <strong>nongreedy</strong> i.e. <code>+?</code>, <code>*?</code>. This is often what is wanted in the first place.</p>
+<p><strong>When using a repetition operator consider the nongreedy variant first.</strong></p>
+<h3 id="the-lastindex-property">The <code>lastIndex</code> property</h3>
+<p>This <code>lastIndex</code> property is set on a <code>RegExp</code> object where the <code>global</code> or <code>sticky</code> flag is true AND the <code>exec</code> method is used. It keeps track of where the next match will be checked from when <code>exec</code> is called a second or subsequent time.</p>
+<p>This can be useful OR lead to bugs.</p>
+<h4 id="looping-over-matches">Looping over matches</h4>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">let</span> input <span class="token operator">=</span> <span class="token string">"A string with 3 numbers in it... 42 and 88."</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> number <span class="token operator">=</span> <span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">\b\d+\b</span><span class="token regex-delimiter">/</span><span class="token regex-flags">g</span></span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> match<span class="token punctuation">;</span>
+<span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>match <span class="token operator">=</span> number<span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span>input<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"Found"</span><span class="token punctuation">,</span> match<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">"at"</span><span class="token punctuation">,</span> match<span class="token punctuation">.</span>index<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment">// -> Found 3 at 14</span>
+<span class="token comment">// -> Found 42 at 33</span>
+<span class="token comment">// -> Found 88 at 40</span></code></pre>
+<h4 id="source-of-bugs">Source of bugs</h4>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">let</span> pattern <span class="token operator">=</span> <span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">abc</span><span class="token regex-delimiter">/</span><span class="token regex-flags">g</span></span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>pattern<span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token string">"abc in the summer"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// -> [ 'abc', index: 0, input: 'abcdefabc', groups: undefined ]</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>pattern<span class="token punctuation">.</span>lastIndex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// -> 3</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>pattern<span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token string">"abc in the winter"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// -> null</span></code></pre>
+<h3 id="international-characters">International Characters</h3>
+<p>Regular expressions in JavaScript work with code units NOT actual characters. So 🍎 which is composed of two code units behaves unexpectedly.</p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">🍎{3}</span><span class="token regex-delimiter">/</span></span><span class="token punctuation">.</span><span class="token function">test</span><span class="token punctuation">(</span><span class="token string">"🍎🍎🍎"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// -> false - only the second code unit has the {3} applied, so the test fails</span></code></pre>
+<p>Use <code>/u</code> to treat Unicode characters correctly.</p>
+<pre class="language-javascript" tabindex="0"><code class="language-javascript">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">🍎{3}</span><span class="token regex-delimiter">/</span><span class="token regex-flags">u</span></span><span class="token punctuation">.</span><span class="token function">test</span><span class="token punctuation">(</span><span class="token string">"🍎🍎🍎"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// -> true</span></code></pre>
+<h3 id="summary">Summary</h3>
+<table>
+<thead>
+<tr>
+<th>regex</th>
+<th>meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/abc/</code></td>
+<td>A sequence of characters</td>
+</tr>
+<tr>
+<td><code>/[abc]/</code></td>
+<td>Any character from a set of characters</td>
+</tr>
+<tr>
+<td><code>/[^abc]/</code></td>
+<td>Any character not in a set of characters</td>
+</tr>
+<tr>
+<td><code>/[0-9]/</code></td>
+<td>Any character in a range of characters</td>
+</tr>
+<tr>
+<td><code>/x+/</code></td>
+<td>One or more occurrences of the pattern x</td>
+</tr>
+<tr>
+<td><code>/x+?/</code></td>
+<td>One or more occurrences, nongreedy</td>
+</tr>
+<tr>
+<td><code>/x*/</code></td>
+<td>Zero or more occurrences</td>
+</tr>
+<tr>
+<td><code>/x?/</code></td>
+<td>Zero or one occurrence</td>
+</tr>
+<tr>
+<td><code>/x{2,4}/</code></td>
+<td>Two to four occurrences</td>
+</tr>
+<tr>
+<td><code>/(abc)/</code></td>
+<td>A group</td>
+</tr>
+<tr>
+<td>`/a</td>
+<td>b</td>
+</tr>
+<tr>
+<td><code>/\d/</code></td>
+<td>Any digit character</td>
+</tr>
+<tr>
+<td><code>/\w/</code></td>
+<td>An alphanumeric character (“word character”)</td>
+</tr>
+<tr>
+<td><code>/\s/</code></td>
+<td>Any whitespace character</td>
+</tr>
+<tr>
+<td><code>/./</code></td>
+<td>Any character except newlines</td>
+</tr>
+<tr>
+<td><code>/\b/</code></td>
+<td>A word boundary</td>
+</tr>
+<tr>
+<td><code>/^/</code></td>
+<td>Start of input</td>
+</tr>
+<tr>
+<td><code>/$/</code></td>
+<td>End of input</td>
+</tr>
+</tbody>
+</table>
+<h2 id="chapter-10-modules">Chapter 10. Modules</h2>
+<p>Modules are used to break programs into smaller pieces. Each module should specify its dependencies and its own interface. In a similar way to objects, they expose some functionality publically and keep the rest private.</p>
+<p>Relationships between modules are called dependencies.</p>
+<h3 id="commonjs-modules">CommonJS modules</h3>
+<p>Until 2015, there was no official module system in JavaScript so improvised systems emerged using functions to create local scopes and objects to represent interfaces.</p>
+<p>CommonJS is the most widely used of these. The main concept is a function <code>require</code> which is called with a string of the name of the dependency e.g. <code>require(&quot;ordinal&quot;)</code>. The string is treated as a path. The file system will be searched in obvious places to find a file or folder with the same name e.g. <code>ordinal.js</code> (or <code>index.js</code> by default if a folder is used instead - can be changed in <code>package.json</code>). Strings starting <code>./</code>, <code>../</code> or just <code>/</code> can also be used.</p>
+<p>The following steps are taken when requiring a module:</p>
+<ul>
+<li>Resolving: Find the absolute path of the file</li>
+<li>Loading: Determine the type of the file content</li>
+<li>Wrapping: Give the file its private scope. This is what makes both the require and module objects local to every file we require</li>
+<li>Evaluating: This is what the VM eventually does with the loaded code</li>
+<li>Caching: When the file is required again, the same steps are not repeated</li>
+</ul>
+<p>A <code>module</code> object is the result of requiring a file in this way. The <code>module</code> object has a special property <code>exports</code>, itself an object which can be used to expose properties of the module e.g. <code>exports.id = &quot;hello world&quot;;</code>. The <code>module.exports</code> object is returned by the <code>require</code> function.</p>
+<p>To export functions etc from a module, define on the <code>exports</code> object e.g. <code>exports.formatDate = function(date, format) {...}</code></p>
+<h3 id="es6-modules">ES6 modules</h3>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2019/08/20/angular-io-tour-of-heroes/">Angular.io: Tour of Heroes</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2019/11/05/manning-angular-development-with-typescript/">Manning: Angular Development with TypeScript</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2019/09/16/haverbeke-eloquent-javascript/` was built on 2025-09-05T01:23:56.889Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

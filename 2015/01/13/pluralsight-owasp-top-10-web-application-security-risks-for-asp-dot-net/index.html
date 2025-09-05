@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Pluralsight - OWASP Top 10 Web Application Security Risks for ASP.NET</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="pluralsight-owasp-top-10-web-application-security-risks-for-asp-net">Pluralsight - OWASP Top 10 Web Application Security Risks for ASP.NET</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2015-01-13">13 January 2015</time></li>
+</ul>
+
+<h2 id="injection">Injection</h2>
+<h2 id="xss">XSS</h2>
+<h3 id="output-encode-for-the-correct-context">Output encode for the correct context</h3>
+<p>Ensure strings are output encoded correctly to mitigate XSS risks. Different outputs need to be encoded differently. Different outputs are required for: CSS, HTML, HTML attribute, HTML form URL, JavaScript, LDAP distinguished name, LDAP filter, URL, URL path, XML, XML attribute.</p>
+<p>For example <i>Lager</i> is encoded in the following different ways:</p>
+<table>
+<thead>
+<tr>
+<th>Context</th>
+<th>Encoded String</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HTML</td>
+<td>&lt;i&gt;Lager&lt;/i&gt;</td>
+</tr>
+<tr>
+<td>JavaScript</td>
+<td>\x3ci\x3eLager\x3c\x2fi\x3e</td>
+</tr>
+<tr>
+<td>CSS</td>
+<td>\00003Ci\00003ELager\00003C\00002F</td>
+</tr>
+</tbody>
+</table>
+<h3 id="antixss-framework">AntiXss Framework</h3>
+<p>In .NET applications the AntiXss framework contains some useful functions for output encoding HTML (in the <code>System.Web.Security.AntiXss</code> namespace)</p>
+<pre><code>var searchTerm = Request.QueryString[&quot;q&quot;];
+uxSearchTerm.Text = AntiXssEncoder.HtmlEncode(searchTerm, true); // use named entities
+</code></pre>
+<p>In order to output encode untrused data for the JavaScript context an additional library from NuGet is required also called AntiXss (also contains HTML encoders for pre 4.5 users)</p>
+<pre><code>&lt;script type=&quot;text/javascript&quot;&gt;
+    var q =  &lt;% Microsoft class=&quot;Security Application Encoder JavaScriptEncoder(Request.QueryString[&quot;q&quot;]) %&gt;
+&lt;/script&gt;
+</code></pre>
+<h3 id="automatic-output-encoding">Automatic output encoding</h3>
+<p>In <a href="http://ASP.NET">ASP.NET</a> web forms, the first example above, the label control’s text attribute did not implement output encoding. This had to be added explicitly. However some controls and attributes do automatically include output encoding. Test this by outputting e.g. <i>Lager</i> and check if it is encoded correctly or not.</p>
+<p>In <a href="http://ASP.NET">ASP.NET</a> MVC the razor view engine automatically HTML encodes all output by default. The HtmlHelper (<code>@Html.Label(&quot;&lt;i&gt;Lager&lt;/i&gt;&quot;)</code>) also encodes output. In order to stop the output encoding you need to use the Raw Html Helper (<code>@Html.Raw(&quot;&lt;i&gt;Lager&lt;/i&gt;&quot;)</code>)</p>
+<h3 id="request-validation">Request validation</h3>
+<p>Explicitly whitelist data using a regex.</p>
+<pre><code>if (!Regex.IsMatch(searchTerm, @&quot;^[\p{L} \.\-]+$&quot;)) {
+    throw new ApplicationException(&quot;Search term not allowed&quot;);
+}
+</code></pre>
+<p><a href="http://ASP.NET">ASP.NET</a> by default uses RequestValidation which checks all untrused data for XSS. This can be configured in the web.config in the pages element:</p>
+<pre><code>&lt;pages validateRequest=&quot;false&quot; /&gt;
+</code></pre>
+<p>On occasion, you may wish to POST html tags e.g. in a rich text editor. You can turn it off at the page level if necessary using <code>ValidateRequest=&quot;false&quot;</code> in the page declaration of the code behind. (requestValidationMode needs to be set to 2.0 for this to work.)</p>
+<p>As of .NET 4.5 the validation can only be turned off per control, but not per page. To do this:</p>
+<ol>
+<li>Ensure requestValidationMode ( attribute of &lt;<a href="http://system.web">system.web</a>&gt;<httpRuntime> ) is set to 4.5</httpRuntime></li>
+<li>On the individual control set <code>ValidateRequestMode</code> attribute to <code>Disabled</code></li>
+</ol>
+<p>Additionally to access potentially dangerous query string requests use <code>Request.Unvalidated.QueryString</code>. In this way you can bespoke the request handling.</p>
+<p>In <a href="http://ASP.NET">ASP.NET</a> MVC the <code>[AllowHtml]</code> attribute can be used to decorate the field in a model to e.g. allow special characters like <code>&lt;</code> and <code>&gt;</code> in a password field.</p>
+<p>IMPORTANT. Always code as though request validation doesn’t exist.</p>
+<h3 id="reflected-xss-v-persisted-xss">Reflected XSS v Persisted XSS</h3>
+<p>So far all XSS examples have been reflected XSS. However, there may be persistant XSS in the database. In order to mitigate the risk of this running on the page, all data should be output encoded (e.g. using AntiXss.HtmlEncode at bind time)</p>
+<h3 id="browser-behaviour">Browser behaviour</h3>
+<p>Different browsers may have their own defences against XSS. For example IE will post a message “Internet Explorer has modified this page to help prevent cross-site scripting” in the event of a potentially dangerous payload.&quot; This behaviour can be controlled via the use of custom headers e.g. in the web.config of the application.</p>
+<pre><code>&lt;system.webServer&gt;
+    &lt;httpProtocol&gt;
+        &lt;customHeaders&gt;
+            &lt;clear/&gt;
+            &lt;add name=&quot;X-XSS-Protection&quot; value=&quot;0&quot;&gt;
+        &lt;/customHeaders&gt;
+    &lt;/httpProtocol&gt;
+&lt;/system.webServer&gt;
+</code></pre>
+<h3 id="payload-obfuscation">Payload obfuscation</h3>
+<p>In order to…</p>
+<h2 id="broken-authentication-and-session-management">Broken Authentication and Session Management</h2>
+<h3 id="don-t-store-session-ids-in-the-url">Don’t store session IDs in the URL</h3>
+<p>When session id are stored in the URL, the session can easily be hijacked by sharing in the URL e.g. sending a link in an email, from proxy logs, from a browser history
+Never have sensitive data in the URL even over HTTPS requests.
+Usual method is to store the session id in a cookie - if cookies aren’t enabled in the browser, this is a big security risk for session persistence.</p>
+<h4 id="asp-net-session-persistence-options"><a href="http://ASP.NET">ASP.NET</a> Session Persistence options</h4>
+<p>UseUri				Always use the URL regardless of device support
+UseCookies			Always use cookies regardless of device support
+UseDeviceProfile	<a href="http://ASP.NET">ASP.NET</a> determines if cookies are <em>supported</em> (which won’t work if they have been disabled)
+AutoDetect			<a href="http://ASP.NET">ASP.NET</a> determins if cookies are <em>enabled</em></p>
+<h3 id="don-t-roll-your-own">Don’t roll your own</h3>
+<p>Developers frequently build custom authentication and session management schemes. Since building this correctly is hard, these often have flaws. Finding the flaws can be difficult since each implemenation is unique.</p>
+<h4 id="asp-net-membership-provider"><a href="http://ASP.NET">ASP.NET</a> Membership provider</h4>
+<p>With a blank application and a blank database, all that is required is to add the database details to the web.config and the application will automatically create the necessary tables on first run.</p>
+<p>With such a ready and easy to use authentication system, there is no need to create your own.</p>
+<h3 id="session-and-forms-timeout">Session and Forms timeout</h3>
+<ul>
+<li>Session timeout is 20 minutes by default (just persists state between requests)</li>
+<li>Forms timeout is 30 minutes by default (involves authentication) - BUT the VS templates set it to 2 days</li>
+<li>Forms can have:
+<ul>
+<li>a <em>sliding expiration</em> (default) which means they will timeout x minutes after the last request</li>
+<li>a <em>fixed expiration</em> which means they will alwasys be timed out after a certain amount of time</li>
+</ul>
+</li>
+</ul>
+<h3 id="other-broken-authentication-patterns">Other broken authentication patterns</h3>
+<ul>
+<li>Credentials should always be stored in a cryptographically secure way</li>
+<li>Robust minimum passwords</li>
+<li>Never send a password by email</li>
+<li>Protect session id cookies (e.g. ensure no XSS possibility, use HTTPS)</li>
+</ul>
+<h2 id="insecure-direct-object-references">Insecure direct object references</h2>
+<p>Scenario: web application which asks you to log in and then uses your username via an insecure web service to retrieve personal details. Using Fiddler to inspect any traffic shows a simple REST service with a query parameter of first name. Enumerating possible first names leads to other existing users and possible to retrieve their personal details.</p>
+<p>Often exploited by someone who is already authenticated, but trying to access someone else’s details.
+Often exploited through automation and brute force.</p>
+<h3 id="implement-correct-access-controls">Implement correct access controls</h3>
+<p>This is 95% of the problem and is the main solution.</p>
+<pre><code>if (User.Identity.Name != userNameRequested)
+{
+	throw new ApplicationException(&quot;Not authorised&quot;);
+}
+
+// useful to have the functionality to be able to pass in the username (e.g. may be called by admin also)
+if (User.Identity.Name != userNameRequested &amp;&amp; !User.IsInRole(&quot;Admin&quot;))
+{
+	throw new ApplicationException(&quot;Not authorised&quot;);
+}
+</code></pre>
+<h3 id="implement-a-indirect-object-reference-map">Implement a indirect object reference map</h3>
+<p>Numberous ways to store the map. Good for banks, but may be overkill for an average line of business web application. Are there multiple web front ends? Performance overhead?</p>
+<p>Important principles:</p>
+<ul>
+<li>The map is temporary</li>
+<li>The map is user specific</li>
+<li>The indirect reference is random</li>
+</ul>
+<p>Using session state automatically satifies the first two principles.</p>
+<p>Example class to implement an indirect object map using string extension methods.</p>
+<pre><code>public static class IndirectMap
+{
+	public static string GetIndirectRef(this string directRef)
+	{
+		var map = (Dictionary&lt;string, string&gt;)HttpContext.Current.Session[&quot;Map&quot;];
+		return map == null ? AddDirectRef(directRef) : map[directRef];
+	}
+
+	public static string GetDirectRef(this string indirectRef)
+	{
+		var map = HttpContext.Current.Session[&quot;Map&quot;];
+		if (map == null)
+		{
+			throw new ApplicationException(&quot;No map found&quot;);
+		}
+		return ((Dictionary&lt;string, string&gt;)map)[indirectRef];
+	}
+
+	private static string AddDirectRef(string directRef)
+	{
+
+		var indirectRef = HttpServerUtility.UrlEncode(buff);
+
+		var map = (Dictionary&lt;string, string&gt;)HttpContext.Current.Session[&quot;Map&quot;];
+		if (map == null)
+		{
+			map = new Dictionary&lt;string, string&gt;();
+		}
+		map.Add(new DicionaryEntry&lt;string, string&gt; {directRef, indirectRef});
+		map.Add(new DicionaryEntry&lt;string, string&gt; {indirectRef, directRef});
+
+		return indirectRef;
+	}
+}
+</code></pre>
+<h3 id="obfuscation-via-discoverable-surrogate-keys">Obfuscation via discoverable surrogate keys</h3>
+<p>Natural keys like names are vulnerable to enumeration, as are integers which can be easily enumerated. Keys like GUIDs are not easy to obfuscate, so although a direct reference are very difficult to enumerate. However this is only “security through obscurity”. Importantly access controls are still required.</p>
+<h2 id="cross-site-request-forgery-csrf-xsrf">Cross-site Request Forgery (CSRF / XSRF)</h2>
+<h3 id="example">Example</h3>
+<p><a href="https://nakedsecurity.sophos.com/2012/10/01/hacked-routers-brazil-vb2012/">https://nakedsecurity.sophos.com/2012/10/01/hacked-routers-brazil-vb2012/</a></p>
+<h3 id="tasks">Tasks</h3>
+<ol>
+<li>Download and run <a href="http://csrf">http://csrf</a> application</li>
+<li>Submit an update status request and study main POST request in browser network tools, find the authentication cookie and the status update</li>
+<li>Download <a href="http://evilsite">http://evilsite</a> and browse to <a href="http://evilsite/Winner.html">http://evilsite/Winner.html</a></li>
+<li>Check back in the csrf application and notice that the evilsite has managed to trick the user into unknowingly submit a status update to the csrf site</li>
+<li>Study the evilsite submission via the browser network tools to understand how this happened.</li>
+<li>Notice also that the status update includes a link to evilsite. This has been rendered as HTML due to a lack of output encoding. This will propogate the attack further</li>
+</ol>
+<ul>
+<li>URL encode the whole query string</li>
+<li>Use a service like <a href="http://bit.ly">bit.ly</a> or tinyurl</li>
+</ul>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2015/01/09/pluralsight-web-security-and-the-owasp-top-10/">Pluralsight - Web Security and the OWASP Top 10</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2015/01/20/command-line-tools/">Command Line Tools</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2015/01/13/pluralsight-owasp-top-10-web-application-security-risks-for-asp-dot-net/` was built on 2025-09-05T01:23:56.882Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

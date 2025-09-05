@@ -1,0 +1,1040 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Google IT Support Professional Certificate: The Bits and Bytes of Computer Networking</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="google-it-support-professional-certificate-the-bits-and-bytes-of-computer-networking">Google IT Support Professional Certificate: The Bits and Bytes of Computer Networking</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2018-01-24">24 January 2018</time></li>
+</ul>
+
+<h2 id="network-models">Network models</h2>
+<ul>
+<li>The TCP/IP Five-Layer Network Model
+<picture><source type="image/avif" srcset="/infuerno.github.io/2018/01/24/google-it-support-professional-certificate-the-bits-and-bytes-of-computer-networking/Nms8TJGes9-673.avif 673w"><source type="image/webp" srcset="/infuerno.github.io/2018/01/24/google-it-support-professional-certificate-the-bits-and-bytes-of-computer-networking/Nms8TJGes9-673.webp 673w"><img loading="lazy" decoding="async" src="/infuerno.github.io/2018/01/24/google-it-support-professional-certificate-the-bits-and-bytes-of-computer-networking/Nms8TJGes9-673.png" alt="The TCP/IP Five-Layer Network Model" width="673" height="385"></picture></li>
+<li>OSI Networking Model: <a href="https://en.wikipedia.org/wiki/OSI_model">https://en.wikipedia.org/wiki/OSI_model</a></li>
+</ul>
+<p>Physical Layer
+: Represents the physical devices that interconnect computers</p>
+<p>Data link layer
+: Responsible for defining a common way of these signals so network devices can communicate</p>
+<p>Ethernet
+: Beyond specifying physical layer attributes, the Ethernet standards also define a protocol responsible for getting data to nodes on the same network or link.</p>
+<p>Network (internet) layer
+: Allows different networks to communicate with each other through devices known as routers</p>
+<p>Transport layer
+: Sorts out which client and server programs are supposed to get data</p>
+<h2 id="the-basics-of-networking-devices">The Basics of Networking Devices</h2>
+<p>Crosstalk
+: When an electrical pulse on one wire is accidentally detected on another wire. Cat5e and Cat6 cables introduced measures to reduce crosstalk</p>
+<p>Fiber cables
+: Contain individual optical fibers, which are tiny tubes made out of glass about the width of a human hair</p>
+<p>Collision domain
+: A network segment where only one device can communicate at a time. If multiple devices try sending data at the same time, the electrical pulses sent across the cable can interfere with each other</p>
+<p>Hub
+: A physical layer device that allows for connetions from many computers at once. Less common now.</p>
+<p>Switch
+: A data link layer device, which can inspect the contents of the ethernet protocol data being sent and determin which system the data is destined for, thereby reducing collisions. Hubs and switches are the primary devices used to connect computers on a single network, usually referred to as a LAN, or local area network</p>
+<p>Router
+: A network layer device that knows how to forward data between independent networks</p>
+<p>Border Gateway Protocol (BGP)
+: Routers share data with each other via this protocol, which lets them learn about the most optimal paths to forward traffic</p>
+<h2 id="physical-layer">Physical Layer</h2>
+<p>Modulation
+: A way of varying the voltage of the charge moving across a cable - with computer networking, this is more commonly know as <strong>line coding</strong>.</p>
+<p>Duplex communication
+: The concept that information can flow in both directions across the cable (e.g. phone call). One of two pairs of the 4 pairs in a twisted pair cable are used to communicate in one direction and the other two pairs in the other direction</p>
+<p>Simplex communication
+: This process is unidirectional (e.g. baby monitor)</p>
+<p>Full duplex
+: Devices can communicate at exactly the same time (simultaneous)</p>
+<p>Half duplex
+: Devices can communicate both ways, but not at the same time (take turns)</p>
+<h2 id="data-link-layer">Data Link Layer</h2>
+<p>Ethernet is the most common protocol at this layer. This layer provide a means for software at higher levels of the stack to send and receive data. The Data Link Layer abstracts away the details of the physical layer and the hardware in use.</p>
+<p>CSMA/CD
+: Carrier Sense with Collision Detection. Prior to switches, nodes on a network could not selectively talk to each other, they had to broadcast messages to the entire network, and so to be intelligable only one node could speak at once - a collision domain. To solve this CSMA/CD is a way to help determin when the communication channels are clear and when a device is free to transmit data.
+- If no one else transmitting - send data
+- If two or more nodes try to send data at the same time, back off for a random amount of time and try again</p>
+<p>MAC address
+: Media Access Control address is a globally unique identifier attached to an individual network interface. 48 bit, 6 octets - first 3 octets are assigned to individual manufacturers, last 3 octets are assigned as desired by the manufacturer - must never use the same number twice. Ethernet uses MAC addresses to identify the source node and the target node.</p>
+<p>Unicast
+: transmission for just one node</p>
+<p>Multicast
+: transmission for a group of nodes</p>
+<p>Broadcast
+: transmisison for all nodes using a broadcast address. The broadcast address for ethernet is ff:ff:ff:ff:ff:ff</p>
+<p>Ethernet frame
+: A data packet at the data link Layer</p>
+<p>Preamble
+: 8 bytes (64 bits) split into two sections - first 7 bytes are alternating 1s and 0s for synchronisation, last byte is the SFD (Start Frame Delimiter) which indicate the header is about to start.</p>
+<p>Destination and Source MAC address
+: Hardware address of the intended recipient and sender respectively (for this stretch only)</p>
+<p>VLAN field (optional)
+: Allows having multiple logical LANs on the same physical equipment. Often used to segregate differenty types of traffic e.g. VoIP and Internet</p>
+<p>EtherType field
+: 16 bits describing the protocol</p>
+<p>Payload
+: The data. From 46 to 1500 bytes long - contains data from the higher levels</p>
+<p>Frame Check Sequence
+: 4 bytes (32 bits) checksum for the entire frame. The checksum is calculated by performing a cyclical redundancy check (CRC) against the frame. The CRC is a mathematical calculation which will always have the same value when calculated on the same set of data. This tells the receiver if the data is ok, or corrupt. The FCS is appended to the end of the Ethernet frame. If the CRC check fails, the data is discarded.</p>
+<h2 id="network-layer">Network Layer</h2>
+<p>Switches quickly learn the MAC addresses of the node connected to each port and can forward traffic quickly, but this doesn’t scale. IP addresses are used to route traffic across different networks.</p>
+<p>IP datagram
+: A data packet at the network layer</p>
+<p>![<a href="https://www.dropbox.com/s/6r1db62xxyteopk/Disection%20of%20an%20IP%20datagram.png?raw=1">https://www.dropbox.com/s/6r1db62xxyteopk/Disection of an IP datagram.png?raw=1</a>](Disection of an IP Datagram)</p>
+<p>Version
+: 4 bits e.g. 4 or 6</p>
+<p>Header length field
+: Usually 20 bytes with IPv4</p>
+<p>Identification field
+: Used when data needs to be split across multiple IP datagrams. All packets with the same number belong to one group.</p>
+<p>Flag field
+: Indicates if the datagram is allowed to be fragmented, or has already been fragmented</p>
+<p>TTL
+: 8 bit field indicates how many router hops a datagram can traverse before its thrown away. Each hop decrements this field and if the value reaches 0 the router discards the datagram. This is to stop endless loops due to misconfiguration.</p>
+<p>Protocol field
+: Indicates the transport layer protocol, e.g. TCP or UDP</p>
+<p>Header checksum
+: Since the TTL has to be decremented, this needs to be recalculated each time</p>
+<p>Source and Destination IP addresses
+: Address of the sender and recipient for the complete transmission</p>
+<h3 id="ip-address-classes">IP Address Classes</h3>
+<ul>
+<li>Class A - first octet used for the network ID, last 3 for the host id</li>
+<li>Class B - first 2 octets used for the network ID, last 2 for the host id</li>
+<li>Class C - first 3 octets used for the network ID, last octet for the host id</li>
+</ul>
+<h3 id="arp-address-resolution-protocol">ARP - Address Resolution Protocol</h3>
+<p>ARP is a protocol used to discover the hardware address of a node with a certain IP address. The IP datagram is encapsulated in an ethernet frame which requires a MAC address. Most network devices maintain a local ARP table - a list of IP addresses and the MAC addresses associated with them. If there is no entry in the ARP table for a particular IP address, a node sends a broadcast ARP messages delivered to all computers on the local network. When the node with the corresponding IP addresses received the message, it sends back an ARP response containing the MAC address required. ARP entries expire after a short amount of time.</p>
+<h3 id="subnetting">Subnetting</h3>
+<p>TODO</p>
+<h3 id="routing">Routing</h3>
+<p>Simple at a high level, but very complex at the detailed level. Only ISPs tend to deal with complex routing.</p>
+<p>Router
+: A network device that forwards traffic depending on the destination address of that traffic. Has at least two NICs because it has to be connected to at least two networks.</p>
+<p>Basic routing
+: Receive data package -&gt; Examine destination IP -&gt; Loop up IP in routing table -&gt; Forward traffic on the interface closest to the remote network, creating a new ethernet frame with its interface as the new source MAC address and either another gateway OR the node itself as the destination MAC address (from its own ARP table)</p>
+<p>Routing table
+: The most basic routing table has 4 columns: Destination network - definition of the remote network e.g. stored in CIDR notation - will have a catch all entry for all IP addresses it doesn’t have a listing for; Next hop - next router which should receive data for a particular desination network OR network directly connected; Total hops: crucial since a router may know of many different paths to a network, and this indicates which way is likely quickest - will be updated when it receives data from its neighbours; Interface - which of its own interfaces it should forward the traffic out of</p>
+<p>A core ISP router often has millions of rows in its routing table, which must be consulted for everything single packet!</p>
+<p>Non-routable address space
+: Reserved ranges of IP addresses for internal networks only. Gateway routers will not forward traffic for these addresses (NAT allows nodes to communicate outwards). The 3 ranges are: 10.0.0.0/8; 172.16.0.0/12; 192.168.0.0/16</p>
+<h4 id="routing-protocol-examples">Routing Protocol Examples</h4>
+<ul>
+<li>Interior Gateway Routing
+<ul>
+<li>Distance Vector:
+<ul>
+<li>RIP: <a href="https://en.wikipedia.org/wiki/Routing_Information_Protocol">https://en.wikipedia.org/wiki/Routing_Information_Protocol</a></li>
+<li>EIGRP: <a href="https://en.wikipedia.org/wiki/Enhanced_Interior_Gateway_Routing_Protocol">https://en.wikipedia.org/wiki/Enhanced_Interior_Gateway_Routing_Protocol</a></li>
+</ul>
+</li>
+<li>Link State:
+<ul>
+<li>OSPF: <a href="https://en.wikipedia.org/wiki/Open_Shortest_Path_First">https://en.wikipedia.org/wiki/Open_Shortest_Path_First</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Interior Gateway Routing
+<ul>
+<li>BGP: <a href="https://en.wikipedia.org/wiki/Border_Gateway_Protocol">https://en.wikipedia.org/wiki/Border_Gateway_Protocol</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="rfcs">RFCs</h4>
+<ul>
+<li>The IETF who now own the multitude of RFCs: <a href="http://www.ietf.org/">http://www.ietf.org/</a></li>
+<li>April Fool’s Day RFCs: <a href="https://en.wikipedia.org/wiki/April_Fools%27_Day_Request_for_Comments">https://en.wikipedia.org/wiki/April_Fools’_Day_Request_for_Comments</a>
+<ul>
+<li>RFC 1149</li>
+<li>RFC 3514</li>
+</ul>
+</li>
+</ul>
+<h2 id="transport-layer">Transport Layer</h2>
+<p>Port
+: A 16-bit number that’s used to direct traffice to specific services running on a networked computer (also know as a socket address or socket number when appended to an IP address with a colon)</p>
+<p>TCP segment
+: Made up of a TCP header and data section</p>
+<p><picture><source type="image/avif" srcset="/infuerno.github.io/2018/01/24/google-it-support-professional-certificate-the-bits-and-bytes-of-computer-networking/JR3QkQ8CEm-702.avif 702w"><source type="image/webp" srcset="/infuerno.github.io/2018/01/24/google-it-support-professional-certificate-the-bits-and-bytes-of-computer-networking/JR3QkQ8CEm-702.webp 702w"><img loading="lazy" decoding="async" src="/infuerno.github.io/2018/01/24/google-it-support-professional-certificate-the-bits-and-bytes-of-computer-networking/JR3QkQ8CEm-702.png" alt="TCP segment" width="702" height="403"></picture></p>
+<p>Source port
+: A high-numbered port chosen from a special section of ports know as ephemeral ports</p>
+<p>Sequence number
+: A 32-bit number that’s used to keep track of where in a sequence of TCP segments this one is expected to be</p>
+<p>Acknowledgement number
+: The number of the next expected segment</p>
+<p>Data offset field
+: A 4-bit number that communicates how long the TCP header for this segment is</p>
+<p>TCP window
+: Specifies the range of sequence numbers that might be sent before an acknowledgement is required</p>
+<p>TCP control flags
+: * URG (urgent) - segment is considered urgent, check the urgent pointer field for more details</p>
+<ul>
+<li>ACK (acknowledged) - if the value is one, check the acknowledge number field</li>
+<li>PSH (push) - the transmitting device wants the receiving device to push currently-buffered data to the application on the receiving end asap</li>
+<li>RST (reset) - one of the sides in a TCP connection hasn’t been able to properly recover from a series of missing or malformed segments</li>
+<li>SYN (synchronize) - used in the handshake, check the sequence number field</li>
+<li>FIN (finish) - when set to one, the transmitting computer doesn’t have any more data to send, connection can be closed</li>
+</ul>
+<p>The three-way handshake
+: Used to initiate a TCP connection: A -&gt; B SYN; B -&gt; A SYN/ACK;A -&gt; B ACK</p>
+<p>The four-way hanshake
+: Used to end a TCP connection: A -&gt; B (or B -&gt; A) FIN; B -&gt; A ACK; B -&gt; A FIN; A -&gt; B ACK;</p>
+<p>Socket states
+: A port can be used to communication if a program has opened a socket on that port. The socket can exist in a number of states (exact states may vary by system)</p>
+<ul>
+<li>LISTEN - A TCP socket is ready and listening for incoming connections (server side onely)</li>
+<li>SYN_SENT - A synchronisation request has been sent, but the connection hasn’t been established yet (client side only)</li>
+<li>SYN_RECEIVED - A socket previously in a LISTEN state has received a synchronisation request and sent a SYN/ACK back (server side only)</li>
+<li>ESTABLISHED - TCP connection is in working order, both sides free to send data (client / server)</li>
+<li>FIN_WAIT - FIN sent, but ACK not yet recieved</li>
+<li>CLOSE_WAIT - Connection closed on the TCP layer, but the program that opened the socket hasn’t released it yet</li>
+<li>CLOSED - Connection fully terminated</li>
+</ul>
+<h3 id="system-ports-v-ephemeral-ports">System ports v Ephemeral ports</h3>
+<ul>
+<li>There are system ports (1-1023), registered ports (1024-49151) and ephemeral ports (49152–65535) - <a href="https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers">https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers</a></li>
+</ul>
+<h2 id="session-layer-osi-model">Session Layer (OSI model)</h2>
+<p>Facilitates the communication betwee actual applications and the transport layer - takes the data from the TCP layer and hands it off to the next layer, the presentation layer</p>
+<h2 id="presentation-layer-osi-model">Presentation Layer (OSI model)</h2>
+<p>Ensures the unencapsulated application layer data is able to be understood by the application in question - may handle encryption or compression of data</p>
+<h2 id="walkthrough">Walkthrough</h2>
+<ol>
+<li>A user opens a browser and types in the address of a web page on a server using the IP address.</li>
+<li>The web browser communicates with the local networking stack - part of the OS responsible for handling networking functions - saying that it wants to establish a TCP connection to the specified IP address and port</li>
+<li>The networking stack checks its own subnet and recognises that the destination is on another network - so the request will need to go to the gateway (which it knows the IP address of)</li>
+<li>The ARP table is consulted to get the MAC address of the gateway - there is no entry - so the computer sends an ARP Request to the broadcast address of ff:ff:ff:ff:ff:ff - this goes to every node on the local network - the gateway will then respond with its MAC address - the computer will now update its ARP table with the new information</li>
+<li>To initiate an outbound TCP connection, an outbound source port is required, the OS identifies an available port in the ephemeral range and opens a socket connecting the web browser to this port</li>
+<li>The networking stack starts to build a TCP segment using the source port e.g. 50000, the destination port e.g. 80, the sequence number e.g. ??? and the SYN flag set. The checksum is then calculated and populated in the header. There is no data at this point - we need to establish the connection first and this simply needs the initial segment to contain the first part of the three way TCP handshake - SYN - to the receiving server.</li>
+<li>The TCP segment is passed to the Network layer. This layer constructs an IP header using the source IP, the destination IP, and a TTL of e.g. 64. The TCP segment is added to the IP datagrams payload. Finally the checksum is calcuated.</li>
+<li>An ethernet frame needs to now be constructed to get this first datagram at least as far as the gateway. The header is populated including the source MAC address and the gateway’s MAC address, the IP datagram is inserted, and the checksum calculated</li>
+<li>The Ethernet frame is sent as binary data via the NIC attached to the computer. The binary data is sent as modulations of the voltage of an electrical current running across a Cat6 cable connected to a network switch.</li>
+<li>The switch receives the frame and inspects the destination MAC address. The switch knows which interface the destination is connected to and forwards the ethernet frame to this interface, which in turn will send the binary data down the wire.</li>
+<li>The gateway router now recieves the ethernet frame, inspects the destination which is itself and calculates and compares the checksum</li>
+<li>The used ethernet frame is discarded and the IP datagram checksum calcualted and checked</li>
+<li>The router then checks the destination address and does a lookup against the routing table. The lookup returns a route, which is one hop away via router B.</li>
+<li>The router then decrements the TTL, calculates a new checksum for the IP datagram</li>
+<li>The router now needs to construct an ethernet frame with the MAC address of router B - it consults its ARP table, finds an entry and constructs the ethernet frame, adds the IP datagram and calclates the checksum before putting it on the wire via its NIC connected to network B.</li>
+<li>The frame is sent via a switch to router B which performs all the same checks and discards the ethernet frame. The desination IP address in the IP datagram is on its own network, so it decrements the TTL, calculates a new checksum and starts constructing an ethernet frame using the data from its ARP table to send to the final destination</li>
+<li>Finally at the destination computer, the ethernet frame is inspected, checked and discarded. The IP datagram is checked and the destination IP address checked - it is its own! The IP datagram is discarded. The TCP segment checksum is examined, calculated and compared.</li>
+<li>The port in the TCP segment is now checked. The networking stack on this computer checks there is an open socket on port 80. There is and its in the LISTEN state. The flags are checked, SYN is set, so the sequence number field is also checked and the value stored for the ACK response to be sent back shortly</li>
+</ol>
+<h2 id="network-services">Network Services</h2>
+<p>A good subset of all network services help make networking more user friendly and secure. If something isn’t working on the network, the services here are an important place to start.</p>
+<h2 id="dns">DNS</h2>
+<p>DNS
+: A global and highly distributed network service that resolves strings of letters into IP addresses</p>
+<ul>
+<li>DNS serves lots of purposes e.g. domain names can be resolved to different servers, based on the geographic location of the request. This also depends on DNS.</li>
+<li>Four things which need to be specifically configured on a node on a network for a standard modern network configuration:
+<ul>
+<li>IP address</li>
+<li>Subnet mask</li>
+<li>Gateway for the host</li>
+<li>DNS server (or without DNS can only use IP addresses)</li>
+</ul>
+</li>
+<li>Five types of DNS servers (with one DNS server often fulfilling multiple roles at once):
+<ul>
+<li>Caching name servers - provided by ISP - cache known domain name lookups - most caching servers are also recursive name servers</li>
+<li>Recursive name servers - perform full DNS resolution requests</li>
+<li>Root name servers</li>
+<li>TLD name servers</li>
+<li>Authoritative name servers</li>
+</ul>
+</li>
+<li>Computers and phones will often have their own DNS cache, so they don’t have to reach out to the local name server</li>
+</ul>
+<h3 id="full-recursive-dns-resolution-steps">Full recursive DNS resolution steps</h3>
+<ol>
+<li>Local name server contacts one of 13 <strong>root name servers</strong>
+<ul>
+<li>previously actual servers distributed geographically</li>
+<li>now distributed via <strong>anycast</strong>, a technique used to route traffic to different destinations depending on factors like location, congestion or link health - a node can route a datagram to a specific IP, but see it routed to multiple places</li>
+</ul>
+</li>
+<li>Root name server will redirect query to towards the responsible <strong>TLD name server</strong> - the TDL being the last part of a domain name e.g. <code>.com</code>. TLD name servers will again likely be a a globally distribution of anycast accessible servers</li>
+<li>The TDL name server will respond with the authoritative name server to contact, responsible for the last 2 parts of a domain name e.g. <code>weather.com</code> (usually run by the company that runs the site)</li>
+<li>The authorative name server when queried will respond with the IP address in question</li>
+</ol>
+<h3 id="dns-and-udp">DNS and UDP</h3>
+<ul>
+<li>DNS normally uses UDP rather than TCP. A DNS request and its response can usually fit into a singe UDP datagram. Using TCP takes a minimum of 44 packets, using UDP takes 8 packets. The DNS resolver simply asks a DNS server again if a reply is not given.</li>
+<li>DNS over TCP does exist when the data does not fit inside a single datagram. In this instance the DNS server responds to this effect, demanding that the DNS resolver re requests using TCP.</li>
+</ul>
+<h3 id="dns-resource-record-types">DNS Resource Record Types</h3>
+<p>A record
+: Used to point a certain domain name at a certain IPv4 IP address - usually a single A record is configured for a single domain name</p>
+<p>DNS round robin
+: A single domain name has multiple A records used to balance traffic across multiple IPs. If there are multiple A records, all would be returned for a DNS request, but cycling the order in which they are returned. The DNS resolving computer would try the first one first, but can fall back on the others if this one doesn’t work.</p>
+<p>Quad A - AAAA - record
+: Returns an IPv6 record, rather than an IPv4 record</p>
+<p>CNAME record (short for Canonical Name)
+: Used to redirect traffic from one domain to another e.g. <a href="http://microsoft.com">microsoft.com</a> -&gt; <a href="http://www.microsoft.com">www.microsoft.com</a>. The DNS resolving machine would initially get back <a href="http://www.microsoft.com">www.microsoft.com</a> in response to <a href="http://microsoft.com">microsoft.com</a> and would then perform a name resolution against <a href="http://www.microsoft.com">www.microsoft.com</a>. Useful instead of setting up two A records for the two domains.</p>
+<p>MX record (Mail Exchange)
+: Used to deliver email to the correct server</p>
+<p>SRV record (Service record)
+: Defines the location of specific services, like the MX record, but for lots of other service types besides email e.g. caldav</p>
+<p>TXT record ()
+: Originally designed to associate some text with a specific domain name. However it is increasingly used to contain configuration data for other services to consume.</p>
+<h3 id="domain-names">Domain names</h3>
+<ul>
+<li>ICANN is a sister organisation to the IANA. Help to define and control both the global IP spaces and the global DNS system.</li>
+<li>A registrar is a company which has an agreement with ICANN to sell unregistered domain names.</li>
+<li>DNS can support up to 127 levels of domain for a single FQDN - each individual section is limited to 63 charaters - the full FQDN is limited to 255 characters</li>
+</ul>
+<h3 id="dns-zones">DNS Zones</h3>
+<ul>
+<li>DNS servers are actually responsible for DNS zones
+<ul>
+<li>root servers are responsible for the root zone</li>
+<li>each TLD server is responsible for the zone covering its TLD etc</li>
+</ul>
+</li>
+<li>All DNS servers are authoritative inluding root and TLD name servers - the zones these are authoritative for are special cases</li>
+<li>DNS zones allows for easier control over multiple levels of a domain - network admins can split their domains into different zones using subdomains - n + 1 nameservers would then be required - one for the domain and one for each of the subdomains</li>
+<li>Zones are configured using a zone file - must contain an SOA declaration (Start of Authority)</li>
+</ul>
+<p>SOA record (Start of Authority)
+: Declares the zone and the name of the name server authoritative for it</p>
+<p>NS record
+: Other name servers also responsible for this zone</p>
+<p>Reverse look up zone files
+: Let DNS resolvers ask for an IP and get the FQDN associated with it</p>
+<p>PTR record (Pointer resource record)
+: Resolves an IP to a name</p>
+<h2 id="dhcp">DHCP</h2>
+<p>An application level protocol which automates the configuration process of hosts on a network. When connecting to a network, a machine can query a DHCP server and get all the configuration information in one go.</p>
+<p>Dynamic allocation
+: A range of IP addresses is set aside for client devices and one of these IP addreses is issued when they request one</p>
+<p>Automatic allocation
+: Similarlity has a range of IP addresses, but keeps track of which IP addresses clients have received in the past - will assign the same IP to the same machine each time <em>if possible</em></p>
+<p>Fixed allocation
+: Manually specified list of MAC addresses and corresponding IPs - if the MAC address is not found, can fallback to automatic or dynamic, but can refuse the request</p>
+<p>DHCP can be used for mulitple things, not just the basic network configuration e.g. NTP</p>
+<p>DHCP discovery
+: The process by which a client attempts to get network configuration information (if configured to use DHCP)</p>
+<ol>
+<li>Server discover step - client sends a DHCPDISCOVER message on to the network using a specially crafted broadcast message. DHCP listens on port 67 and DHCPDISCOVER messages are always sent from port 68 on the client over UDP. The destination IP address would be 255.255.255.255 and the source address is 0.0.0.0 - goes to every node on the network</li>
+<li>DHCP server checks its configuration and if possible to allocate an IP address will send back a DHCPOFFER address to 255.255.255.255:68 from itself (e.g. 192.168.0.1:67) - again goes to every machine on the network and the original client recognises that this message is meant for itself since a field contains the clients MAC address, previously sent in the DHCPDISCOVER message</li>
+<li>Client processes the DHCPOFFER to check what IP address is being offered</li>
+<li>If acceptable client sends DHCPREQUEST</li>
+<li>Server sends DHCPACK</li>
+<li>Client’s networking stack now sets up own networking configuation using information presented by the server</li>
+</ol>
+<p>DHCP lease
+: Configuration sent to the client as part of DHCP discovery - only valid for a fixed amount of time</p>
+<h2 id="nat">NAT</h2>
+<p>Takes one IP address and translates it into another. Lots of reasons to do this.</p>
+<p>NAT
+: Technology that allows a gateway usually a router or a firewall to rewrite the source IP of an outgoing IP datagram, while retaining the original IP in order to rewrite it into the response</p>
+<p>Normally a router will simply decrement the TTL, recalculate the checksum and send a packet on its way. However, if a router is configured to NAT, it will additionally update the source address from the originating node, to itself. To the destination, it will look as though the packet originated at the router. The router is hiding the IP of the source from the destination, known as NAT masquerading. Significant security measure. Hundreds of nodes on the source network can communicate but without revealing their IP addresses.  Known as One-to-many NAT, used in lots of LANs today.</p>
+<p>Port preservation
+: A technique where the source port chosen by the client is the same port used by the router</p>
+<p>A router using one-to-many NAT will need to keep track of which incoming packets need to go to which nodes. One way is to use the original source port (a high random number port) as a lookup, storing it in a table. If two different computers happen to choose the same number - the router selects a different random port to use instead (and presumably NATs the IP address and the port)</p>
+<p>Port forwarding
+: A technique where specific destination ports can be configured to always be deliverd to specific nodes</p>
+<p>Traffic delivered to a gateway router on port 80 is always forwarded to a web server; traffic delivered to the same router on port 25 is forwarded to an SMTP server</p>
+<p>RIR
+: Regional Internet Registry: AFRINIC - services Africa; ARIN - USA, Canada; APNIC - Asia and Australisia; LACNIC - Central and South America; RIPE - Europe, Russia, Middle East.</p>
+<p>RIRs are responsible for assigning address blocks within that area. Most have already run out. IANA assigned the last /8 blocks on 3rd Feb 2011. In April 2011, APNIC ran out of addresses. RIPE ran out in September 2012. LACNIC ran out in June 2014. ARIN ran out in September 2015. Only AFRINIC has some IP addresses left, predicted to be depleted by 2018.</p>
+<p>NAT and non-routable address space is required to get round this while IPv6 is being fully rolled out.</p>
+<p><a href="https://en.wikipedia.org/wiki/IPv4_address_exhaustion">https://en.wikipedia.org/wiki/IPv4_address_exhaustion</a></p>
+<h2 id="vpns">VPNs</h2>
+<p>VPN
+: Technology that allows for the extension of a private or local network, to a host that might not work on that same local network.</p>
+<ul>
+<li>It is a tunnelling protocol. Uses encrypted tunnels.</li>
+<li>VPNs require strict authentication e.g. 2fa</li>
+</ul>
+<h2 id="proxy-services">Proxy services</h2>
+<p>Proxy service
+: a server that acts on behalf of a client in order to access another service. Provides: anonymity, security, content filtering, increased performance, etc</p>
+<p>Web proxy
+Proxy specifically built for web traffic. Used for increased performance by using caching. Not used commonly for this purpose today. More commonly proxies are used to prevent access to sites.</p>
+<p>Reverse proxy
+: a server that might appear to be a single server to external clients, but actually represents many servers living behind it. A single server which hands of traffic to a number of actual web servers. Can also be used for encryption / decryption by having hardware specifically built for cryptography - the web servers are then free to just serve content.</p>
+<h2 id="introduction-to-connecting-to-the-internet">Introduction to Connecting to the Internet</h2>
+<ul>
+<li>PPP: <a href="https://en.wikipedia.org/wiki/Point-to-Point_Protocol">https://en.wikipedia.org/wiki/Point-to-Point_Protocol</a></li>
+<li>PPPoE: <a href="https://en.wikipedia.org/wiki/Point-to-point_protocol_over_Ethernet">https://en.wikipedia.org/wiki/Point-to-point_protocol_over_Ethernet</a></li>
+</ul>
+<h2 id="wan-technology">WAN Technology</h2>
+<p>WAN technologies are used to connect two or more LANs in different physical locations. Different technology is used to ethernet, and this technology is also often used at the core of the internet.</p>
+<ul>
+<li>Frame Relay: <a href="https://en.wikipedia.org/wiki/Frame_Relay">https://en.wikipedia.org/wiki/Frame_Relay</a></li>
+<li>High-Level Data Link Control: <a href="https://en.wikipedia.org/wiki/High-Level_Data_Link_Control">https://en.wikipedia.org/wiki/High-Level_Data_Link_Control</a></li>
+<li>ATM (Asynchronous Transfer Mode): <a href="https://en.wikipedia.org/wiki/Asynchronous_Transfer_Mode">https://en.wikipedia.org/wiki/Asynchronous_Transfer_Mode</a></li>
+</ul>
+<h2 id="point-to-point-site-to-site-vpns">Point to Point (Site to Site) VPNs</h2>
+<p>WAN technologies are expensive and designed for transmitting large quantities of data. Since services are moving more and more into the cloud, point to point VPNs can more easily and cheaply service two offices needing to communicate securely with each other.</p>
+<h2 id="verifying-connectivity">Verifying Connectivity</h2>
+<h3 id="ping">Ping</h3>
+<p>ICMP is usually used by a router or a remote host to trasmit back why transmission has failed to the origin of the transmission. An ICMP packet has a header with a type e.g. Destination Unreachable, Time Exceeded; code e.g. if the network or just the port is unreachable; checksum; rest of header for further information on the type and code; payload. Not usually used by humans.</p>
+<p>However a tool called Ping and a couple of message types are useful for humans. It lets you send an Echo Request message and receive Echo Reply messages.</p>
+<h3 id="traceroute">Traceroute</h3>
+<p>Traceroute
+: A utility that lets you discover the path between two nodes, and gives you information about each hop along the way.</p>
+<p>It works via clever maniplulation of the TTL field at the IP level - first setting TTL to 1, then 2 etc. A Time Exceeded ICMP packet is sent back when a packet is discarded due to the TTL field being 0. It sends 3 identical packets.</p>
+<ul>
+<li>On *nix <code>traceroute</code> sends UDP packets to high port numbers</li>
+<li>On Windows <code>tracert</code> defaults to ICMP packets</li>
+</ul>
+<h3 id="mtr-nix-pathping-win">mtr (*nix) / pathping (win)</h3>
+<p>Real time traceroute - <code>mtr</code> outputs realtime, <code>pathping</code> works for 50 seconds then outputs data all at once.</p>
+<h3 id="netcat-nix-test-netconnection">netcat (*nix) / Test-NetConnection</h3>
+<p>These tools allow testing at the transport layer rather than the network layer.
+<code>nc -z -v google.co.uk 80</code> where the -z flag simply checks for possible connection rather than allowing sending data</p>
+<ul>
+<li>netcat and how to use it: <a href="https://en.wikipedia.org/wiki/Netcat">https://en.wikipedia.org/wiki/Netcat</a></li>
+<li>Test-NetConnection Microsoft documentation: <a href="https://technet.microsoft.com/itpro/powershell/windows/nettcpip/test-netconnection">https://technet.microsoft.com/itpro/powershell/windows/nettcpip/test-netconnection</a></li>
+</ul>
+<h2 id="dns-2">DNS</h2>
+<p>Use nslookup to get DNS information e.g. <code>nslookup twitter.com</code>. Can also be used in interactive mode. Use <code>server</code> to specify a different DNS server e.g. <code>server 8.8.8.8</code>. Use <code>set type=MX</code> to set a different DNS record type (by default is set to check for <code>A</code> records). Use <code>set debug</code> for loads of debug information.</p>
+<p>An ISP almost always give you access to a recursive name server as part of the service it provides. Most businesses run DNS servers - this allows resolution of internal machines. Can also use DNS as a service provider.</p>
+<p>Public DNS Server
+: Name servers specifically set up so that anyone can use them, for free. Useful for troubleshooting name resolution problems - or sometimes just used for all DNS requirements.</p>
+<p>Level 3 communications is one of the biggest ISPs - so big they only sell services to other ISPs, not consumers. Their Public DNS servers are: 4.2.2.1; 4.2.2.2; 4.2.2.3; 4.2.2.4; 4.2.2.5; 4.2.2.6 (undocumented, who knows why?)</p>
+<p>Google similarly host Public DNS servers at: 8.8.8.8 and 8.8.4.4 (publicly documented)</p>
+<p>DNS servers also generally respond to ping, so handy to test general network recovery</p>
+<p>Registrar
+: An organisation responsible for assigning individual domain names to other organisations or individuals.</p>
+<p>Loopback Address
+: A way of sending traffic to yourself. Traffic bypasses all network infrastructure and never leaves the node. For IPv4 the loopback address is 127.0.0.1 which is still configured on nearly every modern operating system via an entry in a Hosts File. ::1 is the loopback address for IPv6</p>
+<h2 id="the-cloud">The Cloud</h2>
+<p>Cloud Computing
+: A technological approach where computing resources are provisioned in a shareable way, so that lots of users get what they need when they need it</p>
+<p>Virtualisation
+: A single physical machine, called a host, could run many individual virtual instances, called guests. At the heart of the concept of cloud computing</p>
+<p>Hypervisor
+: A piece of software that runs and manages virtual machines, while also offering these guests a virtual operating platform that’s indistinguishable from actual hardware</p>
+<p>Public cloud
+: A large cluster of machines run by another company</p>
+<p>Private cloud
+: Used by a single large corporation and gernally phyically hosted on its own premises</p>
+<p>Hybrid cloud
+: A company uses public cloud for some services and private cloud for other services</p>
+<h2 id="ipv6">IPv6</h2>
+<ul>
+<li>8 groups of 4 hexidecimal numbers</li>
+<li>Can be shorted in 2 ways to make more readable
+<ul>
+<li>leading zeros are removed - if whole set of 4 are zeros, replaced by a single 0</li>
+<li>replace consecutive sections of just 0s with two colons (hence ::1 for the IPv6 loopback address)</li>
+</ul>
+</li>
+<li>Reserved addresses include
+<ul>
+<li>FF00:: reserved for multicast groups</li>
+<li>FE80:: reserved for link-local unicast addresses - used by IPv6 hosts to receive network configuration information (a la DHCP)</li>
+</ul>
+</li>
+<li>In IPv6 addresses - first 64 bits are Network ID - second 64 bits are the Host ID</li>
+<li>Subnetting uses the same CIDR notation to defined a subnet mask against the Network ID portion</li>
+<li>The IPv6 header is much simpler that an IPv4 field: first the version field; next traffic class field (8 bits) - defines the type of traffic within the IP datagram; next flow label field (20 bits); payload length (16 bits); next header; hop limit - idential in purpose to the TTL field; source address; destination address; if anything was specified in the “next header” field, this would now follow…</li>
+<li>There are some ways in which IPv4 and IPv6 have been defined to work together - it is necessary for IPv4 and IPv6 traffic to co-exist at the same time so that networks can gradually be switched from one to the other
+<ul>
+<li>IPv4 mapped address space - any IPv6 address which is starts with 0:0:0:0:0:ffff e.g. 0:0:0:0:0:ffff:d1ad:35a7 is part of this space - the remaining 32 bits ARE the actual IPv4 address e.g. 192.168.1.1 in this case</li>
+<li>IPv6 traffic can travel over IPv4 networks using IPv6 tunnels - basically a tunnel server on either end of a connection - encapsulates IPv6 packets into IPv4 packets which are then unencapsulated at the other end</li>
+</ul>
+</li>
+</ul>
+<p>Competing protocols to be used for these kinds of IPv6 tunnels</p>
+<ul>
+<li>6in4: <a href="https://en.wikipedia.org/wiki/6in4">https://en.wikipedia.org/wiki/6in4</a></li>
+<li>Tunnel Setup Protocol: <a href="https://en.wikipedia.org/wiki/Tunnel_Setup_Protocol">https://en.wikipedia.org/wiki/Tunnel_Setup_Protocol</a></li>
+<li>AYIYA: <a href="https://en.wikipedia.org/wiki/Anything_In_Anything">https://en.wikipedia.org/wiki/Anything_In_Anything</a></li>
+</ul>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2018/01/23/google-it-support-professional-certificate-technical-support-fundamentals/">Google IT Support Professional Certificate: Technical Support Fundamentals</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2018/01/25/pluralsight-webapi-v2-security/">Pluralsight: Web API v2 Security</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2018/01/24/google-it-support-professional-certificate-the-bits-and-bytes-of-computer-networking/` was built on 2025-09-05T01:23:56.886Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

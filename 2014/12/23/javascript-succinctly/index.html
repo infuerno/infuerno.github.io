@@ -1,0 +1,740 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>JavaScript Succinctly</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="javascript-succinctly">JavaScript Succinctly</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2014-12-23">23 December 2014</time></li>
+</ul>
+
+<h2 id="preface">Preface</h2>
+<p>Mozilla javascript reference: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">https://developer.mozilla.org/en-US/docs/Web/JavaScript</a></p>
+<p>David Flanagan: O’Reilly JavaScript: The Definitive Guide <a href="http://shop.oreilly.com/product/9780596805531.do">http://shop.oreilly.com/product/9780596805531.do</a></p>
+<h2 id="chapter-1-javascript-objects">Chapter 1: JavaScript Objects</h2>
+<h3 id="creating-objects">Creating objects</h3>
+<p>An object in JavaScript is just a container for properties, each of which has a name and a value.
+Methods are just properties which contain a <code>Function()</code> object.</p>
+<p>New objects can be created by calling the <code>new Object()</code> constructor function.
+User defined contructor functions can also be defined to create custom objects:</p>
+<pre><code>var Person = function (living, age, gender) {
+    this.living = living;
+    this.age = age;
+    this.gender = gender;
+this.getGender = function () { return this.gender; }; };
+</code></pre>
+<p>Conventionally, a capital letter is used (i.e. <code>var Person</code>, not <code>var person</code>).</p>
+<p>Objects created from either <code>new Person()</code> or <code>new Object()</code> with the same properties will be exactly the same object. Only the method of creating is different.</p>
+<p>Functions can be named or not named:</p>
+<pre><code>var Person = function (living, age, gender) { ... };
+var Person = function Person (living, age, gender) { ... };
+</code></pre>
+<h3 id="javascript-constructors-create-and-return-object-instances">JavaScript constructors create and return object instances</h3>
+<p>A constructor function is a cookie cutter for producing objects that have default properties and property methods.
+The <em>only difference</em> between a constructor function and a normal function is how it behaves when invoked with the <code>new</code> keyword. In this case, JavaScript sets the value of <code>this</code> to the new object being created and returns it (instead of false).</p>
+<h3 id="the-native-javascript-object-constructors">The native JavaScript object constructors</h3>
+<p><code>Number(), String(), Boolean(), Object(), Array(), Function(), Date(), RegExp(), Error()</code></p>
+<p>JavaScript is mostly constructed from these nine native (aka global) objects as well as the string, number and Boolean primitive values.</p>
+<p>Note, <code>Math</code> is a static object, a container for methods (and therefore not instantiated using the <code>new</code> keyword).</p>
+<h3 id="instantiating-constructors-using-the-new-operator">Instantiating constructors using the new operator</h3>
+<p>Constructor functions can be called with or without the <code>new</code> keyword.</p>
+<p>If called without using <code>new</code>:</p>
+<ul>
+<li>the <code>this</code> referred to in a constructor function is no longer the object under construction, but the parent object (see Chapter 6)</li>
+<li>the object is not returned (the constructor function could always explicity return the object)</li>
+</ul>
+<p>You can log <code>myobj.constructor</code> to see the function definition (which for the built in types won’t show you the actual defnition, but for an unknown type, will at least reveal how it was created and therefore reveal its type).</p>
+<h3 id="creating-shorthand-or-literal-values-from-constructors">Creating shorthand or literal values from constructors</h3>
+<p><em>Literals</em> are shorthand for creating objects for the built in types rather than calling the <code>new</code> keyword.</p>
+<ul>
+<li>Number - just use the number</li>
+<li>String - use quotes</li>
+<li>Boolean - true or false</li>
+<li>Object - {}</li>
+<li>Array - []</li>
+<li>Function - function(x, y) { return x* y };</li>
+<li>RegExp - //</li>
+</ul>
+<p>In general the effect is exactly the same as using the <code>new</code> keyword. However, in the case of number, string and boolean types, a complex object is not created until object properties are used. e.g <code>'foo'.length</code>. Only at this point does a <em>wrapper</em> object get created and then discarded again afterwards.</p>
+<h3 id="primitive-aka-simple-values">Primitive (aka simple) values</h3>
+<p>The JavaScript values <code>5</code>, <code>'foo'</code>, <code>true</code>, and <code>false</code> , as well as <code>null</code> and <code>undefined</code>, are considered primitive because they are irreducible.</p>
+<p>Note, if using the <code>new</code> keyword to create String, Number or Boolean types, then complex objects <em>are</em> created and returned.</p>
+<p>Note, if you alternatively call the String(), Number() or Boolean() constructor functions without the <code>new</code> keyword, the primitive values are returned. <em>In this instance, are the complex objects constructed or not - I assume not.</em></p>
+<p>Primitive values are stored and copied by value, and are equal if equal in value.</p>
+<h3 id="complex-objects-aka-composite-objects-or-reference-types">Complex objects (aka composite objects or reference types)</h3>
+<p>Complex values are stored and manipulated by reference. They are equal only if referring to the same reference (address).</p>
+<h3 id="the-typeof-operator-used-on-primitive-and-complex-values">The <code>typeof</code> operator used on primitive and complex values</h3>
+<p>declaration |   primitive / complex | typeof x | x.constructor | beware
+—|—|—
+var x = null | primitive | object | [error] | * typeof x is object (not null)
+var x = undefined | primitive | undefined | [error]
+var x = “string” | primitive | string | String
+var x = String(“string”) | primitive   | string | String
+var x = 23  | primitive | number | Number
+var x = Number(23)  | primitive | number | Number
+var x = true | primitive | boolean | Boolean
+var x = Boolean(true) | primitive | boolean | Boolean
+var x = new Number(23) | complex | object | Number
+var x = new String(“string”) | complex | object | String
+var x = new Boolean(false) | complex | object | Boolean
+var x = new Object() | complex | object | Object
+var x = new Array(“foo”, “bar”) | complex | object | Array
+var x = new Function(“x”, “y”, “return x * y”) | complex | function | Function | * typeof x is function (not object)
+var x = new Date() | complex | object | Date
+var x = new RegExp(“[a-z]+”) | complex | object | RegExp
+var x = new Error(“Darn!”) | complex | object | Error</p>
+<h3 id="dynamic-properties-allow-for-mutable-objects">Dynamic properties allow for mutable objects</h3>
+<p>User-defined objects and most of the native objects can be augmented with extra functionality, storing extra properties and adding new methods.</p>
+<pre><code>String.someExtraProperties = []; // add an array of extra properties
+String.prototype.anExtraMethod = function() { // some extra method definition }; // add an extra function
+</code></pre>
+<h3 id="all-constructor-instances-have-constructor-properties-that-point-to-their-constructor-function">All constructor instances have constructor properties that point to their constructor function</h3>
+<p>When any object is instantiated, the constructor property is created behind the scenes as a property of that object or instance. This property points to the constructor function that created the object.</p>
+<p>This is useful for determining the type of an object (more useful than <code>typeof</code> for object types, see table above). Note that the value returned is a reference the constructor function, NOT a string containing the function’s name.</p>
+<p>User defined contructor functions work in exactly the same way and when logged will show the actual implementation details.</p>
+<h3 id="the-instanceof-function">The <code>instanceof</code> function</h3>
+<p>By using the <code>instanceof</code> operator, we can determine (true or false) if an object is an instance of a particular constructor function.</p>
+<pre><code>var Person = function () { this.foo = 'bar'; };
+var person = new Person();
+
+console.log(person instanceof Person); // logs true
+console.log(person instanceof Object); // logs true
+
+// native objects work the same
+console.log(new Array('foo') instanceof Array) // logs true
+console.log(new Array('foo') instanceof Object); // logs true
+</code></pre>
+<p>Note, since all objects inherit from the Object() constructor all will return true for <code>instanceof Object</code></p>
+<p>Note, primitive values will return false from <code>instanceof</code> operations.</p>
+<h3 id="instances-can-have-their-own-properties">Instances can have their own properties</h3>
+<p>Objects can be augmented at any time (i.e. dynamic properties).</p>
+<pre><code>var myString = new String(&quot;hello&quot;);
+myString.isGreeting = true;
+</code></pre>
+<h2 id="chapter-2-working-with-objects-and-properties">Chapter 2: Working with Objects and Properties</h2>
+<ul>
+<li>Objects can be nested inside other objects (and functions, regexs etc) ad infinitum. Sometimes known as <em>object chaining</em>.</li>
+<li>Get or set an object’s properties using <em>dot notation</em> or <em>brackets</em>. Dot notation is more common, but bracket notation is useful when you have a variable containing the key or with property names which are invalid JavaScript identifiers (e.g. containing a numeral)</li>
+<li>By using bracket notation you can mimic associative arrays found in other languages</li>
+<li>If a property is a method, this can be invoked using the <code>()</code> operators e.g. <code>cody.getGender()</code></li>
+<li>The <code>delete</code> operator can be used to remove a property from an object e.g. <code>delete person.name</code>. Note, this will not delete properties found on the prototype chain.</li>
+</ul>
+<h3 id="how-references-to-object-properties-are-resolved">How references to object properties are resolved</h3>
+<p>If you try to access a property not on the object, JavaScript will check on the prototype chain before returning <code>undefined</code>. E.g. accessing a non existent property on an <code>Array</code> object will also check <code>Array.prototype</code> and <code>Object.prototype</code>.</p>
+<p>The prototype chain is built using the object contructor function’s <code>prototype</code> object. This is the secret <code>__proto__</code> link contained in all objects which points to the constructor function which created the instance, specifically, the <em>prototype property</em> of the instance’s constructor function.</p>
+<p>For example, when you create a instance of an array, the <code>join</code> method is not a function on that particular instance, but via the <code>__proto__</code> link, it can access the <code>join</code> method of the Array class.</p>
+<pre><code>var ar = new Array();
+console.log(ar.hasOwnProperty('join')); // logs false
+console.log(ar.__proto__.hasOwnProperty('join')); // logs true
+console.log(ar.constructor.prototype.hasOwnProperty('join')); // logs true 
+console.log(Array.prototype.hasOwnProperty('join')); // logs true
+</code></pre>
+<p>Note, use <code>hasOwnProperty</code> to check for properties specific to that object and not from the prototype change. <code>in</code> also appears to have this behaviour in chrome (contrary to the book’s explanations that <code>in</code> includes all members of an object via the prototype chain).</p>
+<h3 id="host-objects-and-native-objects">Host objects and native objects</h3>
+<p>Within a browser environment, there are typically additional <em>host objects</em> which are not part of JavaScript specification, but just objects provided by the environment itself. These are in themselves very useful e.g. <code>window</code> and the objects it contains, but then are <em>not</em> part of the JavaScript specification.</p>
+<p>Enumerate <code>x in window</code> to show all properties in the <code>window</code> host object of a browser.</p>
+<p>Enumerate <code>x in window.document</code> to show all properties in the HTML document, or DOM.</p>
+<h3 id="underscore-js">Underscore.js</h3>
+<p>This library of functions extends the current offering of JavaScript 1.5 with a number of useful functions for all objects and a number more for arrays in particular including: <code>map()</code>, <code>select()</code> and <code>invoke()</code> where these are not yet provided by the native implementation.</p>
+<p>Full details at <a href="http://documentcloud.github.io/underscore/">http://documentcloud.github.io/underscore/</a></p>
+<h2 id="chapter-3-string">Chapter 3: String()</h2>
+<p>Avoid using <code>new String()</code> since the <code>typeof</code> function confusingly returns <code>object</code> and the complex object provided by using the new keyword is less performant.</p>
+<h3 id="string-properties-and-methods">String properties and methods</h3>
+<h2 id="chapter-4-number">Chapter 4: Number()</h2>
+<p>As with strings, avoid using <code>new Number()</code>.</p>
+<h3 id="number-properties-and-methods">Number properties and methods</h3>
+<p>The Number() object itself has a few useful properties: <code>MAX_VALUE</code>, <code>MIN_VALUE</code>, <code>NaN</code>, <code>NEGATIVE_INFINITY</code>, <code>POSITIVE_INFINITY</code></p>
+<p>Instance methods include: <code>toString()</code>, <code>valueOf()</code></p>
+<h2 id="chapter-5-boolean">Chapter 5: Boolean()</h2>
+<p>Any valid JavaScript value that is not 0, -1, null, false, NaN, undefined or empty string (“”) will be converted to true when creating a boolean.</p>
+<p>Beware, this means that a ‘false’ Boolean object (as opposed to a false boolean primitive value) will actually be true.</p>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2014/09/08/grid-systems/">Grid systems</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2014/12/31/pluralsight-cplusplus-fundamentals/">Pluralsight - C++ Fundamentals</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2014/12/23/javascript-succinctly/` was built on 2025-09-05T01:23:56.881Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>

@@ -1,0 +1,961 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Why&#39;s Poignant Guide To Ruby</title>
+		<meta name="description" content="There are 18 different shades of British Standard Toast">
+		<meta name="generator" content="Eleventy v3.1.2">
+		
+		
+		
+		<style>/* This is an arbitrary CSS string added to the bundle */
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
+	--color-gray-20: #e0e0e0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+	--text-color: var(--color-gray-90);
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #c0c0c0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+	line-height: 1.5;
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 50em;
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Fluid images via https://www.zachleat.com/web/fluid-images/ */
+img {
+	max-width: 100%;
+}
+img[width][height] {
+	height: auto;
+}
+img[src$=".svg"] {
+	width: 100%;
+	height: auto;
+	max-width: none;
+}
+video,
+iframe {
+	width: 100%;
+	height: auto;
+}
+iframe {
+	aspect-ratio: 16/9;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+/* added to body instead */
+/* p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main,
+footer {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+
+#skip-link {
+	text-decoration: none;
+	background: var(--background-color);
+	color: var(--text-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--color-gray-90);
+	border-radius: 2px;
+}
+
+/* Prevent visually-hidden skip link fom pushing content around when focused */
+#skip-link.visually-hidden:focus {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	/* Ensure it is positioned on top of everything else when it is shown */
+	z-index: 999;
+}
+
+.links-nextprev {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5em 1em;
+	list-style: "";
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+.links-nextprev > * {
+	flex-grow: 1;
+}
+.links-nextprev-next {
+	text-align: right;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
+pre:not([class*="language-"]) {
+	margin: 0.5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	flex-grow: 1;
+	font-size: 1.2em; /* 16px /16 */
+	font-weight: 700;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	gap: 0.5em 1em;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	counter-reset: start-from var(--postlist-index);
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+	padding-left: 5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: 0.25em;
+	padding-right: 0.5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}</style>
+		
+	</head>
+	<body>
+		<a href="#main" id="skip-link" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/infuerno.github.io/" class="home-link">infuerno.github.io</a>
+			<nav>
+				<h2 class="visually-hidden" id="top-level-navigation-menu">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/infuerno.github.io/">Home</a></li>
+					<li class="nav-item"><a href="/infuerno.github.io/about/">About</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="main">
+			<heading-anchors>
+				
+
+
+<h1 id="whys-poignant-guide-to-ruby">Why&#39;s Poignant Guide To Ruby</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2013-08-27">27 August 2013</time></li>
+</ul>
+
+<p>Reference: <a href="http://mislav.uniqpath.com/poignant-guide/">http://mislav.uniqpath.com/poignant-guide/</a> and <a href="http://poignant.guide/book/">http://poignant.guide/book/</a></p>
+<h2 id="chapter-2-kon-nichi-wa-ruby">Chapter 2 Kon’nichi wa, Ruby</h2>
+<blockquote>
+<p>This book is a poignant guide to Ruby. That means code so beautiful that tears are shed.</p>
+</blockquote>
+<p>Three reasons to learn Ruby:</p>
+<ol>
+<li>Brain Health</li>
+</ol>
+<blockquote>
+<p>Creative skills, people. Deduction. Reason. Nodding intelligently. The language will become a tool for you to better connect your mind to the world. I’ve noticed that many experienced users of Ruby seem to be clear thinkers and objective. (In contrast to: heavily biased and coarse.)</p>
+</blockquote>
+<ol start="2">
+<li>One man on an island</li>
+</ol>
+<blockquote>
+<p>Ruby was born in Japan. Which is freaky. Japan is not known for its software. And since programming languages are largely written in English, who would suspect a language to come from Japan?
+It’s triumphant and noble and all that. Support diversity. Help us tilt the earth just a bit.</p>
+</blockquote>
+<ol start="3">
+<li>Free</li>
+</ol>
+<blockquote>
+<p>Using Ruby costs nothing. The code to Ruby itself is open for all of the world to inhale/exhale. Heck, this book is free. It’s all part of a great, big giveaway that should have some big hitch to it.</p>
+</blockquote>
+<blockquote>
+<p>With that, it’s time for the book to begin. You can now get out your highlighter and start dragging it along each captivating word from this sentence on. I think I have enough hairspray and funny money on my person to keep me sustained until the final page.</p>
+</blockquote>
+<h2 id="chapter-3-a-quick-and-hopefully-painless-ride-through-ruby-with-cartoon-foxes">Chapter 3 A Quick (and Hopefully Painless) Ride Through Ruby (with Cartoon Foxes)</h2>
+<h3 id="the-parts-of-speech">The parts of speech</h3>
+<table>
+<thead>
+<tr>
+<th>Part</th>
+<th>Notes</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Variables</td>
+<td>Plain, lowercase words consisting of letters, digits and underscores</td>
+<td><code>x</code>, <code>y</code>, <code>banana2</code>, <code>phone_a_quail</code></td>
+</tr>
+<tr>
+<td>Numbers</td>
+<td>Integers or floats, plus or minus, floats have decimal places and can be written in scentific notation</td>
+<td><code>2</code>, <code>-10000</code>, <code>3.14</code>, <code>12.043e-04</code></td>
+</tr>
+<tr>
+<td>Strings</td>
+<td>Any sort of characters surrounded by quotes</td>
+<td><code>&quot;sealab&quot;</code>, <code>'2021'</code>, <code>&quot;These cartoons are hilarious!&quot;</code></td>
+</tr>
+<tr>
+<td>Symbols</td>
+<td>Words looking like variables, starting with a colon, lightweight strings usually used when you won’t be printing the string to the screen</td>
+<td><code>:a</code>, <code>:b</code>, <code>:ponce_de_leon</code></td>
+</tr>
+<tr>
+<td>Constants</td>
+<td>Like variables but capitalised, warning if you try to change initial value</td>
+<td><code>Time</code>, <code>Array</code>, <code>Bunny_Lake_is_Missing</code></td>
+</tr>
+<tr>
+<td>Methods</td>
+<td>Verbs, usually attached to the end of variables by a dot, can be chained, both exclamation marks and question marks can be used in method names</td>
+<td><code>open</code>, <code>close</code>, <code>front_door.open.close</code>, <code>is_open?</code></td>
+</tr>
+<tr>
+<td>Method arguments</td>
+<td>Arguments are attached to the end of a method surrounded by parentheses and separated by a comma</td>
+<td><code>front_door.paint( 3, :red )</code>, <code>front_door.paint( 3, :red ).dry( 30 ).close()</code></td>
+</tr>
+<tr>
+<td>Kernel methods</td>
+<td>Common methods, don’t usually use parentheses</td>
+<td><code>print &quot;See, no dot.&quot;</code></td>
+</tr>
+<tr>
+<td>Class methods</td>
+<td>Usually attached after variables and constants, joined by a double colon</td>
+<td><code>Door::new( :oak )</code></td>
+</tr>
+<tr>
+<td>Global variables</td>
+<td>Variables beginning with <code>$</code></td>
+<td><code>$x</code>, <code>$1</code>, <code>$chunky</code>, <code>$CHunKY_bACOn</code></td>
+</tr>
+<tr>
+<td>Instance variables</td>
+<td>Variables beginning with <code>@</code>, often used to define the attributes of something</td>
+<td><code>@width</code></td>
+</tr>
+<tr>
+<td>Class variables</td>
+<td>Variables beginning with <code>@@</code>, defines an attribute for all objects in a class (@@ = attribute all)</td>
+<td><code>@@x</code>, <code>@@y</code>, <code>@@i_will_take_you</code></td>
+</tr>
+<tr>
+<td>Blocks</td>
+<td>Any code surrounded by curly braces or <code>do</code> and <code>end</code></td>
+<td><code>2.times { print &quot;yes, never again&quot; }</code></td>
+</tr>
+<tr>
+<td>Block arguments</td>
+<td>A set of variables surrounded by pipe characters, used at the beginning of a block</td>
+<td></td>
+</tr>
+<tr>
+<td>Ranges</td>
+<td>Two values surrounded by parentheses and separated by an ellipsis, a third dot indicates that the final value is not included</td>
+<td><code>(1..3)</code>, <code>('a'..'z')</code>, <code>(0...5)</code></td>
+</tr>
+<tr>
+<td>Arrays</td>
+<td>A list surrounded by square brackets, a collection of things, but kept in a specific order</td>
+<td><code>[1, 2, 3]</code>, <code>['coat', 'mittens', 'snowboard']</code></td>
+</tr>
+<tr>
+<td>Hashes</td>
+<td>A dictionary surrounded by curly braces, matches words to definitions</td>
+<td><code>{'a' =&gt; 'aardvark', 'b' =&gt; 'badger'}</code></td>
+</tr>
+<tr>
+<td>Regular expressions</td>
+<td>Regex surrounded by slashes</td>
+<td><code>/ruby/</code>, <code>/[0-9]+/</code>, <code>/^\d{3}-\d{3}-\d{4}/</code></td>
+</tr>
+<tr>
+<td>Operators</td>
+<td>Required for maths or comparing things</td>
+<td>! ~ * / % + - &amp;</td>
+</tr>
+<tr>
+<td>Keywords</td>
+<td>Ruby has a number of built-in words, imbued with meaning</td>
+<td><code>return</code>, <code>self</code>, <code>super</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="chapter-4-floating-little-leaves-of-code">Chapter 4 Floating Little Leaves of Code</h2>
+<blockquote>
+<p>By the end of this chapter, you will know Ruby’s beauty. The coziness of the code will become a down sleeping bag for your own solace.</p>
+</blockquote>
+<h3 id="animal-perfect-mission-statement">Animal perfect mission statement</h3>
+<pre><code>blue_crystal = 1
+leaf_tender = 5
+</code></pre>
+<blockquote>
+<p>The equals sign is used for assignment. <strong>This concept right here is half of Ruby</strong>. We’re defining. We’re creating. This is half of the work. Assignment is the most basic form of defining.</p>
+</blockquote>
+<pre><code>pipe.catch_a_star
+</code></pre>
+<blockquote>
+<p>Variable <code>pipe</code>. Method <code>catch_a_star.</code> A lot of Rubyists like to think of methods as a message. Whatever comes before the dot is handed the message. The above code tells the <code>pipe</code> to <code>catch_a_star</code>.
+<strong>This is the second half of Ruby</strong>. Putting things in motion. These things you define and create in the first half start to act in the second half.</p>
+</blockquote>
+<pre><code>captive_star = pipe.catch_a_star
+</code></pre>
+<blockquote>
+<p>It’s up to you to collect the miserable, little star. If you don’t, it’ll simply vanish.</p>
+</blockquote>
+<pre><code>starmonkey = ratchet.attach( captive_monkey, captive_star )
+starmonkey = ratchet.attach( captive_monkey, pipe.catch_a_star ) + deco_hand_frog
+</code></pre>
+<h3 id="nil">Nil</h3>
+<p><code>nil</code> represents emptiness, without value. It is <strong>not</strong> undefined, Ruby knows about it, and it is <code>nil</code>.</p>
+<h3 id="false">False</h3>
+<p><code>nil</code> and <code>false</code> are the only two negative concepts in Ruby.<br>
+Everything else is positive.</p>
+<pre><code>if plastic_cup
+  print &quot;Plastic cup is on the up 'n' up!&quot;
+end
+</code></pre>
+<p>If <code>plastic_cup</code> is either <code>nil</code> or <code>false</code>, nothing will be printed.</p>
+<pre><code>unless plastic_cup
+  print &quot;Plastic cup is on the down low.&quot;
+end
+</code></pre>
+<p>Conversely using <code>unless</code> will only print to the screen if <code>plastic_cup</code> is either <code>nil</code> or <code>false</code>.</p>
+<p><code>if</code> and <code>unless</code> can also be used at the end of a line of code:</p>
+<pre><code>print &quot;Yeah, plastic cup is up again!&quot; if plastic_cup
+print &quot;Hardly. It's down.&quot; unless plastic_cup
+</code></pre>
+<p>or combined:
+print “We’re using plastic 'cause we don’t have glass.” if plastic_cup unless glass_cup # do this only if a is true and b isn’t true.</p>
+<h3 id="double-equals-is-a-method">Double equals is a method</h3>
+<pre><code>approaching_guy.==( true )
+</code></pre>
+<p>This method will return true or false. It is the same as using <code>==</code></p>
+<pre><code>if approaching_guy == true`...
+</code></pre>
+<p>Assignment can be used in conjunction with if:</p>
+<pre><code>at_hotel = true
+email = if at_hotel
+          &quot;why@hotelambrose.com&quot;
+        else
+          &quot;why@drnhowardcham.com&quot;
+        end
+</code></pre>
+<p>If there are several lines of code in the <code>if</code> statement <strong>only the answer from the last full statement will be used</strong>.</p>
+<h3 id="is-the-concatenation-operator">&lt;&lt; is the concatenation operator</h3>
+<pre><code>address = &quot;5 Oxford Street&quot;
+address.&lt;&lt;(&quot;, London&quot;) # OR address &lt;&lt; &quot;, London&quot;
+</code></pre>
+<h3 id="nil-2">nil?</h3>
+<p>The <code>nil?</code> method can be used on any value in Ruby. Obviously if value is either <code>true</code> or <code>false</code>, then it is not <code>nil</code>. <code>nil</code> is again, not the same as undefined.</p>
+<p>If you use a variable without declaring it, a <code>NameError</code> exception will be thrown.</p>
+<h3 id="hashes">Hashes</h3>
+<p>A value from a hash or dictionary of code words can be retrieved using the <code>[]</code> method.</p>
+<pre><code>code_words.[]( 'catapult' ) # OR code_words['catapult']
+</code></pre>
+<h3 id="file-operations">File operations</h3>
+<pre><code>require 'wordlist'
+
+# Get evil idea and swap in code words
+print &quot;Enter your new idea: &quot;
+idea = gets
+code_words.each do |real, code|
+	idea.gsub!( real, code )
+end
+
+# Save the jibberish to a new file
+print &quot;File encoded. Please enter a name for this idea: &quot;
+idea_name = gets.strip
+File::open( &quot;idea-&quot; + idea_name + &quot;.txt&quot;, &quot;w&quot; ) do |f|
+	f &lt;&lt; idea
+end
+</code></pre>
+<p>This starts with the kernel method <code>require</code> which can be used anywhere and will pull in the contents of an external file, in this case called wordlist.rb.</p>
+<p>Input from the terminal is stored in <code>idea</code>, and then for each entry in the dictionary a replacement is done using <code>gsub!</code>, short for <em>global substitution</em>, used for search and replace</p>
+<p>The <code>each</code> method is available for Arrays, Hashes and Strings and in this case will iterate over each pair in the hash.</p>
+<p>The coded idea is then saved to a file. It is important to call <code>strip</code> on the input from <code>gets</code> since this will remove the <code>\n</code> on the end.</p>
+<p>The class method <code>File::open</code> is used to create a new file. In fact all the kernel methods so far mentioned are actually class methods.</p>
+<pre><code>Kernel:: print( &quot;hello world&quot; )
+</code></pre>
+<blockquote>
+<p>What does this mean? Why does it matter? It means <code>Kernel</code> is the center of Ruby’s universe. Wherever you are in your script, <code>Kernel</code> is right beside you. You don’t even need to spell <code>Kernel</code> out for Ruby. Ruby knows to check <code>Kernel</code>.</p>
+</blockquote>
+<p>The <code>File</code> class contains many methods to read, rename, delete etc files. The <code>File::open</code> method takes two variables, the filename and the file mode:</p>
+<ul>
+<li><code>w</code> to write to a new file</li>
+<li><code>r</code> to read from a file</li>
+<li><code>a</code> to append to a file</li>
+</ul>
+<p>The file is opened and a variable is returned to represent the file, in this case called <code>f</code>. We can use the operator <code>&lt;&lt;</code> to write to the file, since this method is defined on files.</p>
+<pre><code>require 'wordlist'
+
+# Print each idea out with the words fixed
+Dir['idea-*.txt'].each do |file_name|
+	idea = File.read( file_name )
+	code_words.each do |real, code|
+		idea.gsub!( code, real )
+	end
+	puts idea
+end
+</code></pre>
+<p><code>Dir[path]</code> searches a directory and returns a list of all matching files in the directory specified. This is an alternative for <code>Dir.[](path)</code> which is an alternative for <code>Dir::[](path)</code>.
+<code>File.open</code> is alternative syntax for <code>File::open</code>.</p>
+<p>Although the <code>.</code> notation can also be used for class methods, using <code>::</code> makes it more obvious that you are using a class method rather than an instance method.</p>
+<h3 id="p">p</h3>
+<p><code>p</code> is similar to <code>print</code> and <code>puts</code>, but will display anything (where <code>print</code> is only designed for displaying strings).</p>
+<blockquote>
+<p><code>p foo</code> does <code>puts foo.inspect</code>, i.e. it prints the value of <code>inspect</code> instead of <code>to_s</code>, which is more suitable for debugging (because you can e.g. tell the difference between 1, “1” and “2\b1”, which you can’t when printing without inspect).<br>
+Ruby documenation: <a href="http://www.ruby-doc.org/core-2.0.0/Kernel.html#M005961">http://www.ruby-doc.org/core-2.0.0/Kernel.html#M005961</a><br>
+Note that <code>p</code> also returns the value of the object, while <code>puts</code> does not.
+Reference: <a href="http://stackoverflow.com/questions/1255324/p-vs-puts-in-ruby">http://stackoverflow.com/questions/1255324/p-vs-puts-in-ruby</a></p>
+</blockquote>
+<h3 id="methods">::methods</h3>
+<p>This method will list all the methods available on an object</p>
+<h3 id="using-hashes-as-quick-and-dirty-custom-data-structures">Using hashes as quick and dirty custom data structures</h3>
+<p>Define a custom class <code>kitty_toy</code> which has a <code>:shape</code> and a <code>:fabric</code>. Then instantiate a number of these, put them in a list and then sort them according to one attribute or another.</p>
+<p>Alternatively create several hashes with the same keys, add these to a list and sort according to common keys in each hash.</p>
+<pre><code>kitty_toys = [
+  {:shape =&gt; 'sock', :fabric =&gt; 'cashmere'},
+  {:shape =&gt; 'mouse', :fabric =&gt; 'calico'},
+  {:shape =&gt; 'eggroll', :fabric =&gt; 'chenille'}
+]
+kitty_toys.sort_by { |toy| toy[:fabric] }
+</code></pre>
+<p>This will throw an <code>ArgumentError</code> if one of the hashes does not contain this key.</p>
+<p>The <code>sort_by</code> method is an <strong>iterator</strong> which will iterate through the list of hashes.</p>
+<h3 id="next">next</h3>
+<p><code>next</code> will let you skip onto the next item in an iteration.</p>
+<pre><code>non_eggroll = 0
+kitty_toys.each do |toy|
+  next if toy[:shape] == 'eggroll'
+  non_eggroll = non_eggroll + 1
+end
+</code></pre>
+<h3 id="break">break</h3>
+<p><code>break</code> kicks you out of an iterating loop altogether.</p>
+<pre><code>kitty_toys.each do |toy|
+  break if toy[:fabric] == 'chenille'
+  p toy
+end
+</code></pre>
+<h2 id="chapter-5-them-what-make-the-rules-and-them-what-live-the-dream">Chapter 5 Them What Make the Rules and Them What Live the Dream</h2>
+<h3 id="case-when">case…when</h3>
+<p>Either with or without else</p>
+<h3 id="">===</h3>
+<p>The triple equals checks equality in a <em>flexible</em> way. It depends on context.
+<code>(1895..1913) === 1896</code> is true.
+<code>(1895..1913) === 2008</code> is false.</p>
+<h3 id="scope">scope</h3>
+<p>Variables declared outside of methods cannot normally be seen inside them. Blocks <strong>do</strong> see variables outside of them. Block arguments do not exist outside of the block.</p>
+<p><strong>Note</strong> If block arguments are named the same as an existing variable, the contents of the variable will be overwritten and the variable available with the changed argument after the block exits.</p>
+<p><code>@</code> denotes an instance level variable, available to all methods in that instance.
+<code>@@</code> denotes a class level variable, available to all instances of that class.
+<code>$</code> denotes a global variable, available everywhere.</p>
+<h3 id="def-and-class">def and class</h3>
+<p><code>def</code> is used to define a method.</p>
+<p><code>class</code> is used to define a class.</p>
+<p>Everything in ruby is an object and the <code>class</code> method will return the name of the class of any object.</p>
+<pre><code>print 5.class							# prints 'Integer'
+print 'wishing for antlers'.class	# prints 'String'
+print WishMaker.new.class			# prints 'WishMaker'
+</code></pre>
+<h3 id="inspecting-metadata">Inspecting metadata</h3>
+<p><code>Object::constants</code> will list all top-level constants. This will also list all loaded classes.<br>
+<code>Hash::methods</code> will list all the methods of a certain class<br>
+<code>Hash::class_variables</code> lists the class variables<br>
+<code>Hash::constants</code> lists the constants for a particular class</p>
+<h3 id="checking-method-arguments">Checking method arguments</h3>
+<p>It is good practice to check any method arguments. <code>include?</code> works fine with strings, arrays, hashes etc but this method is not defined for a number, so will throw an exception.</p>
+<p>Rather than checking the type of the argument, you can just check if a certain method is defined for that type using <code>responds_to</code> (which returns <code>true</code> or <code>false</code>).</p>
+<pre><code>def wipe_mutterings_from( sentence )
+	unless sentence.respond_to? :include?
+		raise ArgumentError,
+		&quot;cannot wipe mutterings from a #{ sentence.class }&quot;
+	end
+	...
+end
+</code></pre>
+<h4 id="using-symbols">Using symbols</h4>
+<p>In the example above a symbol <code>:include</code> was used. Symbols are generally used when referring to a method or other Ruby construct. Strings will work too, but Ruby will recognise symbols faster.</p>
+<h4 id="changing-method-arguments">Changing method arguments</h4>
+<p>Ruby convention is to not change any arguments unless the method ends in <code>!</code>. A useful method to work with arguments but to make sure they aren’t changed is <code>dup</code>.</p>
+<pre><code>sentence = sentence.dup
+</code></pre>
+<p>So the variable sentence is a reference type (the address of memory in Ruby). <code>dup</code> will create a new object on the heap and return the address of this object. The original will not be changed and the original <code>sentence</code> will still hold the address of the original object.</p>
+<p>Numbers and symbols can’t be <code>dup</code>ed.</p>
+<h3 id="while-and-until">while and until</h3>
+<p>It is better to use an iterator instead of <code>while</code> and <code>until</code></p>
+<h3 id="self">self</h3>
+<p><code>self</code> is a special variable and can be used within a class to represent the object upon which this method is being called.</p>
+<h3 id="collect">collect</h3>
+<p><code>collect</code> is very similar to <code>each</code> in that it returns an iterator. The difference is that <code>collect</code> keeps the answer the block gives back and adds it to a new array.</p>
+<p>The following code iterates over an array, operating on each item and returning the results in a corresponding array.</p>
+<pre><code>catsandtips = [0.12, 0.63, 0.09].collect { |catcost| catcost + ( catcost * 0.20 ) }
+</code></pre>
+<h3 id="inheritance">Inheritance</h3>
+<p>This is denoted using a single angle bracket <code>&lt;</code>:</p>
+<pre><code>class ToastyBear &lt; Object; end
+</code></pre>
+<p>Here the “inheritance from <code>Object</code>” is actually unnecessary since all objects in Ruby will inherit from <code>Object</code> by default. Although you can extend the default classes in Ruby directly, inheritance can also be used to extend and existing type and add your own methods. This way the original is not affected.</p>
+<p>The method <code>is_a?</code> can be used to check the type of an object.</p>
+<p><code>MyObject.superclass</code> can be called on any object to determine the inheritance hierarchy. Every object in Ruby derives from the <code>Object</code> class.</p>
+<h3 id="modules">Modules</h3>
+<p>Modules can be used to group code, similar to namespaces. The <code>extend</code> keyword is used to pull all methods from a module into a class or object.</p>
+
+<ul class="links-nextprev"><li class="links-nextprev-prev">← Previous<br> <a href="/infuerno.github.io/2013/08/26/rails-for-zombies-redux/">Rails For Zombies Redux</a></li><li class="links-nextprev-next">Next →<br><a href="/infuerno.github.io/2013/09/12/why-the-lucky-stiff/">Why The Lucky Stiff</a></li>
+</ul>
+
+			</heading-anchors>
+		</main>
+
+		<footer>
+			<p>
+				<em>Built with <a href="https://www.11ty.dev/">Eleventy v3.1.2</a></em>
+			</p>
+		</footer>
+
+		<!-- This page `/2013/08/27/whys-poignant-guide-to-ruby/` was built on 2025-09-05T01:23:56.878Z -->
+		<script type="module" src="/infuerno.github.io/dist/xbxy_EL6cU.js"></script>
+	</body>
+</html>
