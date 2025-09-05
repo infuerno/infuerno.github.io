@@ -1,21 +1,36 @@
 /* Defaults */
 :root {
 	--font-family: -apple-system, system-ui, sans-serif;
-	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter, DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
 }
 
 /* Theme colors */
 :root {
+	--color-gray-10: #f7f7f7;
+	--color-gray-15: #f0f0f0;
 	--color-gray-20: #e0e0e0;
-	--color-gray-50: #C0C0C0;
+	--color-gray-30: #d0d0d0;
+	--color-gray-40: #dedede;
+	--color-gray-50: #c0c0c0;
+	--color-gray-60: #b0b0b0;
+	--color-gray-70: #a0a0a0;
 	--color-gray-90: #333;
 
 	--background-color: #fff;
-
 	--text-color: var(--color-gray-90);
-	--text-color-link: #082840;
-	--text-color-link-active: #5f2b48;
-	--text-color-link-visited: #17050F;
+
+	--text-color-link-header: #082840;
+	--text-color-link-active-header: #5f2b48;
+	--text-color-link-visited-header: #17050f;
+	--text-color-link: #27c0df;
+	--text-color-link-visited: #27c0df;
+	--text-color-link-active: #21daff;
+
+	--text-color-link: #08cb00;
+	--text-color-link-visited: #253900;
+	--text-color-link-active: #09ff00;
+	--text-color-code: #efe;
 
 	--syntax-tab-size: 2;
 }
@@ -23,7 +38,7 @@
 @media (prefers-color-scheme: dark) {
 	:root {
 		--color-gray-20: #e0e0e0;
-		--color-gray-50: #C0C0C0;
+		--color-gray-50: #c0c0c0;
 		--color-gray-90: #dad8d8;
 
 		/* --text-color is assigned to --color-gray-_ above */
@@ -34,7 +49,6 @@
 		--background-color: #15202b;
 	}
 }
-
 
 /* Global stylesheet */
 * {
@@ -52,12 +66,13 @@ body {
 	font-family: var(--font-family);
 	color: var(--text-color);
 	background-color: var(--background-color);
+	line-height: 1.5;
 }
 html {
 	overflow-y: scroll;
 }
 body {
-	max-width: 40em;
+	max-width: 50em;
 }
 
 /* https://www.a11yproject.com/posts/how-to-hide-content/ */
@@ -72,16 +87,16 @@ body {
 }
 
 /* Fluid images via https://www.zachleat.com/web/fluid-images/ */
-img{
-  max-width: 100%;
+img {
+	max-width: 100%;
 }
 img[width][height] {
-  height: auto;
+	height: auto;
 }
 img[src$=".svg"] {
-  width: 100%;
-  height: auto;
-  max-width: none;
+	width: 100%;
+	height: auto;
+	max-width: none;
 }
 video,
 iframe {
@@ -95,12 +110,24 @@ iframe {
 p:last-child {
 	margin-bottom: 0;
 }
-p {
+/* added to body instead */
+/* p {
 	line-height: 1.5;
 }
 
 li {
 	line-height: 1.5;
+} */
+
+header a[href] {
+	color: var(--text-color-link-header);
+}
+header a[href]:visited {
+	color: var(--text-color-link-visited-header);
+}
+header a[href]:hover,
+header a[href]:active {
+	color: var(--text-color-link-active-header);
 }
 
 a[href] {
@@ -147,7 +174,7 @@ header {
 .links-nextprev {
 	display: flex;
 	justify-content: space-between;
-	gap: .5em 1em;
+	gap: 0.5em 1em;
 	list-style: "";
 	border-top: 1px dashed var(--color-gray-20);
 	padding: 1em 0;
@@ -171,8 +198,15 @@ pre,
 code {
 	font-family: var(--font-family-monospace);
 }
+:not(pre) > code {
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+}
 pre:not([class*="language-"]) {
-	margin: .5em 0;
+	margin: 0.5em 0;
 	line-height: 1.375; /* 22px /16 */
 	-moz-tab-size: var(--syntax-tab-size);
 	-o-tab-size: var(--syntax-tab-size);
@@ -186,6 +220,11 @@ pre:not([class*="language-"]) {
 	word-spacing: normal;
 	word-break: normal;
 	overflow-x: auto;
+	background-color: #eef;
+	background-color: #cceeff;
+	background-color: var(--text-color-code);
+	padding: 1em;
+	border-radius: 0.3em;
 }
 code {
 	word-break: break-all;
@@ -202,7 +241,7 @@ header {
 }
 .home-link {
 	flex-grow: 1;
-	font-size: 1em; /* 16px /16 */
+	font-size: 1.2em; /* 16px /16 */
 	font-weight: 700;
 }
 .home-link:link:not(:hover) {
@@ -212,7 +251,7 @@ header {
 /* Nav */
 .nav {
 	display: flex;
-	gap: .5em 1em;
+	gap: 0.5em 1em;
 	padding: 0;
 	margin: 0;
 	list-style: none;
@@ -256,13 +295,14 @@ header {
 }
 .postlist-date {
 	word-spacing: -0.5px;
+	padding-left: 5px;
 }
 .postlist-link {
 	font-size: 1.1875em; /* 19px /16 */
 	font-weight: 700;
 	flex-basis: calc(100% - 1.5rem);
-	padding-left: .25em;
-	padding-right: .5em;
+	padding-left: 0.25em;
+	padding-right: 0.5em;
 	text-underline-position: from-font;
 	text-underline-offset: 0;
 	text-decoration-thickness: 1px;
@@ -287,7 +327,7 @@ header {
 .post-metadata {
 	display: inline-flex;
 	flex-wrap: wrap;
-	gap: .5em;
+	gap: 0.5em;
 	list-style: none;
 	padding: 0;
 	margin: 0;
@@ -296,3 +336,41 @@ header {
 	margin-right: 1em;
 }
 
+blockquote {
+	border-left: 4px solid var(--color-gray-20);
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 1em;
+	color: var(--color-gray-70);
+	letter-spacing: -1px;
+	font-style: italic;
+	font-size: 1.05em;
+}
+
+table {
+	margin-bottom: 30px;
+	width: 100%;
+	text-align: left;
+	color: var(--color-gray-90);
+	border-collapse: collapse;
+	/*border: 1px solid #e8e8e8;*/
+}
+
+table tr:nth-child(even) {
+	background-color: var(--color-gray-10);
+}
+
+table th,
+table td {
+	padding: 10px 15px;
+}
+
+table th {
+	background-color: var(--color-gray-15);
+	border: 1px solid var(--color-gray-40);
+	border-bottom-color: var(--color-gray-60);
+}
+
+table td {
+	border: 1px solid var(--color-gray-20);
+}

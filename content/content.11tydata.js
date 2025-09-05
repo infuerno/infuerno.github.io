@@ -1,3 +1,4 @@
 export default {
-	layout: "layouts/home.njk",
+	layout: "layouts/page.njk",
+	permalink: "{{ page.fileSlug }}/index.html",
 };
