@@ -72,7 +72,7 @@ React.createElement(Pet, { name: "Harry", animal: "Horse", breed: "Piebald" });
 Same component using destructuring:
 
 ```javascript
-const Pet = ({name, animal, breed}) => {
+const Pet = ({ name, animal, breed }) => {
   return React.createElement("div", {}, [
     React.createElement("h1", {}, name),
     React.createElement("h2", {}, animal),
@@ -146,10 +146,11 @@ Environment variable `NODE_ENV=development` is automatically set by Parcel when 
 ### Dev tools
 
 Firefox and Chrome both have a set of Dev Tools for React which allow you to
-* Inspect React components
-* Syncs the usual DOM inspector the the React component inspector
-* Search for components
-* Use `$r` in the console to manipulate the currently selected component (mirrors the usual `$0` for the regular DOM)
+
+- Inspect React components
+- Syncs the usual DOM inspector the the React component inspector
+- Search for components
+- Use `$r` in the console to manipulate the currently selected component (mirrors the usual `$0` for the regular DOM)
 
 ## JSX
 
@@ -292,14 +293,17 @@ Always use `onBlur` with `onChange` since some screen readers do not trigger `on
 #### Using `<select>` and `<options>`s with React
 
 ```javascript
-<label htmlFor={id}>{label}
-  <select id={id} value={state}
-    onChange={e => setState(e.target.value)}
-    onBlur={e => setState(e.target.value)}
+<label htmlFor={id}>
+  {label}
+  <select
+    id={id}
+    value={state}
+    onChange={(e) => setState(e.target.value)}
+    onBlur={(e) => setState(e.target.value)}
     disabled={options.length === 0}
   >
     <option>All</option>
-    {options.map(item => (
+    {options.map((item) => (
       <option key={item} value={item}>
         {item}
       </option>
@@ -308,7 +312,7 @@ Always use `onBlur` with `onChange` since some screen readers do not trigger `on
 </label>
 ```
 
-Every time something changes, React reruns the render function i.e. `SearchParams`. If the dropdown is sortable and the order of items changed, React would see that that as something having changed and would then rerender everything. It is more performant to set a `key` to something unique for each item in an `<option>` so that React can keep track that when e.g. elements are sorted, so that when nothing has really changed - elements are not created or destroyed  - then rerender cycles do not need to be rerun.
+Every time something changes, React reruns the render function i.e. `SearchParams`. If the dropdown is sortable and the order of items changed, React would see that that as something having changed and would then rerender everything. It is more performant to set a `key` to something unique for each item in an `<option>` so that React can keep track that when e.g. elements are sorted, so that when nothing has really changed - elements are not created or destroyed - then rerender cycles do not need to be rerun.
 
 ### Custom hooks
 
@@ -355,19 +359,20 @@ const SearchParams = () => {
 ## Effects
 
 Effects take the place of several of the lifecycle hooks, e.g.
-* `componentDidMount`
-* `componentWillUnmount`
-* `componentDidUpdate`
+
+- `componentDidMount`
+- `componentWillUnmount`
+- `componentDidUpdate`
 
 The following `useEffect` statement defined within a component is disconnected from the render. It is scheduled to run **after** the initial render happens (potentially not immediately afterwards).
 
 This is required in order to render something to the screen immediately and THEN do long running work e.g. calling an API
 
 ```javascript
-  useEffect(() => {
-    // calls the API and gets the breeds for the given animal
-    pet.breeds("dog").then(console.log, console.error);
-  });
+useEffect(() => {
+  // calls the API and gets the breeds for the given animal
+  pet.breeds("dog").then(console.log, console.error);
+});
 ```
 
 ### Declaring effect dependencies
@@ -375,15 +380,15 @@ This is required in order to render something to the screen immediately and THEN
 Although the effect is disconnected from the render, it will still run every single time that render runs UNLESS the dependencies are declared.
 
 ```javascript
-  useEffect(() => {
-    setBreeds([]);
-    setBreed("");
+useEffect(() => {
+  setBreeds([]);
+  setBreed("");
 
-    // calls the API and gets the breeds for the given animal
-    pet.breeds(animal).then(data => {
-      setBreeds(data.breeds.map(b => b.name));
-    }, console.error);
-  }, [animal, setBreeds, setBreed]);
+  // calls the API and gets the breeds for the given animal
+  pet.breeds(animal).then((data) => {
+    setBreeds(data.breeds.map((b) => b.name));
+  }, console.error);
+}, [animal, setBreeds, setBreed]);
 ```
 
 If the value of `animal` changes, then only then will this effect be triggered after a rerender. eslint also requires that `setBreeds` and `setBreed` are added to the dependency list (although those function definitions will never change).
@@ -408,7 +413,7 @@ To run EVERY SINGLE TIME, don't specify **any** dependency array (likely to get 
 
 ### Async code without effects
 
-Async code can be handled in React with effects, useful when data changes and you need to react OR when setting up / tearing down a component. An alternative for e.g. when a user clicks a button / submits a form etc is to simply use an async function wired up to the event handler. 
+Async code can be handled in React with effects, useful when data changes and you need to react OR when setting up / tearing down a component. An alternative for e.g. when a user clicks a button / submits a form etc is to simply use an async function wired up to the event handler.
 
 ### Mock API
 
@@ -444,8 +449,9 @@ const App = () => {
   );
 };
 ```
-* React router will render ALL matching routes (unless you use "switch" in which case the first which matches)
-* Reach router will render the most specific matching route (using a scoring system - one of its main claims to fame)
+
+- React router will render ALL matching routes (unless you use "switch" in which case the first which matches)
+- Reach router will render the most specific matching route (using a scoring system - one of its main claims to fame)
 
 With Reach router, can also have multiple routers on the same page e.g. a seperate router to render the navigation.
 
@@ -460,6 +466,7 @@ Snazzy debugging technique to write an object to the DOM e.g. here useful to see
 Useful to see how state and props are changing over time (though can of course use the browser tools).
 
 #### Link
+
 Note also the example above of using `Link` from Reach router to link the header on the back of each page to the homepage: `<Link to="/">Adopt Me!</Link>`
 
 ## Class Components
@@ -467,18 +474,17 @@ Note also the example above of using `Link` from Reach router to link the header
 So far have only used "function components". Can also use class components.
 
 ```javascript
-import react from 'React';
+import react from "React";
 class Details extends React.Component {
-  render() {
-
-  }
+  render() {}
 }
 export default Details;
 ```
-* Must have a render method
-* Can't use hooks with classes e.g. `useState`, `useEffect` etc
-* `componentDidMount` - similar to effects but only runs on start up and then never again. Useful for AJAX requests.
-* use `this.setState` to update the objects private state - this does a shallow merge - matching attributes will get overwritten (so if its an object the whole object will get overwritten)
+
+- Must have a render method
+- Can't use hooks with classes e.g. `useState`, `useEffect` etc
+- `componentDidMount` - similar to effects but only runs on start up and then never again. Useful for AJAX requests.
+- use `this.setState` to update the objects private state - this does a shallow merge - matching attributes will get overwritten (so if its an object the whole object will get overwritten)
 
 ### Class Properties
 
@@ -486,7 +492,7 @@ Instead of writing out the constructor and `setState` can instead just write: `s
 
 ### getDerivedStateFromProps
 
-`getDerivedStateFromProps`  is a useful method which takes props, filters and returns state. Must be `static`.
+`getDerivedStateFromProps` is a useful method which takes props, filters and returns state. Must be `static`.
 
 ```javascript
   static getDerivedStateFromProps({media}) {
@@ -510,7 +516,9 @@ Be SUPER CAREFUL with event listener functions and functions which get passed in
   render() {
     const { active, photos, maxWidth } = this.state;
     return (
-      <div className="carousel" style={{width: maxWidth}} >
+      {% comment %}
+      the strange syntax below for opening doubly curly braces is to stop liquid template errors when rendering these notes as jekyll site{% endcomment %}
+      <div className="carousel" style={{'{{'}} width: maxWidth }} >
         <img src={photos[active]} alt="animal" />
         <div className="carousel-smaller">
           {photos.map((photo, index) => (
@@ -523,19 +531,20 @@ Be SUPER CAREFUL with event listener functions and functions which get passed in
   }
 }
 ```
+
 ## Error Boundaries
 
 Need to be careful when calling APIs with errors. For further info see the docs: https://reactjs.org/docs/error-boundaries.html.
 
-* Need to use full class components (not function components)
-* Can't use with async / await
-* Requires either `didComponentCatch` or `static getDerivedStateFromError` to be defined
-  * Use `getDerivedStateFromError` to control state, which the render can use to show a fallback UI
-  * Use `didComponentCatch` to log errors
-* Doesn't catch errors in this component only child components and otherwise acts as a simple passthrough (use `return this.props.children` if no errors)
-* Generally declared once and used throughout the application
-* Try / catch only works for imperative code e.g. `showButton()`; error boundary classes are required for declartive code such as inclusion of a child component in a parent
-* Error boundaries are not necessary for (and don't work with) event handlers. Simply use a try catch in the event handler function, set some state and then check that state in the `render()` method
+- Need to use full class components (not function components)
+- Can't use with async / await
+- Requires either `didComponentCatch` or `static getDerivedStateFromError` to be defined
+  - Use `getDerivedStateFromError` to control state, which the render can use to show a fallback UI
+  - Use `didComponentCatch` to log errors
+- Doesn't catch errors in this component only child components and otherwise acts as a simple passthrough (use `return this.props.children` if no errors)
+- Generally declared once and used throughout the application
+- Try / catch only works for imperative code e.g. `showButton()`; error boundary classes are required for declartive code such as inclusion of a child component in a parent
+- Error boundaries are not necessary for (and don't work with) event handlers. Simply use a try catch in the event handler function, set some state and then check that state in the `render()` method
 
 `{...props}` - useful way of passing all props from parent to child, but don't use this willy nilly - makes your code harder to read.
 
@@ -550,6 +559,7 @@ export default function DetailsWithErrorBoundary(props) {
 ```
 
 #### Redirecting
+
 Either use `<Redirect>` or `nagivate()`, both from ReachRouter.
 
 ```javascript
@@ -585,27 +595,30 @@ export default ThemeContext;
 Add `ThemeContext` to the app tree so that all components which require it are inside. In a component which wants to use the `ThemeContext` (using `ThemeContext.Provider`), add a `useContext` hook to make it available, and then use as required.
 
 ```javascript
-  const [theme] = useContext(ThemeContext);
-  //...
-  <button style={{ backgroundColor: theme }}>Submit</button>
+const [theme] = useContext(ThemeContext);
+//...
+<button style={{'{{'}} backgroundColor: theme }}>Submit</button>;
 ```
+
 ### Context with Classes
-Can't use hooks with classes, so has to be done a different way. 
+
+Can't use hooks with classes, so has to be done a different way.
 
 ```javascript
 // without destructuring
 <ThemeContext.Consumer>
-  {(themeHook) => <button style={{ backgroundColor: themeHook[0] }}>Adopt Me</button>}
+  {(themeHook) => <button style={{'{{'}} backgroundColor: themeHook[0] }}>Adopt Me</button>}
 </ThemeContext.Consumer>
 // with destructuring
 <ThemeContext.Consumer>
-  {([theme]) => <button style={{ backgroundColor: theme }}>Adopt Me</button>}
+  {([theme]) => <button style={{'{{'}} backgroundColor: theme }}>Adopt Me</button>}
 </ThemeContext.Consumer>
 ```
 
 ## Portal
 
 Want to be able to show a modal which is shown over the whole page. Therefore needs to be seperate to the react app, but useable from within in. Also need to be careful not to create memory leaks by ensuring we hold a reference to the modal we create and tearing it down afterwards.
+
 1. Add new `<div id="modal"></div>` to index.js
 2. Add `Modal.js` which creates a single element for the modal and appends this to the `<div>` in index.js via `useEffect`. Add dependency list `[]` to ensure it only runs once. The function it returns will be used when the component is unmounted.
 

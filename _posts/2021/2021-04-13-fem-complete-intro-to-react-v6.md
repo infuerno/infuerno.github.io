@@ -524,7 +524,9 @@ Be SUPER CAREFUL with event listener functions and functions which get passed in
   render() {
     const { active, photos, maxWidth } = this.state;
     return (
-      <div className="carousel" style={{width: maxWidth}} >
+      {% comment %}
+      the strange syntax below for opening doubly curly braces is to stop liquid template errors when rendering these notes as jekyll site{% endcomment %}
+      <div className="carousel" style={{'{{'}} width: maxWidth }} >
         <img src={photos[active]} alt="animal" />
         <div className="carousel-smaller">
           {photos.map((photo, index) => (
@@ -644,7 +646,7 @@ const App = () => {
 // the hook is destructured, so is 'theme' here is the value
 const [theme] = useContext(ThemeContext);
 //...
-<button style={{ backgroundColor: theme }}>Submit</button>;
+<button style={{'{{'}} backgroundColor: theme }}>Submit</button>;
 ```
 
 ### Context with Classes
@@ -654,11 +656,11 @@ Can't use hooks with classes, so has to be done a different way.
 ```javascript
 // without destructuring
 <ThemeContext.Consumer>
-  {(themeHook) => <button style={{ backgroundColor: themeHook[0] }}>Adopt Me</button>}
+  {(themeHook) => <button style={{'{{'}} backgroundColor: themeHook[0] }}>Adopt Me</button>}
 </ThemeContext.Consumer>
 // with destructuring
 <ThemeContext.Consumer>
-  {([theme]) => <button style={{ backgroundColor: theme }}>Adopt Me</button>}
+  {([theme]) => <button style={{'{{'}} backgroundColor: theme }}>Adopt Me</button>}
 </ThemeContext.Consumer>
 ```
 
